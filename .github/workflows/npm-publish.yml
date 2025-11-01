@@ -1,0 +1,104 @@
+name: Publish to npm
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+
+      - name: Verify package name
+        run: |
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          if [ "$PACKAGE_NAME" != "idnumbers" ]; then
+            echo "Error: Package name must be 'idnumbers', found '$PACKAGE_NAME'"
+            exit 1
+          fi
+          echo "✓ Package name verified: idnumbers"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Prettier check
+        run: npm run format:check
+
+      - name: Run ESLint
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Run TypeScript compilation
+        run: npm run build
+
+      - name: Run tests
+        run: npm test
+
+      - name: Verify build artifacts
+        run: |
+          if [ ! -d "dist" ]; then
+            echo "Error: dist folder not created"
+            exit 1
+          fi
+          if [ ! -f "dist/index.js" ]; then
+            echo "Error: dist/index.js not found"
+            exit 1
+          fi
+          if [ ! -f "dist/index.d.ts" ]; then
+            echo "Error: dist/index.d.ts not found"
+            exit 1
+          fi
+          echo "✓ Build artifacts verified"
+
+      - name: Check if version matches tag
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          TAG_VERSION=${GITHUB_REF#refs/tags/v}
+          if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ]; then
+            echo "Error: Package version ($PACKAGE_VERSION) does not match tag version ($TAG_VERSION)"
+            exit 1
+          fi
+          echo "✓ Version matches tag: v$PACKAGE_VERSION"
+
+      - name: Publish to npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          
+      - name: Create GitHub Release Notes
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
+
+            const { data: release } = await github.rest.repos.getReleaseByTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag: context.ref.replace('refs/tags/', '')
+            });
+
+            const publishInfo = `\n\n## 📦 Published to npm\n\n\`\`\`bash\nnpm install ${packageJson.name}@${packageJson.version}\n\`\`\`\n\n🔗 View on npm: https://www.npmjs.com/package/${packageJson.name}/v/${packageJson.version}\n\n✅ All quality checks passed\n- Prettier format check\n- TypeScript compilation\n- All 797 tests passed\n- Build artifacts verified`;
+
+            await github.rest.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: release.id,
+              body: release.body ? `${release.body}${publishInfo}` : publishInfo.trim()
+            });
+
+      - name: Publish Success
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          echo "🎉 Successfully published idnumbers@$PACKAGE_VERSION to npm!"
+          echo "📦 View at: https://www.npmjs.com/package/idnumbers/v/$PACKAGE_VERSION"

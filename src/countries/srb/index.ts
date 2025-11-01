@@ -1,0 +1,1 @@
+export { NationalID, JMBG } from './nationalId';

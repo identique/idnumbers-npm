@@ -1,0 +1,1 @@
+export { NationalID, type NationalIdParseResult } from './nationalId';

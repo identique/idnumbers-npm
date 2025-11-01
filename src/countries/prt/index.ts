@@ -1,0 +1,1 @@
+export { NIF as NationalID } from './nif';

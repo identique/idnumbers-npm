@@ -1,0 +1,1 @@
+export { SocialSecurityNumber } from './socialSecurityNumber';
