@@ -34,15 +34,29 @@ export const METADATA: IdMetadata = {
 
 /**
  * Extract year base and gender from first digit
- * Algorithm: G = floor(year / 100) * 2 - 34 - gender while gender = {female: 0, male: 1}
+ * First digit encoding:
+ * - 1, 2: 1800s (male, female)
+ * - 3, 4: 1900s (male, female)
+ * - 5, 6: 2000s (male, female)
+ * - 7, 8: 2100s (male, female)
  * If the value is odd -> male, if the value is even -> female
  */
 function extractYearBaseGender(g: number): [number, Gender] | null {
   const gender = g % 2 === 0 ? Gender.FEMALE : Gender.MALE;
-  // Remove the effect of gender, -1 if it is male otherwise it should be the original value
-  const yearG = Math.floor(g / 2) * 2;
-  const yearBase = Math.floor((yearG + 34) / 2) * 100;
-  
+  let yearBase: number;
+
+  if (g === 1 || g === 2) {
+    yearBase = 1800;
+  } else if (g === 3 || g === 4) {
+    yearBase = 1900;
+  } else if (g === 5 || g === 6) {
+    yearBase = 2000;
+  } else if (g === 7 || g === 8) {
+    yearBase = 2100;
+  } else {
+    return null;
+  }
+
   return [yearBase, gender];
 }
 

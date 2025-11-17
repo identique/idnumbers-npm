@@ -1183,6 +1183,18 @@ export function parseIdInfo(countryCode: string, idNumber: string): any | null {
       case 'HU':
         return HunPersonalID.parse(idNumber);
 
+      case 'ISL':
+      case 'IS':
+        return IcelandicID.parse(idNumber);
+
+      case 'LTU':
+      case 'LT':
+        return LtuPersonalCode.parse(idNumber);
+
+      case 'LUX':
+      case 'LU':
+        return LuxNationalID.parse(idNumber);
+
       case 'BGD':
       case 'BD':
         return BgdNationalID.parse(idNumber);
