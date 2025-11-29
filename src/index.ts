@@ -1214,9 +1214,7 @@ export function parseIdInfo(countryCode: string, idNumber: string): any | null {
       case 'KWT':
       case 'KW':
         return CivilNumber.parse(idNumber);
-      
-      case 'EG':
-      
+
       case 'ROU':
       case 'RO':
         return RouNationalID.parse(idNumber);
@@ -1244,9 +1242,7 @@ export function parseIdInfo(countryCode: string, idNumber: string): any | null {
       case 'SRB':
       case 'RS':
         return SrbNationalID.parse(idNumber);
-      
-      case 'EC':
-      
+
       case 'TWN':
       case 'TW':
         return TwnNationalID.parse(idNumber);
@@ -1254,27 +1250,7 @@ export function parseIdInfo(countryCode: string, idNumber: string): any | null {
       case 'VEN':
       case 'VE':
         return VenNationalID.parse(idNumber);
-      
-      case 'CR':
-      
-      case 'PA':
-      
-      case 'DO':
-      
-      case 'GT':
-      
-      case 'HN':
-      
-      case 'SV':
-      
-      case 'NI':
-      
-      case 'JO':
-      
-      case 'LB':
-      
-      case 'OM':
-      
+
       case 'IDN':
       case 'ID':
         return IdnNationalID.parse(idNumber);
@@ -1344,11 +1320,7 @@ export function parseIdInfo(countryCode: string, idNumber: string): any | null {
       case 'LVA':
       case 'LV':
         return PersonalCode.parse(idNumber);
-      
-      case 'MK':
-      
-      case 'ME':
-      
+
       default:
         return null;
     }
