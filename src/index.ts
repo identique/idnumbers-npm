@@ -1667,8 +1667,7 @@ export function getCountryIdFormat(countryCode: string): any | null {
         hasChecksum: false,
         isParsable: true,
       };
-    
-    // Add other countries as needed...
+
     default:
       return null;
   }
