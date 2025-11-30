@@ -181,13 +181,14 @@ console.log(format);
 - 🇨🇦 **CAN** - Social Insurance Number (SIN)
 - 🇲🇽 **MEX** - CURP (Clave Única de Registro de Población)
 
-### South America (4)
+### South America (5)
 - 🇦🇷 **ARG** - DNI (Documento Nacional de Identidad)
 - 🇧🇷 **BRA** - CPF (Cadastro de Pessoas Físicas)
 - 🇨🇱 **CHL** - RUT/RUN (Rol Único Tributario)
+- 🇨🇴 **COL** - NUIP (Número Único de Identidad Personal)
 - 🇻🇪 **VEN** - Cédula de Identidad
 
-### Europe (38)
+### Europe (40)
 - 🇦🇱 **ALB** - National ID Number
 - 🇦🇹 **AUT** - Social Security Number
 - 🇧🇪 **BEL** - National Register Number
@@ -209,6 +210,7 @@ console.log(format);
 - 🇱🇻 **LVA** - Personal Code
 - 🇱🇹 **LTU** - Personal Code
 - 🇱🇺 **LUX** - National ID Number
+- 🇲🇩 **MDA** - Personal Code (IDNP)
 - 🇲🇰 **MKD** - JMBG (Unique Master Citizen Number)
 - 🇲🇪 **MNE** - JMBG (Unique Master Citizen Number)
 - 🇳🇱 **NLD** - BSN (Burgerservicenummer)
@@ -217,6 +219,7 @@ console.log(format);
 - 🇵🇹 **PRT** - NIF (Número de Identificação Fiscal)
 - 🇷🇴 **ROU** - Personal Numerical Code (CNP)
 - 🇷🇺 **RUS** - Internal Passport
+- 🇸🇲 **SMR** - Social Security Number
 - 🇷🇸 **SRB** - JMBG (Unique Master Citizen Number)
 - 🇸🇰 **SVK** - Birth Number
 - 🇸🇮 **SVN** - Personal Number (EMŠO)
@@ -227,7 +230,7 @@ console.log(format);
 - 🇺🇦 **UKR** - Tax Number (RNTRC)
 - 🇬🇧 **GBR** - National Insurance Number (NINO)
 
-### Asia (18)
+### Asia (26)
 - 🇧🇭 **BHR** - Personal Number (CPR)
 - 🇧🇩 **BGD** - National ID
 - 🇨🇳 **CHN** - Resident Identity Card
@@ -235,18 +238,24 @@ console.log(format);
 - 🇭🇰 **HKG** - Hong Kong Identity Card
 - 🇮🇳 **IND** - Aadhaar
 - 🇮🇩 **IDN** - NIK (Nomor Induk Kependudukan)
+- 🇮🇷 **IRN** - National ID (کارت ملی)
+- 🇮🇶 **IRQ** - National Card Number
+- 🇮🇱 **ISR** - ID Number (Teudat Zehut)
 - 🇯🇵 **JPN** - My Number
 - 🇰🇿 **KAZ** - Individual Identification Number (IIN)
 - 🇰🇷 **KOR** - Resident Registration Number
 - 🇰🇼 **KWT** - Civil ID
 - 🇱🇰 **LKA** - National Identity Card
+- 🇲🇴 **MAC** - Resident Identity Card (BIRP/BIRNP)
 - 🇲🇾 **MYS** - MyKad
+- 🇳🇵 **NPL** - National ID Number (NIN)
 - 🇵🇰 **PAK** - CNIC (Computerized National Identity Card)
 - 🇵🇭 **PHL** - PhilSys Number
 - 🇸🇦 **SAU** - National ID
 - 🇸🇬 **SGP** - NRIC/FIN
 - 🇹🇭 **THA** - National ID
 - 🇹🇼 **TWN** - National Identification Card
+- 🇦🇪 **ARE** - Emirates ID
 - 🇻🇳 **VNM** - Citizen Identity Card
 
 ### Africa (3)
@@ -254,13 +263,10 @@ console.log(format);
 - 🇿🇦 **ZAF** - ID Number
 - 🇿🇼 **ZWE** - National ID
 
-### Oceania (2)
+### Oceania (3)
 - 🇦🇺 **AUS** - Medicare Number
 - 🇳🇿 **NZL** - Driver License Number
-
-### Middle East (Additional)
-- 🇦🇪 **ARE** - Emirates ID
-- 🇮🇱 **ISR** - ID Number (Teudat Zehut)
+- 🇵🇬 **PNG** - National ID Number (NID)
 
 ## Usage Examples
 
@@ -502,11 +508,7 @@ MIT License - see LICENSE file for details
 
 ## Changelog
 
-### 2.1.0
-- Added support for 80 countries
-- Comprehensive test coverage
-- Full TypeScript support
-- Enhanced validation and parsing capabilities
+See [CHANGELOG.md](CHANGELOG.md) for release history and version details.
 
 ## Acknowledgments
 
