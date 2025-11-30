@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2025-11-30
+
 ### Changed
 - Refactored parseIdInfo to remove empty case statements ([#18](https://github.com/identique/idnumbers-npm/issues/18), [#62](https://github.com/identique/idnumbers-npm/pull/62))
 
@@ -30,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Full TypeScript support with type definitions
 - Comprehensive documentation and examples
 
-[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/identique/idnumbers-npm/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/identique/idnumbers-npm/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/identique/idnumbers-npm/releases/tag/v1.0.0
