@@ -914,14 +914,6 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           extractedInfo: null
         };
       
-      case 'PE':
-        return {
-          isValid: false,
-          countryCode: 'PHL',
-          idNumber,
-          extractedInfo: null
-        };
-
       case 'PHL':
       case 'PH':
         return {
@@ -998,14 +990,6 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           extractedInfo: null
         };
 
-      case 'TN':
-        return {
-          isValid: false,
-          countryCode: 'TUR',
-          idNumber,
-          extractedInfo: null
-        };
-      
       case 'UKR':
       case 'UA':
         const ukrParseResult = UkrNationalID.parse(idNumber);
