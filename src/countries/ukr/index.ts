@@ -1,2 +1,2 @@
-export { NationalID } from './nationalId';
-export { EntityID } from './entityId';
+export { NationalID, NationalIdParseResult } from './nationalId';
+export { EntityID, EntityType, EntityIdParseResult } from './entityId';
