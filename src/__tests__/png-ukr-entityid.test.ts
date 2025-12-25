@@ -11,31 +11,25 @@ import { EntityID as UkrEntityID, EntityType } from '../countries/ukr';
 describe('PNG - Papua New Guinea National ID', () => {
   describe('Validation', () => {
     // Valid PNG NIDs - 10 digits
-    const validIDs = [
-      '1234567890',
-      '0000000000',
-      '9999999999',
-      '5555555555',
-      '1111111111',
-    ];
+    const validIDs = ['1234567890', '0000000000', '9999999999', '5555555555', '1111111111'];
 
     // Invalid PNG NIDs
     const invalidIDs = [
-      '123456789',    // Too short (9 digits)
-      '12345678901',  // Too long (11 digits)
-      '123456789a',   // Contains letter
-      'abcdefghij',   // All letters
-      '12345 67890',  // Contains space
-      '1234-567890',  // Contains dash
-      '',             // Empty string
-      '   ',          // Whitespace only
+      '123456789', // Too short (9 digits)
+      '12345678901', // Too long (11 digits)
+      '123456789a', // Contains letter
+      'abcdefghij', // All letters
+      '12345 67890', // Contains space
+      '1234-567890', // Contains dash
+      '', // Empty string
+      '   ', // Whitespace only
     ];
 
-    test.each(validIDs)('should validate valid PNG ID: %s', (id) => {
+    test.each(validIDs)('should validate valid PNG ID: %s', id => {
       expect(PngNationalID.validate(id)).toBe(true);
     });
 
-    test.each(invalidIDs)('should reject invalid PNG ID: %s', (id) => {
+    test.each(invalidIDs)('should reject invalid PNG ID: %s', id => {
       expect(PngNationalID.validate(id)).toBe(false);
     });
 
@@ -137,9 +131,9 @@ describe('UKR - Ukraine EntityID (EDRPOU)', () => {
     });
 
     test('should return null for invalid format', () => {
-      expect(UkrEntityID.checksum('1234567')).toBeNull();  // Too short
+      expect(UkrEntityID.checksum('1234567')).toBeNull(); // Too short
       expect(UkrEntityID.checksum('123456789')).toBeNull(); // Too long
-      expect(UkrEntityID.checksum('1234567a')).toBeNull();  // Contains letter
+      expect(UkrEntityID.checksum('1234567a')).toBeNull(); // Contains letter
     });
 
     test('should handle modulus 10 edge case (check digit 0)', () => {
@@ -167,19 +161,19 @@ describe('UKR - Ukraine EntityID (EDRPOU)', () => {
     // Invalid EDRPOU codes
     const invalidEDRPOUs = [
       '00032128', // Wrong checksum (changed last digit)
-      '1234567',  // Too short (7 digits)
+      '1234567', // Too short (7 digits)
       '123456789', // Too long (9 digits)
       '1234567a', // Contains letter
       'abcdefgh', // All letters
       '12345 67', // Contains space
-      '',         // Empty string
+      '', // Empty string
     ];
 
-    test.each(validEDRPOUs)('should validate valid EDRPOU: %s', (id) => {
+    test.each(validEDRPOUs)('should validate valid EDRPOU: %s', id => {
       expect(UkrEntityID.validate(id)).toBe(true);
     });
 
-    test.each(invalidEDRPOUs)('should reject invalid EDRPOU: %s', (id) => {
+    test.each(invalidEDRPOUs)('should reject invalid EDRPOU: %s', id => {
       expect(UkrEntityID.validate(id)).toBe(false);
     });
 
