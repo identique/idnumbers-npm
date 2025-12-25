@@ -2,6 +2,27 @@ import { IdMetadata, IdNumberClass } from '../../types';
 import { validateRegexp } from '../../utils';
 
 /**
+ * Entity type based on the checksum multiplier phase used
+ * Determined by the first digit of the EDRPOU code
+ */
+export enum EntityType {
+  /** First digit 0-2 or 7-9 uses PHASE1 multiplier [1,2,3,4,5,6,7] */
+  PHASE1 = 'PHASE1',
+  /** First digit 3-6 uses PHASE2 multiplier [7,1,2,3,4,5,6] */
+  PHASE2 = 'PHASE2'
+}
+
+/**
+ * Parse result of Ukrainian Entity ID (EDRPOU)
+ */
+export interface EntityIdParseResult {
+  /** The checksum digit (last digit of the EDRPOU) */
+  checksum: number;
+  /** Entity type based on the first digit range */
+  entityType: EntityType;
+}
+
+/**
  * Ukrainian Legal Entity ID Number (EDRPOU/ЄДРПОУ) - 8 digits
  * https://uk.wikipedia.org/wiki/%D0%9A%D0%BE%D0%B4_%D0%84%D0%94%D0%A0%D0%9F%D0%9E%D0%A3
  * https://1cinfo.com.ua/Article/Detail/Proverka_koda_po_EDRPOU/
@@ -12,7 +33,7 @@ export class EntityID implements IdNumberClass {
     iso3166Alpha2: 'UA',
     minLength: 8,
     maxLength: 8,
-    parsable: false,
+    parsable: true,
     checksum: true,
     regexp: /^\d{8}$/,
     aliasOf: null,
@@ -77,6 +98,12 @@ export class EntityID implements IdNumberClass {
       modulus = sourceList.reduce((sum, value, index) => {
         return sum + value * multiplier[index];
       }, 0) % 11;
+
+      // If still >= 10 after second pass, normalize to 0
+      // (modulus 10 should map to check digit 0)
+      if (modulus >= 10) {
+        modulus = modulus % 10;
+      }
     }
 
     return modulus;
@@ -84,5 +111,39 @@ export class EntityID implements IdNumberClass {
 
   checksum(idNumber: string): number | null {
     return EntityID.checksum(idNumber);
+  }
+
+  /**
+   * Determine entity type based on first digit
+   * First digit 0-2 or 7-9 -> PHASE1
+   * First digit 3-6 -> PHASE2
+   */
+  private static getEntityType(firstDigit: number): EntityType {
+    if (firstDigit < 3 || firstDigit > 6) {
+      return EntityType.PHASE1;
+    }
+    return EntityType.PHASE2;
+  }
+
+  /**
+   * Parse Ukrainian Entity ID (EDRPOU)
+   * Returns checksum and entity type for valid IDs
+   */
+  static parse(idNumber: string): EntityIdParseResult | null {
+    if (!EntityID.validate(idNumber)) {
+      return null;
+    }
+
+    const firstDigit = parseInt(idNumber[0], 10);
+    const checksumDigit = parseInt(idNumber[7], 10);
+
+    return {
+      checksum: checksumDigit,
+      entityType: EntityID.getEntityType(firstDigit)
+    };
+  }
+
+  parse(idNumber: string): EntityIdParseResult | null {
+    return EntityID.parse(idNumber);
   }
 }
