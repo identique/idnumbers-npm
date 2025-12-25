@@ -1,6 +1,6 @@
 {
   "name": "idnumbers",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A TypeScript library for verifying and parsing national ID numbers - supports 80 countries across 6 continents including USA, UK, France, Germany, Japan, China, India, Brazil, and many more",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

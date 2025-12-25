@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2025-12-25
+
+### Added
+- Added `parse()` method for PNG (Papua New Guinea) National ID ([#47](https://github.com/identique/idnumbers-npm/issues/47), [#72](https://github.com/identique/idnumbers-npm/pull/72))
+- Added `parse()` method for Ukraine EntityId (EDRPOU) with `EntityType` enum ([#48](https://github.com/identique/idnumbers-npm/issues/48), [#72](https://github.com/identique/idnumbers-npm/pull/72))
+- Added comprehensive test suite for PNG and Ukraine EntityId (58 tests)
+
+### Fixed
+- Fixed EDRPOU checksum algorithm edge case where second-pass modulus 10 should normalize to check digit 0 ([#72](https://github.com/identique/idnumbers-npm/pull/72))
+
 ## [1.1.0] - 2025-11-30
 
 ### Changed
@@ -32,7 +42,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Full TypeScript support with type definitions
 - Comprehensive documentation and examples
 
-[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/identique/idnumbers-npm/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/identique/idnumbers-npm/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/identique/idnumbers-npm/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/identique/idnumbers-npm/releases/tag/v1.0.0
