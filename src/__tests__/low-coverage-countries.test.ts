@@ -364,9 +364,9 @@ describe('Low Coverage Countries - Comprehensive Tests', () => {
 
   describe('Edge cases and error handling', () => {
     test('should handle null and undefined inputs', () => {
-      expect(validateNationalId('HUN', null as any).isValid).toBe(false);
-      expect(validateNationalId('ISL', undefined as any).isValid).toBe(false);
-      expect(validateNationalId('LTU', '' as any).isValid).toBe(false);
+      expect(validateNationalId('HUN', null as unknown as string).isValid).toBe(false);
+      expect(validateNationalId('ISL', undefined as unknown as string).isValid).toBe(false);
+      expect(validateNationalId('LTU', '').isValid).toBe(false);
     });
 
     test('should handle whitespace inputs', () => {
@@ -375,9 +375,9 @@ describe('Low Coverage Countries - Comprehensive Tests', () => {
     });
 
     test('should handle non-string inputs gracefully', () => {
-      expect(validateNationalId('HUN', 12345 as any).isValid).toBe(false);
-      expect(validateNationalId('ISL', {} as any).isValid).toBe(false);
-      expect(validateNationalId('LTU', [] as any).isValid).toBe(false);
+      expect(validateNationalId('HUN', 12345 as unknown as string).isValid).toBe(false);
+      expect(validateNationalId('ISL', {} as unknown as string).isValid).toBe(false);
+      expect(validateNationalId('LTU', [] as unknown as string).isValid).toBe(false);
     });
 
     test('should return null for invalid IDs when parsing', () => {
