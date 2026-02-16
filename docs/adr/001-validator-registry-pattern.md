@@ -268,7 +268,7 @@ export function parseIdInfo(countryCode: string, idNumber: string): any | null {
 }
 ```
 
-#### Phase 3: Migrate `validateNationalId()` (Issue #54 or new issue)
+#### Phase 3: Migrate `validateNationalId()` (Issue #51)
 ```typescript
 export function validateNationalId(countryCode: string, idNumber: string): ValidationResult {
   try {
@@ -407,4 +407,4 @@ The exact mechanism will be decided during Phase 4 implementation. The `IdFormat
 - Registry Infrastructure: Issue #50
 - Migration (parseIdInfo): Issue #52
 - Migration (getCountryIdFormat): Issue #53
-- Migration (validateNationalId): Issue #54 (to be created)
+- Migration (validateNationalId): Issue #51
