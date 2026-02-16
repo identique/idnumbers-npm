@@ -1,44 +1,7 @@
 import { validateNationalId, parseIdInfo } from '../index';
 
 describe('Low Coverage Countries - Comprehensive Tests', () => {
-  describe('HUN - Hungary Personal ID', () => {
-    // Valid Hungarian IDs with correct checksums
-    const validIDs = [
-      '1-800101-0016', // Male, born 1980-01-01
-      '1800101-0016', // Without dashes
-      '1 800101 0016', // With spaces
-    ];
-
-    const invalidIDs = [
-      '1-800101-0017', // Wrong checksum
-      '9-800101-0016', // Invalid gender/citizenship digit
-      '1-801301-0016', // Invalid month
-      '1-800132-0016', // Invalid day
-      '1-80010-0016', // Too short
-      '',
-      'invalid',
-    ];
-
-    test.each(validIDs)('should validate valid Hungarian ID: %s', id => {
-      const result = validateNationalId('HUN', id);
-      expect(result.isValid).toBe(true);
-    });
-
-    test.each(invalidIDs)('should reject invalid Hungarian ID: %s', id => {
-      const result = validateNationalId('HUN', id);
-      expect(result.isValid).toBe(false);
-    });
-
-    test('should parse Hungarian ID and extract information', () => {
-      const result = parseIdInfo('HUN', '1-800101-0016');
-      expect(result).not.toBeNull();
-      if (result) {
-        expect(result.birthDate).toEqual(new Date(1980, 0, 1));
-        expect(result.gender).toBe('male');
-        expect(result.citizenship).toBe('citizen');
-      }
-    });
-  });
+  // HUN tests moved to dedicated hun.test.ts
 
   describe('ISL - Iceland Kennitala', () => {
     const validIDs = [
