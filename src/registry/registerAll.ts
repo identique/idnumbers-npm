@@ -6,7 +6,7 @@
  * single execution.
  */
 import { registry } from './ValidatorRegistry';
-import { createValidator } from './adapters';
+import { createValidator, CountryModule } from './adapters';
 
 // ---------------------------------------------------------------------------
 // Class-based imports (IdMetadata shape: parsable, checksum, regexp)
@@ -103,12 +103,7 @@ interface RegistryEntry {
   /** Primary key (alpha-3 ISO code) */
   key: string;
   /** The module/class that provides METADATA, validate, and optionally parse */
-  module: {
-    METADATA: any;
-    validate: (id: string) => boolean;
-    parse?: (id: string) => any;
-    checksum?: (id: string) => any;
-  };
+  module: CountryModule;
   /** Alpha-2 or other aliases that should resolve to this key */
   aliases: string[];
 }
