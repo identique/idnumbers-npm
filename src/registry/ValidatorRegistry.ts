@@ -18,11 +18,11 @@ export class ValidatorRegistry implements IValidatorRegistry {
    * @throws Error if the key is already registered as a primary key.
    */
   register(key: ValidatorKey, validator: CountryValidator): void {
-    const normalised = key.toUpperCase();
-    if (this.validators.has(normalised)) {
-      throw new Error(`Validator already registered for key: ${normalised}`);
+    const normalized = key.toUpperCase();
+    if (this.validators.has(normalized)) {
+      throw new Error(`Validator already registered for key: ${normalized}`);
     }
-    this.validators.set(normalised, validator);
+    this.validators.set(normalized, validator);
   }
 
   /**
@@ -32,26 +32,26 @@ export class ValidatorRegistry implements IValidatorRegistry {
    * @throws Error if the alias is already registered as an alias.
    */
   registerAlias(alias: string, key: ValidatorKey): void {
-    const normalisedAlias = alias.toUpperCase();
-    const normalisedKey = key.toUpperCase();
+    const normalizedAlias = alias.toUpperCase();
+    const normalizedKey = key.toUpperCase();
 
-    if (!this.validators.has(normalisedKey)) {
+    if (!this.validators.has(normalizedKey)) {
       throw new Error(
-        `Cannot create alias "${normalisedAlias}": target key "${normalisedKey}" is not registered`
+        `Cannot create alias "${normalizedAlias}": target key "${normalizedKey}" is not registered`
       );
     }
 
-    if (this.validators.has(normalisedAlias)) {
+    if (this.validators.has(normalizedAlias)) {
       throw new Error(
-        `Cannot create alias "${normalisedAlias}": it conflicts with an existing primary key`
+        `Cannot create alias "${normalizedAlias}": it conflicts with an existing primary key`
       );
     }
 
-    if (this.aliases.has(normalisedAlias)) {
-      throw new Error(`Alias "${normalisedAlias}" is already registered`);
+    if (this.aliases.has(normalizedAlias)) {
+      throw new Error(`Alias "${normalizedAlias}" is already registered`);
     }
 
-    this.aliases.set(normalisedAlias, normalisedKey);
+    this.aliases.set(normalizedAlias, normalizedKey);
   }
 
   /**
@@ -59,8 +59,8 @@ export class ValidatorRegistry implements IValidatorRegistry {
    * Returns undefined when the key is unknown.
    */
   get(key: ValidatorKey): CountryValidator | undefined {
-    const normalised = key.toUpperCase();
-    const resolvedKey = this.aliases.get(normalised) ?? normalised;
+    const normalized = key.toUpperCase();
+    const resolvedKey = this.aliases.get(normalized) ?? normalized;
     return this.validators.get(resolvedKey);
   }
 
@@ -92,8 +92,8 @@ export class ValidatorRegistry implements IValidatorRegistry {
    * Resolves aliases. Returns undefined for unknown keys.
    */
   getFormat(key: ValidatorKey): IdFormat | undefined {
-    const normalised = key.toUpperCase();
-    const resolvedKey = this.aliases.get(normalised) ?? normalised;
+    const normalized = key.toUpperCase();
+    const resolvedKey = this.aliases.get(normalized) ?? normalized;
     const validator = this.validators.get(resolvedKey);
 
     if (!validator) {
