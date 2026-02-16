@@ -268,7 +268,7 @@ export function parseIdInfo(countryCode: string, idNumber: string): any | null {
 }
 ```
 
-#### Phase 3: Migrate `validateNationalId()` (Issue #54 or new issue)
+#### Phase 3: Migrate `validateNationalId()` (Issue #51)
 ```typescript
 export function validateNationalId(countryCode: string, idNumber: string): ValidationResult {
   try {
@@ -329,7 +329,9 @@ Note: The `IdFormat` interface is designed to match the current `getCountryIdFor
 - Bundle size is already committed at build time
 - The existing `export *` pattern in `src/index.ts` already loads all country modules eagerly
 
-Future consideration: Add lazy loading via dynamic imports if bundle size becomes a concern. Note that tree-shaking is only effective for consumers who import specific country modules directly (e.g., `import { TWN } from 'idnumbers/countries/twn'`) rather than importing from the package root.
+**Tree-shaking limitation**: Side-effectful imports (`registry.register()` calls at module top-level) prevent effective tree-shaking. Bundlers must retain all imports to preserve side effects, even if the country validators are never used. This matches the current behavior where all country modules are imported via `export *` patterns.
+
+Future consideration: If bundle size becomes a concern, a lazy-loading mechanism using dynamic imports could be added (e.g., `registry.registerLazy('TWN', () => import('./countries/twn'))`). This would require a breaking API change or an opt-in loading mechanism.
 
 #### 3. Countries with Multiple ID Types
 **Decision**: Register multiple validators with qualified keys
@@ -343,6 +345,17 @@ registry.register('USA:ITIN', itinValidator);     // Additional type
 ```
 
 The `ValidatorKey` type documents this convention. Registry methods like `getFormat()` extract the ISO country code portion from qualified keys (e.g., `"USA:SSN"` → `"USA"` for the `countryCode` field).
+
+**Behavior with qualified keys**:
+- `get('USA')` returns the default validator (registered at `'USA'`)
+- `get('USA:SSN')` returns the specific SSN validator
+- `get('USA:ITIN')` returns the specific ITIN validator
+- `has('USA')` returns `true` if any USA validator exists
+- `has('USA:SSN')` returns `true` only if that specific qualified key is registered
+- `list()` returns all primary keys including qualified keys: `['USA', 'USA:SSN', 'USA:ITIN', ...]`
+- `listAll()` additionally includes aliases: `['US', 'USA', 'USA:SSN', 'USA:ITIN', ...]`
+
+This design allows consumers to either use the default validator or explicitly request a specific ID type when needed.
 
 #### 4. Backwards Compatibility
 **Decision**: Maintain 100% backwards compatibility during migration
@@ -405,6 +418,6 @@ The exact mechanism will be decided during Phase 4 implementation. The `IdFormat
 ## References
 - Parent Epic: Issue #13
 - Registry Infrastructure: Issue #50
+- Migration (validateNationalId): Issue #51
 - Migration (parseIdInfo): Issue #52
 - Migration (getCountryIdFormat): Issue #53
-- Migration (validateNationalId): Issue #54 (to be created)
