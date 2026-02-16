@@ -16,6 +16,7 @@
  */
 
 import { validateNationalId, parseIdInfo } from '../index';
+import { PersonalID } from '../countries/hun';
 
 describe('Hungary (HUN) - Personal ID Number', () => {
   describe('Gender and Century Combinations', () => {
@@ -280,6 +281,33 @@ describe('Hungary (HUN) - Personal ID Number', () => {
       expect(result?.birthDate).toEqual(new Date(2000, 5, 15));
       expect(result?.gender).toBe('male');
       expect(result?.citizenship).toBe('citizen');
+    });
+  });
+
+  describe('Direct Module Access', () => {
+    test('should validate via PersonalID.validate()', () => {
+      expect(PersonalID.validate('18001010016')).toBe(true);
+      expect(PersonalID.validate('18001010017')).toBe(false);
+    });
+
+    test('should parse via PersonalID.parse()', () => {
+      const result = PersonalID.parse('18001010016');
+      expect(result).not.toBeNull();
+      expect(result?.gender).toBe('male');
+      expect(result?.citizenship).toBe('citizen');
+      expect(result?.birthDate).toEqual(new Date(1980, 0, 1));
+    });
+
+    test('should expose METADATA with correct properties', () => {
+      expect(PersonalID.METADATA.name).toBe('Hungary Personal ID Number');
+      expect(PersonalID.METADATA.iso3166Alpha2).toBe('HU');
+      expect(PersonalID.METADATA.hasChecksum).toBe(true);
+      expect(PersonalID.METADATA.isParsable).toBe(true);
+    });
+
+    test('should handle null/undefined inputs via validate', () => {
+      expect(PersonalID.validate(null as unknown as string)).toBe(false);
+      expect(PersonalID.validate(undefined as unknown as string)).toBe(false);
     });
   });
 });
