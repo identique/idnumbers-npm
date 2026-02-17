@@ -37,6 +37,7 @@ export interface IdFormat {
 export interface IValidatorRegistry {
   register(key: ValidatorKey, validator: CountryValidator): void;
   registerAlias(alias: string, key: ValidatorKey): void;
+  resolveKey(key: ValidatorKey): string | undefined;
   get(key: ValidatorKey): CountryValidator | undefined;
   has(key: ValidatorKey): boolean;
   list(): ValidatorKey[];

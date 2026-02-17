@@ -55,20 +55,30 @@ export class ValidatorRegistry implements IValidatorRegistry {
   }
 
   /**
+   * Return the primary key (alpha-3) for a given key or alias.
+   * Returns undefined when the key is unknown.
+   */
+  resolveKey(key: ValidatorKey): string | undefined {
+    const normalized = key.toUpperCase();
+    if (this.validators.has(normalized)) return normalized;
+    const target = this.aliases.get(normalized);
+    return target;
+  }
+
+  /**
    * Retrieve a validator by key or alias.
    * Returns undefined when the key is unknown.
    */
   get(key: ValidatorKey): CountryValidator | undefined {
-    const normalized = key.toUpperCase();
-    const resolvedKey = this.aliases.get(normalized) ?? normalized;
-    return this.validators.get(resolvedKey);
+    const resolved = this.resolveKey(key);
+    return resolved ? this.validators.get(resolved) : undefined;
   }
 
   /**
    * Check whether a key (primary or alias) is registered.
    */
   has(key: ValidatorKey): boolean {
-    return this.get(key) !== undefined;
+    return this.resolveKey(key) !== undefined;
   }
 
   /**
@@ -92,13 +102,12 @@ export class ValidatorRegistry implements IValidatorRegistry {
    * Resolves aliases. Returns undefined for unknown keys.
    */
   getFormat(key: ValidatorKey): IdFormat | undefined {
-    const normalized = key.toUpperCase();
-    const resolvedKey = this.aliases.get(normalized) ?? normalized;
-    const validator = this.validators.get(resolvedKey);
-
-    if (!validator) {
+    const resolvedKey = this.resolveKey(key);
+    if (!resolvedKey) {
       return undefined;
     }
+
+    const validator = this.validators.get(resolvedKey)!;
 
     const { METADATA } = validator;
 

@@ -296,6 +296,49 @@ describe('ValidatorRegistry', () => {
   });
 
   // -----------------------------------------------------------------------
+  // resolveKey()
+  // -----------------------------------------------------------------------
+  describe('resolveKey()', () => {
+    it('should return the primary key for a registered primary key', () => {
+      reg.register('USA', createMockValidator());
+      expect(reg.resolveKey('USA')).toBe('USA');
+    });
+
+    it('should return the primary key for a registered alias', () => {
+      reg.register('FRA', createMockValidator());
+      reg.registerAlias('FR', 'FRA');
+      expect(reg.resolveKey('FR')).toBe('FRA');
+    });
+
+    it('should be case-insensitive', () => {
+      reg.register('DEU', createMockValidator());
+      reg.registerAlias('DE', 'DEU');
+      expect(reg.resolveKey('deu')).toBe('DEU');
+      expect(reg.resolveKey('de')).toBe('DEU');
+      expect(reg.resolveKey('Deu')).toBe('DEU');
+    });
+
+    it('should return undefined for unknown key', () => {
+      expect(reg.resolveKey('UNKNOWN')).toBeUndefined();
+    });
+
+    it('should return undefined for empty string', () => {
+      expect(reg.resolveKey('')).toBeUndefined();
+    });
+
+    it('should resolve qualified keys', () => {
+      reg.register('USA:SSN', createMockValidator());
+      expect(reg.resolveKey('USA:SSN')).toBe('USA:SSN');
+    });
+
+    it('should resolve alias of qualified key', () => {
+      reg.register('USA:SSN', createMockValidator());
+      reg.registerAlias('SSN', 'USA:SSN');
+      expect(reg.resolveKey('SSN')).toBe('USA:SSN');
+    });
+  });
+
+  // -----------------------------------------------------------------------
   // Qualified key registration
   // -----------------------------------------------------------------------
   describe('qualified keys', () => {

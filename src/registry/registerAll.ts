@@ -6,7 +6,9 @@
  * single execution.
  */
 import { registry } from './ValidatorRegistry';
-import { createValidator, CountryModule } from './adapters';
+import { createValidator, adaptMetadata, CountryModule } from './adapters';
+import { CountryValidator } from './types';
+import { ParsedInfo } from '../types';
 
 // ---------------------------------------------------------------------------
 // Class-based imports (IdMetadata shape: parsable, checksum, regexp)
@@ -30,8 +32,8 @@ import { NationalID as MacNationalID } from '../countries/mac';
 import { PersonalCode as MdaPersonalCode } from '../countries/mda';
 import { NationalID as NplNationalID } from '../countries/npl';
 import { NationalID as PngNationalID } from '../countries/png';
-import { SocialSecurityNumber as SmrSSI } from '../countries/smr';
-import { NationalID as BgdNationalID } from '../countries/bgd';
+import { SocialSecurityNumber as SmrSSI, TaxRegistrationNumber as SmrCOE } from '../countries/smr';
+import { NationalID as BgdNationalID, OldNationalID as BgdOldNationalID } from '../countries/bgd';
 import { NationalID as BhrNationalID } from '../countries/bhr';
 import { NationalID as BihNationalID } from '../countries/bih';
 import { NationalID as CypNationalID } from '../countries/cyp';
@@ -50,7 +52,7 @@ import { NationalID as NorNationalID } from '../countries/nor';
 import { NationalID as PakNationalID } from '../countries/pak';
 import { NationalID as ThaNationalID } from '../countries/tha';
 import { NationalID as VnmNationalID } from '../countries/vnm';
-import { NationalID as NzlNationalID } from '../countries/nzl';
+import { DriverLicense as NzlDriverLicense } from '../countries/nzl';
 import { NationalID as PhlNationalID } from '../countries/phl';
 import { NationalID as PrtNationalID } from '../countries/prt';
 import { NationalID as RouNationalID } from '../countries/rou';
@@ -97,13 +99,33 @@ import { IndividualIDNumber } from '../countries/kaz';
 import { CivilNumber } from '../countries/kwt';
 
 // ---------------------------------------------------------------------------
+// Composite validators for countries with multiple ID formats
+// ---------------------------------------------------------------------------
+
+/** BGD: validates both old (13-digit) and new (17-digit) national ID formats. */
+const bgdComposite: CountryValidator = {
+  METADATA: adaptMetadata(BgdNationalID.METADATA),
+  validate: (id: string) => BgdOldNationalID.validate(id) || BgdNationalID.validate(id),
+  parse: (id: string) =>
+    (BgdNationalID.parse(id) ?? BgdOldNationalID.parse(id)) as ParsedInfo | null,
+};
+
+/** SMR: validates both SSI (9-digit) and COE (SM#####) formats. */
+const smrComposite: CountryValidator = {
+  METADATA: SmrSSI.METADATA,
+  validate: (id: string) => SmrSSI.validate(id) || SmrCOE.validate(id),
+};
+
+// ---------------------------------------------------------------------------
 // Registry entry type
 // ---------------------------------------------------------------------------
 interface RegistryEntry {
   /** Primary key (alpha-3 ISO code) */
   key: string;
   /** The module/class that provides METADATA, validate, and optionally parse */
-  module: CountryModule;
+  module?: CountryModule;
+  /** Pre-built CountryValidator (used for composite validators) */
+  validator?: CountryValidator;
   /** Alpha-2 or other aliases that should resolve to this key */
   aliases: string[];
 }
@@ -132,8 +154,8 @@ const COUNTRY_REGISTRY: RegistryEntry[] = [
   { key: 'MDA', module: MdaPersonalCode, aliases: ['MD'] },
   { key: 'NPL', module: NplNationalID, aliases: ['NP'] },
   { key: 'PNG', module: PngNationalID, aliases: ['PG'] },
-  { key: 'SMR', module: SmrSSI, aliases: ['SM'] },
-  { key: 'BGD', module: BgdNationalID, aliases: ['BD'] },
+  { key: 'SMR', validator: smrComposite, aliases: ['SM'] },
+  { key: 'BGD', validator: bgdComposite, aliases: ['BD'] },
   { key: 'BHR', module: BhrNationalID, aliases: ['BH'] },
   { key: 'BIH', module: BihNationalID, aliases: ['BA'] },
   { key: 'CYP', module: CypNationalID, aliases: ['CY'] },
@@ -152,7 +174,7 @@ const COUNTRY_REGISTRY: RegistryEntry[] = [
   { key: 'PAK', module: PakNationalID, aliases: ['PK'] },
   { key: 'THA', module: ThaNationalID, aliases: ['TH'] },
   { key: 'VNM', module: VnmNationalID, aliases: ['VN'] },
-  { key: 'NZL', module: NzlNationalID, aliases: ['NZ'] },
+  { key: 'NZL', module: NzlDriverLicense, aliases: ['NZ'] },
   { key: 'PHL', module: PhlNationalID, aliases: ['PH'] },
   { key: 'PRT', module: PrtNationalID, aliases: ['PT'] },
   { key: 'ROU', module: RouNationalID, aliases: ['RO'] },
@@ -201,7 +223,8 @@ const COUNTRY_REGISTRY: RegistryEntry[] = [
 // Register all validators and their aliases
 // ---------------------------------------------------------------------------
 for (const entry of COUNTRY_REGISTRY) {
-  registry.register(entry.key, createValidator(entry.module));
+  const validator = entry.validator ?? createValidator(entry.module!);
+  registry.register(entry.key, validator);
   for (const alias of entry.aliases) {
     registry.registerAlias(alias, entry.key);
   }

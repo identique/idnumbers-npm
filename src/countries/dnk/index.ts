@@ -26,20 +26,14 @@ export interface DenmarkParseResult extends ParsedInfo {
 
 export const METADATA = {
   name: 'Denmark Personal Identity Number',
-  names: [
-    'personal identity number',
-    'CPR',
-    'Det Centrale Personregister'
-  ],
+  names: ['personal identity number', 'CPR', 'Det Centrale Personregister'],
   iso3166Alpha2: 'DK',
   minLength: 10,
   maxLength: 10,
   pattern: /^(?<dd>\d{2})(?<mm>\d{2})(?<yy>\d{2})-?(?<sn>\d{4})$/,
   hasChecksum: true,
   isParsable: true,
-  links: [
-    'https://en.wikipedia.org/wiki/National_identification_number#Denmark'
-  ]
+  links: ['https://en.wikipedia.org/wiki/National_identification_number#Denmark'],
 };
 
 /**
@@ -82,12 +76,24 @@ export function validate(idNumber: string): boolean {
     return false;
   }
 
-  const match = METADATA.pattern.test(idNumber.trim());
-  if (!match) {
+  const trimmed = idNumber.trim();
+  const match = METADATA.pattern.exec(trimmed);
+  if (!match || !match.groups) {
     return false;
   }
 
-  return validateChecksum(idNumber.trim());
+  if (!validateChecksum(trimmed)) {
+    return false;
+  }
+
+  // Validate date components to ensure consistency with parse()
+  const { dd, mm, yy } = match.groups;
+  const dayValue = parseInt(dd, 10);
+  const monthValue = parseInt(mm, 10);
+  const yearValue = parseInt(yy, 10);
+  const year = yearValue > 50 ? 1900 + yearValue : 2000 + yearValue;
+
+  return isValidDate(year, monthValue, dayValue);
 }
 
 /**
@@ -125,7 +131,7 @@ export function parse(idNumber: string): DenmarkParseResult | null {
       isValid: true,
       birthDate,
       serialNumber: sn,
-      age: calculateAge(birthDate)
+      age: calculateAge(birthDate),
     };
   } catch {
     return null;
@@ -135,5 +141,5 @@ export function parse(idNumber: string): DenmarkParseResult | null {
 export const PersonalIdentityNumber = {
   validate,
   parse,
-  METADATA
+  METADATA,
 };
