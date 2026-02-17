@@ -137,14 +137,11 @@ describe('Format display strings', () => {
     { code: 'VEN', format: 'V-######## or E-########' },
   ];
 
-  test.each(countriesWithFormat)(
-    '$code has format string "$format"',
-    ({ code, format }) => {
-      const result = getCountryIdFormat(code);
-      expect(result).not.toBeNull();
-      expect(result!.format).toBe(format);
-    }
-  );
+  test.each(countriesWithFormat)('$code has format string "$format"', ({ code, format }) => {
+    const result = getCountryIdFormat(code);
+    expect(result).not.toBeNull();
+    expect(result!.format).toBe(format);
+  });
 
   it('should not have format string for countries without one', () => {
     const result = getCountryIdFormat('USA');
@@ -185,14 +182,11 @@ describe('Alias resolution in getCountryIdFormat', () => {
     { alias: 'BR', expectedCode: 'BRA' },
   ];
 
-  test.each(aliasTests)(
-    '$alias resolves to $expectedCode',
-    ({ alias, expectedCode }) => {
-      const format = getCountryIdFormat(alias);
-      expect(format).not.toBeNull();
-      expect(format!.countryCode).toBe(expectedCode);
-    }
-  );
+  test.each(aliasTests)('$alias resolves to $expectedCode', ({ alias, expectedCode }) => {
+    const format = getCountryIdFormat(alias);
+    expect(format).not.toBeNull();
+    expect(format!.countryCode).toBe(expectedCode);
+  });
 
   it('should be case-insensitive', () => {
     const lower = getCountryIdFormat('ind');
@@ -220,12 +214,25 @@ describe('Edge cases and unregistered codes', () => {
   });
 
   // Former stub entries for unregistered countries now return null
-  const formerStubs = ['QA', 'UY', 'EC', 'BO', 'PY', 'CR', 'PA', 'DO', 'GT', 'HN', 'SV', 'NI', 'JO', 'LB', 'OM'];
+  const formerStubs = [
+    'QA',
+    'UY',
+    'EC',
+    'BO',
+    'PY',
+    'CR',
+    'PA',
+    'DO',
+    'GT',
+    'HN',
+    'SV',
+    'NI',
+    'JO',
+    'LB',
+    'OM',
+  ];
 
-  test.each(formerStubs)(
-    'former stub %s now returns null',
-    (code) => {
-      expect(getCountryIdFormat(code)).toBeNull();
-    }
-  );
+  test.each(formerStubs)('former stub %s now returns null', code => {
+    expect(getCountryIdFormat(code)).toBeNull();
+  });
 });
