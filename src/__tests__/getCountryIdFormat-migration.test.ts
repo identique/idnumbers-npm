@@ -124,7 +124,7 @@ describe('Format display strings', () => {
     { code: 'IDN', format: 'DDMMYYPPPPSSSS' },
     { code: 'KOR', format: 'YYMMDD-GSSSSSS' },
     { code: 'MEX', format: 'AAAANNNNNNAAAAAANN' },
-    { code: 'LKA', format: 'YYYYDDDSSSSС' },
+    { code: 'LKA', format: 'YYYYDDDSSSSC' },
     { code: 'NGA', format: 'XXXXXXXXXXX' },
     { code: 'MYS', format: 'YYMMDD-PB-###G' },
     { code: 'NOR', format: 'DDMMYYIIIKK' },

@@ -268,7 +268,7 @@ const FORMAT_STRINGS: Record<string, string> = {
   IDN: 'DDMMYYPPPPSSSS',
   KOR: 'YYMMDD-GSSSSSS',
   MEX: 'AAAANNNNNNAAAAAANN',
-  LKA: 'YYYYDDDSSSSС',
+  LKA: 'YYYYDDDSSSSC',
   NGA: 'XXXXXXXXXXX',
   MYS: 'YYMMDD-PB-###G',
   NOR: 'DDMMYYIIIKK',
@@ -293,18 +293,13 @@ export function getCountryIdFormat(countryCode: string): IdFormat | null {
     return null;
   }
 
-  // Enrich with human-readable countryName and idType from SUPPORTED_COUNTRIES
+  // Build enriched copy instead of mutating the registry object
   const info = countryInfoMap.get(format.countryCode);
-  if (info) {
-    format.countryName = info.countryName;
-    format.idType = info.idType;
-  }
-
-  // Overlay format display string where available
   const formatStr = FORMAT_STRINGS[format.countryCode];
-  if (formatStr) {
-    format.format = formatStr;
-  }
 
-  return format;
+  return {
+    ...format,
+    ...(info && { countryName: info.countryName, idType: info.idType }),
+    ...(formatStr && { format: formatStr }),
+  };
 }
