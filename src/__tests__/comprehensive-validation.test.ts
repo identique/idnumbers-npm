@@ -436,14 +436,15 @@ describe('Comprehensive National ID Validation Tests', () => {
             describe('Country Format Information', () => {
               test('should return format information for supported countries', () => {
                 const usaFormat = getCountryIdFormat('USA');
-                expect(usaFormat).toBeNull(); // USA doesn't have metadata in the current implementation
+                expect(usaFormat).not.toBeNull();
+                expect(usaFormat!.countryCode).toBe('USA');
 
                 const indFormat = getCountryIdFormat('IND');
                 expect(indFormat).toBeTruthy();
-                expect(indFormat.countryCode).toBe('IND');
-                expect(indFormat.format).toBe('XXXX XXXX XXXX');
-                expect(indFormat.length.min).toBe(12);
-                expect(indFormat.length.max).toBe(12);
+                expect(indFormat!.countryCode).toBe('IND');
+                expect(indFormat!.format).toBe('XXXX XXXX XXXX');
+                expect(indFormat!.length.min).toBe(12);
+                expect(indFormat!.length.max).toBe(14);
               });
 
               test('should return null for unsupported countries', () => {
