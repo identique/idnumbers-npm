@@ -7,22 +7,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-02-17
+
+### Added
+
+- Validator registry pattern with `ValidatorRegistry` class ([#50](https://github.com/identique/idnumbers-npm/issues/50), [#79](https://github.com/identique/idnumbers-npm/pull/79))
+- Registry adapters for all 80 country validators ([#52](https://github.com/identique/idnumbers-npm/issues/52), [#79](https://github.com/identique/idnumbers-npm/pull/79))
+- `resolveKey()` method on `ValidatorRegistry` for alias resolution ([#51](https://github.com/identique/idnumbers-npm/issues/51), [#80](https://github.com/identique/idnumbers-npm/pull/80))
+- ADR-001 documenting the validator registry design ([#49](https://github.com/identique/idnumbers-npm/issues/49))
+- Comprehensive Hungary `parse()` tests ([#45](https://github.com/identique/idnumbers-npm/issues/45), [#75](https://github.com/identique/idnumbers-npm/pull/75))
+
+### Changed
+
+- `parseIdInfo()` now delegates to registry lookup instead of switch statement ([#52](https://github.com/identique/idnumbers-npm/issues/52), [#79](https://github.com/identique/idnumbers-npm/pull/79))
+- `validateNationalId()` now delegates to registry lookup instead of switch statement ([#51](https://github.com/identique/idnumbers-npm/issues/51), [#80](https://github.com/identique/idnumbers-npm/pull/80))
+- `getCountryIdFormat()` now delegates to registry lookup instead of switch statement ([#53](https://github.com/identique/idnumbers-npm/issues/53), [#81](https://github.com/identique/idnumbers-npm/pull/81))
+- `getCountryIdFormat()` return type tightened from `any | null` to `IdFormat | null` ([#53](https://github.com/identique/idnumbers-npm/issues/53))
+- Replaced `as any` test assertions with `as unknown as string` for type safety ([#64](https://github.com/identique/idnumbers-npm/issues/64), [#74](https://github.com/identique/idnumbers-npm/pull/74))
+- Former stub entries (QA, UY, EC, BO, PY, CR, PA, DO, GT, HN, SV, NI, JO, LB, OM) in `getCountryIdFormat()` now return `null` instead of non-conformant partial objects ([#53](https://github.com/identique/idnumbers-npm/issues/53))
+
+### Fixed
+
+- DNK `validate()` now checks date validity, consistent with `parse()` ([#51](https://github.com/identique/idnumbers-npm/issues/51))
+- Corrected BGD, SMR, NZL validator registrations ([#51](https://github.com/identique/idnumbers-npm/issues/51))
+- Fixed Cyrillic character in LKA format string ([#53](https://github.com/identique/idnumbers-npm/issues/53))
+- Fixed IND `maxLength` from 12 to 14 to match actual METADATA ([#53](https://github.com/identique/idnumbers-npm/issues/53))
+
 ## [1.2.0] - 2025-12-25
 
 ### Added
+
 - Added `parse()` method for PNG (Papua New Guinea) National ID ([#47](https://github.com/identique/idnumbers-npm/issues/47), [#72](https://github.com/identique/idnumbers-npm/pull/72))
 - Added `parse()` method for Ukraine EntityId (EDRPOU) with `EntityType` enum ([#48](https://github.com/identique/idnumbers-npm/issues/48), [#72](https://github.com/identique/idnumbers-npm/pull/72))
 - Added comprehensive test suite for PNG and Ukraine EntityId (58 tests)
 
 ### Fixed
+
 - Fixed EDRPOU checksum algorithm edge case where second-pass modulus 10 should normalize to check digit 0 ([#72](https://github.com/identique/idnumbers-npm/pull/72))
 
 ## [1.1.0] - 2025-11-30
 
 ### Changed
+
 - Refactored parseIdInfo to remove empty case statements ([#18](https://github.com/identique/idnumbers-npm/issues/18), [#62](https://github.com/identique/idnumbers-npm/pull/62))
 
 ### Removed
+
 - Removed dead code for Peru (PE) validator ([#19](https://github.com/identique/idnumbers-npm/issues/19), [#63](https://github.com/identique/idnumbers-npm/pull/63))
 - Removed dead code for Tunisia (TN) validator ([#20](https://github.com/identique/idnumbers-npm/issues/20), [#63](https://github.com/identique/idnumbers-npm/pull/63))
 - Removed incomplete implementation comment ([#21](https://github.com/identique/idnumbers-npm/issues/21), [#65](https://github.com/identique/idnumbers-npm/pull/65))
@@ -30,19 +60,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.1] - 2025-11-17
 
 ### Fixed
+
 - Corrected Lithuanian century digit mapping for accurate year parsing ([#1](https://github.com/identique/idnumbers-npm/pull/1))
 - Improved test coverage for Lithuanian ID validation
 
 ## [1.0.0] - 2025-11-02
 
 ### Added
+
 - Initial release with support for 80 countries
 - National ID validation functionality
 - Parse functions to extract information from national IDs
 - Full TypeScript support with type definitions
 - Comprehensive documentation and examples
 
-[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/identique/idnumbers-npm/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/identique/idnumbers-npm/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/identique/idnumbers-npm/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/identique/idnumbers-npm/compare/v1.0.0...v1.0.1
