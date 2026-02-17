@@ -94,26 +94,7 @@ export * from './registry';
 // Imports for exported functions
 import { ValidationResult, CountryInfo } from './types';
 import { registry } from './registry/ValidatorRegistry';
-
-// Imports used by getCountryIdFormat()
-import { NationalID as IndNationalID } from './countries/ind';
-import { MyNumber } from './countries/jpn';
-import { IndividualIDNumber } from './countries/kaz';
-import { CivilNumber } from './countries/kwt';
-import { NationalID as IdnNationalID } from './countries/idn';
-import { ResidentRegistration } from './countries/kor';
-import { CURP } from './countries/mex';
-import { NationalID as LkaNationalID } from './countries/lka';
-import { NationalID as NgaNationalID } from './countries/nga';
-import { NationalID as MysNationalID } from './countries/mys';
-import { NationalID as NorNationalID } from './countries/nor';
-import { NationalID as PakNationalID } from './countries/pak';
-import { NationalID as ThaNationalID } from './countries/tha';
-import { NationalID as VnmNationalID } from './countries/vnm';
-import { NationalID as SvnNationalID } from './countries/svn';
-import { NationalID as SrbNationalID } from './countries/srb';
-import { NationalID as TwnNationalID } from './countries/twn';
-import { NationalID as VenNationalID } from './countries/ven';
+import { IdFormat } from './registry/types';
 
 /**
  * List of supported countries
@@ -270,348 +251,60 @@ export function listSupportedCountries(): CountryInfo[] {
   return [...SUPPORTED_COUNTRIES];
 }
 
+// ---------------------------------------------------------------------------
+// Format enrichment: countryName, idType from SUPPORTED_COUNTRIES + format
+// display strings preserved from the old switch statement.
+// ---------------------------------------------------------------------------
+const countryInfoMap = new Map<string, { countryName: string; idType: string }>();
+for (const entry of SUPPORTED_COUNTRIES) {
+  countryInfoMap.set(entry.code, { countryName: entry.name, idType: entry.idType });
+}
+
+const FORMAT_STRINGS: Record<string, string> = {
+  IND: 'XXXX XXXX XXXX',
+  JPN: 'XXXXXXXXXXXX',
+  KAZ: 'YYMMDDCSSSS',
+  KWT: 'CYYMMDDSSSS',
+  IDN: 'DDMMYYPPPPSSSS',
+  KOR: 'YYMMDD-GSSSSSS',
+  MEX: 'AAAANNNNNNAAAAAANN',
+  LKA: 'YYYYDDDSSSSС',
+  NGA: 'XXXXXXXXXXX',
+  MYS: 'YYMMDD-PB-###G',
+  NOR: 'DDMMYYIIIKK',
+  PAK: '#####-#######-#',
+  THA: '#-####-#####-##-#',
+  VNM: 'Variable (9 or 12 digits)',
+  SVN: 'DDMMYYYRRSSSC',
+  SRB: 'DDMMYYYRRSSSC',
+  TWN: 'X#########',
+  VEN: 'V-######## or E-########',
+};
+
 /**
- * Get information about the ID number format for a specific country
+ * Get information about the ID number format for a specific country.
+ *
+ * Delegates to the registry. Aliases (e.g. "IN", "jp") are resolved to their
+ * primary alpha-3 key. Returns null for unregistered country codes.
  */
-export function getCountryIdFormat(countryCode: string): any | null {
-  switch (countryCode.toUpperCase()) {
-    case 'IND':
-    case 'IN':
-      return {
-        countryCode: 'IND',
-        countryName: 'India',
-        idType: 'Aadhaar (UID)',
-        format: 'XXXX XXXX XXXX',
-        length: { min: 12, max: 12 },
-        hasChecksum: true,
-        isParsable: false,
-        metadata: IndNationalID.METADATA,
-      };
-
-    case 'IR':
-      return {
-        hasChecksum: true,
-        isParsable: false,
-      };
-
-    case 'IL':
-      return {
-        hasChecksum: true,
-        isParsable: false,
-      };
-
-    case 'JPN':
-    case 'JP':
-      return {
-        countryCode: 'JPN',
-        countryName: 'Japan',
-        idType: 'My Number',
-        format: 'XXXXXXXXXXXX',
-        length: { min: 12, max: 12 },
-        hasChecksum: true,
-        isParsable: false,
-        metadata: MyNumber.METADATA,
-      };
-
-    case 'KAZ':
-    case 'KZ':
-      return {
-        countryCode: 'KAZ',
-        countryName: 'Kazakhstan',
-        idType: 'Individual Identification Number',
-        format: 'YYMMDDCSSSS',
-        length: { min: 12, max: 12 },
-        hasChecksum: true,
-        isParsable: true,
-        metadata: IndividualIDNumber.METADATA,
-      };
-
-    case 'KWT':
-    case 'KW':
-      return {
-        countryCode: 'KWT',
-        countryName: 'Kuwait',
-        idType: 'Civil Number',
-        format: 'CYYMMDDSSSS',
-        length: { min: 12, max: 12 },
-        hasChecksum: true,
-        isParsable: true,
-        metadata: CivilNumber.METADATA,
-      };
-
-    case 'IDN':
-    case 'ID':
-      return {
-        countryCode: 'IDN',
-        countryName: 'Indonesia',
-        idType: 'National ID Number',
-        format: 'DDMMYYPPPPSSSS',
-        length: { min: 16, max: 16 },
-        hasChecksum: false,
-        isParsable: true,
-        metadata: IdnNationalID.METADATA,
-      };
-
-    case 'KOR':
-    case 'KR':
-      return {
-        countryCode: 'KOR',
-        countryName: 'South Korea',
-        idType: 'Resident Registration Number',
-        format: 'YYMMDD-GSSSSSS',
-        length: { min: 13, max: 13 },
-        hasChecksum: false,
-        isParsable: true,
-        metadata: ResidentRegistration.METADATA,
-      };
-
-    case 'MEX':
-    case 'MX':
-      return {
-        countryCode: 'MEX',
-        countryName: 'Mexico',
-        idType: 'CURP',
-        format: 'AAAANNNNNNAAAAAANN',
-        length: { min: 18, max: 18 },
-        hasChecksum: true,
-        isParsable: true,
-        metadata: CURP.METADATA,
-      };
-
-    case 'LKA':
-    case 'LK':
-      return {
-        countryCode: 'LKA',
-        countryName: 'Sri Lanka',
-        idType: 'National ID Number',
-        format: 'YYYYDDDSSSSС',
-        length: { min: 12, max: 12 },
-        hasChecksum: true,
-        isParsable: true,
-        metadata: LkaNationalID.METADATA,
-      };
-
-    case 'NGA':
-    case 'NG':
-      return {
-        countryCode: 'NGA',
-        countryName: 'Nigeria',
-        idType: 'National Identification Number',
-        format: 'XXXXXXXXXXX',
-        length: { min: 11, max: 11 },
-        hasChecksum: false,
-        isParsable: false,
-        metadata: NgaNationalID.METADATA,
-      };
-
-    case 'MYS':
-    case 'MY':
-      return {
-        countryCode: 'MYS',
-        countryName: 'Malaysia',
-        idType: 'National Registration Identity Card Number',
-        format: 'YYMMDD-PB-###G',
-        length: { min: 12, max: 12 },
-        hasChecksum: false,
-        isParsable: true,
-        metadata: MysNationalID.METADATA,
-      };
-
-    case 'NOR':
-    case 'NO':
-      return {
-        countryCode: 'NOR',
-        countryName: 'Norway',
-        idType: 'National Identity Number',
-        format: 'DDMMYYIIIKK',
-        length: { min: 11, max: 11 },
-        hasChecksum: true,
-        isParsable: true,
-        metadata: NorNationalID.METADATA,
-      };
-
-    case 'PAK':
-    case 'PK':
-      return {
-        countryCode: 'PAK',
-        countryName: 'Pakistan',
-        idType: 'National Identity Card',
-        format: '#####-#######-#',
-        length: { min: 13, max: 13 },
-        hasChecksum: false,
-        isParsable: false,
-        metadata: PakNationalID.METADATA,
-      };
-
-    case 'THA':
-    case 'TH':
-      return {
-        countryCode: 'THA',
-        countryName: 'Thailand',
-        idType: 'National Identity Card Number',
-        format: '#-####-#####-##-#',
-        length: { min: 13, max: 13 },
-        hasChecksum: true,
-        isParsable: false,
-        metadata: ThaNationalID.METADATA,
-      };
-
-    case 'VNM':
-    case 'VN':
-      return {
-        countryCode: 'VNM',
-        countryName: 'Vietnam',
-        idType: 'Citizen Identity Card Number',
-        format: 'Variable (9 or 12 digits)',
-        length: { min: 9, max: 12 },
-        hasChecksum: false,
-        isParsable: true,
-        metadata: VnmNationalID.METADATA,
-      };
-
-    case 'SVN':
-    case 'SI':
-      return {
-        countryCode: 'SVN',
-        countryName: 'Slovenia',
-        idType: 'EMŠO',
-        format: 'DDMMYYYRRSSSC',
-        length: { min: 13, max: 13 },
-        hasChecksum: true,
-        isParsable: true,
-        metadata: SvnNationalID.METADATA,
-      };
-
-    case 'SRB':
-    case 'RS':
-      return {
-        countryCode: 'SRB',
-        countryName: 'Serbia',
-        idType: 'JMBG',
-        format: 'DDMMYYYRRSSSC',
-        length: { min: 13, max: 13 },
-        hasChecksum: true,
-        isParsable: true,
-        metadata: SrbNationalID.METADATA,
-      };
-
-    case 'QA':
-      return {
-        hasChecksum: false,
-        isParsable: false,
-      };
-
-    case 'UY':
-      return {
-        hasChecksum: true,
-        isParsable: false,
-      };
-
-    case 'EC':
-      return {
-        hasChecksum: true,
-        isParsable: true,
-      };
-
-    case 'BO':
-      return {
-        hasChecksum: false,
-        isParsable: false,
-      };
-
-    case 'TWN':
-    case 'TW':
-      return {
-        countryCode: 'TWN',
-        countryName: 'Taiwan',
-        idType: 'National Identification Card',
-        format: 'X#########',
-        length: { min: 10, max: 10 },
-        hasChecksum: true,
-        isParsable: true,
-        metadata: TwnNationalID.METADATA,
-      };
-
-    case 'PY':
-      return {
-        hasChecksum: false,
-        isParsable: false,
-      };
-
-    case 'VEN':
-    case 'VE':
-      return {
-        countryCode: 'VEN',
-        countryName: 'Venezuela',
-        idType: 'Cédula de Identidad',
-        format: 'V-######## or E-########',
-        length: { min: 9, max: 10 },
-        hasChecksum: false,
-        isParsable: true,
-        metadata: VenNationalID.METADATA,
-      };
-
-    case 'CR':
-      return {
-        hasChecksum: false,
-        isParsable: true,
-      };
-
-    case 'PA':
-      return {
-        hasChecksum: false,
-        isParsable: true,
-      };
-
-    case 'DO':
-      return {
-        hasChecksum: true,
-        isParsable: true,
-      };
-
-    case 'GT':
-      return {
-        hasChecksum: false,
-        isParsable: true,
-      };
-
-    case 'HN':
-      return {
-        hasChecksum: false,
-        isParsable: true,
-      };
-
-    case 'SV':
-      return {
-        hasChecksum: true,
-        isParsable: true,
-      };
-
-    case 'NI':
-      return {
-        hasChecksum: false,
-        isParsable: true,
-      };
-
-    case 'JO':
-      return {
-        hasChecksum: false,
-        isParsable: false,
-      };
-
-    case 'LB':
-      return {
-        hasChecksum: false,
-        isParsable: false,
-      };
-
-    case 'OM':
-      return {
-        hasChecksum: false,
-        isParsable: true,
-      };
-
-    default:
-      return null;
+export function getCountryIdFormat(countryCode: string): IdFormat | null {
+  const format = registry.getFormat(countryCode);
+  if (!format) {
+    return null;
   }
+
+  // Enrich with human-readable countryName and idType from SUPPORTED_COUNTRIES
+  const info = countryInfoMap.get(format.countryCode);
+  if (info) {
+    format.countryName = info.countryName;
+    format.idType = info.idType;
+  }
+
+  // Overlay format display string where available
+  const formatStr = FORMAT_STRINGS[format.countryCode];
+  if (formatStr) {
+    format.format = formatStr;
+  }
+
+  return format;
 }
