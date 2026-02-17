@@ -1,3 +1,6 @@
+// Side-effect import: populates the registry with all country validators
+import './registry/registerAll';
+
 // Export types and constants
 export * from './constants';
 export * from './types';
@@ -85,8 +88,12 @@ export * as NPL from './countries/npl';
 export * as PNG from './countries/png';
 export * as SMR from './countries/smr';
 
+// Export registry
+export * from './registry';
+
 // Export validation functions
 import { ValidationResult, CountryInfo } from './types';
+import { registry } from './registry/ValidatorRegistry';
 import { SocialSecurityNumber } from './countries/usa';
 import { MedicareNumber } from './countries/aus';
 import { NationalID } from './countries/zaf';
@@ -266,88 +273,88 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: SocialSecurityNumber.validate(idNumber),
           countryCode: 'USA',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
-      
+
       case 'AUS':
         return {
           isValid: MedicareNumber.validate(idNumber),
           countryCode: 'AUS',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
-      
+
       case 'ZAF':
         const parseResult = NationalID.parse(idNumber);
         return {
           isValid: parseResult !== null,
           countryCode: 'ZAF',
           idNumber,
-          extractedInfo: parseResult
+          extractedInfo: parseResult,
         };
-      
+
       case 'GBR':
       case 'UK':
         return {
           isValid: NationalInsuranceNumber.validate(idNumber),
           countryCode: 'GBR',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
-      
+
       case 'CAN':
         return {
           isValid: SocialInsuranceNumber.validate(idNumber),
           countryCode: 'CAN',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
-      
+
       case 'DEU':
       case 'DE':
         return {
           isValid: TaxIdentificationNumber.validate(idNumber),
           countryCode: 'DEU',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
-      
+
       case 'FRA':
       case 'FR':
         return {
           isValid: FraSocialSecurityNumber.validate(idNumber),
           countryCode: 'FRA',
           idNumber,
-          extractedInfo: FraSocialSecurityNumber.parse(idNumber)
+          extractedInfo: FraSocialSecurityNumber.parse(idNumber),
         };
-      
+
       case 'NLD':
       case 'NL':
         return {
           isValid: BurgerServiceNumber.validate(idNumber),
           countryCode: 'NLD',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
-      
+
       case 'ALB':
         const albParseResult = IdentityNumber.parse(idNumber);
         return {
           isValid: albParseResult !== null,
           countryCode: 'ALB',
           idNumber,
-          extractedInfo: albParseResult
+          extractedInfo: albParseResult,
         };
-      
+
       case 'AUT':
       case 'AT':
         return {
           isValid: AutTaxIdentificationNumber.validate(idNumber),
           countryCode: 'AUT',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
-      
+
       case 'BEL':
       case 'BE':
         const belParseResult = NationalRegistrationNumber.parse(idNumber);
@@ -355,27 +362,27 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: belParseResult !== null,
           countryCode: 'BEL',
           idNumber,
-          extractedInfo: belParseResult
+          extractedInfo: belParseResult,
         };
-      
+
       case 'ITA':
       case 'IT':
         return {
           isValid: FiscalCode.validate(idNumber),
           countryCode: 'ITA',
           idNumber,
-          extractedInfo: FiscalCode.parse(idNumber)
+          extractedInfo: FiscalCode.parse(idNumber),
         };
-      
+
       case 'ESP':
       case 'ES':
         return {
           isValid: DNI.validate(idNumber),
           countryCode: 'ESP',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
-      
+
       case 'DNK':
       case 'DK':
         const dnkParseResult = PersonalIdentityNumber.parse(idNumber);
@@ -383,9 +390,9 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: dnkParseResult !== null,
           countryCode: 'DNK',
           idNumber,
-          extractedInfo: dnkParseResult
+          extractedInfo: dnkParseResult,
         };
-      
+
       case 'POL':
       case 'PL':
         const polParseResult = PESEL.parse(idNumber);
@@ -393,9 +400,9 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: polParseResult !== null,
           countryCode: 'POL',
           idNumber,
-          extractedInfo: polParseResult
+          extractedInfo: polParseResult,
         };
-      
+
       case 'CZE':
       case 'CZ':
         const czeIsValid = BirthNumber.validate(idNumber);
@@ -404,7 +411,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: czeIsValid,
           countryCode: 'CZE',
           idNumber,
-          extractedInfo: czeParseResult
+          extractedInfo: czeParseResult,
         };
 
       case 'MKD':
@@ -415,7 +422,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: mkdIsValid,
           countryCode: 'MKD',
           idNumber,
-          extractedInfo: mkdParseResult
+          extractedInfo: mkdParseResult,
         };
 
       case 'MNE':
@@ -426,7 +433,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: mneIsValid,
           countryCode: 'MNE',
           idNumber,
-          extractedInfo: mneParseResult
+          extractedInfo: mneParseResult,
         };
 
       case 'ZWE':
@@ -437,7 +444,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: zweIsValid,
           countryCode: 'ZWE',
           idNumber,
-          extractedInfo: zweParseResult
+          extractedInfo: zweParseResult,
         };
 
       case 'IRN':
@@ -447,7 +454,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: irnIsValid,
           countryCode: 'IRN',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
 
       case 'IRQ':
@@ -457,7 +464,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: irqIsValid,
           countryCode: 'IRQ',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
 
       case 'ISR':
@@ -467,7 +474,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: isrIsValid,
           countryCode: 'ISR',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
 
       case 'MAC':
@@ -478,7 +485,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: macIsValid,
           countryCode: 'MAC',
           idNumber,
-          extractedInfo: macParseResult
+          extractedInfo: macParseResult,
         };
 
       case 'MDA':
@@ -488,7 +495,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: mdaIsValid,
           countryCode: 'MDA',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
 
       case 'NPL':
@@ -498,7 +505,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: nplIsValid,
           countryCode: 'NPL',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
 
       case 'PNG':
@@ -508,7 +515,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: pngIsValid,
           countryCode: 'PNG',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
 
       case 'SMR':
@@ -519,7 +526,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: smrSSIValid || smrCOEValid,
           countryCode: 'SMR',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
 
       case 'ARE':
@@ -529,18 +536,18 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: areParseResult !== null,
           countryCode: 'ARE',
           idNumber,
-          extractedInfo: areParseResult
+          extractedInfo: areParseResult,
         };
-      
+
       case 'ARG':
         const argParseResult = ArgNationalID.parse(idNumber);
         return {
           isValid: argParseResult !== null,
           countryCode: 'ARG',
           idNumber,
-          extractedInfo: argParseResult
+          extractedInfo: argParseResult,
         };
-      
+
       case 'BGR':
       case 'BG':
         const bgrParseResult = UniformCivilNumber.parse(idNumber);
@@ -548,9 +555,9 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: bgrParseResult !== null,
           countryCode: 'BGR',
           idNumber,
-          extractedInfo: bgrParseResult
+          extractedInfo: bgrParseResult,
         };
-      
+
       case 'BRA':
       case 'BR':
         const braParseResult = CPFNumber.parse(idNumber);
@@ -558,9 +565,9 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: braParseResult !== null,
           countryCode: 'BRA',
           idNumber,
-          extractedInfo: braParseResult
+          extractedInfo: braParseResult,
         };
-      
+
       case 'CHE':
       case 'CH':
         const cheParseResult = CheSocialSecurityNumber.parse(idNumber);
@@ -568,18 +575,18 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: cheParseResult !== null,
           countryCode: 'CHE',
           idNumber,
-          extractedInfo: cheParseResult
+          extractedInfo: cheParseResult,
         };
-      
+
       case 'CHL':
         const chlParseResult = ChlNationalID.parse(idNumber);
         return {
           isValid: chlParseResult !== null,
           countryCode: 'CHL',
           idNumber,
-          extractedInfo: chlParseResult
+          extractedInfo: chlParseResult,
         };
-      
+
       case 'CHN':
       case 'CN':
         const chnParseResult = ResidentID.parse(idNumber);
@@ -587,9 +594,9 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: chnParseResult !== null,
           countryCode: 'CHN',
           idNumber,
-          extractedInfo: chnParseResult
+          extractedInfo: chnParseResult,
         };
-      
+
       case 'COL':
       case 'CO':
         const colParseResult = UniquePersonalID.parse(idNumber);
@@ -597,9 +604,9 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: colParseResult !== null,
           countryCode: 'COL',
           idNumber,
-          extractedInfo: colParseResult
+          extractedInfo: colParseResult,
         };
-      
+
       case 'EST':
       case 'EE':
         const estParseResult = EstPersonalID.parse(idNumber);
@@ -607,7 +614,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: estParseResult !== null,
           countryCode: 'EST',
           idNumber,
-          extractedInfo: estParseResult
+          extractedInfo: estParseResult,
         };
 
       case 'FIN':
@@ -617,7 +624,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: finParseResult !== null,
           countryCode: 'FIN',
           idNumber,
-          extractedInfo: finParseResult
+          extractedInfo: finParseResult,
         };
 
       case 'ISL':
@@ -627,7 +634,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: islParseResult !== null,
           countryCode: 'ISL',
           idNumber,
-          extractedInfo: islParseResult
+          extractedInfo: islParseResult,
         };
 
       case 'LTU':
@@ -637,7 +644,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: ltuParseResult !== null,
           countryCode: 'LTU',
           idNumber,
-          extractedInfo: ltuParseResult
+          extractedInfo: ltuParseResult,
         };
 
       case 'LUX':
@@ -647,7 +654,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: luxParseResult !== null,
           countryCode: 'LUX',
           idNumber,
-          extractedInfo: luxParseResult
+          extractedInfo: luxParseResult,
         };
 
       case 'SVK':
@@ -657,7 +664,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: svkParseResult !== null,
           countryCode: 'SVK',
           idNumber,
-          extractedInfo: svkParseResult
+          extractedInfo: svkParseResult,
         };
 
       case 'GRC':
@@ -667,18 +674,18 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: grcParseResult !== null,
           countryCode: 'GRC',
           idNumber,
-          extractedInfo: grcParseResult
+          extractedInfo: grcParseResult,
         };
-      
+
       case 'HUN':
       case 'HU':
         return {
           isValid: HunPersonalID.validate(idNumber),
           countryCode: 'HUN',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
-      
+
       case 'IRL':
       case 'IE':
         const irlParseResult = PersonalPublicServiceNumber.parse(idNumber);
@@ -686,7 +693,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: irlParseResult !== null,
           countryCode: 'IRL',
           idNumber,
-          extractedInfo: irlParseResult
+          extractedInfo: irlParseResult,
         };
 
       case 'JPN':
@@ -695,7 +702,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: JpnMyNumber.validate(idNumber),
           countryCode: 'JPN',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
 
       case 'LVA':
@@ -705,9 +712,9 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: lvaParseResult !== null,
           countryCode: 'LVA',
           idNumber,
-          extractedInfo: lvaParseResult
+          extractedInfo: lvaParseResult,
         };
-      
+
       case 'BGD':
       case 'BD':
         // Try both old (13-digit) and new (17-digit) formats
@@ -717,9 +724,9 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: isOldValid || isNewValid,
           countryCode: 'BGD',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
-      
+
       case 'BHR':
       case 'BH':
         const bhrParseResult = BhrNationalID.parse(idNumber);
@@ -727,9 +734,9 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: bhrParseResult !== null,
           countryCode: 'BHR',
           idNumber,
-          extractedInfo: bhrParseResult
+          extractedInfo: bhrParseResult,
         };
-      
+
       case 'BIH':
       case 'BA':
         const bihParseResult = BihNationalID.parse(idNumber);
@@ -737,52 +744,52 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: bihParseResult !== null,
           countryCode: 'BIH',
           idNumber,
-          extractedInfo: bihParseResult
+          extractedInfo: bihParseResult,
         };
-      
+
       case 'CYP':
       case 'CY':
         return {
           isValid: CypNationalID.validate(idNumber),
           countryCode: 'CYP',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
-      
+
       case 'GEO':
       case 'GE':
         return {
           isValid: GeoNationalID.validate(idNumber),
           countryCode: 'GEO',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
-      
+
       case 'HKG':
       case 'HK':
         return {
           isValid: HkgNationalID.validate(idNumber),
           countryCode: 'HKG',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
-      
+
       case 'HRV':
       case 'HR':
         return {
           isValid: HrvNationalID.validate(idNumber),
           countryCode: 'HRV',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
-      
+
       case 'IND':
       case 'IN':
         return {
           isValid: IndNationalID.validate(idNumber),
           countryCode: 'IND',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
 
       case 'KAZ':
@@ -792,9 +799,9 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: kazParseResult !== null,
           countryCode: 'KAZ',
           idNumber,
-          extractedInfo: kazParseResult
+          extractedInfo: kazParseResult,
         };
-      
+
       case 'KWT':
       case 'KW':
         const kwtParseResult = CivilNumber.parse(idNumber);
@@ -802,9 +809,9 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: kwtParseResult !== null,
           countryCode: 'KWT',
           idNumber,
-          extractedInfo: kwtParseResult
+          extractedInfo: kwtParseResult,
         };
-      
+
       case 'IDN':
       case 'ID':
         const idnParseResult = IdnNationalID.parse(idNumber);
@@ -812,9 +819,9 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: idnParseResult !== null,
           countryCode: 'IDN',
           idNumber,
-          extractedInfo: idnParseResult
+          extractedInfo: idnParseResult,
         };
-      
+
       case 'KOR':
       case 'KR':
         const korParseResult = ResidentRegistration.parse(idNumber);
@@ -822,9 +829,9 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: korParseResult !== null,
           countryCode: 'KOR',
           idNumber,
-          extractedInfo: korParseResult
+          extractedInfo: korParseResult,
         };
-      
+
       case 'MEX':
       case 'MX':
         const mexParseResult = CURP.parse(idNumber);
@@ -832,18 +839,18 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: mexParseResult !== null,
           countryCode: 'MEX',
           idNumber,
-          extractedInfo: mexParseResult
+          extractedInfo: mexParseResult,
         };
-      
+
       case 'LKA':
       case 'LK':
         return {
           isValid: LkaNationalID.validate(idNumber),
           countryCode: 'LKA',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
-      
+
       case 'NGA':
       case 'NG':
         const ngaParseResult = NgaNationalID.parse(idNumber);
@@ -851,9 +858,9 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: ngaParseResult !== null,
           countryCode: 'NGA',
           idNumber,
-          extractedInfo: ngaParseResult
+          extractedInfo: ngaParseResult,
         };
-      
+
       case 'MYS':
       case 'MY':
         const mysParseResult = MysNationalID.parse(idNumber);
@@ -861,9 +868,9 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: mysParseResult !== null,
           countryCode: 'MYS',
           idNumber,
-          extractedInfo: mysParseResult
+          extractedInfo: mysParseResult,
         };
-      
+
       case 'NOR':
       case 'NO':
         const norIsValid = NorNationalID.validate(idNumber);
@@ -872,9 +879,9 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: norIsValid,
           countryCode: 'NOR',
           idNumber,
-          extractedInfo: norParseResult
+          extractedInfo: norParseResult,
         };
-      
+
       case 'PAK':
       case 'PK':
         const pakParseResult = PakNationalID.parse(idNumber);
@@ -882,9 +889,9 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: pakParseResult !== null,
           countryCode: 'PAK',
           idNumber,
-          extractedInfo: pakParseResult
+          extractedInfo: pakParseResult,
         };
-      
+
       case 'THA':
       case 'TH':
         const thaParseResult = ThaNationalID.parse(idNumber);
@@ -892,9 +899,9 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: thaParseResult !== null,
           countryCode: 'THA',
           idNumber,
-          extractedInfo: thaParseResult
+          extractedInfo: thaParseResult,
         };
-      
+
       case 'VNM':
       case 'VN':
         const vnmParseResult = VnmNationalID.parse(idNumber);
@@ -902,25 +909,25 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: vnmParseResult !== null,
           countryCode: 'VNM',
           idNumber,
-          extractedInfo: vnmParseResult
+          extractedInfo: vnmParseResult,
         };
-      
+
       case 'NZL':
       case 'NZ':
         return {
           isValid: NzlDriverLicense.validate(idNumber),
           countryCode: 'NZL',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
-      
+
       case 'PHL':
       case 'PH':
         return {
           isValid: PhlNationalID.validate(idNumber),
           countryCode: 'PHL',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
 
       case 'PRT':
@@ -929,9 +936,9 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: PrtNationalID.validate(idNumber),
           countryCode: 'PRT',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
-      
+
       case 'ROU':
       case 'RO':
         const rouParseResult = RouNationalID.parse(idNumber);
@@ -939,9 +946,9 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: rouParseResult !== null,
           countryCode: 'ROU',
           idNumber,
-          extractedInfo: rouParseResult
+          extractedInfo: rouParseResult,
         };
-      
+
       case 'RUS':
       case 'RU':
         const rusParseResult = RusNationalID.parse(idNumber);
@@ -949,18 +956,18 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: rusParseResult !== null,
           countryCode: 'RUS',
           idNumber,
-          extractedInfo: rusParseResult
+          extractedInfo: rusParseResult,
         };
-      
+
       case 'SAU':
       case 'SA':
         return {
           isValid: SauNationalID.validate(idNumber),
           countryCode: 'SAU',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
-      
+
       case 'SGP':
       case 'SG':
         const sgpParseResult = SgpNationalID.parse(idNumber);
@@ -968,9 +975,9 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: sgpParseResult !== null,
           countryCode: 'SGP',
           idNumber,
-          extractedInfo: sgpParseResult
+          extractedInfo: sgpParseResult,
         };
-      
+
       case 'SWE':
       case 'SE':
         const sweParseResult = SweNationalID.parse(idNumber);
@@ -978,7 +985,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: sweParseResult !== null,
           countryCode: 'SWE',
           idNumber,
-          extractedInfo: sweParseResult
+          extractedInfo: sweParseResult,
         };
 
       case 'TUR':
@@ -987,7 +994,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: TurNationalID.validate(idNumber),
           countryCode: 'TUR',
           idNumber,
-          extractedInfo: null
+          extractedInfo: null,
         };
 
       case 'UKR':
@@ -997,9 +1004,9 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: ukrParseResult !== null,
           countryCode: 'UKR',
           idNumber,
-          extractedInfo: ukrParseResult
+          extractedInfo: ukrParseResult,
         };
-      
+
       case 'SVN':
       case 'SI':
         const svnParseResult = SvnNationalID.parse(idNumber);
@@ -1007,9 +1014,9 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: svnParseResult !== null,
           countryCode: 'SVN',
           idNumber,
-          extractedInfo: svnParseResult
+          extractedInfo: svnParseResult,
         };
-      
+
       case 'SRB':
       case 'RS':
         const srbParseResult = SrbNationalID.parse(idNumber);
@@ -1017,7 +1024,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: srbParseResult !== null,
           countryCode: 'SRB',
           idNumber,
-          extractedInfo: srbParseResult
+          extractedInfo: srbParseResult,
         };
 
       case 'TWN':
@@ -1027,7 +1034,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: twnParseResult !== null,
           countryCode: 'TWN',
           idNumber,
-          extractedInfo: twnParseResult
+          extractedInfo: twnParseResult,
         };
 
       case 'VEN':
@@ -1037,16 +1044,15 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
           isValid: venParseResult !== null,
           countryCode: 'VEN',
           idNumber,
-          extractedInfo: venParseResult
+          extractedInfo: venParseResult,
         };
-
 
       default:
         return {
           isValid: false,
           countryCode,
           idNumber,
-          errorMessage: `Unsupported country code: ${countryCode}`
+          errorMessage: `Unsupported country code: ${countryCode}`,
         };
     }
   } catch (error) {
@@ -1054,260 +1060,25 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
       isValid: false,
       countryCode,
       idNumber,
-      errorMessage: error instanceof Error ? error.message : 'Unknown error occurred'
+      errorMessage: error instanceof Error ? error.message : 'Unknown error occurred',
     };
   }
 }
 
 /**
- * Parse information from a valid national ID number
+ * Parse information from a valid national ID number.
+ *
+ * Uses the registry to look up the country validator and delegates to its
+ * parse() method. Returns null when the country is unknown or the validator
+ * has no parse method.
  */
 export function parseIdInfo(countryCode: string, idNumber: string): any | null {
   try {
-    switch (countryCode.toUpperCase()) {
-      case 'ZAF':
-        return NationalID.parse(idNumber);
-      
-      case 'FRA':
-      case 'FR':
-        return FraSocialSecurityNumber.parse(idNumber);
-      
-      case 'ALB':
-        return IdentityNumber.parse(idNumber);
-      
-      case 'BEL':
-      case 'BE':
-        return NationalRegistrationNumber.parse(idNumber);
-      
-      case 'ITA':
-      case 'IT':
-        return FiscalCode.parse(idNumber);
-      
-      case 'DNK':
-      case 'DK':
-        return PersonalIdentityNumber.parse(idNumber);
-      
-      case 'POL':
-      case 'PL':
-        return PESEL.parse(idNumber);
-      
-      case 'CZE':
-      case 'CZ':
-        return BirthNumber.parse(idNumber);
-
-      case 'SVK':
-      case 'SK':
-        return SvkNationalID.parse(idNumber);
-
-      case 'MKD':
-      case 'MK':
-        return MkdJMBG.parse(idNumber);
-
-      case 'MNE':
-      case 'ME':
-        return MneJMBG.parse(idNumber);
-
-      case 'ZWE':
-      case 'ZW':
-        return ZweNationalID.parse(idNumber);
-
-      case 'IRN':
-      case 'IR':
-        return null; // IRN has no parse
-
-      case 'IRQ':
-      case 'IQ':
-        return null; // IRQ has no parse
-
-      case 'ISR':
-      case 'IL':
-        return null; // ISR has no parse
-
-      case 'MAC':
-      case 'MO':
-        return MacNationalID.parse(idNumber);
-
-      case 'MDA':
-      case 'MD':
-        return null; // MDA has no parse
-
-      case 'NPL':
-      case 'NP':
-        return null; // NPL has no parse
-
-      case 'PNG':
-      case 'PG':
-        return null; // PNG has no parse
-
-      case 'SMR':
-      case 'SM':
-        return null; // SMR has no parse
-
-      case 'FIN':
-      case 'FI':
-        return PersonalIdentityCode.parse(idNumber);
-      
-      case 'ARE':
-      case 'AE':
-        return EmiratesID.parse(idNumber);
-      
-      case 'BGR':
-      case 'BG':
-        return UniformCivilNumber.parse(idNumber);
-      
-      case 'CHN':
-      case 'CN':
-        return ResidentID.parse(idNumber);
-      
-      case 'EST':
-      case 'EE':
-        return EstPersonalID.parse(idNumber);
-      
-      case 'HUN':
-      case 'HU':
-        return HunPersonalID.parse(idNumber);
-
-      case 'ISL':
-      case 'IS':
-        return IcelandicID.parse(idNumber);
-
-      case 'LTU':
-      case 'LT':
-        return LtuPersonalCode.parse(idNumber);
-
-      case 'LUX':
-      case 'LU':
-        return LuxNationalID.parse(idNumber);
-
-      case 'BGD':
-      case 'BD':
-        return BgdNationalID.parse(idNumber);
-
-      case 'BHR':
-      case 'BH':
-        return BhrNationalID.parse(idNumber);
-
-      case 'BIH':
-      case 'BA':
-        return BihNationalID.parse(idNumber);
-      
-      case 'KAZ':
-      case 'KZ':
-        return IndividualIDNumber.parse(idNumber);
-      
-      case 'KWT':
-      case 'KW':
-        return CivilNumber.parse(idNumber);
-
-      case 'ROU':
-      case 'RO':
-        return RouNationalID.parse(idNumber);
-      
-      case 'RUS':
-      case 'RU':
-        return RusNationalID.parse(idNumber);
-      
-      case 'SGP':
-      case 'SG':
-        return SgpNationalID.parse(idNumber);
-      
-      case 'SWE':
-      case 'SE':
-        return SweNationalID.parse(idNumber);
-      
-      case 'UKR':
-      case 'UA':
-        return UkrNationalID.parse(idNumber);
-      
-      case 'SVN':
-      case 'SI':
-        return SvnNationalID.parse(idNumber);
-      
-      case 'SRB':
-      case 'RS':
-        return SrbNationalID.parse(idNumber);
-
-      case 'TWN':
-      case 'TW':
-        return TwnNationalID.parse(idNumber);
-      
-      case 'VEN':
-      case 'VE':
-        return VenNationalID.parse(idNumber);
-
-      case 'IDN':
-      case 'ID':
-        return IdnNationalID.parse(idNumber);
-      
-      case 'KOR':
-      case 'KR':
-        return ResidentRegistration.parse(idNumber);
-      
-      case 'MEX':
-      case 'MX':
-        return CURP.parse(idNumber);
-      
-      case 'LKA':
-      case 'LK':
-        return LkaNationalID.parse(idNumber);
-      
-      case 'NGA':
-      case 'NG':
-        return NgaNationalID.parse(idNumber);
-      
-      case 'MYS':
-      case 'MY':
-        return MysNationalID.parse(idNumber);
-      
-      case 'NOR':
-      case 'NO':
-        return NorNationalID.parse(idNumber);
-      
-      case 'PAK':
-      case 'PK':
-        return PakNationalID.parse(idNumber);
-      
-      case 'THA':
-      case 'TH':
-        return ThaNationalID.parse(idNumber);
-      
-      case 'VNM':
-      case 'VN':
-        return VnmNationalID.parse(idNumber);
-      
-      case 'ARG':
-        return ArgNationalID.parse(idNumber);
-      
-      case 'BRA':
-      case 'BR':
-        return CPFNumber.parse(idNumber);
-      
-      case 'CHE':
-      case 'CH':
-        return CheSocialSecurityNumber.parse(idNumber);
-      
-      case 'CHL':
-        return ChlNationalID.parse(idNumber);
-      
-      case 'COL':
-      case 'CO':
-        return UniquePersonalID.parse(idNumber);
-      
-      case 'GRC':
-      case 'GR':
-        return TaxIdentityNumber.parse(idNumber);
-      
-      case 'IRL':
-      case 'IE':
-        return PersonalPublicServiceNumber.parse(idNumber);
-      
-      case 'LVA':
-      case 'LV':
-        return PersonalCode.parse(idNumber);
-
-      default:
-        return null;
+    const validator = registry.get(countryCode);
+    if (!validator?.parse) {
+      return null;
     }
+    return validator.parse(idNumber);
   } catch {
     return null;
   }
@@ -1316,7 +1087,9 @@ export function parseIdInfo(countryCode: string, idNumber: string): any | null {
 /**
  * Validate multiple national ID numbers at once
  */
-export function validateMultipleIds(idData: Array<{ countryCode: string; idNumber: string }>): ValidationResult[] {
+export function validateMultipleIds(
+  idData: Array<{ countryCode: string; idNumber: string }>
+): ValidationResult[] {
   return idData.map(({ countryCode, idNumber }) => validateNationalId(countryCode, idNumber));
 }
 
@@ -1342,7 +1115,7 @@ export function getCountryIdFormat(countryCode: string): any | null {
         length: { min: 12, max: 12 },
         hasChecksum: true,
         isParsable: false,
-        metadata: IndNationalID.METADATA
+        metadata: IndNationalID.METADATA,
       };
 
     case 'IR':
@@ -1367,9 +1140,9 @@ export function getCountryIdFormat(countryCode: string): any | null {
         length: { min: 12, max: 12 },
         hasChecksum: true,
         isParsable: false,
-        metadata: MyNumber.METADATA
+        metadata: MyNumber.METADATA,
       };
-    
+
     case 'KAZ':
     case 'KZ':
       return {
@@ -1380,9 +1153,9 @@ export function getCountryIdFormat(countryCode: string): any | null {
         length: { min: 12, max: 12 },
         hasChecksum: true,
         isParsable: true,
-        metadata: IndividualIDNumber.METADATA
+        metadata: IndividualIDNumber.METADATA,
       };
-    
+
     case 'KWT':
     case 'KW':
       return {
@@ -1393,9 +1166,9 @@ export function getCountryIdFormat(countryCode: string): any | null {
         length: { min: 12, max: 12 },
         hasChecksum: true,
         isParsable: true,
-        metadata: CivilNumber.METADATA
+        metadata: CivilNumber.METADATA,
       };
-    
+
     case 'IDN':
     case 'ID':
       return {
@@ -1406,9 +1179,9 @@ export function getCountryIdFormat(countryCode: string): any | null {
         length: { min: 16, max: 16 },
         hasChecksum: false,
         isParsable: true,
-        metadata: IdnNationalID.METADATA
+        metadata: IdnNationalID.METADATA,
       };
-    
+
     case 'KOR':
     case 'KR':
       return {
@@ -1419,9 +1192,9 @@ export function getCountryIdFormat(countryCode: string): any | null {
         length: { min: 13, max: 13 },
         hasChecksum: false,
         isParsable: true,
-        metadata: ResidentRegistration.METADATA
+        metadata: ResidentRegistration.METADATA,
       };
-    
+
     case 'MEX':
     case 'MX':
       return {
@@ -1432,9 +1205,9 @@ export function getCountryIdFormat(countryCode: string): any | null {
         length: { min: 18, max: 18 },
         hasChecksum: true,
         isParsable: true,
-        metadata: CURP.METADATA
+        metadata: CURP.METADATA,
       };
-    
+
     case 'LKA':
     case 'LK':
       return {
@@ -1445,9 +1218,9 @@ export function getCountryIdFormat(countryCode: string): any | null {
         length: { min: 12, max: 12 },
         hasChecksum: true,
         isParsable: true,
-        metadata: LkaNationalID.METADATA
+        metadata: LkaNationalID.METADATA,
       };
-    
+
     case 'NGA':
     case 'NG':
       return {
@@ -1458,9 +1231,9 @@ export function getCountryIdFormat(countryCode: string): any | null {
         length: { min: 11, max: 11 },
         hasChecksum: false,
         isParsable: false,
-        metadata: NgaNationalID.METADATA
+        metadata: NgaNationalID.METADATA,
       };
-    
+
     case 'MYS':
     case 'MY':
       return {
@@ -1471,9 +1244,9 @@ export function getCountryIdFormat(countryCode: string): any | null {
         length: { min: 12, max: 12 },
         hasChecksum: false,
         isParsable: true,
-        metadata: MysNationalID.METADATA
+        metadata: MysNationalID.METADATA,
       };
-    
+
     case 'NOR':
     case 'NO':
       return {
@@ -1484,9 +1257,9 @@ export function getCountryIdFormat(countryCode: string): any | null {
         length: { min: 11, max: 11 },
         hasChecksum: true,
         isParsable: true,
-        metadata: NorNationalID.METADATA
+        metadata: NorNationalID.METADATA,
       };
-    
+
     case 'PAK':
     case 'PK':
       return {
@@ -1497,9 +1270,9 @@ export function getCountryIdFormat(countryCode: string): any | null {
         length: { min: 13, max: 13 },
         hasChecksum: false,
         isParsable: false,
-        metadata: PakNationalID.METADATA
+        metadata: PakNationalID.METADATA,
       };
-    
+
     case 'THA':
     case 'TH':
       return {
@@ -1510,9 +1283,9 @@ export function getCountryIdFormat(countryCode: string): any | null {
         length: { min: 13, max: 13 },
         hasChecksum: true,
         isParsable: false,
-        metadata: ThaNationalID.METADATA
+        metadata: ThaNationalID.METADATA,
       };
-    
+
     case 'VNM':
     case 'VN':
       return {
@@ -1523,9 +1296,9 @@ export function getCountryIdFormat(countryCode: string): any | null {
         length: { min: 9, max: 12 },
         hasChecksum: false,
         isParsable: true,
-        metadata: VnmNationalID.METADATA
+        metadata: VnmNationalID.METADATA,
       };
-    
+
     case 'SVN':
     case 'SI':
       return {
@@ -1536,9 +1309,9 @@ export function getCountryIdFormat(countryCode: string): any | null {
         length: { min: 13, max: 13 },
         hasChecksum: true,
         isParsable: true,
-        metadata: SvnNationalID.METADATA
+        metadata: SvnNationalID.METADATA,
       };
-    
+
     case 'SRB':
     case 'RS':
       return {
@@ -1549,33 +1322,33 @@ export function getCountryIdFormat(countryCode: string): any | null {
         length: { min: 13, max: 13 },
         hasChecksum: true,
         isParsable: true,
-        metadata: SrbNationalID.METADATA
+        metadata: SrbNationalID.METADATA,
       };
-    
+
     case 'QA':
       return {
         hasChecksum: false,
         isParsable: false,
       };
-    
+
     case 'UY':
       return {
         hasChecksum: true,
         isParsable: false,
       };
-    
+
     case 'EC':
       return {
         hasChecksum: true,
         isParsable: true,
       };
-    
+
     case 'BO':
       return {
         hasChecksum: false,
         isParsable: false,
       };
-    
+
     case 'TWN':
     case 'TW':
       return {
@@ -1586,15 +1359,15 @@ export function getCountryIdFormat(countryCode: string): any | null {
         length: { min: 10, max: 10 },
         hasChecksum: true,
         isParsable: true,
-        metadata: TwnNationalID.METADATA
+        metadata: TwnNationalID.METADATA,
       };
-    
+
     case 'PY':
       return {
         hasChecksum: false,
         isParsable: false,
       };
-    
+
     case 'VEN':
     case 'VE':
       return {
@@ -1605,63 +1378,63 @@ export function getCountryIdFormat(countryCode: string): any | null {
         length: { min: 9, max: 10 },
         hasChecksum: false,
         isParsable: true,
-        metadata: VenNationalID.METADATA
+        metadata: VenNationalID.METADATA,
       };
-    
+
     case 'CR':
       return {
         hasChecksum: false,
         isParsable: true,
       };
-    
+
     case 'PA':
       return {
         hasChecksum: false,
         isParsable: true,
       };
-    
+
     case 'DO':
       return {
         hasChecksum: true,
         isParsable: true,
       };
-    
+
     case 'GT':
       return {
         hasChecksum: false,
         isParsable: true,
       };
-    
+
     case 'HN':
       return {
         hasChecksum: false,
         isParsable: true,
       };
-    
+
     case 'SV':
       return {
         hasChecksum: true,
         isParsable: true,
       };
-    
+
     case 'NI':
       return {
         hasChecksum: false,
         isParsable: true,
       };
-    
+
     case 'JO':
       return {
         hasChecksum: false,
         isParsable: false,
       };
-    
+
     case 'LB':
       return {
         hasChecksum: false,
         isParsable: false,
       };
-    
+
     case 'OM':
       return {
         hasChecksum: false,
