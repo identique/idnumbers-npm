@@ -21,9 +21,9 @@ export class NationalID implements IdNumberClass {
     names: ['TC Kimlik No', 'Turkish Identification Number', 'T.C. Kimlik Numarası'],
     links: [
       'https://en.wikipedia.org/wiki/National_identification_number#Turkey',
-      'https://www.nvi.gov.tr/'
+      'https://www.nvi.gov.tr/',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   get METADATA(): IdMetadata {
@@ -37,21 +37,21 @@ export class NationalID implements IdNumberClass {
     if (typeof idNumber !== 'string') {
       return false;
     }
-    
+
     // Remove any spaces or hyphens
     const cleanId = idNumber.replace(/[\s-]/g, '');
-    
+
     // Must match the regex pattern
     if (!NationalID.METADATA.regexp.test(cleanId)) {
       return false;
     }
-    
+
     const digits = cleanId.split('').map(Number);
-    
+
     // Calculate 10th digit
     let oddSum = 0;
     let evenSum = 0;
-    
+
     for (let i = 0; i < 9; i++) {
       if (i % 2 === 0) {
         oddSum += digits[i];
@@ -59,24 +59,21 @@ export class NationalID implements IdNumberClass {
         evenSum += digits[i];
       }
     }
-    
-    const tenthDigit = ((oddSum * 7) - evenSum) % 10;
-    if (tenthDigit < 0) {
-      return false;
-    }
-    
+
+    const tenthDigit = (((oddSum * 7 - evenSum) % 10) + 10) % 10;
+
     if (tenthDigit !== digits[9]) {
       return false;
     }
-    
+
     // Calculate 11th digit
     let totalSum = 0;
     for (let i = 0; i < 10; i++) {
       totalSum += digits[i];
     }
-    
+
     const eleventhDigit = totalSum % 10;
-    
+
     return eleventhDigit === digits[10];
   }
 
@@ -90,17 +87,17 @@ export class NationalID implements IdNumberClass {
   static checksum(idNumber: string): CheckDigit {
     // Remove any spaces or hyphens
     const cleanId = idNumber.replace(/[\s-]/g, '');
-    
+
     if (cleanId.length < 10) {
       return null;
     }
-    
+
     const digits = cleanId.split('').map(Number);
-    
+
     // First validate the 10th digit
     let oddSum = 0;
     let evenSum = 0;
-    
+
     for (let i = 0; i < 9; i++) {
       if (i % 2 === 0) {
         oddSum += digits[i];
@@ -108,20 +105,20 @@ export class NationalID implements IdNumberClass {
         evenSum += digits[i];
       }
     }
-    
-    const tenthDigit = ((oddSum * 7) - evenSum) % 10;
-    if (tenthDigit < 0 || (cleanId.length >= 10 && tenthDigit !== digits[9])) {
+
+    const tenthDigit = (((oddSum * 7 - evenSum) % 10) + 10) % 10;
+    if (cleanId.length >= 10 && tenthDigit !== digits[9]) {
       return null;
     }
-    
+
     // Calculate 11th digit
     let totalSum = 0;
     for (let i = 0; i < 10; i++) {
       totalSum += digits[i];
     }
-    
+
     const eleventhDigit = totalSum % 10;
-    
+
     return eleventhDigit as CheckDigit;
   }
 
