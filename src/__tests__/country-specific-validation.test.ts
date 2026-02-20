@@ -424,6 +424,7 @@ describe('Python idnumbers test cases validation', () => {
       'T1234567J',
       'F1234567N',
       'G1234567X',
+      'M1234567N',
       'S8076606H',
       'S1728872E',
       'G4549883U',
@@ -431,7 +432,7 @@ describe('Python idnumbers test cases validation', () => {
       'S2111122H',
     ];
 
-    const invalidSingaporeanIDs = ['S1179607H', 'X1728872E', 'A1234567D'];
+    const invalidSingaporeanIDs = ['S1179607H', 'X1728872E', 'A1234567D', 'M1234567X'];
 
     test.each(validSingaporeanIDs)('should validate valid NRIC/FIN: %s', id => {
       const result = validateNationalId('SGP', id);
