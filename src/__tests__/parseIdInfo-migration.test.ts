@@ -339,7 +339,7 @@ describe('parseIdInfo parity (registry vs old switch)', () => {
     { code: 'MAC', alias: 'MO', validId: '5215432(8)', description: 'Macau ID' },
     { code: 'FIN', alias: 'FI', validId: '131052-308T', description: 'Finland HETU' },
     { code: 'ARE', alias: 'AE', validId: '784198012345678', description: 'UAE Emirates ID' },
-    { code: 'BGR', alias: 'BG', validId: '7523169263', description: 'Bulgaria UCN' },
+    { code: 'BGR', alias: 'BG', validId: '7501020018', description: 'Bulgaria UCN' },
     { code: 'CHN', alias: 'CN', validId: '11010219840406970X', description: 'China Resident ID' },
     { code: 'EST', alias: 'EE', validId: '37605030299', description: 'Estonia Personal ID' },
     { code: 'HUN', alias: 'HU', validId: '18001010016', description: 'Hungary Personal ID' },

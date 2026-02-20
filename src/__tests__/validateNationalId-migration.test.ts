@@ -276,7 +276,7 @@ describe('validateNationalId parity (registry vs old switch)', () => {
     {
       code: 'BGR',
       alias: 'BG',
-      validId: '7523169263',
+      validId: '7501020018',
       invalidId: 'INVALID',
       hasParse: true,
       description: 'Bulgaria UCN',
