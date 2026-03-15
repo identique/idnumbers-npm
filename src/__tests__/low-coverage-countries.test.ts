@@ -152,6 +152,8 @@ describe('Low Coverage Countries - Comprehensive Tests', () => {
       'J50101001A', // Male, born 1995-01-01
       'K55201002B', // Female, born 1995-02-01 (month + 50 for female)
       'L60315003C', // Male, born 1996-03-15
+      'I90308094A', // Python test vector, born 1989-03-08
+      '050308094A', // Year 1805 (no year clamping)
     ];
 
     const invalidIDs = [
@@ -187,6 +189,17 @@ describe('Low Coverage Countries - Comprehensive Tests', () => {
       expect(result).not.toBeNull();
       if (result) {
         expect(result.gender).toBe('female');
+      }
+    });
+
+    test('should parse year without clamping (year < 1900)', () => {
+      const result = parseIdInfo('ALB', '050308094A');
+      expect(result).not.toBeNull();
+      if (result) {
+        expect(result.birthDate.getFullYear()).toBe(1805);
+        expect(result.birthDate.getMonth()).toBe(2); // March (0-indexed)
+        expect(result.birthDate.getDate()).toBe(8);
+        expect(result.gender).toBe('male');
       }
     });
   });
