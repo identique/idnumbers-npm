@@ -22,17 +22,15 @@ export const METADATA = {
     'NID',
     'Numri i Identitetit të Shtetasit',
     'NISH',
-    'NIPT'
+    'NIPT',
   ],
   iso3166Alpha2: 'AL',
   minLength: 10,
   maxLength: 10,
   pattern: /^(?<yy>[0-9A-T]\d)(?<mm>\d{2})(?<dd>\d{2})(?<sn>\d{3})[-]?(?<checksum>[A-W])$/,
-  hasChecksum: true,
+  hasChecksum: false,
   isParsable: true,
-  links: [
-    'https://en.wikipedia.org/wiki/National_identification_number#Albania'
-  ]
+  links: ['https://en.wikipedia.org/wiki/National_identification_number#Albania'],
 };
 
 const BASE_YEAR_MAP = '0123456789ABCDEFGHIJKLMNOPQRST';
@@ -69,49 +67,37 @@ export function parse(idNumber: string): AlbaniaParseResult | null {
 
   try {
     const { yy, mm, dd, sn, checksum } = match.groups;
-    
+
     // Calculate year from base year map
     const yearBase = 1800 + BASE_YEAR_MAP.indexOf(yy[0]) * 10;
     const year = yearBase + parseInt(yy[1], 10);
-    
-    // Adjust for reasonable years (1900-2099)
-    const currentYear = new Date().getFullYear();
-    let adjustedYear = year;
-    
-    if (year > currentYear + 10) {
-      // If year is too far in future, it's likely from previous century
-      adjustedYear = year - 100;
-    } else if (year < 1900) {
-      // If year is before 1900, it's likely from current/next century
-      adjustedYear = year + 100;
-    }
-    
+
     // Parse month and determine gender
     const monthValue = parseInt(mm, 10);
-    const actualMonth = monthValue <= 12 ? monthValue : monthValue - 50;
-    const gender: 'male' | 'female' = monthValue <= 12 ? 'male' : 'female';
-    
+    const actualMonth = monthValue < 50 ? monthValue : monthValue - 50;
+    const gender: 'male' | 'female' = monthValue < 50 ? 'male' : 'female';
+
     const day = parseInt(dd, 10);
-    
+
     // Validate date
-    if (!isValidDate(adjustedYear, actualMonth, day)) {
+    if (!isValidDate(year, actualMonth, day)) {
       return null;
     }
-    
-    const birthDate = new Date(adjustedYear, actualMonth - 1, day);
-    
+
+    const birthDate = new Date(year, actualMonth - 1, day);
+
     // Validate checksum
     if (!validateChecksum(idNumber.substring(0, 9), checksum)) {
       return null;
     }
-    
+
     return {
       isValid: true,
       birthDate,
       gender,
       serialNumber: sn,
       checksum,
-      age: calculateAge(birthDate)
+      age: calculateAge(birthDate),
     };
   } catch {
     return null;
@@ -121,5 +107,5 @@ export function parse(idNumber: string): AlbaniaParseResult | null {
 export const IdentityNumber = {
   validate,
   parse,
-  METADATA
+  METADATA,
 };
