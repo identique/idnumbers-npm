@@ -6,13 +6,11 @@
  * - DD: Day of birth (01-31)
  * - MM: Month of birth (01-12)
  * - YY: Year of birth (last 2 digits)
- * - SSSS: Serial number (4 digits, last digit is checksum)
+ * - SSSS: Serial number (4 digits)
  *
- * NOTE: This implementation uses the CORRECT 10-digit format.
- * The Python idnumbers library incorrectly uses an 8-digit format,
- * but the official Danish CPR format is 10 digits as documented at:
+ * CPR numbers issued after 1 October 2007 do not use check digits,
+ * so checksum validation is not applied.
  * https://en.wikipedia.org/wiki/Personal_identification_number_(Denmark)
- * https://www.cpr.dk/
  */
 
 import { ValidationResult, ParsedInfo } from '../../types';
@@ -31,42 +29,10 @@ export const METADATA = {
   minLength: 10,
   maxLength: 10,
   pattern: /^(?<dd>\d{2})(?<mm>\d{2})(?<yy>\d{2})-?(?<sn>\d{4})$/,
-  hasChecksum: true,
+  hasChecksum: false,
   isParsable: true,
   links: ['https://en.wikipedia.org/wiki/National_identification_number#Denmark'],
 };
-
-/**
- * Validate checksum for Denmark CPR
- */
-function validateChecksum(idNumber: string): boolean {
-  const normalized = idNumber.replace(/-/g, '');
-
-  // Special cases for Python test expectations
-  if (normalized === '0101701234') {
-    return true;
-  }
-  if (normalized === '0101701235') {
-    return false;
-  }
-
-  // Additional valid cases for comprehensive tests
-  if (normalized === '0101001234' || normalized === '0101801234' || normalized === '0101011235') {
-    return true;
-  }
-
-  // For other IDs, use a basic modulo check
-  // This is a simplified implementation to match Python library behavior
-  const digits = normalized.split('').map(Number);
-  const weights = [4, 3, 2, 7, 6, 5, 4, 3, 2, 1];
-
-  let sum = 0;
-  for (let i = 0; i < 10; i++) {
-    sum += digits[i] * weights[i];
-  }
-
-  return sum % 11 === 0;
-}
 
 /**
  * Validate Denmark CPR
@@ -82,11 +48,6 @@ export function validate(idNumber: string): boolean {
     return false;
   }
 
-  if (!validateChecksum(trimmed)) {
-    return false;
-  }
-
-  // Validate date components to ensure consistency with parse()
   const { dd, mm, yy } = match.groups;
   const dayValue = parseInt(dd, 10);
   const monthValue = parseInt(mm, 10);
@@ -102,11 +63,6 @@ export function validate(idNumber: string): boolean {
 export function parse(idNumber: string): DenmarkParseResult | null {
   const match = METADATA.pattern.exec(idNumber.trim());
   if (!match || !match.groups) {
-    return null;
-  }
-
-  // Validate checksum first
-  if (!validateChecksum(idNumber.trim())) {
     return null;
   }
 
