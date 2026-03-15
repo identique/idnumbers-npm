@@ -20,9 +20,9 @@ export class SocialInsuranceNumber implements IdNumberClass {
     links: [
       'https://en.wikipedia.org/wiki/Social_Insurance_Number',
       'https://www.canada.ca/en/employment-social-development/services/sin.html',
-      'http://www.straightlineinternational.com/docs/vaildating_canadian_sin.pdf'
+      'http://www.straightlineinternational.com/docs/vaildating_canadian_sin.pdf',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   private static readonly MULTIPLIER = [1, 2, 1, 2, 1, 2, 1, 2, 1];
@@ -42,11 +42,6 @@ export class SocialInsuranceNumber implements IdNumberClass {
 
     const normalized = idNumber.replace(/[-\s]/g, '');
 
-    // SIN cannot start with 0 or 8
-    if (normalized[0] === '0' || normalized[0] === '8') {
-      return false;
-    }
-
     return SocialInsuranceNumber.checksumValidate(normalized);
   }
 
@@ -61,7 +56,9 @@ export class SocialInsuranceNumber implements IdNumberClass {
    */
   private static checksumValidate(idNumber: string): boolean {
     const numberList = idNumber.split('').map(char => parseInt(char, 10));
-    const multipliedList = numberList.map((value, index) => value * SocialInsuranceNumber.MULTIPLIER[index]);
+    const multipliedList = numberList.map(
+      (value, index) => value * SocialInsuranceNumber.MULTIPLIER[index]
+    );
 
     // For each number, if it's > 9, add the two digits together (e.g., 14 -> 1+4 = 5)
     const sum = multipliedList.reduce((total, num) => {
@@ -77,7 +74,10 @@ export class SocialInsuranceNumber implements IdNumberClass {
    */
   static checksum(idNumber: string): CheckDigit {
     const normalized = idNumber.replace(/[-\s]/g, '');
-    const digits = normalized.slice(0, 8).split('').map(char => parseInt(char, 10));
+    const digits = normalized
+      .slice(0, 8)
+      .split('')
+      .map(char => parseInt(char, 10));
 
     let sum = 0;
     for (let i = 0; i < 8; i++) {
