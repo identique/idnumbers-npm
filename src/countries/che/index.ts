@@ -11,20 +11,14 @@ export interface SwitzerlandParseResult extends ParsedInfo {
 
 export const METADATA = {
   name: 'Switzerland Social Security Number',
-  names: [
-    'Social Security Number',
-    'AHV-Nr.',
-    'No AVS'
-  ],
+  names: ['Social Security Number', 'AHV-Nr.', 'No AVS'],
   iso3166Alpha2: 'CH',
   minLength: 13,
   maxLength: 16,
   pattern: /^756\.?\d{4}\.?\d{4}\.?\d{2}$/,
   hasChecksum: true,
   isParsable: false,
-  links: [
-    'https://en.wikipedia.org/wiki/National_identification_number#Switzerland'
-  ]
+  links: ['https://en.wikipedia.org/wiki/National_identification_number#Switzerland'],
 };
 
 /**
@@ -44,14 +38,6 @@ function validateChecksum(idNumber: string): boolean {
   // Check if it's exactly 13 digits starting with 756
   if (!/^756\d{10}$/.test(normalized)) {
     return false;
-  }
-
-  // Special case handling for Python test expectations
-  if (normalized === '7569217076985') {
-    return true; // Python expects this to be valid
-  }
-  if (normalized === '7569217076986') {
-    return false; // Python expects this to be invalid
   }
 
   const numbers = normalized.split('').map(Number);
@@ -80,12 +66,12 @@ export function parse(idNumber: string): SwitzerlandParseResult | null {
   }
 
   return {
-    isValid: true
+    isValid: true,
   };
 }
 
 export const SocialSecurityNumber = {
   validate,
   parse,
-  METADATA
+  METADATA,
 };

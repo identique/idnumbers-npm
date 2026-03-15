@@ -28,17 +28,15 @@ export interface NationalIdParseResult {
 export class NationalID implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'SK',
-    minLength: 8,
-    maxLength: 11,
+    minLength: 10,
+    maxLength: 10,
     parsable: true,
     checksum: true,
-    regexp: /^(?<yy>[A-Z0-9]{2})[\s/]?(?<mm>\d{2})(?<dd>\d{2})[\s/]?(?<sn>\d{2,3})(?<checksum>\d)?$/i,
+    regexp: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})\/?(?<sn>\d{3})(?<checksum>\d)$/,
     aliasOf: null,
     names: ['Birth Number', 'rodné číslo', 'RČ'],
-    links: [
-      'https://en.wikipedia.org/wiki/National_identification_number#Slovakia'
-    ],
-    deprecated: false
+    links: ['https://en.wikipedia.org/wiki/National_identification_number#Slovakia'],
+    deprecated: false,
   };
 
   get METADATA(): IdMetadata {
@@ -80,35 +78,21 @@ export class NationalID implements IdNumberClass {
       return null;
     }
 
-    // Verify checksum first (if present)
     if (!NationalID.checksumValidate(idNumber)) {
       return null;
     }
 
-    const yyStr = match.groups.yy;
+    const yy = parseInt(match.groups.yy, 10);
     const mmCode = parseInt(match.groups.mm, 10);
     const dd = parseInt(match.groups.dd, 10);
     const sn = match.groups.sn;
     const checksumStr = match.groups.checksum;
-
-    // Special case: "XX" prefix for test IDs (return minimal valid result)
-    if (yyStr.toUpperCase() === 'XX') {
-      return {
-        yyyymmdd: new Date(2000, 0, 1), // Placeholder date
-        gender: mmCode >= 50 ? Gender.FEMALE : Gender.MALE,
-        sn,
-        checksum: (checksumStr ? parseInt(checksumStr, 10) : 0) as CheckDigit
-      };
-    }
-
-    const yy = parseInt(yyStr, 10);
 
     // Determine actual month and gender
     let mm = mmCode < 50 ? mmCode : mmCode - 50;
 
     // Handle failsafe system (law from 2004)
     // When serial numbers depleted, 20 is added to month
-    // Can be up to 32 for males, 82 for females
     if (mm > 20) {
       mm = mm - 20;
     }
@@ -127,14 +111,13 @@ export class NationalID implements IdNumberClass {
         return null;
       }
 
-      // Gender: mmCode < 50 = male, >= 50 = female
       const gender = mmCode < 50 ? Gender.MALE : Gender.FEMALE;
 
       return {
         yyyymmdd: date,
         gender,
         sn,
-        checksum: (checksumStr ? parseInt(checksumStr, 10) : 0) as CheckDigit
+        checksum: parseInt(checksumStr, 10) as CheckDigit,
       };
     } catch {
       return null;
@@ -154,23 +137,7 @@ export class NationalID implements IdNumberClass {
     }
 
     const normalized = NationalID.normalize(idNumber);
-
-    // Special case: "XX" prefix for test IDs (used in Python idnumbers library)
-    if (normalized.toUpperCase().startsWith('XX')) {
-      return true;
-    }
-
-    // If no checksum digit (8 characters), skip checksum validation
-    if (normalized.length === 8) {
-      return true;
-    }
-
-    const numValue = parseInt(normalized, 10);
-    if (isNaN(numValue)) {
-      return false;
-    }
-
-    return numValue % 11 === 0;
+    return parseInt(normalized, 10) % 11 === 0;
   }
 
   /**

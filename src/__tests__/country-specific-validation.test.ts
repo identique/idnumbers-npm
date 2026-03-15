@@ -163,7 +163,7 @@ describe('Python idnumbers test cases validation', () => {
   });
 
   describe('AUS - Medicare Number', () => {
-    const validAustralianIDs = ['2123456701', '5123456701'];
+    const validAustralianIDs = ['2123456701', '5123456731'];
 
     const invalidAustralianIDs = ['0123456701', '9123456701'];
 
@@ -318,9 +318,9 @@ describe('Python idnumbers test cases validation', () => {
   });
 
   describe('ARE - Emirates ID', () => {
-    const validEmiratesIDs = ['784-1983-1234567-1', '784198312345671'];
+    const validEmiratesIDs = ['784-1983-1234567-5', '784198312345675'];
 
-    const invalidEmiratesIDs = ['784-1983-1234567-2', '784-0000-1234567-1'];
+    const invalidEmiratesIDs = ['784-1983-1234567-2', '784198312345676'];
 
     test.each(validEmiratesIDs)('should validate valid Emirates ID: %s', id => {
       const result = validateNationalId('ARE', id);
@@ -448,7 +448,7 @@ describe('Python idnumbers test cases validation', () => {
 
 describe('European country validations from Python tests', () => {
   const testCases = [
-    { country: 'ITA', valid: ['RSSMRA85M01H501Z'], invalid: ['RSSMRA85M01H501X'] },
+    { country: 'ITA', valid: ['RSSMRA85M01H501Q'], invalid: ['RSSMRA85M01H501Z'] },
     { country: 'ESP', valid: ['12345678Z'], invalid: ['12345678A'] },
     { country: 'POL', valid: ['44051401458'], invalid: ['44051401459'] },
     { country: 'BEL', valid: ['93051822361'], invalid: ['93051822362'] },
@@ -459,7 +459,7 @@ describe('European country validations from Python tests', () => {
     // NOR and HUN test data is invalid - these IDs return False in Python library too
     // { country: 'NOR', valid: ['01010150385'], invalid: ['01010150386'] },
     { country: 'SWE', valid: ['640823-3234', '6408233234'], invalid: ['640823-3235'] },
-    { country: 'CHE', valid: ['756.9217.0769.85'], invalid: ['756.9217.0769.86'] },
+    { country: 'CHE', valid: ['756.1234.5678.97'], invalid: ['756.1234.5678.98'] },
     { country: 'IRL', valid: ['1234567T', '1234567TW'], invalid: ['1234567U'] },
     { country: 'PRT', valid: ['000000000'], invalid: ['000000001'] },
     { country: 'GRC', valid: ['011180000'], invalid: ['011180001'] },
@@ -469,8 +469,8 @@ describe('European country validations from Python tests', () => {
     { country: 'HRV', valid: ['00000000001'], invalid: ['00000000002'] },
     { country: 'SVN', valid: ['0101006500006'], invalid: ['0101006500007'] },
     { country: 'SRB', valid: ['0101990710008'], invalid: ['0101990360002'] },
-    { country: 'EST', valid: ['37605130267'], invalid: ['37605130268'] },
-    { country: 'LVA', valid: ['01019012345'], invalid: ['01019012346'] },
+    { country: 'EST', valid: ['37605030299'], invalid: ['37605030290'] },
+    { country: 'LVA', valid: ['16117519997'], invalid: ['16117519998'] },
   ];
 
   testCases.forEach(({ country, valid, invalid }) => {
@@ -502,10 +502,10 @@ describe('Additional country validations', () => {
       valid: ['198713001450', '200159302029', '199612003996', '961203996V', '923404716V'],
       invalid: ['197419202757', '790930622A'],
     },
-    { country: 'NGA', valid: ['12345678901'], invalid: ['12345678902'] },
+    { country: 'NGA', valid: ['12345678901', '12345678902'], invalid: ['1234567890'] },
     { country: 'KWT', valid: ['299012400051'], invalid: ['299012400052'] },
     // Deleted countries - JOR, BGD, NPL removed
-    { country: 'PHL', valid: ['123456789012'], invalid: ['123456789013'] },
+    { country: 'PHL', valid: ['123456789012', '123456789013'], invalid: ['12345678901'] },
   ];
 
   additionalTestCases.forEach(({ country, valid, invalid }) => {
@@ -527,7 +527,7 @@ describe('Additional country validations', () => {
 
 describe('Parse functionality tests', () => {
   test('should parse Italian Fiscal Code', () => {
-    const parsed = parseIdInfo('ITA', 'RSSMRA85M01H501Z');
+    const parsed = parseIdInfo('ITA', 'RSSMRA85M01H501Q');
     expect(parsed).not.toBeNull();
     if (parsed) {
       expect(parsed.surname).toBe('RSS');
@@ -562,12 +562,12 @@ describe('Parse functionality tests', () => {
   });
 
   test('should parse Estonian Personal ID', () => {
-    const parsed = parseIdInfo('EST', '37605130267');
+    const parsed = parseIdInfo('EST', '37605030299');
     expect(parsed).not.toBeNull();
     if (parsed) {
       expect(parsed.birthDate.getFullYear()).toBe(1976);
       expect(parsed.birthDate.getMonth()).toBe(4); // May (0-indexed)
-      expect(parsed.birthDate.getDate()).toBe(13);
+      expect(parsed.birthDate.getDate()).toBe(3);
       expect(parsed.gender).toBe('Male');
     }
   });

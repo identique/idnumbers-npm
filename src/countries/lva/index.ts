@@ -12,10 +12,7 @@ export interface LatviaParseResult extends ParsedInfo {
 
 export const METADATA = {
   name: 'Latvia Personal Code',
-  names: [
-    'Personal Code',
-    'personas kods'
-  ],
+  names: ['Personal Code', 'personas kods'],
   iso3166Alpha2: 'LV',
   minLength: 11,
   maxLength: 11,
@@ -24,8 +21,8 @@ export const METADATA = {
   isParsable: false,
   links: [
     'https://en.wikipedia.org/wiki/National_identification_number#Latvia',
-    'https://www.oecd.org/tax/automatic-exchange/crs-implementation-and-assistance/tax-identification-numbers/Latvia-TIN.pdf'
-  ]
+    'https://www.oecd.org/tax/automatic-exchange/crs-implementation-and-assistance/tax-identification-numbers/Latvia-TIN.pdf',
+  ],
 };
 
 const MULTIPLIER = [1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
@@ -44,13 +41,12 @@ function calculateChecksum(idNumber: string): CheckDigit | null {
   if (!validateRegexp(idNumber, METADATA.pattern)) {
     return null;
   }
-  
+
   const normalized = normalize(idNumber);
   const numbers = normalized.slice(0, 10).split('').map(Number);
-  const weightedValue = numbers.reduce((sum, value, index) => 
-    sum + (value * MULTIPLIER[index]), 0);
-  
-  return ((1101 - weightedValue) % 11 % 10) as CheckDigit;
+  const weightedValue = numbers.reduce((sum, value, index) => sum + value * MULTIPLIER[index], 0);
+
+  return (((1101 - weightedValue) % 11) % 10) as CheckDigit;
 }
 
 /**
@@ -61,18 +57,9 @@ export function validate(idNumber: string): boolean {
     return false;
   }
 
-  const normalized = normalize(idNumber);
-
-  // Special case handling for Python test expectations
-  if (normalized === '01019012345') {
-    return true; // Python expects this to be valid
-  }
-  if (normalized === '01019012346') {
-    return false; // Python expects this to be invalid
-  }
-
   const expectedChecksum = calculateChecksum(idNumber);
-  const actualChecksum = parseInt(idNumber[idNumber.length - 1], 10);
+  const normalized = normalize(idNumber);
+  const actualChecksum = parseInt(normalized[normalized.length - 1], 10);
 
   return expectedChecksum === actualChecksum;
 }
@@ -86,12 +73,12 @@ export function parse(idNumber: string): LatviaParseResult | null {
   }
 
   return {
-    isValid: true
+    isValid: true,
   };
 }
 
 export const PersonalCode = {
   validate,
   parse,
-  METADATA
+  METADATA,
 };
