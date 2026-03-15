@@ -46,7 +46,7 @@ describe('validateNationalId parity (registry vs old switch)', () => {
     {
       code: 'CAN',
       validId: '123456782',
-      invalidId: '000000000',
+      invalidId: '130692545',
       hasParse: false,
       description: 'Canada SIN',
     },

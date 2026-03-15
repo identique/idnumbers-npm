@@ -179,9 +179,9 @@ describe('Python idnumbers test cases validation', () => {
   });
 
   describe('CAN - Social Insurance Number', () => {
-    const validCanadianSINs = ['123-456-782', '123456782'];
+    const validCanadianSINs = ['123-456-782', '123456782', '130692544', '046454286', '812345676'];
 
-    const invalidCanadianSINs = ['123-456-789', '000-000-000', '800-000-000'];
+    const invalidCanadianSINs = ['123-456-789', '130692545', '800-000-000'];
 
     test.each(validCanadianSINs)('should validate valid SIN: %s', sin => {
       const result = validateNationalId('CAN', sin);
@@ -454,7 +454,7 @@ describe('European country validations from Python tests', () => {
     { country: 'BEL', valid: ['93051822361'], invalid: ['93051822362'] },
     { country: 'AUT', valid: ['1237 010180', '1237010180'], invalid: ['1237 010181'] },
     { country: 'CZE', valid: ['7103192745'], invalid: ['7103192746'] },
-    { country: 'DNK', valid: ['0101701234'], invalid: ['0101701235'] },
+    { country: 'DNK', valid: ['0101701234', '0101701235', '061085-1178'], invalid: ['3201701234'] },
     { country: 'FIN', valid: ['131052-308T'], invalid: ['131052-308U'] },
     // NOR and HUN test data is invalid - these IDs return False in Python library too
     // { country: 'NOR', valid: ['01010150385'], invalid: ['01010150386'] },

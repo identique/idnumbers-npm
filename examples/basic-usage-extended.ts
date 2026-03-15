@@ -65,7 +65,7 @@ const multipleResults = validateMultipleIds([
   { countryCode: 'GBR', idNumber: 'AB123456C' },
   { countryCode: 'GBR', idNumber: 'DA123456C' }, // Invalid (starts with D)
   { countryCode: 'CAN', idNumber: '123456782' },
-  { countryCode: 'CAN', idNumber: '012345678' }, // Invalid (starts with 0)
+  { countryCode: 'CAN', idNumber: '012345678' }, // Invalid (checksum fails)
   { countryCode: 'DEU', idNumber: '12345678901' }
 ]);
 
