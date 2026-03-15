@@ -419,17 +419,20 @@ describe('Python idnumbers test cases validation', () => {
   });
 
   describe('SGP - NRIC/FIN', () => {
-    const validSingaporeanIDs = ['S1234567D', 'T1234567J', 'F1234567N', 'G1234567X'];
-
-    const invalidSingaporeanIDs = [
-      'S1234567H',
-      'T1234567A',
-      'F1234567T',
-      'G1234567K',
-      'T1234567D',
-      'G1234567N',
-      'A1234567D',
+    const validSingaporeanIDs = [
+      'S1234567D',
+      'T1234567J',
+      'F1234567N',
+      'G1234567X',
+      'M1234567N',
+      'S8076606H',
+      'S1728872E',
+      'G4549883U',
+      'G4552218R',
+      'S2111122H',
     ];
+
+    const invalidSingaporeanIDs = ['S1179607H', 'X1728872E', 'A1234567D', 'M1234567X'];
 
     test.each(validSingaporeanIDs)('should validate valid NRIC/FIN: %s', id => {
       const result = validateNationalId('SGP', id);
@@ -462,7 +465,7 @@ describe('European country validations from Python tests', () => {
     { country: 'GRC', valid: ['011180000'], invalid: ['011180001'] },
     // { country: 'HUN', valid: ['120174540'], invalid: ['120174541'] },
     { country: 'ROU', valid: ['1800101123450'], invalid: ['1800132123456'] },
-    { country: 'BGR', valid: ['7523169263'], invalid: ['7523169264'] },
+    { country: 'BGR', valid: ['7501020018', '7542011030'], invalid: ['7501020011'] },
     { country: 'HRV', valid: ['00000000001'], invalid: ['00000000002'] },
     { country: 'SVN', valid: ['0101006500006'], invalid: ['0101006500007'] },
     { country: 'SRB', valid: ['0101990710008'], invalid: ['0101990360002'] },
@@ -488,9 +491,17 @@ describe('European country validations from Python tests', () => {
 describe('Additional country validations', () => {
   const additionalTestCases = [
     { country: 'TWN', valid: ['A123456789'], invalid: ['A123456780'] },
-    { country: 'TUR', valid: ['10000000146'], invalid: ['10000000147'] },
+    {
+      country: 'TUR',
+      valid: ['10000000146', '15973515680'],
+      invalid: ['10000000145', '00000000178'],
+    },
     { country: 'PAK', valid: ['3520279887613', '35202-7988761-3'], invalid: [] }, // 3520279887614 is actually valid
-    { country: 'LKA', valid: ['971234567V', '199712345678'], invalid: ['971234568V'] },
+    {
+      country: 'LKA',
+      valid: ['198713001450', '200159302029', '199612003996', '961203996V', '923404716V'],
+      invalid: ['197419202757', '790930622A'],
+    },
     { country: 'NGA', valid: ['12345678901'], invalid: ['12345678902'] },
     { country: 'KWT', valid: ['299012400051'], invalid: ['299012400052'] },
     // Deleted countries - JOR, BGD, NPL removed
@@ -562,12 +573,23 @@ describe('Parse functionality tests', () => {
   });
 
   test('should parse Bulgarian Uniform Civil Number', () => {
-    const parsed = parseIdInfo('BGR', '7523169263');
+    const parsed = parseIdInfo('BGR', '7501020018');
     expect(parsed).not.toBeNull();
     if (parsed) {
       expect(parsed.birthDate.getFullYear()).toBe(1975);
-      expect(parsed.birthDate.getMonth()).toBe(1); // February (0-indexed)
-      expect(parsed.birthDate.getDate()).toBe(31);
+      expect(parsed.birthDate.getMonth()).toBe(0); // January (0-indexed)
+      expect(parsed.birthDate.getDate()).toBe(2);
+      expect(parsed.gender).toBe('Female');
+    }
+  });
+
+  test('should parse Bulgarian UCN with month > 40 (2000s)', () => {
+    const parsed = parseIdInfo('BGR', '7552010005');
+    expect(parsed).not.toBeNull();
+    if (parsed) {
+      expect(parsed.birthDate.getFullYear()).toBe(2075);
+      expect(parsed.birthDate.getMonth()).toBe(11); // December (0-indexed)
+      expect(parsed.birthDate.getDate()).toBe(1);
       expect(parsed.gender).toBe('Male');
     }
   });

@@ -14,15 +14,9 @@ export const METADATA: IdMetadata = {
   checksum: true,
   regexp: /^\d{12}$/,
   aliasOf: null,
-  names: [
-    'National ID Number',
-    'My Number',
-    'マイナンバー'
-  ],
-  links: [
-    'https://en.wikipedia.org/wiki/National_identification_number#Japan'
-  ],
-  deprecated: false
+  names: ['National ID Number', 'My Number', 'マイナンバー'],
+  links: ['https://en.wikipedia.org/wiki/National_identification_number#Japan'],
+  deprecated: false,
 };
 
 // Multiplier for checksum calculation
@@ -47,23 +41,24 @@ export function validate(idNumber: string): boolean {
  * Calculate Japan My Number checksum
  */
 export function checksum(idNumber: string): string {
-  const digits = idNumber.substring(0, 11).split('').map(d => parseInt(d, 10));
-  
-  // Manually calculate with reverse order
+  const digits = idNumber
+    .substring(0, 11)
+    .split('')
+    .map(d => parseInt(d, 10));
+
   let sum = 0;
   for (let i = 0; i < digits.length; i++) {
-    const idx = digits.length - 1 - i; // reverse order
-    sum += digits[idx] * MULTIPLIER[i];
+    sum += digits[i] * MULTIPLIER[i];
   }
   const remainder = sum % 11;
-  
-  return String(remainder <= 1 ? 0 : (11 - remainder));
+
+  return String(remainder <= 1 ? 0 : 11 - remainder);
 }
 
 export const MyNumber = {
   validate,
   checksum,
-  METADATA
+  METADATA,
 };
 
 // Alias

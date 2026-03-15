@@ -1,17 +1,30 @@
 /**
  * Sri Lanka National ID Number
+ * New format (12 digits): YYYYDDDSSSSC
+ * Old format (10 chars): YYDDDSSSCV/X (phased out 2016)
+ *
+ * https://en.wikipedia.org/wiki/National_identification_number#Sri_Lanka
+ * https://drp.gov.lk/Templates/Artical%20-%20English%20new%20number.html
  */
 
 import { IdMetadata, ParsedInfo, Gender } from '../../types';
-import { validateRegexp, weightedModulusDigit, modulusOverflowMod10, isValidDate } from '../../utils';
-import { CheckDigit } from '../../constants';
+import { weightedModulusDigit, modulusOverflowMod10 } from '../../utils';
+import { CheckDigit, Citizenship } from '../../constants';
 
 export interface SriLankaParseResult extends ParsedInfo {
   birthDate: Date;
   gender: Gender;
   serialNumber: string;
   checksum: CheckDigit;
+  citizenship?: Citizenship;
 }
+
+/** New format: 4-digit year + 3-digit days + 4-digit serial + 1-digit checksum */
+const NEW_FORMAT = /^(?<year>\d{4})(?<days>\d{3})(?<sn>\d{4})(?<checksum>\d)$/;
+
+/** Old format: 2-digit year + 3-digit days + 3-digit serial + 1-digit checksum + V/X */
+const OLD_FORMAT =
+  /^(?<year>\d{2})(?<days>\d{3})(?<sn>\d{3})(?<checksum>\d)(?<citizenship>[VvXx])$/;
 
 export const METADATA: IdMetadata = {
   iso3166Alpha2: 'LK',
@@ -19,64 +32,45 @@ export const METADATA: IdMetadata = {
   maxLength: 12,
   parsable: true,
   checksum: true,
-  regexp: /^(?<year>\d{2,4})(?<days>\d{3})(?<sn>\d{3,5})(?<checksum>[\dVX])$/,
+  regexp: NEW_FORMAT,
   aliasOf: null,
   names: ['National ID Number'],
   links: [
     'https://en.wikipedia.org/wiki/National_identification_number#Sri_Lanka',
-    'https://drp.gov.lk/Templates/Artical%20-%20English%20new%20number.html'
+    'https://drp.gov.lk/Templates/Artical%20-%20English%20new%20number.html',
   ],
-  deprecated: false
+  deprecated: false,
 };
 
 const MAGIC_MULTIPLIER = [8, 4, 3, 2, 7, 6, 5, 7, 4, 3, 2];
 
 /**
- * Validate old format Sri Lankan ID (9 digits + V)
- * For old format, we'll be more permissive since the exact algorithm may differ
+ * Convert old format (10-char) to new format (12-digit)
+ * Old: YY DDD SSS C V/X → New: 19YY DDD 0SSS C
  */
-function validateOldFormat(idNumber: string): boolean {
-  // Basic format check: 9 digits + V
-  if (!/^\d{9}V$/.test(idNumber)) {
-    return false;
+function convertOldToNew(idNumber: string): string | null {
+  const match = OLD_FORMAT.exec(idNumber);
+  if (!match || !match.groups) {
+    return null;
   }
-
-  // Blacklist specific invalid IDs from test cases
-  const invalidOldFormatIds = ['971234568V'];
-  if (invalidOldFormatIds.includes(idNumber)) {
-    return false;
-  }
-
-  // For old format, we'll be permissive and accept other well-formed IDs
-  // as the Python library seems to accept them
-  return true;
+  const { year, days, sn, checksum } = match.groups;
+  return `19${year}${days}0${sn}${checksum}`;
 }
 
 /**
- * Validate new format Sri Lankan ID (12 digits)
- * For new format, we'll be permissive for structure validation
+ * Validate checksum for new format (12-digit) Sri Lanka National ID
  */
-function validateNewFormat(idNumber: string): boolean {
-  // Basic format check: 12 digits
-  if (!/^\d{12}$/.test(idNumber)) {
+function validateNewChecksum(newFormatId: string): boolean {
+  const match = NEW_FORMAT.exec(newFormatId);
+  if (!match) {
     return false;
   }
 
-  // Basic structural validation - should start with year
-  const year = parseInt(idNumber.substring(0, 4));
-  if (year < 1900 || year > 2100) {
-    return false;
-  }
-
-  // Specific blacklist for invalid test cases from Python
-  const invalidIds = ['197419202757'];
-  if (invalidIds.includes(idNumber)) {
-    return false;
-  }
-
-  // For new format, we'll be permissive and accept all well-formed IDs
-  // as the Python library seems to accept them
-  return true;
+  const numbers = newFormatId.split('').map(d => parseInt(d, 10));
+  const modulus = modulusOverflowMod10(
+    weightedModulusDigit(numbers.slice(0, -1), MAGIC_MULTIPLIER, 11)
+  );
+  return modulus === numbers[numbers.length - 1];
 }
 
 /**
@@ -84,16 +78,14 @@ function validateNewFormat(idNumber: string): boolean {
  */
 function calculateDate(year: number, days: number): Date | null {
   try {
-    const baseDate = new Date(year, 0, 1); // January 1st
     const daysToAdd = days > 500 ? days - 501 : days - 1;
-    const resultDate = new Date(baseDate);
+    const resultDate = new Date(year, 0, 1);
     resultDate.setDate(resultDate.getDate() + daysToAdd);
-    
-    // Validate the resulting date
+
     if (resultDate.getFullYear() !== year) {
       return null;
     }
-    
+
     return resultDate;
   } catch {
     return null;
@@ -101,108 +93,120 @@ function calculateDate(year: number, days: number): Date | null {
 }
 
 /**
- * Validate Sri Lanka National ID Number
+ * Validate Sri Lanka National ID Number (both old and new formats)
  */
 export function validate(idNumber: string): boolean {
   if (!idNumber || typeof idNumber !== 'string') {
     return false;
   }
 
-  // Handle old format IDs ending with 'V' - these were the old format
-  // and should be accepted based on Python library behavior
-  if (idNumber.endsWith('V') && /^\d{9}V$/.test(idNumber)) {
-    return validateOldFormat(idNumber);
+  // Try old format first (10 chars ending with V/X)
+  if (OLD_FORMAT.test(idNumber)) {
+    const newId = convertOldToNew(idNumber);
+    if (!newId) {
+      return false;
+    }
+    return validateNewChecksum(newId);
   }
 
-  // Special case handling for Python test expectations
-  if (idNumber === '971234567V' || idNumber === '199712345678') {
-    return true; // Python expects these to be valid
+  // Try new format (12 digits)
+  if (NEW_FORMAT.test(idNumber)) {
+    return validateNewChecksum(idNumber);
   }
 
-  // Handle 12-digit format (new format) - be permissive for structure
-  if (/^\d{12}$/.test(idNumber)) {
-    return validateNewFormat(idNumber);
-  }
-
-  if (!validateRegexp(idNumber, METADATA.regexp)) {
-    return false;
-  }
-
-  return parse(idNumber) !== null;
+  return false;
 }
 
 /**
  * Parse Sri Lanka National ID Number
  */
 export function parse(idNumber: string): SriLankaParseResult | null {
-  const match = METADATA.regexp.exec(idNumber);
-  if (!match || !match.groups) {
+  if (!idNumber || typeof idNumber !== 'string') {
     return null;
   }
 
-  if (!checksum(idNumber)) {
+  let newFormatId: string;
+  let citizenship: Citizenship | undefined;
+
+  // Try old format
+  const oldMatch = OLD_FORMAT.exec(idNumber);
+  if (oldMatch && oldMatch.groups) {
+    const converted = convertOldToNew(idNumber);
+    if (!converted) {
+      return null;
+    }
+    newFormatId = converted;
+    citizenship =
+      oldMatch.groups.citizenship.toUpperCase() === 'V'
+        ? Citizenship.CITIZEN
+        : Citizenship.RESIDENT;
+  } else if (NEW_FORMAT.test(idNumber)) {
+    newFormatId = idNumber;
+  } else {
+    return null;
+  }
+
+  // Validate checksum
+  if (!validateNewChecksum(newFormatId)) {
+    return null;
+  }
+
+  const match = NEW_FORMAT.exec(newFormatId);
+  if (!match || !match.groups) {
     return null;
   }
 
   const year = parseInt(match.groups.year, 10);
   const days = parseInt(match.groups.days, 10);
   const birthDate = calculateDate(year, days);
-  
+
   if (!birthDate) {
     return null;
   }
 
-  return {
+  const result: SriLankaParseResult = {
     isValid: true,
     birthDate,
     gender: days < 500 ? Gender.MALE : Gender.FEMALE,
     serialNumber: match.groups.sn,
-    checksum: parseInt(match.groups.checksum, 10) as CheckDigit
+    checksum: parseInt(match.groups.checksum, 10) as CheckDigit,
   };
+
+  if (citizenship !== undefined) {
+    result.citizenship = citizenship;
+  }
+
+  return result;
 }
 
 /**
- * Validate checksum for Sri Lanka National ID
- * Algorithm: https://lk.linkedin.com/posts/nuwansenaratna_srilanka-activity-6926883712584335360-E_69
+ * Validate checksum for Sri Lanka National ID (public API)
  */
 export function checksum(idNumber: string): boolean {
-  if (!validateRegexp(idNumber, METADATA.regexp)) {
+  if (!idNumber || typeof idNumber !== 'string') {
     return false;
   }
 
-  // Extract digits for calculation (all except last character)
-  const digits = idNumber.slice(0, -1).split('').map(char => parseInt(char, 10));
-  const lastChar = idNumber.slice(-1);
-
-  // Calculate weighted sum
-  let sum = 0;
-  for (let i = 0; i < digits.length && i < MAGIC_MULTIPLIER.length; i++) {
-    sum += digits[i] * MAGIC_MULTIPLIER[i];
-  }
-
-  const modulus = sum % 11;
-
-  // Expected checksum based on modulus
-  let expectedChecksum: string;
-  if (modulus === 0) {
-    expectedChecksum = '0';
-  } else if (modulus === 1) {
-    expectedChecksum = 'X';
-  } else {
-    const checkValue = 11 - modulus;
-    if (checkValue === 10) {
-      expectedChecksum = 'V';
-    } else {
-      expectedChecksum = checkValue.toString();
+  // Old format
+  if (OLD_FORMAT.test(idNumber)) {
+    const newId = convertOldToNew(idNumber);
+    if (!newId) {
+      return false;
     }
+    return validateNewChecksum(newId);
   }
 
-  return lastChar === expectedChecksum;
+  // New format
+  if (NEW_FORMAT.test(idNumber)) {
+    return validateNewChecksum(idNumber);
+  }
+
+  return false;
 }
 
 export const NationalID = {
   validate,
   parse,
   checksum,
-  METADATA
+  METADATA,
 };
