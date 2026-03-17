@@ -22,10 +22,10 @@ export function validate(idNumber: string): boolean {
   if (!idNumber || typeof idNumber !== 'string') {
     return false;
   }
-  if (!validateRegexp(idNumber.trim(), REGEXP)) {
+  const id = idNumber.trim();
+  if (!validateRegexp(id, REGEXP)) {
     return false;
   }
-  const id = idNumber.trim();
   const base = parseInt(id.slice(0, -2), 10);
   const check = parseInt(id.slice(-2), 10);
   return calcCheckDigits(base) === check;

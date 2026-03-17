@@ -23,19 +23,6 @@ export const METADATA: IdMetadata = {
   deprecated: false,
 };
 
-const BLACK_TRAILING_NUMBERS = [
-  '00000',
-  '11111',
-  '22222',
-  '33333',
-  '44444',
-  '55555',
-  '66666',
-  '77777',
-  '88888',
-  '99999',
-];
-
 /**
  * Validate Australia Driver Licence Number
  */
@@ -47,7 +34,7 @@ export function validate(idNumber: string): boolean {
     return false;
   }
   const normalized = normalize(idNumber);
-  return !BLACK_TRAILING_NUMBERS.includes(normalized.slice(-5));
+  return !/^(\d)\1{4}$/.test(normalized.slice(-5));
 }
 
 export const DriverLicenseNumber = {

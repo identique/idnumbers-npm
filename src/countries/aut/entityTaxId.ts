@@ -5,13 +5,9 @@
  * https://www.bmf.gv.at/dam/jcr:9f9f8d5f-5496-4886-aa4f-81a4e39ba83e/BMF_UID_Konstruktionsregeln.pdf
  */
 
-import { validateRegexp } from '../../utils';
+import { validateRegexp, normalize } from '../../utils';
 
 const REGEXP = /^([A-Z]\d{2}[- ]?\d{3}[ /]?\d{3})$/;
-
-function normalize(idNumber: string): string {
-  return idNumber.replace(/[-/ ]/g, '');
-}
 
 /**
  * Validate checksum for Austria Entity Tax ID
@@ -38,10 +34,11 @@ export function validate(idNumber: string): boolean {
   if (!idNumber || typeof idNumber !== 'string') {
     return false;
   }
-  if (!validateRegexp(idNumber.trim(), REGEXP)) {
+  const id = idNumber.trim();
+  if (!validateRegexp(id, REGEXP)) {
     return false;
   }
-  return validateChecksum(idNumber.trim());
+  return validateChecksum(id);
 }
 
 export const METADATA = {
