@@ -22,19 +22,13 @@ export const METADATA: IdMetadata = {
   checksum: true,
   regexp: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})(?<century>\d)(?<sn>\d{4})(?<checksum>\d)$/,
   aliasOf: null,
-  names: [
-    'Individual Identification Number',
-    'ЖСН',
-    'ZhSN',
-    'ИИН',
-    'IIN'
-  ],
+  names: ['Individual Identification Number', 'ЖСН', 'ZhSN', 'ИИН', 'IIN'],
   links: [
     'https://en.wikipedia.org/wiki/National_identification_number#Kazakhstan',
     'https://korgan-zan.kz/en/obtaining-iin-and-bin-in-kazakhstan/',
-    'https://www.oecd.org/tax/automatic-exchange/crs-implementation-and-assistance/tax-identification-numbers/Kazakhstan-TIN.pdf'
+    'https://www.oecd.org/tax/automatic-exchange/crs-implementation-and-assistance/tax-identification-numbers/Kazakhstan-TIN.pdf',
   ],
-  deprecated: false
+  deprecated: false,
 };
 
 /**
@@ -43,7 +37,7 @@ export const METADATA: IdMetadata = {
 function getGenderYearBase(century: number): [Gender, number] | null {
   const gender = century % 2 === 1 ? Gender.MALE : Gender.FEMALE;
   let yearBase: number;
-  
+
   if (century >= 1 && century < 3) {
     yearBase = 1800;
   } else if (century >= 3 && century < 5) {
@@ -53,7 +47,7 @@ function getGenderYearBase(century: number): [Gender, number] | null {
   } else {
     return null;
   }
-  
+
   return [gender, yearBase];
 }
 
@@ -83,7 +77,7 @@ export function parse(idNumber: string): KazakhstanParseResult | null {
 
   const calculatedChecksum = checksum(idNumber);
   const providedChecksum = parseInt(match.groups.checksum, 10) as CheckDigit;
-  
+
   if (calculatedChecksum === null || calculatedChecksum !== providedChecksum) {
     return null;
   }
@@ -107,7 +101,7 @@ export function parse(idNumber: string): KazakhstanParseResult | null {
     birthDate: new Date(year, month - 1, day),
     gender,
     serialNumber: match.groups.sn,
-    checksum: providedChecksum
+    checksum: providedChecksum,
   };
 }
 
@@ -115,8 +109,11 @@ export const IndividualIDNumber = {
   validate,
   parse,
   checksum,
-  METADATA
+  METADATA,
 };
 
 // Alias
 export const NationalID = IndividualIDNumber;
+
+export { BusinessIDNumber } from './businessId';
+export { EntityType, EntityDivision } from './util';

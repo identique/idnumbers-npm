@@ -69,6 +69,21 @@ import { NationalID as VenNationalID } from '../countries/ven';
 import { CPFNumber } from '../countries/bra';
 
 // ---------------------------------------------------------------------------
+// Secondary type imports (entity IDs, old/deprecated formats — not registered
+// as primary validators; access via country module imports directly)
+// ---------------------------------------------------------------------------
+// AUS: TaxFileNumber, DriverLicenseNumber
+// AUT: EntityTaxIDNumber (VAT/UID)
+// BEL: EntityVAT
+// BGR: UnifiedIdCode (UIC/EIK/BULSTAT)
+// CHE: BusinessID (UID)
+// GRC: OldIdentityCard (deprecated)
+// KAZ: BusinessIDNumber (BIN)
+// KOR: OldResidentRegistration (deprecated)
+// LVA: OldPersonalCode (deprecated)
+// VEN: FiscalInformationNumber (RIF)
+
+// ---------------------------------------------------------------------------
 // Function-based imports (convenience objects with METADATA, validate, parse)
 // ---------------------------------------------------------------------------
 import { IdentityNumber } from '../countries/alb';

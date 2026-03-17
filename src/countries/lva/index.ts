@@ -82,3 +82,5 @@ export const PersonalCode = {
   parse,
   METADATA,
 };
+
+export { OldPersonalCode } from './oldPersonalCode';
