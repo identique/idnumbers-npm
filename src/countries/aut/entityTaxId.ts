@@ -7,7 +7,9 @@
 
 import { validateRegexp, normalize } from '../../utils';
 
-const REGEXP = /^([A-Z]\d{2}[- ]?\d{3}[ /]?\d{3})$/;
+// Austrian UIDs always start with 'U'. The Python source uses a permissive [A-Z] regex
+// with an open question comment, but the official UID spec mandates the 'U' prefix.
+const REGEXP = /^(U\d{2}[- ]?\d{3}[ /]?\d{3})$/;
 
 /**
  * Validate checksum for Austria Entity Tax ID

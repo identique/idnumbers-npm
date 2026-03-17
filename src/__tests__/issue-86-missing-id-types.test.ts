@@ -101,7 +101,7 @@ describe('AUS - DriverLicenseNumber', () => {
 // ---------------------------------------------------------------------------
 describe('AUT - EntityTaxIDNumber', () => {
   const validIDs = ['U10223006'];
-  const invalidIDs = ['U10223007', 'U1022300', ''];
+  const invalidIDs = ['U10223007', 'U1022300', 'A10223006', ''];
 
   test.each(validIDs)('should validate valid entity tax ID: %s', id => {
     expect(EntityTaxIDNumber.validate(id)).toBe(true);
@@ -164,6 +164,20 @@ describe('BGR - UnifiedIdCode', () => {
   test('checksum returns correct digit for valid UIC', () => {
     const check = UnifiedIdCode.checksum('207258749');
     expect(check).toBe(9);
+  });
+
+  // 13-digit path: first 4 digits [1,2,3,4], WEIGHTS13_1=[2,7,3,5]
+  // sum = 2*1+7*2+3*3+5*4 = 45, 45%11 = 1 → check digit = 1
+  test('13-digit UIC: validates correctly (check digit at end)', () => {
+    expect(UnifiedIdCode.validate('1234567890001')).toBe(true);
+  });
+
+  test('13-digit UIC: rejects wrong check digit', () => {
+    expect(UnifiedIdCode.validate('1234567890002')).toBe(false);
+  });
+
+  test('13-digit UIC: checksum returns correct digit', () => {
+    expect(UnifiedIdCode.checksum('1234567890001')).toBe(1);
   });
 
   test('METADATA is defined with correct fields', () => {
