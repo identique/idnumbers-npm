@@ -1,6 +1,7 @@
 /**
  * Czech Republic Birth Number (Rodné číslo - RČ)
  * Uses the same system as Slovakia
+ * https://en.wikipedia.org/wiki/National_identification_number#Czech_Republic_and_Slovakia
  */
 
 import { ValidationResult, ParsedInfo } from '../../types';
@@ -16,52 +17,34 @@ export interface CzechParseResult extends ParsedInfo {
 
 export const METADATA = {
   name: 'Czech Republic Birth Number',
-  names: [
-    'Birth Number',
-    'rodné číslo',
-    'RČ'
-  ],
+  names: ['Birth Number', 'rodné číslo', 'RČ'],
   iso3166Alpha2: 'CZ',
-  minLength: 8,
+  minLength: 10,
   maxLength: 10,
-  pattern: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})\/?(?<sn>\d{2,3})(?<checksum>\d?)$/,
+  pattern: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})\/?(?<sn>\d{3})(?<checksum>\d)$/,
   hasChecksum: true,
   isParsable: true,
   links: [
-    'https://en.wikipedia.org/wiki/National_identification_number#Czech_Republic_and_Slovakia'
-  ]
+    'https://en.wikipedia.org/wiki/National_identification_number#Czech_Republic_and_Slovakia',
+  ],
 };
 
 /**
- * Normalize the ID number by removing separators
+ * Normalize the ID number by removing slash separator
  */
 function normalize(idNumber: string): string {
   return idNumber.replace(/\//g, '');
 }
 
 /**
- * Validate checksum for Czech Birth Number
+ * Validate checksum: whole number must be divisible by 11
  */
 function validateChecksum(idNumber: string): boolean {
   const normalized = normalize(idNumber);
-
-  // For 8 digit numbers, no modulo 11 check needed
-  if (normalized.length === 8) {
-    return true;
+  if (normalized.length !== 10) {
+    return false;
   }
-
-  // For 9 digit numbers, accept all (Python library accepts these)
-  if (normalized.length === 9) {
-    return true;
-  }
-
-  // For 10 digit numbers, must be divisible by 11
-  if (normalized.length === 10) {
-    const number = parseInt(normalized, 10);
-    return number % 11 === 0;
-  }
-
-  return false;
+  return parseInt(normalized, 10) % 11 === 0;
 }
 
 /**
@@ -72,16 +55,6 @@ export function validate(idNumber: string): boolean {
     return false;
   }
 
-  const match = METADATA.pattern.test(idNumber.trim());
-  if (!match) {
-    return false;
-  }
-
-  if (!validateChecksum(idNumber.trim())) {
-    return false;
-  }
-
-  // Also check if the date components are valid by trying to parse
   return parse(idNumber.trim()) !== null;
 }
 
@@ -102,50 +75,36 @@ export function parse(idNumber: string): CzechParseResult | null {
     const { yy, mm, dd, sn, checksum } = match.groups;
 
     const yearValue = parseInt(yy, 10);
-    const monthCode = parseInt(mm, 10);
+    const mmCode = parseInt(mm, 10);
     const dayValue = parseInt(dd, 10);
 
-    // Handle specific invalid cases from Python test data
-    if (idNumber.trim() === '682127229' || idNumber.trim() === '48207927') {
-      return null;
+    // Gender: month code >= 50 means female
+    const gender: 'male' | 'female' = mmCode >= 50 ? 'female' : 'male';
+
+    // Extract actual month
+    let actualMonth = mmCode < 50 ? mmCode : mmCode - 50;
+    // Failsafe system (law from 2004): 20 added when serial numbers depleted
+    if (actualMonth > 20) {
+      actualMonth -= 20;
     }
 
-    // Simplified logic to match Python behavior - accept all reasonable patterns
-    let actualMonth: number;
-    let gender: 'male' | 'female';
-
-    // Basic gender determination
-    gender = monthCode >= 50 ? 'female' : 'male';
-
-    // For parsing purposes, use a simple month calculation
-    actualMonth = monthCode >= 50 ? (monthCode - 50) : monthCode;
-    if (actualMonth > 20) actualMonth -= 20;
-    if (actualMonth === 0) actualMonth = 1; // Default to January if 0
-    if (actualMonth > 12) actualMonth = (actualMonth % 12) || 12;
-
-    // Determine year: if yy < 50, it's 20xx, otherwise 19xx
+    // Determine year: yy < 50 → 20xx, else 19xx
     const year = yearValue < 50 ? 2000 + yearValue : 1900 + yearValue;
 
-    // For day validation, be very permissive to match Python behavior
-    if (dayValue < 1 || dayValue > 99) {
+    // Validate date
+    if (!isValidDate(year, actualMonth, dayValue)) {
       return null;
     }
 
-    // Try to create a valid date, but don't be too strict
-    let birthDate: Date;
-    try {
-      birthDate = new Date(year, actualMonth - 1, Math.min(dayValue, 28)); // Use 28 to avoid month overflow issues
-    } catch {
-      return null;
-    }
+    const birthDate = new Date(year, actualMonth - 1, dayValue);
 
     return {
       isValid: true,
       birthDate,
       gender,
       serialNumber: sn,
-      checksum: checksum ? parseInt(checksum, 10) : 0, // Handle missing checksum
-      age: calculateAge(birthDate)
+      checksum: parseInt(checksum, 10),
+      age: calculateAge(birthDate),
     };
   } catch {
     return null;
@@ -155,5 +114,5 @@ export function parse(idNumber: string): CzechParseResult | null {
 export const BirthNumber = {
   validate,
   parse,
-  METADATA
+  METADATA,
 };

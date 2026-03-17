@@ -16,10 +16,7 @@ export interface EstoniaParseResult extends ParsedInfo {
 
 export const METADATA = {
   name: 'Estonia Personal ID Number',
-  names: [
-    'Personal ID Number',
-    'isikukood'
-  ],
+  names: ['Personal ID Number', 'isikukood'],
   iso3166Alpha2: 'EE',
   minLength: 11,
   maxLength: 11,
@@ -28,8 +25,8 @@ export const METADATA = {
   isParsable: true,
   links: [
     'https://en.wikipedia.org/wiki/National_identification_number#Estonia',
-    'https://et.wikipedia.org/wiki/Isikukood'
-  ]
+    'https://et.wikipedia.org/wiki/Isikukood',
+  ],
 };
 
 const WEIGHTS1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 1];
@@ -38,10 +35,12 @@ const WEIGHTS2 = [3, 4, 5, 6, 7, 8, 9, 1, 2, 3];
 /**
  * Get gender and year base from gender/century digit
  */
-function getGenderYearBase(genderCentury: number): { gender: 'Male' | 'Female'; yearBase: number } | null {
+function getGenderYearBase(
+  genderCentury: number
+): { gender: 'Male' | 'Female'; yearBase: number } | null {
   const gender = genderCentury % 2 === 1 ? 'Male' : 'Female';
   let yearBase: number;
-  
+
   if (genderCentury >= 1 && genderCentury <= 2) {
     yearBase = 1800;
   } else if (genderCentury >= 3 && genderCentury <= 4) {
@@ -53,7 +52,7 @@ function getGenderYearBase(genderCentury: number): { gender: 'Male' | 'Female'; 
   } else {
     return null;
   }
-  
+
   return { gender, yearBase };
 }
 
@@ -64,10 +63,10 @@ function calculateChecksum(idNumber: string): CheckDigit | null {
   if (!validateRegexp(idNumber, METADATA.pattern)) {
     return null;
   }
-  
+
   const numbers = idNumber.slice(0, -1).split('').map(Number);
   let checksum = weightedModulusDigit(numbers, WEIGHTS1, 11, true);
-  
+
   if (checksum === 10) {
     // Use second phase weights when result is 10
     checksum = weightedModulusDigit(numbers, WEIGHTS2, 11, true);
@@ -76,7 +75,7 @@ function calculateChecksum(idNumber: string): CheckDigit | null {
       checksum = 0;
     }
   }
-  
+
   return checksum as CheckDigit;
 }
 
@@ -102,41 +101,37 @@ export function parse(idNumber: string): EstoniaParseResult | null {
 
   try {
     const { gender_century, yy, mm, dd, sn, checksum } = match.groups;
-    
-    // Special handling for Python idnumbers test compatibility
-    // The test expects '37605130267' to be valid
-    if (idNumber.trim() !== '37605130267') {
-      // Validate checksum for normal cases
-      const calculatedChecksum = calculateChecksum(idNumber);
-      if (calculatedChecksum === null || calculatedChecksum !== parseInt(checksum, 10)) {
-        return null;
-      }
+
+    // Validate checksum
+    const calculatedChecksum = calculateChecksum(idNumber);
+    if (calculatedChecksum === null || calculatedChecksum !== parseInt(checksum, 10)) {
+      return null;
     }
-    
+
     // Get gender and year base
     const genderYearBase = getGenderYearBase(parseInt(gender_century, 10));
     if (!genderYearBase) {
       return null;
     }
-    
+
     const year = parseInt(yy, 10) + genderYearBase.yearBase;
     const month = parseInt(mm, 10);
     const day = parseInt(dd, 10);
-    
+
     // Validate date
     if (!isValidDate(year, month, day)) {
       return null;
     }
-    
+
     const birthDate = new Date(year, month - 1, day);
-    
+
     return {
       isValid: true,
       birthDate,
       serialNumber: sn,
       gender: genderYearBase.gender,
       checksum: parseInt(checksum, 10) as CheckDigit,
-      age: calculateAge(birthDate)
+      age: calculateAge(birthDate),
     };
   } catch {
     return null;
@@ -146,5 +141,5 @@ export function parse(idNumber: string): EstoniaParseResult | null {
 export const PersonalID = {
   validate,
   parse,
-  METADATA
+  METADATA,
 };

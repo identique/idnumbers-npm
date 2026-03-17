@@ -13,13 +13,14 @@ export class MedicareNumber implements IdNumberClass {
     maxLength: 11,
     parsable: false,
     checksum: true,
-    regexp: /^([2-6]\d{10}|[2-6]\d{3} \d{5} \d|[2-6]\d{3}-\d{5}-\d|[2-6]\d{9}|[2-6]\d{9}([-/]\d)?|[2-6]\d{3} \d{5} \d([-/]\d)?|[2-6]\d{3}-\d{5}-\d([-/]\d)?|[2-6]\d{3} \d{5} \d \d|[2-6]\d{3}-\d{5}-\d-\d)$/,
+    regexp:
+      /^([2-6]\d{10}|[2-6]\d{3} \d{5} \d|[2-6]\d{3}-\d{5}-\d|[2-6]\d{9}|[2-6]\d{9}([-/]\d)?|[2-6]\d{3} \d{5} \d([-/]\d)?|[2-6]\d{3}-\d{5}-\d([-/]\d)?|[2-6]\d{3} \d{5} \d \d|[2-6]\d{3}-\d{5}-\d-\d)$/,
     aliasOf: null,
     names: ['Medicare Number', 'Medicare No'],
     links: [
-      'https://techdocs.broadcom.com/us/en/symantec-security-software/information-security/data-loss-prevention/15-8/about-data-loss-prevention-policies-v27576413-d327e9/library-of-system-data-identifiers-v95989112-d327e56315/australian-medicare-number-v115447646-d327e57399.html'
+      'https://techdocs.broadcom.com/us/en/symantec-security-software/information-security/data-loss-prevention/15-8/about-data-loss-prevention-policies-v27576413-d327e9/library-of-system-data-identifiers-v95989112-d327e56315/australian-medicare-number-v115447646-d327e57399.html',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   /** Magic multiplier for checksum */
@@ -38,18 +39,10 @@ export class MedicareNumber implements IdNumberClass {
     if (!validateRegexp(idNumber, MedicareNumber.METADATA.regexp)) {
       return false;
     }
-    
+
     const normalized = normalize(idNumber);
-    
-    // Special handling for known edge cases from Python idnumbers library tests
-    // '5123456701' is considered valid in their tests despite checksum mismatch
-    // This might be due to historical Medicare numbers or different validation rules
-    if (normalized === '5123456701') {
-      return true;
-    }
-    
     const calculatedChecksum = MedicareNumber.checksum(idNumber);
-    
+
     return calculatedChecksum !== null && calculatedChecksum === parseInt(normalized[8]);
   }
 
@@ -65,13 +58,18 @@ export class MedicareNumber implements IdNumberClass {
     if (!validateRegexp(idNumber, MedicareNumber.METADATA.regexp)) {
       return null;
     }
-    
+
     const normalized = normalize(idNumber);
     // Only validate first 8 digits
-    const numberList = normalized.slice(0, 8).split('').map(char => parseInt(char));
-    const total = numberList.reduce((sum, value, index) => 
-      sum + (value * MedicareNumber.MAGIC_MULTIPLIER[index]), 0);
-    
+    const numberList = normalized
+      .slice(0, 8)
+      .split('')
+      .map(char => parseInt(char));
+    const total = numberList.reduce(
+      (sum, value, index) => sum + value * MedicareNumber.MAGIC_MULTIPLIER[index],
+      0
+    );
+
     return (total % 10) as CheckDigit;
   }
 

@@ -565,7 +565,7 @@ describe('validateNationalId parity (registry vs old switch)', () => {
     {
       code: 'ITA',
       alias: 'IT',
-      validId: 'RSSMRA85M01H501Z',
+      validId: 'RSSMRA85M01H501Q',
       invalidId: 'INVALID',
       hasParse: true,
       description: 'Italy Fiscal Code',
@@ -803,7 +803,7 @@ describe('Alias resolution in validateNationalId', () => {
   // Sample of other alpha-2 aliases
   const aliasTests: Array<{ alias: string; expectedCode: string; validId: string }> = [
     { alias: 'DE', expectedCode: 'DEU', validId: '12345678911' },
-    { alias: 'IT', expectedCode: 'ITA', validId: 'RSSMRA85M01H501Z' },
+    { alias: 'IT', expectedCode: 'ITA', validId: 'RSSMRA85M01H501Q' },
     { alias: 'PL', expectedCode: 'POL', validId: '80010100000' },
     { alias: 'CZ', expectedCode: 'CZE', validId: '0001010009' },
     { alias: 'CN', expectedCode: 'CHN', validId: '11010219840406970X' },

@@ -18,10 +18,8 @@ export class NIF implements IdNumberClass {
     regexp: /^\d{9}$/,
     aliasOf: null,
     names: ['NIF', 'Número de Identificação Fiscal', 'Tax Identification Number'],
-    links: [
-      'https://en.wikipedia.org/wiki/National_identification_number#Portugal'
-    ],
-    deprecated: false
+    links: ['https://en.wikipedia.org/wiki/National_identification_number#Portugal'],
+    deprecated: false,
   };
 
   get METADATA(): IdMetadata {
@@ -42,11 +40,6 @@ export class NIF implements IdNumberClass {
     // Must match the regex pattern (exactly 9 digits)
     if (!NIF.METADATA.regexp.test(cleanId)) {
       return false;
-    }
-
-    // All zeros is considered valid in the test case
-    if (cleanId === '000000000') {
-      return true;
     }
 
     // Calculate and verify check digit

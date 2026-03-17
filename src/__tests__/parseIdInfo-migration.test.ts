@@ -328,7 +328,7 @@ describe('parseIdInfo parity (registry vs old switch)', () => {
     { code: 'FRA', alias: 'FR', validId: '255081416802538', description: 'France SSN' },
     { code: 'ALB', validId: 'J50101001A', description: 'Albania Identity Number' },
     { code: 'BEL', alias: 'BE', validId: '85073003328', description: 'Belgium NRN' },
-    { code: 'ITA', alias: 'IT', validId: 'RSSMRA85M01H501Z', description: 'Italy Fiscal Code' },
+    { code: 'ITA', alias: 'IT', validId: 'RSSMRA85M01H501Q', description: 'Italy Fiscal Code' },
     { code: 'DNK', alias: 'DK', validId: '0101001234', description: 'Denmark CPR' },
     { code: 'POL', alias: 'PL', validId: '80010100000', description: 'Poland PESEL' },
     { code: 'CZE', alias: 'CZ', validId: '0001010009', description: 'Czech Birth Number' },

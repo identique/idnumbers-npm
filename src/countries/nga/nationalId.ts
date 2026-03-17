@@ -27,9 +27,9 @@ export class NationalID implements IdNumberClass {
     names: ['National Identification Number', 'NIN'],
     links: [
       'https://en.wikipedia.org/wiki/National_identification_number#Nigeria',
-      'https://nimc.gov.ng/'
+      'https://nimc.gov.ng/',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   get METADATA(): IdMetadata {
@@ -43,11 +43,6 @@ export class NationalID implements IdNumberClass {
   static validate(idNumber: string): boolean {
     if (typeof idNumber !== 'string') {
       return false;
-    }
-
-    // Special case handling for Python test expectations
-    if (idNumber === '12345678902') {
-      return false; // Python expects this to be invalid
     }
 
     return NationalID.METADATA.regexp.test(idNumber);
@@ -68,7 +63,7 @@ export class NationalID implements IdNumberClass {
     }
 
     return {
-      checksum: null
+      checksum: null,
     };
   }
 
