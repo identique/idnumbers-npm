@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-03-29
+
+### Added
+
+- 11 secondary ID types ported from Python `idnumbers` library ([#86](https://github.com/identique/idnumbers-npm/issues/86), [#90](https://github.com/identique/idnumbers-npm/pull/90)):
+  - AUS: `TaxFileNumber`, `DriverLicenseNumber`
+  - AUT: `EntityTaxIDNumber` (VAT/UID)
+  - BEL: `EntityVAT`
+  - BGR: `UnifiedIdCode` (UIC/EIK/BULSTAT)
+  - CHE: `BusinessID` (UID)
+  - GRC: `OldIdentityCard` (deprecated)
+  - KAZ: `BusinessIDNumber` (BIN)
+  - KOR: `OldResidentRegistration` (deprecated)
+  - LVA: `OldPersonalCode` (deprecated)
+  - VEN: `FiscalInformationNumber` (RIF)
+
+### Fixed
+
+- Corrected BGR century calculation for `monthPart > 20` ([#83](https://github.com/identique/idnumbers-npm/issues/83), [#87](https://github.com/identique/idnumbers-npm/pull/87))
+- Fixed TUR validation negative modulus handling ([#83](https://github.com/identique/idnumbers-npm/issues/83), [#87](https://github.com/identique/idnumbers-npm/pull/87))
+- Replaced SGP check letter maps with per-prefix tables ([#83](https://github.com/identique/idnumbers-npm/issues/83), [#87](https://github.com/identique/idnumbers-npm/pull/87))
+- Applied JPN My Number weights in correct forward order ([#83](https://github.com/identique/idnumbers-npm/issues/83), [#87](https://github.com/identique/idnumbers-npm/pull/87))
+- Rewrote LKA validation with proper checksum algorithm ([#83](https://github.com/identique/idnumbers-npm/issues/83), [#87](https://github.com/identique/idnumbers-npm/pull/87))
+- Removed checksum validation from DNK CPR (matches Python source) ([#84](https://github.com/identique/idnumbers-npm/issues/84), [#88](https://github.com/identique/idnumbers-npm/pull/88))
+- Removed first-digit restriction from CAN SIN ([#84](https://github.com/identique/idnumbers-npm/issues/84), [#88](https://github.com/identique/idnumbers-npm/pull/88))
+- Removed year clamping and fixed gender threshold in ALB ([#84](https://github.com/identique/idnumbers-npm/issues/84), [#88](https://github.com/identique/idnumbers-npm/pull/88))
+
+### Changed
+
+- Removed hardcoded test ID bypasses across 12 countries (ARE, AUS, CHE, CZE, EST, ITA, LVA, NGA, NZL, PHL, PRT, SVK) — all now use proper algorithmic validation ([#85](https://github.com/identique/idnumbers-npm/issues/85), [#89](https://github.com/identique/idnumbers-npm/pull/89))
+
 ## [1.3.0] - 2026-02-17
 
 ### Added
@@ -74,7 +105,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Full TypeScript support with type definitions
 - Comprehensive documentation and examples
 
-[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/identique/idnumbers-npm/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/identique/idnumbers-npm/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/identique/idnumbers-npm/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/identique/idnumbers-npm/compare/v1.0.1...v1.1.0
