@@ -7,22 +7,18 @@ import { ValidationResult } from '../../types';
 
 export const METADATA = {
   name: 'Austria Tax Identification Number',
-  names: [
-    'Tax ID number',
-    'ATIN',
-    'Abgabenkontonummer'
-  ],
+  names: ['Tax ID number', 'ATIN', 'Abgabenkontonummer'],
   iso3166Alpha2: 'AT',
   minLength: 9,
-  maxLength: 11,  // Allow up to 11 for formats with spaces
+  maxLength: 11, // Allow up to 11 for formats with spaces
   pattern: /^(\d{2}-?\d{3}\/?\d{4}|\d{4}\s?\d{6})$/,
   hasChecksum: true,
   isParsable: false,
   links: [
     'https://www.oecd.org/tax/automatic-exchange/crs-implementation-and-assistance/tax-identification-numbers/Austria-TIN.pdf',
     'https://www.glasbenamatica.org/wp-content/uploads/2017/05/TIN_-_country_sheet_AT_en.pdf',
-    'https://taxid.pro/docs/countries/austria'
-  ]
+    'https://taxid.pro/docs/countries/austria',
+  ],
 };
 
 const MULTIPLIER = [1, 2, 1, 2, 1, 2, 1, 2];
@@ -31,7 +27,7 @@ const OVERFLOW_SUM: { [key: number]: number } = {
   12: 3,
   14: 5,
   16: 7,
-  18: 9
+  18: 9,
 };
 
 /**
@@ -95,5 +91,7 @@ export function validate(idNumber: string): boolean {
 
 export const TaxIdentificationNumber = {
   validate,
-  METADATA
+  METADATA,
 };
+
+export { EntityTaxIDNumber } from './entityTaxId';

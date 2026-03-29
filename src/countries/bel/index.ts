@@ -22,8 +22,8 @@ export const METADATA = {
     'NN',
     'Belgian identity card',
     'Identiteitskaart',
-    'Carte d\'identité',
-    'Personalausweis'
+    "Carte d'identité",
+    'Personalausweis',
   ],
   iso3166Alpha2: 'BE',
   minLength: 11,
@@ -33,8 +33,8 @@ export const METADATA = {
   isParsable: true,
   links: [
     'https://en.wikipedia.org/wiki/Belgian_identity_card',
-    'https://www.checkdoc.be/CheckDoc/homepage.do'
-  ]
+    'https://www.checkdoc.be/CheckDoc/homepage.do',
+  ],
 };
 
 /**
@@ -58,14 +58,14 @@ function calcCheckDigits(baseNumber: number): number {
 function validateChecksum(idNumber: string): boolean {
   const normalized = normalize(idNumber);
   const yy = parseInt(normalized.substring(0, 2), 10);
-  
+
   // The person born after 2000 add 2000000000
   const baseNumber = parseInt(normalized.substring(0, 9), 10);
   const adjustedNumber = yy < 50 ? 2000000000 + baseNumber : baseNumber;
-  
+
   const expectedCheck = calcCheckDigits(adjustedNumber);
   const actualCheck = parseInt(normalized.substring(9, 11), 10);
-  
+
   return expectedCheck === actualCheck;
 }
 
@@ -100,32 +100,32 @@ export function parse(idNumber: string): BelgiumParseResult | null {
 
   try {
     const { yy, mm, dd, sn, checksum } = match.groups;
-    
+
     const yearValue = parseInt(yy, 10);
     const month = parseInt(mm, 10);
     const day = parseInt(dd, 10);
-    
+
     // Determine year: if yy > 50, it's 19xx, otherwise 20xx
     const year = yearValue > 50 ? 1900 + yearValue : 2000 + yearValue;
-    
+
     // Validate date
     if (!isValidDate(year, month, day)) {
       return null;
     }
-    
+
     const birthDate = new Date(year, month - 1, day);
-    
+
     // Determine gender from serial number (odd = male, even = female)
     const serialNumber = parseInt(sn, 10);
     const gender = serialNumber % 2 === 1 ? Gender.MALE : Gender.FEMALE;
-    
+
     return {
       isValid: true,
       birthDate,
       gender,
       serialNumber: sn,
       checksum: parseInt(checksum, 10),
-      age: calculateAge(birthDate)
+      age: calculateAge(birthDate),
     };
   } catch {
     return null;
@@ -135,5 +135,7 @@ export function parse(idNumber: string): BelgiumParseResult | null {
 export const NationalRegistrationNumber = {
   validate,
   parse,
-  METADATA
+  METADATA,
 };
+
+export { EntityVAT } from './entityVat';

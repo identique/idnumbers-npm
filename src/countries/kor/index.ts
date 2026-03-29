@@ -22,7 +22,7 @@ export const METADATA = {
     '주민등록번호',
     'RRN',
     '住民登錄番號',
-    'Jumin Deungnok Beonho'
+    'Jumin Deungnok Beonho',
   ],
   iso3166Alpha2: 'KR',
   minLength: 13,
@@ -32,8 +32,8 @@ export const METADATA = {
   isParsable: true,
   links: [
     'https://en.wikipedia.org/wiki/Resident_registration_number',
-    'https://centers.ibs.re.kr/html/living_en/overview/arc.html'
-  ]
+    'https://centers.ibs.re.kr/html/living_en/overview/arc.html',
+  ],
 };
 
 // Citizenship mapping based on gender digit
@@ -47,7 +47,7 @@ const CITIZENSHIP_MAP: { [key: number]: 'citizen' | 'resident' } = {
   5: 'resident',
   6: 'resident',
   7: 'resident',
-  8: 'resident'
+  8: 'resident',
 };
 
 // Birth year base mapping based on gender digit
@@ -61,7 +61,7 @@ const DOB_BASE_MAP: { [key: number]: number } = {
   5: 1900,
   6: 1900,
   7: 2000,
-  8: 2000
+  8: 2000,
 };
 
 /**
@@ -73,15 +73,15 @@ function calculateChecksum(idNumber: string): boolean {
   if (clean.length !== 13) {
     return false;
   }
-  
+
   // Weights for checksum calculation
   const weights = [2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5];
   let sum = 0;
-  
+
   for (let i = 0; i < 12; i++) {
     sum += parseInt(clean[i], 10) * weights[i];
   }
-  
+
   const checkDigit = (11 - (sum % 11)) % 10;
   return checkDigit === parseInt(clean[12], 10);
 }
@@ -112,34 +112,34 @@ export function parse(idNumber: string): KoreaParseResult | null {
 
   try {
     const { yy, mm, dd, gender, sn } = match.groups;
-    
+
     const genderDigit = parseInt(gender, 10);
     const yearBase = DOB_BASE_MAP[genderDigit];
-    
+
     if (yearBase === undefined) {
       return null; // Invalid gender digit
     }
-    
+
     const year = yearBase + parseInt(yy, 10);
     const month = parseInt(mm, 10);
     const day = parseInt(dd, 10);
-    
+
     // Validate date
     if (!isValidDate(year, month, day)) {
       return null;
     }
-    
+
     const birthDate = new Date(year, month - 1, day);
     const genderValue = genderDigit % 2 === 1 ? 'male' : 'female';
     const citizenship = CITIZENSHIP_MAP[genderDigit];
-    
+
     return {
       isValid: true,
       birthDate,
       gender: genderValue,
       citizenship,
       serialNumber: sn,
-      age: calculateAge(birthDate)
+      age: calculateAge(birthDate),
     };
   } catch {
     return null;
@@ -149,5 +149,7 @@ export function parse(idNumber: string): KoreaParseResult | null {
 export const ResidentRegistration = {
   validate,
   parse,
-  METADATA
+  METADATA,
 };
+
+export { OldResidentRegistration } from './oldResidentRegistration';

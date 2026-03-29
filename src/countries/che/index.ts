@@ -75,3 +75,5 @@ export const SocialSecurityNumber = {
   parse,
   METADATA,
 };
+
+export { BusinessID } from './businessId';

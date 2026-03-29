@@ -124,3 +124,5 @@ export const UniformCivilNumber = {
   parse,
   METADATA,
 };
+
+export { UnifiedIdCode } from './unifiedId';
