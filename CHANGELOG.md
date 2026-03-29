@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.1] - 2026-03-29
+
+### Fixed
+
+- Add npm provenance for verified publish badge ([#91](https://github.com/identique/idnumbers-npm/issues/91))
+
 ## [1.4.0] - 2026-03-29
 
 ### Added
@@ -105,7 +111,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Full TypeScript support with type definitions
 - Comprehensive documentation and examples
 
-[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v1.4.0...HEAD
+[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v1.4.1...HEAD
+[1.4.1]: https://github.com/identique/idnumbers-npm/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/identique/idnumbers-npm/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/identique/idnumbers-npm/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/identique/idnumbers-npm/compare/v1.1.0...v1.2.0
