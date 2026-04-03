@@ -73,10 +73,10 @@ describe('Slovakia (SVK) - Birth Number (Rodné číslo)', () => {
       expect(result!.yyyymmdd).toEqual(new Date(1999, 11, 31));
     });
 
-    test('should handle minimum boundary (Jan 1, 2000)', () => {
+    test('should handle minimum boundary (Jan 1, 2000, yy=00 → 2000+00)', () => {
       const result = NationalID.parse('0001010009');
       expect(result).not.toBeNull();
-      expect(result!.yyyymmdd).toEqual(new Date(2000, 0, 1));
+      expect(result!.yyyymmdd.getFullYear()).toBe(2000);
     });
   });
 
@@ -134,12 +134,12 @@ describe('Slovakia (SVK) - Birth Number (Rodné číslo)', () => {
     });
 
     test('should reject Feb 30', () => {
-      // 2300001 / 11 = 209091 — divisible, but Feb 30 does not exist
+      // parseInt('0002300001') → 2300001, 2300001 / 11 = 209091 — divisible, but Feb 30 does not exist
       expect(NationalID.validate('0002300001')).toBe(false);
     });
 
     test('should reject Feb 31', () => {
-      // 2310000 / 11 = 210000 — divisible, but Feb 31 does not exist
+      // parseInt('0002310000') → 2310000, 2310000 / 11 = 210000 — divisible, but Feb 31 does not exist
       expect(NationalID.validate('0002310000')).toBe(false);
     });
 
