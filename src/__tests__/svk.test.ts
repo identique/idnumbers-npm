@@ -20,15 +20,9 @@ describe('Slovakia (SVK) - Birth Number (Rodné číslo)', () => {
       { id: '9012310010', year: 1990, month: 12, day: 31, desc: 'born 1990-12-31' },
       { id: '5401010010', year: 1954, month: 1, day: 1, desc: 'born 1954-01-01' },
       { id: '2306150011', year: 2023, month: 6, day: 15, desc: 'born 2023-06-15' },
-    ])('should validate male $desc ($id)', ({ id }) => {
+    ])('should validate and parse male $desc ($id)', ({ id, year, month, day }) => {
       expect(NationalID.validate(id)).toBe(true);
-    });
 
-    test.each([
-      { id: '0001010009', year: 2000, month: 1, day: 1 },
-      { id: '8501150020', year: 1985, month: 1, day: 15 },
-      { id: '9012310010', year: 1990, month: 12, day: 31 },
-    ])('should parse male $id with correct date and gender', ({ id, year, month, day }) => {
       const result = NationalID.parse(id);
       expect(result).not.toBeNull();
       expect(result!.yyyymmdd).toEqual(new Date(year, month - 1, day));
@@ -49,15 +43,9 @@ describe('Slovakia (SVK) - Birth Number (Rodné číslo)', () => {
         mmCode: 52,
         desc: 'born 1980-02-29 (leap)',
       },
-    ])('should validate female $desc ($id, mm=$mmCode)', ({ id }) => {
+    ])('should validate and parse female $desc ($id, mm=$mmCode)', ({ id, year, month, day }) => {
       expect(NationalID.validate(id)).toBe(true);
-    });
 
-    test.each([
-      { id: '0051010014', year: 2000, month: 1, day: 1 },
-      { id: '8557150019', year: 1985, month: 7, day: 15 },
-      { id: '7253150014', year: 1972, month: 3, day: 15 },
-    ])('should parse female $id with correct date and gender', ({ id, year, month, day }) => {
       const result = NationalID.parse(id);
       expect(result).not.toBeNull();
       expect(result!.yyyymmdd).toEqual(new Date(year, month - 1, day));
