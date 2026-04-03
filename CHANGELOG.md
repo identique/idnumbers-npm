@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-04-04
+
+### Added
+
+- Comprehensive Slovakia (SVK) validate() tests — valid/invalid IDs, male/female birth numbers, pre/post-1954 formats ([#22](https://github.com/identique/idnumbers-npm/issues/22))
+- Comprehensive Slovakia (SVK) parse() tests — birth date extraction, gender, century handling, sequence numbers ([#23](https://github.com/identique/idnumbers-npm/issues/23))
+- Slovakia (SVK) edge case and error tests — invalid formats, dates, checksums, boundary conditions ([#24](https://github.com/identique/idnumbers-npm/issues/24))
+
 ## [1.4.1] - 2026-03-29
 
 ### Fixed
@@ -111,7 +119,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Full TypeScript support with type definitions
 - Comprehensive documentation and examples
 
-[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v1.4.1...HEAD
+[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v1.5.0...HEAD
+[1.5.0]: https://github.com/identique/idnumbers-npm/compare/v1.4.1...v1.5.0
 [1.4.1]: https://github.com/identique/idnumbers-npm/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/identique/idnumbers-npm/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/identique/idnumbers-npm/compare/v1.2.0...v1.3.0
