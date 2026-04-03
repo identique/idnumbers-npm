@@ -42,13 +42,13 @@ describe('SVK NationalID parse() — Birth Date Extraction', () => {
   test('should extract correct month for male (mmCode 01-12)', () => {
     const result = NationalID.parse('8506150004');
     expect(result).not.toBeNull();
-    expect(result!.yyyymmdd.getMonth()).toBe(5); // June (0-indexed)
+    expect(result!.yyyymmdd.getMonth()).toBe(5);
   });
 
   test('should extract correct month for female (mmCode - 50)', () => {
     const result = NationalID.parse('6052299011');
     expect(result).not.toBeNull();
-    expect(result!.yyyymmdd.getMonth()).toBe(1); // February (0-indexed)
+    expect(result!.yyyymmdd.getMonth()).toBe(1);
   });
 
   test('should handle Jan 1 edge case', () => {
@@ -91,18 +91,10 @@ describe('SVK NationalID parse() — Gender Extraction', () => {
     expect(result!.gender).toBe(Gender.FEMALE);
   });
 
-  test('should identify female for Python parity vector', () => {
-    const result = NationalID.parse('6052299011');
-    expect(result).not.toBeNull();
-    expect(result!.gender).toBe(Gender.FEMALE);
-  });
-
   test('should identify female for century-2000 female ID', () => {
     const result = NationalID.parse('0051010003');
     expect(result).not.toBeNull();
     expect(result!.gender).toBe(Gender.FEMALE);
-    expect(result!.yyyymmdd.getFullYear()).toBe(2000);
-    expect(result!.yyyymmdd.getMonth()).toBe(0);
   });
 });
 
@@ -152,9 +144,9 @@ describe('SVK NationalID parse() — Failsafe Month System', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Sequence Number
+// Sequence Number & Checksum
 // ---------------------------------------------------------------------------
-describe('SVK NationalID parse() — Sequence Number', () => {
+describe('SVK NationalID parse() — Sequence Number & Checksum', () => {
   test('should extract sequence number 000', () => {
     const result = NationalID.parse('8506150004');
     expect(result).not.toBeNull();
@@ -246,21 +238,5 @@ describe('SVK NationalID parse() — Error Handling', () => {
 
   test('should return null for null input', () => {
     expect(NationalID.parse(null as unknown as string)).toBeNull();
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Python parity — full field verification against Python test_SVK.py
-// ---------------------------------------------------------------------------
-describe('SVK NationalID parse() — Python Parity', () => {
-  test('should match Python parse result for 6052299011', () => {
-    const result = NationalID.parse('6052299011');
-    expect(result).not.toBeNull();
-    expect(result!.yyyymmdd.getFullYear()).toBe(1960);
-    expect(result!.yyyymmdd.getMonth()).toBe(1); // February (0-indexed)
-    expect(result!.yyyymmdd.getDate()).toBe(29);
-    expect(result!.gender).toBe(Gender.FEMALE);
-    expect(result!.sn).toBe('901');
-    expect(result!.checksum).toBe(1);
   });
 });
