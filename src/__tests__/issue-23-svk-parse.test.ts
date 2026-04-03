@@ -220,6 +220,10 @@ describe('SVK NationalID parse() — Error Handling', () => {
     expect(NationalID.parse('6052299010')).toBeNull();
   });
 
+  test('should return null for Feb 29 on non-leap year', () => {
+    expect(NationalID.parse('8502290005')).toBeNull();
+  });
+
   test('should return null for invalid date Feb 30', () => {
     expect(NationalID.parse('8502300004')).toBeNull();
   });
