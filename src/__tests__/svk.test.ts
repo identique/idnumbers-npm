@@ -65,6 +65,19 @@ describe('Slovakia (SVK) - Birth Number (Rodné číslo)', () => {
       expect(result).not.toBeNull();
       expect(result!.yyyymmdd.getFullYear()).toBe(1950);
     });
+
+    test('should handle maximum boundary (Dec 31, 1999)', () => {
+      // 9912310001 / 11 = 901119091 — divisible
+      const result = NationalID.parse('9912310001');
+      expect(result).not.toBeNull();
+      expect(result!.yyyymmdd).toEqual(new Date(1999, 11, 31));
+    });
+
+    test('should handle minimum boundary (Jan 1, 2000)', () => {
+      const result = NationalID.parse('0001010009');
+      expect(result).not.toBeNull();
+      expect(result!.yyyymmdd).toEqual(new Date(2000, 0, 1));
+    });
   });
 
   describe('Slash Separator Format', () => {
@@ -119,6 +132,26 @@ describe('Slovakia (SVK) - Birth Number (Rodné číslo)', () => {
     test('should reject day 00', () => {
       expect(NationalID.validate('0001000010')).toBe(false);
     });
+
+    test('should reject Feb 30', () => {
+      // 2300001 / 11 = 209091 — divisible, but Feb 30 does not exist
+      expect(NationalID.validate('0002300001')).toBe(false);
+    });
+
+    test('should reject Feb 31', () => {
+      // 2310000 / 11 = 210000 — divisible, but Feb 31 does not exist
+      expect(NationalID.validate('0002310000')).toBe(false);
+    });
+
+    test('should reject Apr 31', () => {
+      // 4310009 / 11 = 391819 — divisible, but Apr has 30 days
+      expect(NationalID.validate('0004310009')).toBe(false);
+    });
+
+    test('should reject Jun 31', () => {
+      // 6310007 / 11 = 573637 — divisible, but Jun has 30 days
+      expect(NationalID.validate('0006310007')).toBe(false);
+    });
   });
 
   describe('Checksum Validation', () => {
@@ -169,6 +202,11 @@ describe('Slovakia (SVK) - Birth Number (Rodné číslo)', () => {
     test('should reject female overflow month 83 (→ actual month 13)', () => {
       expect(NationalID.validate('0083010015')).toBe(false);
     });
+
+    test('should reject female month 63 (→ actual month 13)', () => {
+      // 63010002 / 11 = 5728182 — divisible, month code 63 → 63-50=13
+      expect(NationalID.validate('0063010002')).toBe(false);
+    });
   });
 
   describe('Invalid Inputs', () => {
@@ -176,12 +214,28 @@ describe('Slovakia (SVK) - Birth Number (Rodné číslo)', () => {
       expect(NationalID.validate('')).toBe(false);
     });
 
-    test('should reject whitespace', () => {
+    test('should reject whitespace only', () => {
       expect(NationalID.validate('   ')).toBe(false);
+    });
+
+    test('should reject leading whitespace', () => {
+      expect(NationalID.validate(' 0001010009')).toBe(false);
+    });
+
+    test('should reject trailing whitespace', () => {
+      expect(NationalID.validate('0001010009 ')).toBe(false);
     });
 
     test('should reject non-numeric input', () => {
       expect(NationalID.validate('ABCDEFGHIJ')).toBe(false);
+    });
+
+    test('should reject mixed alphanumeric', () => {
+      expect(NationalID.validate('000101000A')).toBe(false);
+    });
+
+    test('should reject invalid slash position', () => {
+      expect(NationalID.validate('0001/010009')).toBe(false);
     });
 
     test('should reject too short input (9 digits)', () => {
