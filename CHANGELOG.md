@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Norway (NOR) D-nummer support: `NationalID.parse()` now detects D-nummer IDs (DD field 41–71) and returns `idType: 'd-nummer'` vs `'fodselsnummer'` ([#29](https://github.com/identique/idnumbers-npm/issues/29))
+- `NationalIdParseResult` now includes `idType: 'fodselsnummer' | 'd-nummer'` discriminator field ([#29](https://github.com/identique/idnumbers-npm/issues/29))
+- Comprehensive Norway (NOR) fødselsnummer validation tests — valid IDs across 1800s/1900s/2000s centuries, leap year, invalid dates/checksums ([#28](https://github.com/identique/idnumbers-npm/issues/28))
+- Comprehensive Norway (NOR) D-nummer validation tests — valid/invalid IDs, boundary conditions, fødselsnummer differentiation ([#29](https://github.com/identique/idnumbers-npm/issues/29))
+- Norway (NOR) checksum and parse() function tests — check digit validation, birth date/gender/idType extraction, error handling ([#30](https://github.com/identique/idnumbers-npm/issues/30))
+
 ## [1.5.0] - 2026-04-04
 
 ### Added
