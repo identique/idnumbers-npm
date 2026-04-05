@@ -11,6 +11,8 @@ export interface NationalIdParseResult {
   yyyymmdd: Date;
   /** Checksum (2 digits) */
   checksum: string;
+  /** ID type: fødselsnummer (birth number) or D-nummer (temporary residents, day+40) */
+  idType: 'fodselsnummer' | 'd-nummer';
 }
 
 /**
@@ -31,9 +33,9 @@ export class NationalID implements IdNumberClass {
     names: ['National ID Number', 'fødselsnummer', 'birth number', 'riegádannummir'],
     links: [
       'https://en.wikipedia.org/wiki/National_identification_number#Norway',
-      'https://en.wikipedia.org/wiki/National_identity_number_(Norway)'
+      'https://en.wikipedia.org/wiki/National_identity_number_(Norway)',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   private static readonly FIRST_MAGIC_MULTIPLIER = [3, 7, 6, 1, 8, 9, 4, 5, 2, 1];
@@ -78,7 +80,12 @@ export class NationalID implements IdNumberClass {
     const individualCode = match.groups.individual_number;
     const yy = match.groups.yy;
     const mm = match.groups.mm;
-    const dd = match.groups.dd;
+    const ddNum = parseInt(match.groups.dd, 10);
+
+    // Detect D-nummer: temporary residents have day-of-birth + 40 in the DD field (41-71)
+    const isDNummer = ddNum >= 41 && ddNum <= 71;
+    const dayNum = isDNummer ? ddNum - 40 : ddNum;
+    const idType = isDNummer ? ('d-nummer' as const) : ('fodselsnummer' as const);
 
     // Calculate century based on individual number
     let birthCentury = 20;
@@ -97,18 +104,14 @@ export class NationalID implements IdNumberClass {
     const gender = parseInt(individualCode[2], 10) % 2 === 0 ? Gender.FEMALE : Gender.MALE;
 
     try {
-      const date = new Date(
-        parseInt(`${birthCentury}${yy}`, 10),
-        parseInt(mm, 10) - 1,
-        parseInt(dd, 10)
-      );
+      const fullYear = parseInt(`${birthCentury}${yy}`, 10);
+      const date = new Date(fullYear, parseInt(mm, 10) - 1, dayNum);
 
       // Validate date
-      const fullYear = parseInt(`${birthCentury}${yy}`, 10);
       if (
         date.getFullYear() !== fullYear ||
         date.getMonth() !== parseInt(mm, 10) - 1 ||
-        date.getDate() !== parseInt(dd, 10)
+        date.getDate() !== dayNum
       ) {
         return null;
       }
@@ -116,7 +119,8 @@ export class NationalID implements IdNumberClass {
       return {
         gender,
         yyyymmdd: date,
-        checksum: match.groups.checksum
+        checksum: match.groups.checksum,
+        idType,
       };
     } catch {
       return null;
