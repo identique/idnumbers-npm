@@ -16,12 +16,13 @@ import { validateNationalId, parseIdInfo } from '../index';
 // ---------------------------------------------------------------------------
 describe('NOR NationalID — Fødselsnummer Validation (#28)', () => {
   test.each([
-    ['29029600013', 'male, Feb 29 1996 (leap year), individual 001 (0-499 → 1900s)'],
+    ['29029600013', 'female, Feb 29 1996 (leap year), individual 000 (0-499 → 1900s)'],
     ['01019000245', 'female, Jan 1 1990, individual 002'],
     ['17054026641', 'female, May 17 1940, individual 266'],
     ['15060050373', 'male, June 15 2000, individual 503 (500-749, yy<54 → 2000s)'],
     ['15060050292', 'female, June 15 2000, individual 502 (500-749, yy<54 → 2000s)'],
     ['05055590127', 'male, May 5 1955, individual 901 (900-999, yy>=40 → 1900s)'],
+    ['10107055008', 'female, Oct 10 1870, individual 550 (500-749, yy>=54 → 1800s)'],
   ])('should validate %s — %s', id => {
     expect(NationalID.validate(id)).toBe(true);
   });
