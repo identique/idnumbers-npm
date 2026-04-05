@@ -82,10 +82,10 @@ export class NationalID implements IdNumberClass {
     const mm = match.groups.mm;
     const ddNum = parseInt(match.groups.dd, 10);
 
-    // Detect D-nummer: temporary residents have day-of-birth + 40 in the DD field (41-71)
+    // D-nummer: day + 40 in DD field (41-71)
     const isDNummer = ddNum >= 41 && ddNum <= 71;
     const dayNum = isDNummer ? ddNum - 40 : ddNum;
-    const idType = isDNummer ? ('d-nummer' as const) : ('fodselsnummer' as const);
+    const idType = isDNummer ? 'd-nummer' : 'fodselsnummer';
 
     // Calculate century based on individual number
     let birthCentury = 20;
@@ -105,12 +105,13 @@ export class NationalID implements IdNumberClass {
 
     try {
       const fullYear = parseInt(`${birthCentury}${yy}`, 10);
-      const date = new Date(fullYear, parseInt(mm, 10) - 1, dayNum);
+      const mmNum = parseInt(mm, 10);
+      const date = new Date(fullYear, mmNum - 1, dayNum);
 
       // Validate date
       if (
         date.getFullYear() !== fullYear ||
-        date.getMonth() !== parseInt(mm, 10) - 1 ||
+        date.getMonth() !== mmNum - 1 ||
         date.getDate() !== dayNum
       ) {
         return null;

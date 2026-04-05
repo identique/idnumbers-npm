@@ -7,7 +7,7 @@
  * https://en.wikipedia.org/wiki/National_identity_number_(Norway)#Check_digits
  */
 
-import { NationalID } from '../countries/nor';
+import { NationalID, NationalIdParseResult } from '../countries/nor/nationalId';
 import { Gender } from '../constants';
 import { validateNationalId, parseIdInfo } from '../index';
 
@@ -237,8 +237,8 @@ describe('NOR NationalID — Integration via public API', () => {
   });
 
   test('parseIdInfo("NOR", validDNummer) should return non-null with idType d-nummer', () => {
-    const result = parseIdInfo('NOR', VALID_DNUMMER);
+    const result = parseIdInfo('NOR', VALID_DNUMMER) as NationalIdParseResult | null;
     expect(result).not.toBeNull();
-    expect((result as unknown as { idType: string }).idType).toBe('d-nummer');
+    expect(result!.idType).toBe('d-nummer');
   });
 });
