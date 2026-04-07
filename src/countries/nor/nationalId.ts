@@ -11,12 +11,8 @@ export interface NationalIdParseResult {
   yyyymmdd: Date;
   /** Checksum (2 digits) */
   checksum: string;
-  /**
-   * ID type: fødselsnummer (birth number) or D-nummer (temporary residents, day+40).
-   * Optional for backward compatibility — `parse()` always populates it when it returns
-   * a non-null result.
-   */
-  idType?: 'fodselsnummer' | 'd-nummer';
+  /** ID type: fødselsnummer (birth number) or D-nummer (temporary residents, day+40) */
+  idType: 'fodselsnummer' | 'd-nummer';
 }
 
 /**
@@ -85,6 +81,10 @@ export class NationalID implements IdNumberClass {
    * Parse Norway national ID number
    */
   static parse(idNumber: string): NationalIdParseResult | null {
+    if (typeof idNumber !== 'string') {
+      return null;
+    }
+
     const match = NationalID.METADATA.regexp.exec(idNumber);
     if (!match || !match.groups) {
       return null;
@@ -116,29 +116,25 @@ export class NationalID implements IdNumberClass {
     // Gender: based on third digit (index 2) of individual code
     const gender = parseInt(individualCode[2], 10) % 2 === 0 ? Gender.FEMALE : Gender.MALE;
 
-    try {
-      const fullYear = parseInt(`${birthCentury}${yy}`, 10);
-      const mmNum = parseInt(mm, 10);
-      const date = new Date(fullYear, mmNum - 1, dayNum);
+    const fullYear = parseInt(`${birthCentury}${yy}`, 10);
+    const mmNum = parseInt(mm, 10);
+    const date = new Date(fullYear, mmNum - 1, dayNum);
 
-      // Validate date
-      if (
-        date.getFullYear() !== fullYear ||
-        date.getMonth() !== mmNum - 1 ||
-        date.getDate() !== dayNum
-      ) {
-        return null;
-      }
-
-      return {
-        gender,
-        yyyymmdd: date,
-        checksum: match.groups.checksum,
-        idType,
-      };
-    } catch {
+    // Validate date
+    if (
+      date.getFullYear() !== fullYear ||
+      date.getMonth() !== mmNum - 1 ||
+      date.getDate() !== dayNum
+    ) {
       return null;
     }
+
+    return {
+      gender,
+      yyyymmdd: date,
+      checksum: match.groups.checksum,
+      idType,
+    };
   }
 
   parse(idNumber: string): NationalIdParseResult | null {

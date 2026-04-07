@@ -36,8 +36,16 @@ describe('NOR NationalID — Fødselsnummer Validation (#28)', () => {
     expect(NationalID.validate('30029600013')).toBe(false);
   });
 
-  test('should reject Feb 29 on a non-leap year (1999)', () => {
-    expect(NationalID.validate('29029900013')).toBe(false);
+  test('should reject Feb 29 on a non-leap year (1999) — date check', () => {
+    // Assert parse() directly so the test isolates the date-validation path,
+    // independent of whether the checksum happens to be valid
+    expect(NationalID.parse('29029900013')).toBeNull();
+  });
+
+  test('should reject DD in the gap between fødselsnummer and D-nummer (DD=32)', () => {
+    // 32019000035 has a valid checksum; isDNummer=false (32 < 41), dayNum=32
+    // → new Date(1990,0,32) overflows to Feb 1 → date check rejects it
+    expect(NationalID.validate('32019000035')).toBe(false);
   });
 
   test.each([
@@ -59,6 +67,10 @@ describe('NOR NationalID — D-nummer Validation (#29)', () => {
     ['41019000239', 'female D-nummer, DD=41, original day 01, Jan 1 1990'],
     ['55060050367', 'male D-nummer, DD=55, original day 15, June 15 2000'],
     ['71019000251', 'female D-nummer, DD=71 (max valid), original day 31, Jan 31 1990'],
+    [
+      '45055590110',
+      'male D-nummer, DD=45, original day 5, May 5 1955 (individual 901, 1900s century)',
+    ],
   ])('should validate %s — %s', id => {
     expect(NationalID.validate(id)).toBe(true);
   });
