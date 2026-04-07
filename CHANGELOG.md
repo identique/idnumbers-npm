@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-04-07
+
 ### Added
 
 - Norway (NOR) D-nummer support: `NationalID.parse()` now detects D-nummer IDs (DD field 41–71) and returns `idType: 'd-nummer'` vs `'fodselsnummer'` ([#29](https://github.com/identique/idnumbers-npm/issues/29))
@@ -131,7 +133,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Full TypeScript support with type definitions
 - Comprehensive documentation and examples
 
-[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v1.5.0...HEAD
+[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v1.6.0...HEAD
+[1.6.0]: https://github.com/identique/idnumbers-npm/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/identique/idnumbers-npm/compare/v1.4.1...v1.5.0
 [1.4.1]: https://github.com/identique/idnumbers-npm/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/identique/idnumbers-npm/compare/v1.3.0...v1.4.0
