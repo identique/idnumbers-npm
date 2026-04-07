@@ -11,8 +11,12 @@ export interface NationalIdParseResult {
   yyyymmdd: Date;
   /** Checksum (2 digits) */
   checksum: string;
-  /** ID type: fødselsnummer (birth number) or D-nummer (temporary residents, day+40) */
-  idType: 'fodselsnummer' | 'd-nummer';
+  /**
+   * ID type: fødselsnummer (birth number) or D-nummer (temporary residents, day+40).
+   * Optional for backward compatibility — `parse()` always populates it when it returns
+   * a non-null result.
+   */
+  idType?: 'fodselsnummer' | 'd-nummer';
 }
 
 /**
@@ -20,6 +24,15 @@ export interface NationalIdParseResult {
  * Format: DDMMYYIIIKK
  * https://en.wikipedia.org/wiki/National_identification_number#Norway
  * https://en.wikipedia.org/wiki/National_identity_number_(Norway)
+ *
+ * NOTE: D-nummer support is a documented deviation from the Python `idnumbers`
+ * source library, which currently rejects D-nummer inputs (Python's `parse()` calls
+ * `date(yyyy, mm, dd)` directly with the raw `dd`, raising ValueError when dd >= 32).
+ * Issue #29 explicitly requires valid D-nummer validation, so this module accepts
+ * DD values 41–71 (the D-nummer range) and subtracts 40 from the day before
+ * constructing the calendar date. The checksum algorithm and all other behaviors
+ * remain identical to the Python implementation. The Python library should add the
+ * same logic to restore parity.
  */
 export class NationalID implements IdNumberClass {
   static readonly METADATA: IdMetadata = {

@@ -69,9 +69,10 @@ describe('NOR NationalID — D-nummer Validation (#29)', () => {
     expect(NationalID.validate('40019000119')).toBe(false);
   });
 
-  test('should reject DD=72 (outside valid D-nummer range 41-71)', () => {
-    // DD=72 → treated as fødselsnummer day 72 → invalid date
-    expect(NationalID.validate('72019000158')).toBe(false);
+  test('should reject DD=72 (above D-nummer maximum 71; treated as fødselsnummer day 72 — date overflow)', () => {
+    // isDNummer=false (72 > 71), dayNum=72 → new Date(1990,0,72) overflows → rejected
+    // 72019000290 has a valid checksum, so rejection is purely from date overflow
+    expect(NationalID.validate('72019000290')).toBe(false);
   });
 
   test('should reject D-nummer with wrong checksum', () => {
