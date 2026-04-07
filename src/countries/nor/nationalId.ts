@@ -11,6 +11,8 @@ export interface NationalIdParseResult {
   yyyymmdd: Date;
   /** Checksum (2 digits) */
   checksum: string;
+  /** ID type: fødselsnummer (birth number) or D-nummer (temporary residents, day+40) */
+  idType: 'fodselsnummer' | 'd-nummer';
 }
 
 /**
@@ -18,6 +20,15 @@ export interface NationalIdParseResult {
  * Format: DDMMYYIIIKK
  * https://en.wikipedia.org/wiki/National_identification_number#Norway
  * https://en.wikipedia.org/wiki/National_identity_number_(Norway)
+ *
+ * NOTE: D-nummer support is a documented deviation from the Python `idnumbers`
+ * source library, which currently rejects D-nummer inputs (Python's `parse()` calls
+ * `date(yyyy, mm, dd)` directly with the raw `dd`, raising ValueError when dd >= 32).
+ * Issue #29 explicitly requires valid D-nummer validation, so this module accepts
+ * DD values 41–71 (the D-nummer range) and subtracts 40 from the day before
+ * constructing the calendar date. The checksum algorithm and all other behaviors
+ * remain identical to the Python implementation. The Python library should add the
+ * same logic to restore parity.
  */
 export class NationalID implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
@@ -31,9 +42,9 @@ export class NationalID implements IdNumberClass {
     names: ['National ID Number', 'fødselsnummer', 'birth number', 'riegádannummir'],
     links: [
       'https://en.wikipedia.org/wiki/National_identification_number#Norway',
-      'https://en.wikipedia.org/wiki/National_identity_number_(Norway)'
+      'https://en.wikipedia.org/wiki/National_identity_number_(Norway)',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   private static readonly FIRST_MAGIC_MULTIPLIER = [3, 7, 6, 1, 8, 9, 4, 5, 2, 1];
@@ -70,6 +81,10 @@ export class NationalID implements IdNumberClass {
    * Parse Norway national ID number
    */
   static parse(idNumber: string): NationalIdParseResult | null {
+    if (typeof idNumber !== 'string') {
+      return null;
+    }
+
     const match = NationalID.METADATA.regexp.exec(idNumber);
     if (!match || !match.groups) {
       return null;
@@ -78,7 +93,12 @@ export class NationalID implements IdNumberClass {
     const individualCode = match.groups.individual_number;
     const yy = match.groups.yy;
     const mm = match.groups.mm;
-    const dd = match.groups.dd;
+    const ddNum = parseInt(match.groups.dd, 10);
+
+    // D-nummer: day + 40 in DD field (41-71)
+    const isDNummer = ddNum >= 41 && ddNum <= 71;
+    const dayNum = isDNummer ? ddNum - 40 : ddNum;
+    const idType = isDNummer ? 'd-nummer' : 'fodselsnummer';
 
     // Calculate century based on individual number
     let birthCentury = 20;
@@ -96,31 +116,25 @@ export class NationalID implements IdNumberClass {
     // Gender: based on third digit (index 2) of individual code
     const gender = parseInt(individualCode[2], 10) % 2 === 0 ? Gender.FEMALE : Gender.MALE;
 
-    try {
-      const date = new Date(
-        parseInt(`${birthCentury}${yy}`, 10),
-        parseInt(mm, 10) - 1,
-        parseInt(dd, 10)
-      );
+    const fullYear = parseInt(`${birthCentury}${yy}`, 10);
+    const mmNum = parseInt(mm, 10);
+    const date = new Date(fullYear, mmNum - 1, dayNum);
 
-      // Validate date
-      const fullYear = parseInt(`${birthCentury}${yy}`, 10);
-      if (
-        date.getFullYear() !== fullYear ||
-        date.getMonth() !== parseInt(mm, 10) - 1 ||
-        date.getDate() !== parseInt(dd, 10)
-      ) {
-        return null;
-      }
-
-      return {
-        gender,
-        yyyymmdd: date,
-        checksum: match.groups.checksum
-      };
-    } catch {
+    // Validate date
+    if (
+      date.getFullYear() !== fullYear ||
+      date.getMonth() !== mmNum - 1 ||
+      date.getDate() !== dayNum
+    ) {
       return null;
     }
+
+    return {
+      gender,
+      yyyymmdd: date,
+      checksum: match.groups.checksum,
+      idType,
+    };
   }
 
   parse(idNumber: string): NationalIdParseResult | null {

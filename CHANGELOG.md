@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Norway (NOR) D-nummer support: `NationalID.parse()` now detects D-nummer IDs (DD field 41–71) and returns `idType: 'd-nummer'` vs `'fodselsnummer'` ([#29](https://github.com/identique/idnumbers-npm/issues/29))
+- `NationalIdParseResult` now includes optional `idType?: 'fodselsnummer' | 'd-nummer'` discriminator field; always populated by `parse()` ([#29](https://github.com/identique/idnumbers-npm/issues/29))
+- Comprehensive Norway (NOR) fødselsnummer validation tests — valid IDs across 1800s/1900s/2000s centuries, leap year, invalid dates/checksums ([#28](https://github.com/identique/idnumbers-npm/issues/28))
+- Comprehensive Norway (NOR) D-nummer validation tests — valid/invalid IDs, boundary conditions, fødselsnummer differentiation ([#29](https://github.com/identique/idnumbers-npm/issues/29))
+- Norway (NOR) checksum and parse() function tests — check digit validation, birth date/gender/idType extraction, error handling ([#30](https://github.com/identique/idnumbers-npm/issues/30))
+
+### Notes
+
+- **Python parity deviation:** D-nummer support is a documented TypeScript-side extension. The Python `idnumbers` library currently rejects D-nummer inputs (its `parse()` calls `date(year, mm, dd)` directly, raising `ValueError` for `dd >= 32`). This module accepts the D-nummer range (DD 41–71) per issue #29's acceptance criteria. The checksum algorithm and all other behaviors remain identical to the Python source. The Python library should add the same logic to restore full parity.
+
 ## [1.5.0] - 2026-04-04
 
 ### Added
