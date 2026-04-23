@@ -1,8 +1,11 @@
 /**
  * Comprehensive test cases for New Zealand driver license validation.
  *
- * Valid shapes mirror the Python source of truth (`idnumbers.NZL.DriverLicenseNumber`):
- *   Format: 2 letters + 6 digits, 8 characters total (e.g. AB123456).
+ * Valid-input tests use the Python source-of-truth format
+ * (`idnumbers.NZL.DriverLicenseNumber`): 2 letters + 6 digits, 8 chars
+ * (e.g. AB123456). The TS DriverLicense class also accepts 7-char
+ * alphanumeric strings (/^[A-Z0-9]{7,8}$/i); that permissive range is not
+ * exercised here as valid input to avoid codifying the divergence.
  *
  * Invalid/edge/separator rejection tests document current TypeScript behavior.
  *
@@ -185,10 +188,12 @@ describe('New Zealand (NZL) - Driver License', () => {
   });
 
   describe('METADATA', () => {
-    test('DriverLicense METADATA has expected NZ flags', () => {
+    test('DriverLicense METADATA has expected NZ flags and length', () => {
       expect(DriverLicense.METADATA.iso3166Alpha2).toBe('NZ');
       expect(DriverLicense.METADATA.parsable).toBe(false);
       expect(DriverLicense.METADATA.checksum).toBe(false);
+      expect(DriverLicense.METADATA.minLength).toBe(7);
+      expect(DriverLicense.METADATA.maxLength).toBe(8);
     });
 
     test('NationalID METADATA has expected NZ flags and length', () => {
