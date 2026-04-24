@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-04-23
+
+### Added
+
+- Comprehensive New Zealand (NZL) driver license validation tests — valid/invalid formats, letter/digit position edge cases, case handling ([#31](https://github.com/identique/idnumbers-npm/issues/31))
+- New Zealand (NZL) parse() function and edge case tests — component extraction, input handling (null/empty/whitespace), format edge cases, boundary values ([#33](https://github.com/identique/idnumbers-npm/issues/33))
+
 ## [1.6.0] - 2026-04-07
 
 ### Added
