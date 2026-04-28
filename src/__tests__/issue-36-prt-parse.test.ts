@@ -164,12 +164,11 @@ describe('NIF validate() — leading-zero & format coverage (TS-only behavior)',
     expect(validateNationalId('PRT', id).isValid).toBe(true);
   });
 
-  test('rejects hyphenated NIF input', () => {
-    expect(NIF.validate('123-456-789')).toBe(false);
-  });
-
-  test('rejects dotted NIF input', () => {
-    expect(NIF.validate('123.456.789')).toBe(false);
+  test.each([
+    ['hyphenated', '123-456-789'],
+    ['dotted', '123.456.789'],
+  ])('rejects %s NIF input', (_label, input) => {
+    expect(NIF.validate(input)).toBe(false);
   });
 });
 
