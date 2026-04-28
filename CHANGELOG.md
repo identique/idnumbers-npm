@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.0] - 2026-04-28
+
+### Added
+
+- Comprehensive Portugal (PRT) Cartão de Cidadão (CC) validation tests — valid format coverage, first/second check digit validation, invalid length, character position, and format edge cases ([#34](https://github.com/identique/idnumbers-npm/issues/34))
+- Comprehensive Portugal (PRT) NIF (Número de Identificação Fiscal) validation tests — individual/legal entity/public entity/other type prefixes, modulus 11 checksum, invalid first digit, length, and character handling ([#35](https://github.com/identique/idnumbers-npm/issues/35))
+- Portugal (PRT) parse() and edge case tests — CC and NIF component extraction, entity type identification, input handling (null/undefined/empty/whitespace), format variations (spaces, dashes, mixed case), and error paths ([#36](https://github.com/identique/idnumbers-npm/issues/36))
+
 ## [1.7.0] - 2026-04-23
 
 ### Added
