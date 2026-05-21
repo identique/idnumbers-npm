@@ -2,7 +2,7 @@
 
 ## Source Reliability
 
-The Registrar General of Zimbabwe does not publish an official specification for the National ID format. The algorithm and rules documented here are the canonical implementation used by both [`idnumbers`](https://github.com/identique/idnumbers) (Python) and `idnumbers-npm` (this repository). They were originally derived from the **Pachedu 2018 Biometric Voters Roll Analysis** (Appendix 2 — see [Sources](#sources)), which is the best available public reference for the checksum algorithm. Wikipedia provides only secondary structural context.
+The Registrar General of Zimbabwe does not publish an official specification for the National ID format. The algorithm and rules documented here originate from the **Pachedu 2018 Biometric Voters Roll Analysis** (Appendix 2 — see [Sources](#sources)), which is the best available public reference for the checksum algorithm. The Python library [`idnumbers`](https://github.com/identique/idnumbers) encodes this algorithm as the project source-of-truth, and `idnumbers-npm` (this repository) is the TypeScript port — both implementations are kept in parity. Wikipedia provides only secondary structural context.
 
 ## Overview
 
@@ -114,19 +114,27 @@ Each example below isolates **one** failing check, so the reason for rejection i
 
 ## Implementation Notes
 
-The implementation lives in `src/countries/zwe/nationalId.ts`. Relevant symbols:
+The implementation lives in `src/countries/zwe/nationalId.ts`. The **public API** consumed by the validator registry is:
 
-- **Public API** (consumed by the validator registry):
-  - `NationalID.validate(idNumber: string): boolean` — full validation (regex + parse + checksum)
-  - `NationalID.parse(idNumber: string): NationalIdParseResult | null` — returns components or `null`
-  - `NationalID.checksum(idNumber: string): boolean` — checksum-only check
-  - `NationalID.METADATA` — `IdMetadata` describing format, length, regex, etc.
-- **Implementation details** (private; subject to change without notice — listed for reference only):
-  - `NationalID.getChecksum(registerOfficeCode, nationalNum)` — computes the expected letter
-  - `NationalID.VALID_DISTRICT_CODES` — array of the 61 valid two-digit codes
-  - `NationalID.CHECKSUM_LETTERS` — the 23-letter lookup table
+- `NationalID.validate(idNumber: string): boolean` — full validation (regex + parse + checksum)
+- `NationalID.parse(idNumber: string): NationalIdParseResult | null` — returns components or `null`
+- `NationalID.checksum(idNumber: string): boolean` — checksum-only check
+- `NationalID.METADATA` — `IdMetadata` describing format, length, regex, etc.
 
 Parity with the Python source-of-truth ([`idnumbers/nationalid/zwe/national_id.py`](https://github.com/identique/idnumbers/blob/main/idnumbers/nationalid/zwe/national_id.py)) is required by project convention.
+
+<details>
+<summary>For maintainers: private implementation symbols</summary>
+
+The following symbols are `private` in the `NationalID` class — they are not part of the public API and are subject to change without notice. They are listed here only to make the parity discussion above concrete:
+
+- `NationalID.getChecksum(registerOfficeCode, nationalNum)` — computes the expected letter
+- `NationalID.VALID_DISTRICT_CODES` — array of the 61 valid two-digit codes
+- `NationalID.CHECKSUM_LETTERS` — the 23-letter lookup table
+
+Consumers should not rely on these symbols.
+
+</details>
 
 ## Sources
 
