@@ -9,9 +9,12 @@ export type ParseResult = {
 };
 
 /**
- * Bahrain Personal Number, Identification Card Number, Arabic:  الرقم الشخصي
+ * Bahrain Personal Number / Identification Card Number (CPR) — الرقم الشخصي.
+ * Format: YYMMSSSSC (9 digits). A check digit (C) exists but the official
+ * algorithm is not publicly documented; validation is format-only, matching
+ * the Python upstream (`idnumbers/nationalid/bhr/personal_number.py`).
+ * See `docs/research/bahrain-cpr-checksum.md` for the research record.
  * https://en.wikipedia.org/wiki/National_identification_number#Bahrain
- * * According to the doc, we can know it has checksum algorithm. But we cannot find it.
  */
 export class PersonalNumber {
   public static METADATA: IMetadata = {
@@ -20,9 +23,7 @@ export class PersonalNumber {
     maxLength: 9,
     parsable: true,
     checksum: false,
-    regexp: new RegExp(
-      /^(?<yymm>\d{2}(?:0[1-9]|1[012]))(?<sn>\d{4})(?<checksum>\d)$/
-    ),
+    regexp: new RegExp(/^(?<yymm>\d{2}(?:0[1-9]|1[012]))(?<sn>\d{4})(?<checksum>\d)$/),
     aliasOf: null,
     names: [
       'Personal number',
@@ -50,7 +51,7 @@ export class PersonalNumber {
       return null;
     }
 
-    // TODO: find and implement checksum
+    // Checksum algorithm not publicly documented; see docs/research/bahrain-cpr-checksum.md.
     return {
       yymm: match.groups!.yymm,
       sn: match.groups!.sn,
