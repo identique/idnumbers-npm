@@ -22,17 +22,30 @@ Regex (from `NationalID.METADATA.regexp` in `src/countries/zwe/nationalId.ts`):
 
 ## Components
 
-| Segment                | Position                          | Length | Description                                                                                                 |
-| ---------------------- | --------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------- |
-| `register_office_code` | 1-2                               | 2      | Code of the registering office. Must appear in the [valid code list](#district--register-office-codes).     |
-| `national_num`         | 3-8 (6-digit) / 3-9 (7-digit)     | 6 or 7 | National sequence number. Either length is accepted.                                                        |
-| `checksum`             | 9 or 10                           | 1      | Uppercase letter from the 23-letter table. See [Checksum Algorithm](#checksum-algorithm).                   |
-| `district_code`        | 10-11 (11-char) / 11-12 (12-char) | 2      | District of issuance. Valid codes OR `00` for foreigners. `00` is **only** valid in this trailing position. |
+Two layouts exist (11-char and 12-char), differing only in the length of `national_num`:
+
+**11-character form** (6-digit national number):
+
+| Segment                | Position | Length | Description                                                                                             |
+| ---------------------- | -------- | ------ | ------------------------------------------------------------------------------------------------------- |
+| `register_office_code` | 1-2      | 2      | Code of the registering office. Must appear in the [valid code list](#district--register-office-codes). |
+| `national_num`         | 3-8      | 6      | National sequence number.                                                                               |
+| `checksum`             | 9        | 1      | Uppercase letter from the 23-letter table. See [Checksum Algorithm](#checksum-algorithm).               |
+| `district_code`        | 10-11    | 2      | District of issuance. Valid codes OR `00` for foreigners (trailing position only).                      |
+
+**12-character form** (7-digit national number):
+
+| Segment                | Position | Length | Description                                                                                             |
+| ---------------------- | -------- | ------ | ------------------------------------------------------------------------------------------------------- |
+| `register_office_code` | 1-2      | 2      | Code of the registering office. Must appear in the [valid code list](#district--register-office-codes). |
+| `national_num`         | 3-9      | 7      | National sequence number.                                                                               |
+| `checksum`             | 10       | 1      | Uppercase letter from the 23-letter table. See [Checksum Algorithm](#checksum-algorithm).               |
+| `district_code`        | 11-12    | 2      | District of issuance. Valid codes OR `00` for foreigners (trailing position only).                      |
 
 **Notes:**
 
 - The `national_num` segment may be **6 OR 7 digits**. Both lengths are equally valid; the total ID length depends on which is used.
-- `00` is **never** valid as `register_office_code` (leading 2 digits), only as `district_code` (trailing 2 digits) for foreigners. (A September 2021 government announcement signalled abolition of the `00` foreigner designation; this implementation preserves it for backward compatibility with the Pachedu and Python reference implementations.)
+- `00` is **never** valid as `register_office_code` (leading 2 digits), only as `district_code` (trailing 2 digits) for foreigners. (A September 2021 government announcement signalled abolition of the `00` foreigner designation — see the [Wikipedia source](#sources) — but this implementation preserves it for backward compatibility with the Pachedu and Python reference implementations.)
 - The checksum letter must be uppercase; lowercase letters are rejected at the regex level.
 
 ## Checksum Algorithm
@@ -97,6 +110,7 @@ Each example below isolates **one** failing check, so the reason for rejection i
 | `75100003R93` | Invalid trailing district | Office `75` valid; checksum `R` correct for sum 16; **district `93` is not in the code list** (and is not the special `00`). |
 | `75191961r00` | Regex fail                | Checksum letter is lowercase; `[A-Z]` requires uppercase.                                                                    |
 | `75191961R0`  | Regex fail                | Only 10 characters; format requires 11 or 12.                                                                                |
+| `7A191961R00` | Regex fail                | Non-digit character in `register_office_code`; `\d{2}` requires two digits.                                                  |
 
 ## Implementation Notes
 
