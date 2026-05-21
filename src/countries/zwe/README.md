@@ -22,12 +22,12 @@ Regex (from `NationalID.METADATA.regexp` in `src/countries/zwe/nationalId.ts`):
 
 ## Components
 
-| Segment                | Position       | Length | Description                                                                                                 |
-| ---------------------- | -------------- | ------ | ----------------------------------------------------------------------------------------------------------- |
-| `register_office_code` | 1-2            | 2      | Code of the registering office. Must appear in the [valid code list](#district--register-office-codes).     |
-| `national_num`         | 3-8 or 3-9     | 6 or 7 | National sequence number. Either length is accepted.                                                        |
-| `checksum`             | 9 or 10        | 1      | Uppercase letter from the 23-letter table. See [Checksum Algorithm](#checksum-algorithm).                   |
-| `district_code`        | 10-11 or 11-12 | 2      | District of issuance. Valid codes OR `00` for foreigners. `00` is **only** valid in this trailing position. |
+| Segment                | Position                          | Length | Description                                                                                                 |
+| ---------------------- | --------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------- |
+| `register_office_code` | 1-2                               | 2      | Code of the registering office. Must appear in the [valid code list](#district--register-office-codes).     |
+| `national_num`         | 3-8 (6-digit) / 3-9 (7-digit)     | 6 or 7 | National sequence number. Either length is accepted.                                                        |
+| `checksum`             | 9 or 10                           | 1      | Uppercase letter from the 23-letter table. See [Checksum Algorithm](#checksum-algorithm).                   |
+| `district_code`        | 10-11 (11-char) / 11-12 (12-char) | 2      | District of issuance. Valid codes OR `00` for foreigners. `00` is **only** valid in this trailing position. |
 
 **Notes:**
 
@@ -107,7 +107,7 @@ The implementation lives in `src/countries/zwe/nationalId.ts`. Relevant symbols:
   - `NationalID.parse(idNumber: string): NationalIdParseResult | null` — returns components or `null`
   - `NationalID.checksum(idNumber: string): boolean` — checksum-only check
   - `NationalID.METADATA` — `IdMetadata` describing format, length, regex, etc.
-- **Implementation details** (private; for reference only):
+- **Implementation details** (private; subject to change without notice — listed for reference only):
   - `NationalID.getChecksum(registerOfficeCode, nationalNum)` — computes the expected letter
   - `NationalID.VALID_DISTRICT_CODES` — array of the 61 valid two-digit codes
   - `NationalID.CHECKSUM_LETTERS` — the 23-letter lookup table
