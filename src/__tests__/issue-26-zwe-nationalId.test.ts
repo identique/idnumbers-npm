@@ -245,18 +245,14 @@ describe('ZWE NationalID.validate() — error cases', () => {
   test.each(cases)('rejects %s', (_label, input) => {
     expect(NationalID.validate(input)).toBe(false);
   });
-
-  test('rejects ID with districtCode outside the 61-entry table', () => {
-    // Use the helper so the checksum is valid — only the districtCode is bad.
-    const id = buildValidZWE('63', '123456', '99');
-    expect(NationalID.validate(id)).toBe(false);
-  });
 });
 
 describe('ZWE NationalID.validate() — boundary district codes near valid neighbors are rejected', () => {
-  // Sample codes outside the 61-entry table, near valid neighbors.
+  // Sample codes outside the 61-entry table, near valid neighbors. The
+  // helper computes a valid checksum so the failure is solely on districtCode.
+  // '00' is intentionally absent here — it has a separate foreigner-allowance
+  // test below.
   const invalidDistricts = [
-    '00', // Note: '00' is valid as districtCode but '00' here is paired with a different test path
     '01',
     '09',
     '16',
@@ -287,7 +283,7 @@ describe('ZWE NationalID.validate() — boundary district codes near valid neigh
     '99',
   ];
 
-  test.each(invalidDistricts.filter(c => c !== '00'))(
+  test.each(invalidDistricts)(
     'rejects districtCode %s (helper-built, checksum is otherwise valid)',
     district => {
       const id = buildValidZWE('63', '123456', district);
