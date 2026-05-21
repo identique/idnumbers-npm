@@ -88,7 +88,7 @@ The checksum digit is **not verified** (algorithm unknown).
 | `000101001` | `00` | `01` | `0100` | `1` | year-2000-or-2100 ambiguity is OK    |
 | `991231999` | `99` | `12` | `3199` | `9` | boundary month + high serial         |
 | `120615432` | `12` | `06` | `1543` | `2` |                                      |
-| `850714210` | `85` | `07` | `4210` | `0` | zero check digit                     |
+| `850714210` | `85` | `07` | `1421` | `0` | zero check digit                     |
 
 ### Format-invalid examples
 
