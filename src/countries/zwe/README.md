@@ -32,7 +32,7 @@ Regex (from `NationalID.METADATA.regexp` in `src/countries/zwe/nationalId.ts`):
 **Notes:**
 
 - The `national_num` segment may be **6 OR 7 digits**. Both lengths are equally valid; the total ID length depends on which is used.
-- `00` is **never** valid as `register_office_code` (leading 2 digits), only as `district_code` (trailing 2 digits) for foreigners.
+- `00` is **never** valid as `register_office_code` (leading 2 digits), only as `district_code` (trailing 2 digits) for foreigners. (A September 2021 government announcement signalled abolition of the `00` foreigner designation; this implementation preserves it for backward compatibility with the Pachedu and Python reference implementations.)
 - The checksum letter must be uppercase; lowercase letters are rejected at the regex level.
 
 ## Checksum Algorithm
