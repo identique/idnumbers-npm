@@ -18,6 +18,9 @@
 import { PersonalNumber } from '../countries/bhr/personal-number';
 import { validateNationalId, parseIdInfo } from '../index';
 
+const CANONICAL_ID = '800101001';
+const CANONICAL_PARSED = { yymm: '8001', sn: '0100', checksum: 1 };
+
 describe('BHR Personal Number (CPR) — issue #15 research vectors', () => {
   describe('format-only accepted examples (current Python-compatible behavior)', () => {
     it.each(['800101001', '900101001', '000101001', '991231999', '120615432', '850714210'])(
@@ -30,11 +33,7 @@ describe('BHR Personal Number (CPR) — issue #15 research vectors', () => {
     );
 
     it('extractedInfo equals direct parse() for the canonical example', () => {
-      expect(validateNationalId('BHR', '800101001').extractedInfo).toEqual({
-        yymm: '8001',
-        sn: '0100',
-        checksum: 1,
-      });
+      expect(validateNationalId('BHR', CANONICAL_ID).extractedInfo).toEqual(CANONICAL_PARSED);
     });
   });
 
@@ -62,29 +61,17 @@ describe('BHR Personal Number (CPR) — issue #15 research vectors', () => {
     });
 
     it('parse() exposes yymm/sn/checksum fields', () => {
-      expect(PersonalNumber.parse('800101001')).toEqual({
-        yymm: '8001',
-        sn: '0100',
-        checksum: 1,
-      });
+      expect(PersonalNumber.parse(CANONICAL_ID)).toEqual(CANONICAL_PARSED);
     });
   });
 
   describe('registry-path parseIdInfo (BHR + BH alias)', () => {
     it('parseIdInfo("BHR", ...) returns parsed fields', () => {
-      expect(parseIdInfo('BHR', '800101001')).toEqual({
-        yymm: '8001',
-        sn: '0100',
-        checksum: 1,
-      });
+      expect(parseIdInfo('BHR', CANONICAL_ID)).toEqual(CANONICAL_PARSED);
     });
 
     it('parseIdInfo("BH", ...) resolves via alias to the same result', () => {
-      expect(parseIdInfo('BH', '800101001')).toEqual({
-        yymm: '8001',
-        sn: '0100',
-        checksum: 1,
-      });
+      expect(parseIdInfo('BH', CANONICAL_ID)).toEqual(CANONICAL_PARSED);
     });
 
     it('parseIdInfo returns null for format-invalid input', () => {
