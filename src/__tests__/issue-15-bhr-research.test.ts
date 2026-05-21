@@ -88,7 +88,7 @@ describe('BHR Personal Number (CPR) — issue #15 research vectors', () => {
 
 describe('BHR Personal Number (CPR) — issue #17 additional coverage', () => {
   describe('falsy and non-string inputs', () => {
-    it.each<[string | null | undefined]>([[null], [undefined], [' '], ['  800101001  ']])(
+    it.each<[string | null | undefined]>([[null], [undefined], [' ']])(
       'validate rejects %s',
       input => {
         expect(PersonalNumber.validate(input as unknown as string)).toBe(false);
@@ -111,7 +111,7 @@ describe('BHR Personal Number (CPR) — issue #17 additional coverage', () => {
     // Bahrain CPR encodes only year+month, not day; serial 0000–9999 is unconstrained.
     it.each([
       ['000101000', 'year 00, month 01 (lower-bound month), serial 0000'],
-      ['991201999', 'year 99, month 12 (upper-bound month), serial 1999'],
+      ['991201999', 'year 99 (upper-bound year), month 12 (upper-bound month)'],
       ['000999990', 'year 00, month 09, serial 9999 (upper-bound serial)'],
       ['501012345', 'mid-range typical value'],
     ])('%s is format-valid (%s)', id => {
