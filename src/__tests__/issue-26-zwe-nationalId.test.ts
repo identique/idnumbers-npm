@@ -227,11 +227,14 @@ describe('ZWE NationalID.validate() — exercises all 23 checksum residues 0..22
 });
 
 describe('ZWE NationalID.validate() — error cases', () => {
+  // Note: 00191962E58 (checksum E) and 40191962J75 (checksum J) carry the
+  // arithmetically CORRECT checksum letter so that rejection happens at the
+  // register_office_code lookup step, not at the checksum step.
   const cases: Array<[string, string]> = [
     ['wrong checksum letter', '75191962R00'],
-    ['register_office_code 00 (only valid as district)', '00191962R58'],
-    ['register_office_code 40 (outside table)', '40191962R75'],
-    ['lowercase checksum letter', '40191962r75'],
+    ['register_office_code 00 (only valid as district)', '00191962E58'],
+    ['register_office_code 40 (outside table)', '40191962J75'],
+    ['lowercase checksum letter', '40191962j75'],
     ['empty string', ''],
     ['too short (10 chars)', '75191961R0'],
     ['too long (13 chars)', '7519196100R86'],
@@ -368,11 +371,15 @@ describe('ZWE NationalID.parse() — null-return branches', () => {
   });
 
   test('returns null when register_office_code is outside the 61-entry table', () => {
-    expect(NationalID.parse('40191962R75')).toBeNull();
+    // 40191962J75 has the correct checksum letter J for "40191962", so parse
+    // must reject specifically at the register_office_code lookup step.
+    expect(NationalID.parse('40191962J75')).toBeNull();
   });
 
   test('returns null when register_office_code is 00 (only valid as district)', () => {
-    expect(NationalID.parse('00191962R58')).toBeNull();
+    // 00191962E58 has the correct checksum letter E for "00191962", so parse
+    // must reject specifically at the register_office_code lookup step.
+    expect(NationalID.parse('00191962E58')).toBeNull();
   });
 
   test('returns null when districtCode is outside the table (and not 00)', () => {
