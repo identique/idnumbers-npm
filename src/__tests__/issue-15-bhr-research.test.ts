@@ -88,14 +88,12 @@ describe('BHR Personal Number (CPR) — issue #15 research vectors', () => {
 
 describe('BHR Personal Number (CPR) — issue #17 additional coverage', () => {
   describe('falsy and non-string inputs', () => {
-    it.each<[string | null | undefined]>([
-      [null],
-      [undefined],
-      [' '],
-      ['  800101001  '],
-    ])('validate rejects %s', input => {
-      expect(PersonalNumber.validate(input as unknown as string)).toBe(false);
-    });
+    it.each<[string | null | undefined]>([[null], [undefined], [' '], ['  800101001  ']])(
+      'validate rejects %s',
+      input => {
+        expect(PersonalNumber.validate(input as unknown as string)).toBe(false);
+      }
+    );
 
     it.each<[string, null | undefined]>([
       ['null', null],
