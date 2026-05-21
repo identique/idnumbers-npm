@@ -10,7 +10,7 @@ The Zimbabwe National ID Number is issued by the Registrar General of Zimbabwe t
 
 - **ISO 3166-1 alpha-2:** `ZW`
 - **Length:** 11 or 12 characters (depending on whether the national number is 6 or 7 digits)
-- **Pattern:** `RR NNNNNN[N] C DD`
+- **Pattern:** `RR NNNNNN[N] C DD` (spaces shown for readability only; real IDs contain no separators)
 
 ## Format
 
@@ -50,7 +50,7 @@ The checksum is a single uppercase letter computed as follows:
 | ------ | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Letter | Z   | A   | B   | C   | D   | E   | F   | G   | H   | J   | K   | L   | M   | N   | P   | Q   | R   | S   | T   | V   | W   | X   | Y   |
 
-The letters `I`, `O`, `U` are intentionally omitted — they are visually ambiguous with `1`, `0`, and (in some fonts) `V`.
+The letters `I`, `O`, `U` are intentionally omitted — they are visually ambiguous with `1`, `0`, and `V` respectively.
 
 This table corresponds to the implementation constant `CHECKSUM_LETTERS` in `src/countries/zwe/nationalId.ts`. The lookup is performed by the private helper `NationalID.getChecksum`.
 
@@ -112,7 +112,7 @@ The implementation lives in `src/countries/zwe/nationalId.ts`. Relevant symbols:
   - `NationalID.VALID_DISTRICT_CODES` — array of the 61 valid two-digit codes
   - `NationalID.CHECKSUM_LETTERS` — the 23-letter lookup table
 
-Parity with the Python source-of-truth (`idnumbers/nationalid/zwe/national_id.py`) is required per the project's [`CLAUDE.md`](../../../CLAUDE.md).
+Parity with the Python source-of-truth ([`idnumbers/nationalid/zwe/national_id.py`](https://github.com/identique/idnumbers/blob/main/idnumbers/nationalid/zwe/national_id.py)) is required by project convention.
 
 ## Sources
 
