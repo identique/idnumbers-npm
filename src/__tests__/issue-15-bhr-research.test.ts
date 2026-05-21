@@ -110,7 +110,7 @@ describe('BHR Personal Number (CPR) — issue #17 additional coverage', () => {
   describe('format boundary cases (YYMM + serial extremes — all expected valid)', () => {
     // Bahrain CPR encodes only year+month, not day; serial 0000–9999 is unconstrained.
     it.each([
-      ['000101000', 'year 00, month 01 (lower-bound month), serial 0000'],
+      ['000100000', 'year 00, month 01 (lower-bound month), serial 0000'],
       ['991201999', 'year 99 (upper-bound year), month 12 (upper-bound month)'],
       ['000999990', 'year 00, month 09, serial 9999 (upper-bound serial)'],
       ['501012345', 'mid-range typical value'],
