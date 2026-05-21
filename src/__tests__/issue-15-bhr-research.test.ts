@@ -97,12 +97,11 @@ describe('BHR Personal Number (CPR) — issue #17 additional coverage', () => {
       expect(PersonalNumber.validate(input as unknown as string)).toBe(false);
     });
 
-    it('parse() returns null for null input', () => {
-      expect(PersonalNumber.parse(null as unknown as string)).toBeNull();
-    });
-
-    it('parse() returns null for undefined input', () => {
-      expect(PersonalNumber.parse(undefined as unknown as string)).toBeNull();
+    it.each<[string, null | undefined]>([
+      ['null', null],
+      ['undefined', undefined],
+    ])('parse() returns null for %s input', (_label, input) => {
+      expect(PersonalNumber.parse(input as unknown as string)).toBeNull();
     });
 
     it('validateNationalId rejects null via registry', () => {
