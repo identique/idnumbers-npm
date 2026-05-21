@@ -306,7 +306,7 @@ describe('createValidator', () => {
         links: [],
         deprecated: false,
       },
-      validate: (_id: string) => true,
+      validate: () => true,
     };
     const validator = createValidator(mockNoparse);
     expect(validator.parse).toBeUndefined();

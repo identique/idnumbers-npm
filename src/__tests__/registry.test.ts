@@ -1,5 +1,5 @@
 import { ValidatorRegistry, registry } from '../registry';
-import type { CountryValidator, IdFormat } from '../registry';
+import type { CountryValidator } from '../registry';
 import type { IdMetadata } from '../types';
 
 // ---------------------------------------------------------------------------
