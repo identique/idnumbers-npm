@@ -29,6 +29,7 @@ export class NationalID implements IdNumberClass {
     parsable: true,
     checksum: false,
     regexp: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})-?(?<pb>\d{2})-?(?<sn>\d{4})$/,
+    displayFormat: 'YYMMDD-PB-###G',
     aliasOf: null,
     names: ['National Registration Identity Card Number', 'NRIC'],
     links: [

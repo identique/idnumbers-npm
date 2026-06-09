@@ -12,6 +12,7 @@ export interface FunctionBasedMetadata {
   isParsable?: boolean;
   hasChecksum?: boolean;
   pattern?: RegExp;
+  displayFormat?: string;
   names?: string[];
   links?: string[];
 }
@@ -54,6 +55,7 @@ export function adaptMetadata(meta: AnyMetadata): IdMetadata {
     parsable: fn.isParsable ?? false,
     checksum: fn.hasChecksum ?? false,
     regexp: fn.pattern ?? /./,
+    displayFormat: fn.displayFormat,
     aliasOf: null,
     names: fn.names ?? [],
     links: fn.links ?? [],

@@ -33,6 +33,7 @@ export const METADATA: IdMetadata = {
   parsable: true,
   checksum: true,
   regexp: NEW_FORMAT,
+  displayFormat: 'YYYYDDDSSSSC',
   aliasOf: null,
   names: ['National ID Number'],
   links: [

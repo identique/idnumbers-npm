@@ -14,6 +14,8 @@ export interface IdMetadata {
   checksum: boolean;
   /** Regular expression to validate the ID */
   regexp: RegExp;
+  /** Human-readable display format string (e.g. "YYMMDD-GSSSSSS") */
+  displayFormat?: string;
   /** If this is an alias of another ID type */
   aliasOf: any | null;
   /** Common names for this ID type */

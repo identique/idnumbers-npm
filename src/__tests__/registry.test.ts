@@ -1,4 +1,5 @@
 import { ValidatorRegistry, registry } from '../registry';
+import { adaptMetadata } from '../registry/adapters';
 import type { CountryValidator } from '../registry';
 import type { IdMetadata } from '../types';
 
@@ -17,6 +18,7 @@ function createMockValidator(overrides: Partial<IdMetadata> = {}): CountryValida
     names: overrides.names ?? ['Mock ID'],
     links: overrides.links ?? [],
     deprecated: overrides.deprecated ?? false,
+    ...(overrides.displayFormat !== undefined && { displayFormat: overrides.displayFormat }),
   };
 
   return {
@@ -268,6 +270,15 @@ describe('ValidatorRegistry', () => {
       expect(format).toBeDefined();
       expect(format!.format).toBeUndefined();
     });
+
+    it('should include format field when METADATA.displayFormat is set', () => {
+      const v = createMockValidator({ displayFormat: 'YYMMDD-GSSSSSS' });
+      reg.register('KOR', v);
+
+      const format = reg.getFormat('KOR');
+      expect(format).toBeDefined();
+      expect(format!.format).toBe('YYMMDD-GSSSSSS');
+    });
   });
 
   // -----------------------------------------------------------------------
@@ -385,5 +396,20 @@ describe('ValidatorRegistry', () => {
       const { registry: registry2 } = require('../registry');
       expect(registry2).toBe(registry);
     });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// adaptMetadata() — displayFormat propagation through the function-based branch
+// ---------------------------------------------------------------------------
+describe('adaptMetadata()', () => {
+  it('propagates displayFormat from function-based metadata', () => {
+    const meta = adaptMetadata({ pattern: /^\d+$/, displayFormat: 'DDMMYYPPPPSSSS' });
+    expect(meta.displayFormat).toBe('DDMMYYPPPPSSSS');
+  });
+
+  it('leaves displayFormat undefined when function-based metadata omits it', () => {
+    const meta = adaptMetadata({ pattern: /^\d+$/ });
+    expect(meta.displayFormat).toBeUndefined();
   });
 });

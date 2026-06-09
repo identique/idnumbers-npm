@@ -29,6 +29,7 @@ export const METADATA = {
   minLength: 18,
   maxLength: 18,
   pattern: /^(?<initial>[A-Z]{4})(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})(?<gender>[HMX])(?<location>[A-Z]{2})(?<consonant>[A-Z]{3})(?<sn>[0-9A-Z])(?<checksum>\d)$/,
+  displayFormat: 'AAAANNNNNNAAAAAANN',
   hasChecksum: true,
   isParsable: true,
   links: [

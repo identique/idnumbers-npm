@@ -124,6 +124,10 @@ export class ValidatorRegistry implements IValidatorRegistry {
       countryCode,
       countryName,
       idType,
+      // Surface the display format only when present. The `!== undefined` guard
+      // leaves the optional `format` key absent (not set to undefined) for
+      // countries without a displayFormat, matching IdFormat.format?'s contract.
+      ...(METADATA.displayFormat !== undefined && { format: METADATA.displayFormat }),
       length: { min: METADATA.minLength, max: METADATA.maxLength },
       hasChecksum: METADATA.checksum,
       isParsable: METADATA.parsable,

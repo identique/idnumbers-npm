@@ -21,6 +21,7 @@ export const METADATA: IdMetadata = {
   parsable: true,
   checksum: true,
   regexp: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})(?<century>\d)(?<sn>\d{4})(?<checksum>\d)$/,
+  displayFormat: 'YYMMDDCSSSS',
   aliasOf: null,
   names: ['Individual Identification Number', 'ЖСН', 'ZhSN', 'ИИН', 'IIN'],
   links: [

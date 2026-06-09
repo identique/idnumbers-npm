@@ -32,6 +32,7 @@ export class NationalID implements IdNumberClass {
     parsable: false,
     checksum: false,
     regexp: /^\d{11}$/,
+    displayFormat: 'XXXXXXXXXXX',
     aliasOf: null,
     names: ['National Identification Number', 'NIN'],
     links: [

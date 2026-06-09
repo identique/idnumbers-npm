@@ -30,6 +30,7 @@ export class NationalID implements IdNumberClass {
     parsable: true,
     checksum: false,
     regexp: /^(?<location>\d{5})-?(?<sn>\d{7})-?(?<gender>\d)$/,
+    displayFormat: '#####-#######-#',
     aliasOf: null,
     names: ['National ID Card Number', 'CNIC', 'NIC', 'قومی شناختی کارڈ'],
     links: [
