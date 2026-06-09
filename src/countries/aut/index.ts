@@ -14,6 +14,10 @@ export const METADATA = {
   pattern: /^(\d{2}-?\d{3}\/?\d{4}|\d{4}\s?\d{6})$/,
   hasChecksum: true,
   isParsable: false,
+  displayFormat: 'NN-NNN/NNNN',
+  example: '12-345/6782',
+  checksumAlgorithm: 'Weighted checksum mod 10 (alternating x1/x2 with digit-sum overflow)',
+  officialName: 'Abgabenkontonummer (ATIN)',
   links: [
     'https://www.oecd.org/tax/automatic-exchange/crs-implementation-and-assistance/tax-identification-numbers/Austria-TIN.pdf',
     'https://www.glasbenamatica.org/wp-content/uploads/2017/05/TIN_-_country_sheet_AT_en.pdf',

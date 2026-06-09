@@ -14,13 +14,17 @@ export class NationalInsuranceNumber implements IdNumberClass {
     parsable: false,
     checksum: false,
     regexp: /^[A-Z]{2}\d{6}[A-Z]$/,
+    displayFormat: 'LL######L',
+    example: 'AB123456C',
+    checksumAlgorithm: 'None (validated via prefix/suffix rules)',
+    officialName: 'National Insurance Number (NINO)',
     aliasOf: null,
     names: ['National Insurance Number', 'NINO'],
     links: [
       'https://en.wikipedia.org/wiki/National_Insurance_number',
-      'https://www.gov.uk/national-insurance/your-national-insurance-number'
+      'https://www.gov.uk/national-insurance/your-national-insurance-number',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   get METADATA(): IdMetadata {
@@ -34,8 +38,10 @@ export class NationalInsuranceNumber implements IdNumberClass {
     if (!validateRegexp(idNumber, NationalInsuranceNumber.METADATA.regexp)) {
       return false;
     }
-    return (NationalInsuranceNumber.checkPrefix(idNumber.substring(0, 2)) &&
-            NationalInsuranceNumber.checkSuffix(idNumber.substring(8, 9)));
+    return (
+      NationalInsuranceNumber.checkPrefix(idNumber.substring(0, 2)) &&
+      NationalInsuranceNumber.checkSuffix(idNumber.substring(8, 9))
+    );
   }
 
   /**

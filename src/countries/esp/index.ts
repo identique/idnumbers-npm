@@ -7,20 +7,21 @@ import { ValidationResult } from '../../types';
 
 export const METADATA = {
   name: 'Spain National ID Number',
-  names: [
-    'Documento Nacional de Identidad',
-    'DNI'
-  ],
+  names: ['Documento Nacional de Identidad', 'DNI'],
   iso3166Alpha2: 'ES',
   minLength: 9,
   maxLength: 9,
   pattern: /^(\d{8})([A-Z])$/,
   hasChecksum: true,
   isParsable: false,
+  displayFormat: '########L',
+  example: '12345678Z',
+  checksumAlgorithm: 'Mod-23 check letter (TRWAGMYFPDXBNJZSQVHLCKE)',
+  officialName: 'Documento Nacional de Identidad (DNI)',
   links: [
     'https://en.wikipedia.org/wiki/National_identification_number#Spain',
-    'https://es.wikipedia.org/wiki/C%C3%B3digo_de_identificaci%C3%B3n_fiscal'
-  ]
+    'https://es.wikipedia.org/wiki/C%C3%B3digo_de_identificaci%C3%B3n_fiscal',
+  ],
 };
 
 const MAGIC_LETTERS = 'TRWAGMYFPDXBNJZSQVHLCKE';
@@ -33,10 +34,10 @@ function validateChecksum(idNumber: string): boolean {
   if (!match) {
     return false;
   }
-  
+
   const numbers = match[1];
   const letter = match[2];
-  
+
   const index = parseInt(numbers, 10) % 23;
   return MAGIC_LETTERS[index] === letter;
 }
@@ -60,5 +61,5 @@ export function validate(idNumber: string): boolean {
 
 export const DNI = {
   validate,
-  METADATA
+  METADATA,
 };

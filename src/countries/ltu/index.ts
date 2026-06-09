@@ -20,16 +20,17 @@ export const METADATA: IdMetadata = {
   parsable: true,
   checksum: true,
   regexp: /^(?<g>\d)(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})(?<sn>\d{3})(?<checksum>\d)$/,
+  displayFormat: 'GYYMMDDSSSC',
+  example: '39001010077',
+  checksumAlgorithm: 'Weighted sum mod 11 (two passes; 10 -> 0)',
+  officialName: 'asmens kodas',
   aliasOf: null,
-  names: [
-    'Personal Code',
-    'asmens kodas'
-  ],
+  names: ['Personal Code', 'asmens kodas'],
   links: [
     'https://en.wikipedia.org/wiki/National_identification_number#Lithuania',
-    'https://www.oecd.org/tax/automatic-exchange/crs-implementation-and-assistance/tax-identification-numbers/Lithuania-TIN.pdf'
+    'https://www.oecd.org/tax/automatic-exchange/crs-implementation-and-assistance/tax-identification-numbers/Lithuania-TIN.pdf',
   ],
-  deprecated: false
+  deprecated: false,
 };
 
 /**
@@ -104,7 +105,7 @@ export function parse(idNumber: string): LithuaniaParseResult | null {
     birthDate: new Date(year, month - 1, day),
     gender,
     serialNumber: match.groups.sn,
-    checksum: calculatedChecksum
+    checksum: calculatedChecksum,
   };
 }
 
@@ -121,19 +122,19 @@ export function checksum(idNumber: string): CheckDigit | null {
   let c = 3;
   let d = 0;
   let e = 0;
-  
+
   const numbers = idNumber.split('').map(char => parseInt(char, 10));
-  
+
   for (let i = 0; i < numbers.length - 1; i++) {
     d += numbers[i] * b;
     e += numbers[i] * c;
     b = b < 9 ? b + 1 : 1;
     c = c < 9 ? c + 1 : 1;
   }
-  
+
   d %= 11;
   e %= 11;
-  
+
   if (d < 10) {
     return d as CheckDigit;
   } else if (e < 10) {
@@ -147,7 +148,7 @@ export const PersonalCode = {
   validate,
   parse,
   checksum,
-  METADATA
+  METADATA,
 };
 
 // Alias

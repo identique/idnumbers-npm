@@ -13,21 +13,18 @@ export interface GreeceParseResult extends ParsedInfo {
 
 export const METADATA = {
   name: 'Greece Tax Identity Number',
-  names: [
-    'Tax Identity Number',
-    'AFM',
-    'ΑΦΜ',
-    'Αριθμός Φορολογικού Μητρώου'
-  ],
+  names: ['Tax Identity Number', 'AFM', 'ΑΦΜ', 'Αριθμός Φορολογικού Μητρώου'],
   iso3166Alpha2: 'GR',
   minLength: 9,
   maxLength: 9,
   pattern: /^\d{9}$/,
   hasChecksum: true,
   isParsable: false,
-  links: [
-    'https://en.wikipedia.org/wiki/National_identification_number#Greece'
-  ]
+  displayFormat: '#########',
+  example: '094014250',
+  checksumAlgorithm: 'Weighted sum mod 11 (powers of two: 256..2)',
+  officialName: 'ΑΦΜ (Αριθμός Φορολογικού Μητρώου)',
+  links: ['https://en.wikipedia.org/wiki/National_identification_number#Greece'],
 };
 
 const MULTIPLIER = [256, 128, 64, 32, 16, 8, 4, 2];
@@ -39,7 +36,7 @@ function calculateChecksum(idNumber: string): CheckDigit | null {
   if (!validateRegexp(idNumber, METADATA.pattern)) {
     return null;
   }
-  
+
   const numbers = idNumber.slice(0, -1).split('').map(Number);
   const modulus = weightedModulusDigit(numbers, MULTIPLIER, 11, true);
   return modulusOverflowMod10(modulus);
@@ -55,7 +52,7 @@ export function validate(idNumber: string): boolean {
 
   const expectedChecksum = calculateChecksum(idNumber);
   const actualChecksum = parseInt(idNumber[idNumber.length - 1], 10);
-  
+
   return expectedChecksum === actualChecksum;
 }
 
@@ -68,12 +65,12 @@ export function parse(idNumber: string): GreeceParseResult | null {
   }
 
   return {
-    isValid: true
+    isValid: true,
   };
 }
 
 export const TaxIdentityNumber = {
   validate,
   parse,
-  METADATA
+  METADATA,
 };

@@ -25,6 +25,10 @@ export const METADATA = {
     /^(?<surname>[A-Z]{3})(?<firstname>[A-Z]{3})(?<yy>[0-9A-Z]{2})(?<m>[A-EHLMPR-T])(?<dd>[0-9A-Z]{2})(?<area_code>[A-Z][0-9A-Z]{3})(?<checksum>[A-Z])$/,
   hasChecksum: true,
   isParsable: true,
+  displayFormat: 'LLLLLLYYMDDXXXXC',
+  example: 'RSSMRA85M01H501Q',
+  checksumAlgorithm: 'Weighted alphanumeric mod 26 -> check letter',
+  officialName: 'Codice fiscale',
   links: [
     'https://en.wikipedia.org/wiki/Italian_fiscal_code',
     'https://en.wikipedia.org/wiki/National_identification_number#Italy',

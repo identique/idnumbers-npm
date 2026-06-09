@@ -24,6 +24,10 @@ export const METADATA = {
   pattern: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})\/?(?<sn>\d{3})(?<checksum>\d)$/,
   hasChecksum: true,
   isParsable: true,
+  displayFormat: 'YYMMDD/SSSC',
+  example: '0001010009',
+  checksumAlgorithm: 'Whole 10-digit number divisible by 11',
+  officialName: 'Rodné číslo (RČ)',
   links: [
     'https://en.wikipedia.org/wiki/National_identification_number#Czech_Republic_and_Slovakia',
   ],

@@ -30,12 +30,14 @@ export class NationalID implements IdNumberClass {
     parsable: true,
     checksum: true,
     regexp: /^\d{10}$/,
+    displayFormat: 'DDDDDSSSSSC',
+    example: '3245506789',
+    checksumAlgorithm: 'Weighted sum (mod 11, then mod 10)',
+    officialName: 'Individual Tax Number (RNOKPP)',
     aliasOf: null,
     names: ['Taxpayer ID Number', 'RNTRC', 'РНОКПП', 'taxpayer registration number'],
-    links: [
-      'https://en.wikipedia.org/wiki/National_identification_number#Ukraine'
-    ],
-    deprecated: false
+    links: ['https://en.wikipedia.org/wiki/National_identification_number#Ukraine'],
+    deprecated: false,
   };
 
   // Magic multiplier for checksum calculation
@@ -94,7 +96,7 @@ export class NationalID implements IdNumberClass {
     return {
       yyyymmdd: dob,
       gender,
-      checksum: parseInt(idNumber[9], 10)
+      checksum: parseInt(idNumber[9], 10),
     };
   }
 

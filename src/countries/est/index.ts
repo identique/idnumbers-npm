@@ -23,6 +23,10 @@ export const METADATA = {
   pattern: /^(?<gender_century>\d)(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})(?<sn>\d{3})(?<checksum>\d)$/,
   hasChecksum: true,
   isParsable: true,
+  displayFormat: 'GYYMMDDSSSC',
+  example: '37605030299',
+  checksumAlgorithm: 'Weighted sum mod 11 (two passes; 10 -> 0)',
+  officialName: 'isikukood',
   links: [
     'https://en.wikipedia.org/wiki/National_identification_number#Estonia',
     'https://et.wikipedia.org/wiki/Isikukood',

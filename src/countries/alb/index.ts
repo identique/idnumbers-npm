@@ -30,6 +30,10 @@ export const METADATA = {
   pattern: /^(?<yy>[0-9A-T]\d)(?<mm>\d{2})(?<dd>\d{2})(?<sn>\d{3})[-]?(?<checksum>[A-W])$/,
   hasChecksum: false,
   isParsable: true,
+  displayFormat: 'LYMMDDSSSC',
+  example: 'J50101001A',
+  checksumAlgorithm: 'None (check letter not algorithmically verified)',
+  officialName: 'Numri i Identitetit (NID)',
   links: ['https://en.wikipedia.org/wiki/National_identification_number#Albania'],
 };
 

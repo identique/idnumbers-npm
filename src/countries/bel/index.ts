@@ -31,6 +31,10 @@ export const METADATA = {
   pattern: /^(?<yy>\d{2})\.?(?<mm>\d{2})\.?(?<dd>\d{2})-?(?<sn>\d{3})\.?(?<checksum>\d{2})$/,
   hasChecksum: true,
   isParsable: true,
+  displayFormat: 'YY.MM.DD-SSS.CC',
+  example: '85073003328',
+  checksumAlgorithm: 'Mod-97 (97 - base mod 97; +2000000000 for births >= 2000)',
+  officialName: 'Rijksregisternummer / Numéro de Registre National',
   links: [
     'https://en.wikipedia.org/wiki/Belgian_identity_card',
     'https://www.checkdoc.be/CheckDoc/homepage.do',

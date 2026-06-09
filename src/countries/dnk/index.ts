@@ -31,6 +31,10 @@ export const METADATA = {
   pattern: /^(?<dd>\d{2})(?<mm>\d{2})(?<yy>\d{2})-?(?<sn>\d{4})$/,
   hasChecksum: false,
   isParsable: true,
+  displayFormat: 'DDMMYY-SSSS',
+  example: '0101001234',
+  checksumAlgorithm: 'None (modern CPR numbers carry no check digit; not validated)',
+  officialName: 'CPR-nummer',
   links: ['https://en.wikipedia.org/wiki/National_identification_number#Denmark'],
 };
 

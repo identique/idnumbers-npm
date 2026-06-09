@@ -25,13 +25,17 @@ export class NationalID implements IdNumberClass {
     parsable: true,
     checksum: false,
     regexp: /^\d{10}$/,
+    displayFormat: 'SSSS NNNNNN',
+    example: '1234 567890',
+    checksumAlgorithm: 'None',
+    officialName: 'Внутренний паспорт (Internal Passport)',
     aliasOf: null,
     names: ['Internal Passport', 'Passport Number', 'Паспорт гражданина РФ'],
     links: [
       'https://en.wikipedia.org/wiki/National_identification_number#Russia',
-      'https://www.gosuslugi.ru/'
+      'https://www.gosuslugi.ru/',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   get METADATA(): IdMetadata {
@@ -45,27 +49,27 @@ export class NationalID implements IdNumberClass {
     if (typeof idNumber !== 'string') {
       return false;
     }
-    
+
     // Remove spaces if present
     const cleanId = idNumber.replace(/\s/g, '');
-    
+
     // Must match the regex pattern
     if (!NationalID.METADATA.regexp.test(cleanId)) {
       return false;
     }
-    
+
     // Series should not be all zeros
     const series = cleanId.substring(0, 4);
     if (series === '0000') {
       return false;
     }
-    
+
     // Number should not be all zeros
     const number = cleanId.substring(4, 10);
     if (number === '000000') {
       return false;
     }
-    
+
     return true;
   }
 
@@ -80,13 +84,13 @@ export class NationalID implements IdNumberClass {
     if (!NationalID.validate(idNumber)) {
       return null;
     }
-    
+
     // Remove spaces if present
     const cleanId = idNumber.replace(/\s/g, '');
-    
+
     return {
       series: cleanId.substring(0, 4),
-      number: cleanId.substring(4, 10)
+      number: cleanId.substring(4, 10),
     };
   }
 

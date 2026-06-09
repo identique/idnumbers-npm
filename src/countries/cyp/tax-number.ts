@@ -13,6 +13,10 @@ export class TaxNumber {
     parsable: false,
     checksum: true,
     regexp: new RegExp(/^\d{8}[A-Z]$/),
+    displayFormat: '########L',
+    example: '00000000E',
+    checksumAlgorithm: 'Positional digit transform, mod 26 -> check letter',
+    officialName: 'Tax Identification Code (ΦΠΑ)',
     aliasOf: null,
     names: [
       'tax number',
@@ -62,7 +66,9 @@ export class TaxNumber {
     }
     const numbers = idNumber.slice(0, -1).split('').map(Number);
     const v1 = numbers.filter((_, idx) => idx % 2 !== 0).reduce((sum, val) => sum + val, 0);
-    const v2 = numbers.filter((_, idx) => idx % 2 === 0).reduce((sum, val) => sum + TaxNumber.NUM_MAP[val], 0);
+    const v2 = numbers
+      .filter((_, idx) => idx % 2 === 0)
+      .reduce((sum, val) => sum + TaxNumber.NUM_MAP[val], 0);
     const checkChar = String.fromCharCode(((v1 + v2) % 26) + 65);
     return checkChar === idNumber[idNumber.length - 1];
   }

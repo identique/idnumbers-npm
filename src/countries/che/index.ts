@@ -18,6 +18,10 @@ export const METADATA = {
   pattern: /^756\.?\d{4}\.?\d{4}\.?\d{2}$/,
   hasChecksum: true,
   isParsable: false,
+  displayFormat: '756.XXXX.XXXX.XX',
+  example: '756.1234.5678.97',
+  checksumAlgorithm: 'EAN-13 check digit',
+  officialName: 'AHV-Nr. / No AVS',
   links: ['https://en.wikipedia.org/wiki/National_identification_number#Switzerland'],
 };
 

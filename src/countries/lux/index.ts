@@ -20,13 +20,17 @@ export const METADATA: IdMetadata = {
   parsable: true,
   checksum: true,
   regexp: /^(?<yyyy>\d{4})(?<mm>\d{2})(?<dd>\d{2})(?<sn>\d{3})(?<checksum1>\d)(?<checksum2>\d)$/,
+  displayFormat: 'YYYYMMDDSSSCC',
+  example: '1893120105732',
+  checksumAlgorithm: 'Dual: Luhn (digit 12) + Verhoeff (digit 13)',
+  officialName: "Numéro d'identification national",
   aliasOf: null,
   names: ['National ID Number'],
   links: [
     'https://en.wikipedia.org/wiki/National_identification_number#Luxembourg',
-    'https://www.oecd.org/tax/automatic-exchange/crs-implementation-and-assistance/tax-identification-numbers/Luxembourg-TIN.pdf'
+    'https://www.oecd.org/tax/automatic-exchange/crs-implementation-and-assistance/tax-identification-numbers/Luxembourg-TIN.pdf',
   ],
-  deprecated: false
+  deprecated: false,
 };
 
 /**
@@ -70,7 +74,7 @@ export function parse(idNumber: string): LuxembourgParseResult | null {
     birthDate: new Date(year, month - 1, day),
     serialNumber: match.groups.sn,
     checksum1: parseInt(match.groups.checksum1, 10) as CheckDigit,
-    checksum2: parseInt(match.groups.checksum2, 10) as CheckDigit
+    checksum2: parseInt(match.groups.checksum2, 10) as CheckDigit,
   };
 }
 
@@ -84,17 +88,17 @@ export function checksum(idNumber: string): boolean {
   }
 
   const numbers = idNumber.split('').map(char => parseInt(char, 10));
-  
+
   // Check first checksum using Luhn algorithm
   const check1 = luhnDigit(numbers.slice(0, -2), true);
   if (check1 !== numbers[numbers.length - 2]) {
     return false;
   }
-  
+
   // For second checksum, remove the 12th digit (checksum1) and perform Verhoeff check
   const check2Numbers = [...numbers];
   check2Numbers.splice(-2, 1); // Remove the checksum1 digit
-  
+
   return verhoeffCheck(check2Numbers);
 }
 
@@ -102,5 +106,5 @@ export const NationalID = {
   validate,
   parse,
   checksum,
-  METADATA
+  METADATA,
 };

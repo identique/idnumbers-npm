@@ -1,9 +1,6 @@
 import { Citizenship, Gender } from '../../constants';
 import { IdMetadata } from '../../types';
-import {
-  UniqueMasterCitizenNumber as YugoslaviaJMBG,
-  ParseResult
-} from '../bih/yugoslavia';
+import { UniqueMasterCitizenNumber as YugoslaviaJMBG, ParseResult } from '../bih/yugoslavia';
 
 /**
  * Montenegro Unique Master Citizen Number (JMBG) format
@@ -13,6 +10,10 @@ export class UniqueMasterCitizenNumber extends YugoslaviaJMBG {
   static readonly METADATA: IdMetadata = {
     ...YugoslaviaJMBG.METADATA,
     iso3166Alpha2: 'ME',
+    displayFormat: 'DDMMYYYRRSSSC',
+    example: '0101990210005',
+    checksumAlgorithm: 'JMBG weighted sum mod 11 (folded pairs x 7,6,5,4,3,2)',
+    officialName: 'Jedinstveni matični broj građana (JMBG)',
   };
 
   /**
@@ -34,7 +35,7 @@ export class UniqueMasterCitizenNumber extends YugoslaviaJMBG {
     return {
       ...result,
       citizenship,
-      location
+      location,
     };
   }
 

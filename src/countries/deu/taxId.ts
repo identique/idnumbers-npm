@@ -15,13 +15,17 @@ export class TaxIdentificationNumber implements IdNumberClass {
     parsable: false,
     checksum: true,
     regexp: /^\d{2} ?\d{3} ?\d{3} ?\d{3}$/,
+    displayFormat: 'XX XXX XXX XXX',
+    example: '12345678911',
+    checksumAlgorithm: 'Iterative modulus 11/10 (MN algorithm)',
+    officialName: 'Steuerliche Identifikationsnummer (IdNr)',
     aliasOf: null,
     names: ['Tax Identification Number', 'Steuerliche Identifikationsnummer', 'IdNr'],
     links: [
       'https://en.wikipedia.org/wiki/National_identification_number#Germany',
-      'https://www.bzst.de/DE/Privatpersonen/SteuerlicheIdentifikationsnummer/steuerlicheidentifikationsnummer_node.html'
+      'https://www.bzst.de/DE/Privatpersonen/SteuerlicheIdentifikationsnummer/steuerlicheidentifikationsnummer_node.html',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   get METADATA(): IdMetadata {
@@ -104,8 +108,10 @@ export class TaxIdentificationNumber implements IdNumberClass {
     const normalized = TaxIdentificationNumber.normalize(idNumber).split('');
 
     for (let index = 0; index < normalized.length - 2; index++) {
-      if (normalized[index] === normalized[index + 1] &&
-          normalized[index] === normalized[index + 2]) {
+      if (
+        normalized[index] === normalized[index + 1] &&
+        normalized[index] === normalized[index + 2]
+      ) {
         return false;
       }
     }

@@ -29,6 +29,10 @@ export const METADATA = {
   pattern: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})\d{2}(?<gender>\d)(?<checksum>\d)$/,
   hasChecksum: true,
   isParsable: true,
+  displayFormat: 'YYMMDDRRGC',
+  example: '7501020018',
+  checksumAlgorithm: 'Weighted sum mod 11 (weights 2,4,8,5,10,9,7,3,6)',
+  officialName: 'Единен граждански номер (ЕГН)',
   links: ['https://en.wikipedia.org/wiki/National_identification_number#Bulgaria'],
 };
 

@@ -40,14 +40,19 @@ export class NationalID implements IdNumberClass {
     maxLength: 13,
     parsable: true,
     checksum: true,
-    regexp: /^(?<gender_century>\d)(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})(?<location>\d{2})(?<sn>\d{3})(?<checksum>\d)$/,
+    regexp:
+      /^(?<gender_century>\d)(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})(?<location>\d{2})(?<sn>\d{3})(?<checksum>\d)$/,
+    displayFormat: 'SAALLZZJJNNNC',
+    example: '1800101226813',
+    checksumAlgorithm: 'Weighted sum mod 11 (weights 2,7,9,1,4,6,3,5,8,2,7,9; 10 -> 1)',
+    officialName: 'Cod Numeric Personal (CNP)',
     aliasOf: null,
     names: ['Personal Numerical Code', 'Cod Numeric Personal', 'CNP', 'Carte de identitate'],
     links: [
       'https://en.wikipedia.org/wiki/National_identification_number#Romania',
-      'https://en.wikipedia.org/wiki/Romanian_identity_card'
+      'https://en.wikipedia.org/wiki/Romanian_identity_card',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   // Magic multiplier for checksum calculation
@@ -158,7 +163,7 @@ export class NationalID implements IdNumberClass {
         gender,
         citizenship,
         sn,
-        checksum: checksumDigit as CheckDigit
+        checksum: checksumDigit as CheckDigit,
       };
     } catch {
       return null;

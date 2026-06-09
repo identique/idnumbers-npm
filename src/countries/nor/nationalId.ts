@@ -39,6 +39,9 @@ export class NationalID implements IdNumberClass {
     checksum: true,
     regexp: /^(?<dd>\d{2})(?<mm>\d{2})(?<yy>\d{2})(?<individual_number>\d{3})(?<checksum>\d{2})$/,
     displayFormat: 'DDMMYYIIIKK',
+    example: '17054026641',
+    checksumAlgorithm: 'Two control digits, each weighted mod 11',
+    officialName: 'Fødselsnummer',
     aliasOf: null,
     names: ['National ID Number', 'fødselsnummer', 'birth number', 'riegádannummir'],
     links: [

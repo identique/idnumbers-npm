@@ -23,14 +23,19 @@ export class SocialSecurityNumber implements IdNumberClass {
     maxLength: 15,
     parsable: true,
     checksum: true,
-    regexp: /^(?<gender>[123478])(?<yy>\d{2})(?<mm>(0[1-9]|1[0-2]|[2-3][0-9]|4[0-2]|[5-9][0-9]))(?<birth_department>((\d{2}|2[AaBb])\d{3}))(?<cert_number>((?!000)\d{3}))(?<control_key>((?!(00|98|99))\d{2}))$/,
+    regexp:
+      /^(?<gender>[123478])(?<yy>\d{2})(?<mm>(0[1-9]|1[0-2]|[2-3][0-9]|4[0-2]|[5-9][0-9]))(?<birth_department>((\d{2}|2[AaBb])\d{3}))(?<cert_number>((?!000)\d{3}))(?<control_key>((?!(00|98|99))\d{2}))$/,
+    displayFormat: 'SYYMMDDCCCOOOKK',
+    example: '255081416802538',
+    checksumAlgorithm: 'Mod-97 (key = 97 - number mod 97)',
+    officialName: 'Numéro de Sécurité Sociale (INSEE)',
     aliasOf: null,
     names: ['Social Security Number', 'Numéro de Sécurité Sociale', 'INSEE Number'],
     links: [
       'https://en.wikipedia.org/wiki/Social_security_number#France',
-      'https://www.service-public.fr/particuliers/vosdroits/F33078'
+      'https://www.service-public.fr/particuliers/vosdroits/F33078',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   get METADATA(): IdMetadata {
@@ -58,7 +63,6 @@ export class SocialSecurityNumber implements IdNumberClass {
     return SocialSecurityNumber.checksum(idNumber);
   }
 
-
   validate(idNumber: string): boolean {
     return SocialSecurityNumber.validate(idNumber);
   }
@@ -84,7 +88,10 @@ export class SocialSecurityNumber implements IdNumberClass {
     }
 
     // Determine gender
-    const genderValue = genderDigit === '1' || genderDigit === '3' || genderDigit === '7' ? Gender.MALE : Gender.FEMALE;
+    const genderValue =
+      genderDigit === '1' || genderDigit === '3' || genderDigit === '7'
+        ? Gender.MALE
+        : Gender.FEMALE;
 
     // Determine century and create birth date
     // For years 00-25, assume 2000s, otherwise 1900s
@@ -97,13 +104,13 @@ export class SocialSecurityNumber implements IdNumberClass {
 
     return {
       sex: genderValue,
-      gender: genderValue,  // Include both for compatibility
+      gender: genderValue, // Include both for compatibility
       birthDate,
       yy: match.groups.yy,
       mm: match.groups.mm,
       birth_department: birthDepartmentData,
       placeOfBirthCode: birthDepartment,
-      checksum: controlKey
+      checksum: controlKey,
     };
   }
 
@@ -113,12 +120,17 @@ export class SocialSecurityNumber implements IdNumberClass {
   static validateBirthDepartment(birthDepartment: string): any | null {
     const departmentCode = birthDepartment.substring(0, 2).toUpperCase();
 
-    if ((departmentCode.match(/^\d{2}$/) && parseInt(departmentCode) >= 1 && parseInt(departmentCode) <= 95) ||
-        departmentCode === '2A' || departmentCode === '2B') {
+    if (
+      (departmentCode.match(/^\d{2}$/) &&
+        parseInt(departmentCode) >= 1 &&
+        parseInt(departmentCode) <= 95) ||
+      departmentCode === '2A' ||
+      departmentCode === '2B'
+    ) {
       return {
         department: birthDepartment.substring(0, 2),
         city: birthDepartment.substring(2),
-        country: ""
+        country: '',
       };
     }
 
@@ -126,7 +138,7 @@ export class SocialSecurityNumber implements IdNumberClass {
       return {
         department: birthDepartment.substring(0, 3),
         city: birthDepartment.substring(3),
-        country: ""
+        country: '',
       };
     }
 
@@ -134,7 +146,7 @@ export class SocialSecurityNumber implements IdNumberClass {
       return {
         department: '',
         city: '',
-        country: birthDepartment.substring(2)
+        country: birthDepartment.substring(2),
       };
     }
 
@@ -152,11 +164,12 @@ export class SocialSecurityNumber implements IdNumberClass {
    */
   static checksum(idNumber: string): boolean {
     const normalized = idNumber.toUpperCase().replace('2A', '19').replace('2B', '18');
-    return 97 - parseInt(normalized.substring(0, 13)) % 97 === parseInt(normalized.substring(13, 15));
+    return (
+      97 - (parseInt(normalized.substring(0, 13)) % 97) === parseInt(normalized.substring(13, 15))
+    );
   }
 
   checksum(idNumber: string): boolean {
     return SocialSecurityNumber.checksum(idNumber);
   }
-
 }

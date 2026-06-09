@@ -2,7 +2,14 @@ import { Citizenship } from '../../types';
 import { ParseResult, UniqueMasterCitizenNumber as YugoslaviaJMBG } from './yugoslavia';
 
 export class UniqueMasterCitizenNumber extends YugoslaviaJMBG {
-  public static METADATA = { ...YugoslaviaJMBG.METADATA, iso3166_alpha2: 'BA' };
+  public static METADATA = {
+    ...YugoslaviaJMBG.METADATA,
+    iso3166_alpha2: 'BA',
+    displayFormat: 'DDMMYYYRRSSSC',
+    example: '0101990150002',
+    checksumAlgorithm: 'JMBG weighted sum mod 11 (folded pairs x 7,6,5,4,3,2)',
+    officialName: 'Jedinstveni matični broj građana (JMBG)',
+  };
 
   /**
    * Serbia Unique Master Citizen Number format, JMBG
