@@ -1,1 +1,1 @@
-export { NationalID } from './nationalId';
+export { NationalID, type NationalIdParseResult } from './nationalId';
