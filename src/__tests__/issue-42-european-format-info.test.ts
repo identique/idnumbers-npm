@@ -59,7 +59,7 @@ const EUROPEAN_EXPECTED: Record<string, ExpectedFormat> = {
   },
   CYP: {
     format: '########L',
-    example: '00000000E',
+    example: '01234567U',
     checksumAlgorithm: 'Positional digit transform, mod 26 -> check letter',
     officialName: 'Tax Identification Code (ΦΠΑ)',
   },
@@ -168,7 +168,7 @@ const EUROPEAN_EXPECTED: Record<string, ExpectedFormat> = {
   LVA: {
     format: 'DDMMYY-SSSSS',
     example: '161175-19997',
-    checksumAlgorithm: 'Weighted sum mod 11, then mod 10 ((1101 - weighted) mod 11 mod 10)',
+    checksumAlgorithm: 'Weighted sum mod 11, then mod 10',
     officialName: 'personas kods',
   },
   MDA: {

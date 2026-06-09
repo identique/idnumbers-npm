@@ -21,7 +21,7 @@ export const METADATA = {
   isParsable: false,
   displayFormat: 'DDMMYY-SSSSS',
   example: '161175-19997',
-  checksumAlgorithm: 'Weighted sum mod 11, then mod 10 ((1101 - weighted) mod 11 mod 10)',
+  checksumAlgorithm: 'Weighted sum mod 11, then mod 10',
   officialName: 'personas kods',
   links: [
     'https://en.wikipedia.org/wiki/National_identification_number#Latvia',
