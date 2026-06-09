@@ -16,6 +16,12 @@ export interface IdMetadata {
   regexp: RegExp;
   /** Human-readable display format string (e.g. "YYMMDD-GSSSSSS") */
   displayFormat?: string;
+  /** A synthetic, checksum-valid example ID (passes validateNationalId) */
+  example?: string;
+  /** Human-readable checksum algorithm description (e.g. "Luhn (mod 10)" or "None (...)") */
+  checksumAlgorithm?: string;
+  /** Official/local name of the ID (e.g. "Personnummer") */
+  officialName?: string;
   /** If this is an alias of another ID type */
   aliasOf: any | null;
   /** Common names for this ID type */

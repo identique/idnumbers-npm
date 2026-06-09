@@ -128,6 +128,11 @@ export class ValidatorRegistry implements IValidatorRegistry {
       // leaves the optional `format` key absent (not set to undefined) for
       // countries without a displayFormat, matching IdFormat.format?'s contract.
       ...(METADATA.displayFormat !== undefined && { format: METADATA.displayFormat }),
+      ...(METADATA.example !== undefined && { example: METADATA.example }),
+      ...(METADATA.checksumAlgorithm !== undefined && {
+        checksumAlgorithm: METADATA.checksumAlgorithm,
+      }),
+      ...(METADATA.officialName !== undefined && { officialName: METADATA.officialName }),
       length: { min: METADATA.minLength, max: METADATA.maxLength },
       hasChecksum: METADATA.checksum,
       isParsable: METADATA.parsable,
