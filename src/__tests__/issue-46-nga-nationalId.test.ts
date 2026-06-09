@@ -25,7 +25,6 @@ import { NationalID, NationalIdParseResult } from '../countries/nga/nationalId';
 import { validateNationalId, parseIdInfo, getCountryIdFormat } from '../index';
 
 const VALID_NIN = '12345678901';
-const VALID_NIN_2 = '12345678902';
 
 describe('Nigeria (NGA) — National Identification Number (NIN)', () => {
   describe('METADATA', () => {
@@ -48,7 +47,7 @@ describe('Nigeria (NGA) — National Identification Number (NIN)', () => {
   });
 
   describe('validate()', () => {
-    it.each([VALID_NIN, VALID_NIN_2, '00000000000', '99999999999'])(
+    it.each([VALID_NIN, '12345678902', '00000000000', '99999999999'])(
       'accepts a valid 11-digit NIN: %s',
       id => {
         expect(NationalID.validate(id)).toBe(true);
