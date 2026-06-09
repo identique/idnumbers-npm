@@ -12,6 +12,7 @@ export class NationalID implements IdNumberClass {
     parsable: true,
     checksum: true,
     regexp: /^\d{13}$/,
+    displayFormat: 'DDMMYYYRRSSSC',
     aliasOf: null,
     names: ['EMŠO', 'Enotna matična številka občana', 'Unique Master Citizen Number'],
     links: [

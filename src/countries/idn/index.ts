@@ -26,6 +26,7 @@ export const METADATA = {
   minLength: 16,
   maxLength: 16,
   pattern: /^(?<district>\d{6})(?<dd>[0-7]\d)(?<mm>(0[1-9]|1[012]))(?<yy>\d{2})(?!0000)\d{4}$/,
+  displayFormat: 'DDMMYYPPPPSSSS',
   hasChecksum: false,
   isParsable: true,
   links: [

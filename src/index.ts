@@ -252,34 +252,14 @@ export function listSupportedCountries(): CountryInfo[] {
 }
 
 // ---------------------------------------------------------------------------
-// Format enrichment: countryName, idType from SUPPORTED_COUNTRIES + format
-// display strings preserved from the old switch statement.
+// Format enrichment: overlay countryName + idType from SUPPORTED_COUNTRIES.
+// Format display strings now live in each country's METADATA.displayFormat and
+// are surfaced by registry.getFormat().
 // ---------------------------------------------------------------------------
 const countryInfoMap = new Map<string, { countryName: string; idType: string }>();
 for (const entry of SUPPORTED_COUNTRIES) {
   countryInfoMap.set(entry.code, { countryName: entry.name, idType: entry.idType });
 }
-
-const FORMAT_STRINGS: Record<string, string> = {
-  IND: 'XXXX XXXX XXXX',
-  JPN: 'XXXXXXXXXXXX',
-  KAZ: 'YYMMDDCSSSS',
-  KWT: 'CYYMMDDSSSS',
-  IDN: 'DDMMYYPPPPSSSS',
-  KOR: 'YYMMDD-GSSSSSS',
-  MEX: 'AAAANNNNNNAAAAAANN',
-  LKA: 'YYYYDDDSSSSC',
-  NGA: 'XXXXXXXXXXX',
-  MYS: 'YYMMDD-PB-###G',
-  NOR: 'DDMMYYIIIKK',
-  PAK: '#####-#######-#',
-  THA: '#-####-#####-##-#',
-  VNM: 'Variable (9 or 12 digits)',
-  SVN: 'DDMMYYYRRSSSC',
-  SRB: 'DDMMYYYRRSSSC',
-  TWN: 'X#########',
-  VEN: 'V-######## or E-########',
-};
 
 /**
  * Get information about the ID number format for a specific country.
@@ -295,11 +275,9 @@ export function getCountryIdFormat(countryCode: string): IdFormat | null {
 
   // Build enriched copy instead of mutating the registry object
   const info = countryInfoMap.get(format.countryCode);
-  const formatStr = FORMAT_STRINGS[format.countryCode];
 
   return {
     ...format,
     ...(info && { countryName: info.countryName, idType: info.idType }),
-    ...(formatStr && { format: formatStr }),
   };
 }

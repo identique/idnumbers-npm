@@ -33,6 +33,7 @@ export class NationalID implements IdNumberClass {
     parsable: true,
     checksum: true,
     regexp: /^(?<location>[A-Z])(?<gender>[12])(?<sn>\d{7})(?<checksum>\d)$/,
+    displayFormat: 'X#########',
     aliasOf: null,
     names: ['National ID Number', '國民身分證統一編號', '身分證字號'],
     links: [

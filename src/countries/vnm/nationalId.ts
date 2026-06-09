@@ -36,6 +36,7 @@ export class NationalID implements IdNumberClass {
     parsable: true,
     checksum: false,
     regexp: /^(?:(?<province_country_code>\d{3})(?<gender>\d)(?<yy>\d{2})(?<sn>\d{6})|\d{9})$/,
+    displayFormat: 'Variable (9 or 12 digits)',
     aliasOf: null,
     names: ['National ID Number', 'Thẻ căn cước công dân'],
     links: [

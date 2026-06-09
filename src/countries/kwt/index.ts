@@ -19,6 +19,7 @@ export const METADATA: IdMetadata = {
   parsable: true,
   checksum: true,
   regexp: /^(?<century>\d)(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})(?<sn>\d{4})(?<checksum>\d)$/,
+  displayFormat: 'CYYMMDDSSSS',
   aliasOf: null,
   names: [
     'Civil Number',

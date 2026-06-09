@@ -13,6 +13,7 @@ export const METADATA: IdMetadata = {
   parsable: false,
   checksum: true,
   regexp: /^\d{12}$/,
+  displayFormat: 'XXXXXXXXXXXX',
   aliasOf: null,
   names: ['National ID Number', 'My Number', 'マイナンバー'],
   links: ['https://en.wikipedia.org/wiki/National_identification_number#Japan'],

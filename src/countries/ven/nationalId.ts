@@ -13,6 +13,7 @@ export class NationalID implements IdNumberClass {
     parsable: true,
     checksum: false,
     regexp: /^[VEJG][\d\.\-\s]{7,}$/,
+    displayFormat: 'V-######## or E-########',
     aliasOf: null,
     names: ['Cédula de Identidad'],
     links: [],

@@ -13,6 +13,7 @@ export const METADATA: IdMetadata = {
   parsable: false,
   checksum: true,
   regexp: /^[2-9]\d{3}[\s-]?\d{4}[\s-]?\d{4}$/,
+  displayFormat: 'XXXX XXXX XXXX',
   aliasOf: null,
   names: [
     'National ID Number',

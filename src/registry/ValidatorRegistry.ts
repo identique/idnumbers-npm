@@ -124,6 +124,7 @@ export class ValidatorRegistry implements IValidatorRegistry {
       countryCode,
       countryName,
       idType,
+      ...(METADATA.displayFormat !== undefined && { format: METADATA.displayFormat }),
       length: { min: METADATA.minLength, max: METADATA.maxLength },
       hasChecksum: METADATA.checksum,
       isParsable: METADATA.parsable,

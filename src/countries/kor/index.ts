@@ -28,6 +28,7 @@ export const METADATA = {
   minLength: 13,
   maxLength: 14,
   pattern: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})-(?<gender>\d)(?<sn>\d{6})$/,
+  displayFormat: 'YYMMDD-GSSSSSS',
   hasChecksum: false,
   isParsable: true,
   links: [
