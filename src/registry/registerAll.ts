@@ -81,6 +81,7 @@ import { CPFNumber } from '../countries/bra';
 // KAZ: BusinessIDNumber (BIN)
 // KOR: OldResidentRegistration (deprecated)
 // LVA: OldPersonalCode (deprecated)
+// NZL: IRDNumber (Inland Revenue Department — primary stays DriverLicense)
 // VEN: FiscalInformationNumber (RIF)
 
 // ---------------------------------------------------------------------------
