@@ -65,10 +65,9 @@ export function checksum(idNumber: string): boolean {
   if (!validateRegexp(idNumber, METADATA.regexp)) {
     return false;
   }
-  let normalized = normalize(idNumber);
-  if (normalized.length === 8) {
-    normalized = '0' + normalized;
-  }
+  // The 8-digit short form is left-padded to 9 digits; the 9-digit form is
+  // unchanged (the regexp guarantees the core is either 8 or 9 digits).
+  const normalized = normalize(idNumber).padStart(9, '0');
   const digits = normalized.split('').map(Number);
   const source = digits.slice(0, 8);
   const checkDigit = digits[8];
