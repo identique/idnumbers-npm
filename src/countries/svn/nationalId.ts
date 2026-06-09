@@ -14,7 +14,7 @@ export class NationalID implements IdNumberClass {
     regexp: /^\d{13}$/,
     displayFormat: 'DDMMYYYRRSSSC',
     example: '0101990500003',
-    checksumAlgorithm: 'JMBG weighted sum mod 11',
+    checksumAlgorithm: 'JMBG weighted sum mod 11 (weights 7,6,5,4,3,2 x2)',
     officialName: 'EMŠO (Enotna matična številka občana)',
     aliasOf: null,
     names: ['EMŠO', 'Enotna matična številka občana', 'Unique Master Citizen Number'],

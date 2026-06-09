@@ -246,7 +246,7 @@ const EUROPEAN_EXPECTED: Record<string, ExpectedFormat> = {
   SVN: {
     format: 'DDMMYYYRRSSSC',
     example: '0101990500003',
-    checksumAlgorithm: 'JMBG weighted sum mod 11',
+    checksumAlgorithm: 'JMBG weighted sum mod 11 (weights 7,6,5,4,3,2 x2)',
     officialName: 'EMŠO (Enotna matična številka občana)',
   },
   SWE: {
