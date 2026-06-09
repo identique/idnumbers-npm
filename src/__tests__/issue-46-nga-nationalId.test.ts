@@ -103,12 +103,12 @@ describe('Nigeria (NGA) — National Identification Number (NIN)', () => {
 
   describe('checksum()', () => {
     it('always returns null (NIN has no documented checksum algorithm)', () => {
-      expect(NationalID.checksum()).toBeNull();
+      expect(NationalID.checksum(VALID_NIN)).toBeNull();
     });
 
     it('delegates from the instance method to the static method', () => {
       const instance = new NationalID();
-      expect(instance.checksum()).toBeNull();
+      expect(instance.checksum(VALID_NIN)).toBeNull();
     });
   });
 

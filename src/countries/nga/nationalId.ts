@@ -91,12 +91,16 @@ export class NationalID implements IdNumberClass {
    * Nigeria NIN doesn't have a publicly documented checksum algorithm, so this
    * always returns `null` (mirrors `checksum: false` in METADATA and the Python
    * source).
+   *
+   * The `idNumber` parameter is unused but retained for signature parity with
+   * the other country modules and the `IdNumberClass` interface.
    */
-  static checksum(): CheckDigit | null {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- retained for signature parity (see JSDoc)
+  static checksum(idNumber: string): CheckDigit | null {
     return null;
   }
 
-  checksum(): CheckDigit | null {
-    return NationalID.checksum();
+  checksum(idNumber: string): CheckDigit | null {
+    return NationalID.checksum(idNumber);
   }
 }
