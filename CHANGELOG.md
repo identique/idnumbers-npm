@@ -7,8 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Format information for all 40 European countries via `getCountryIdFormat()` — each now returns a `format` display mask, a valid `example`, a `checksumAlgorithm` description, and the `officialName` (local name) ([#42](https://github.com/identique/idnumbers-npm/issues/42))
+- `IdMetadata` and `IdFormat` gain optional `example`, `checksumAlgorithm`, and `officialName` fields, populated from each country's METADATA ([#42](https://github.com/identique/idnumbers-npm/issues/42))
+
 ### Changed
 
+- Portugal (PRT) `idType` corrected from "Citizen Card" to "Tax Identification Number (NIF)" to match the registered NIF validator ([#42](https://github.com/identique/idnumbers-npm/issues/42))
 - Nigeria (NGA) NIN `parse()` now returns `{ isValid: true }` for valid NINs (previously `{ checksum: null }`) — the NIN is a randomly-assigned number that encodes no personal data, mirroring the Python source (`parsable: False`); added full validate/parse/checksum and registry-integration test coverage ([#46](https://github.com/identique/idnumbers-npm/issues/46))
 
 ## [1.8.0] - 2026-04-28

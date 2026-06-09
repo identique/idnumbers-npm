@@ -57,10 +57,12 @@ console.log(info);
 Validates a national ID number for a specific country.
 
 **Parameters:**
+
 - `countryCode` (string): ISO 3166-1 alpha-3 country code (e.g., 'USA', 'GBR', 'FRA')
 - `idNumber` (string): The ID number to validate
 
 **Returns:** `ValidationResult`
+
 ```typescript
 {
   isValid: boolean;
@@ -72,6 +74,7 @@ Validates a national ID number for a specific country.
 ```
 
 **Example:**
+
 ```typescript
 const result = validateNationalId('GBR', 'AB123456C');
 if (result.isValid) {
@@ -86,12 +89,14 @@ if (result.isValid) {
 Extracts information from a national ID number (if supported by the country).
 
 **Parameters:**
+
 - `countryCode` (string): ISO 3166-1 alpha-3 country code
 - `idNumber` (string): The ID number to parse
 
 **Returns:** `ParsedInfo | null`
 
 The returned object varies by country but commonly includes:
+
 - `yyyymmdd` or `birthDate`: Date of birth
 - `gender`: 'male' or 'female'
 - `citizenship`: 'citizen' or 'resident'
@@ -99,6 +104,7 @@ The returned object varies by country but commonly includes:
 - Additional country-specific fields
 
 **Example:**
+
 ```typescript
 const info = parseIdInfo('SWE', '811218-9876');
 console.log(info);
@@ -114,16 +120,18 @@ console.log(info);
 Validates multiple ID numbers in batch.
 
 **Parameters:**
+
 - `ids` (Array): Array of objects with `countryCode` and `idNumber`
 
 **Returns:** Array of `ValidationResult`
 
 **Example:**
+
 ```typescript
 const results = validateMultipleIds([
   { countryCode: 'USA', idNumber: '123-45-6789' },
   { countryCode: 'GBR', idNumber: 'AB123456C' },
-  { countryCode: 'FRA', idNumber: '255081416802538' }
+  { countryCode: 'FRA', idNumber: '255081416802538' },
 ]);
 
 results.forEach(result => {
@@ -136,6 +144,7 @@ results.forEach(result => {
 Returns a list of all supported countries.
 
 **Returns:** Array of country information
+
 ```typescript
 [
   {
@@ -148,6 +157,7 @@ Returns a list of all supported countries.
 ```
 
 **Example:**
+
 ```typescript
 const countries = listSupportedCountries();
 console.log(`Supports ${countries.length} countries`);
@@ -158,18 +168,27 @@ console.log(`Supports ${countries.length} countries`);
 Gets format information for a country's ID number.
 
 **Parameters:**
+
 - `countryCode` (string): ISO 3166-1 alpha-3 country code
 
-**Returns:** Format information or null
+**Returns:** Format information, or `null` for unsupported codes. Always includes `countryCode`, `countryName`, `idType`, `length`, `hasChecksum`, `isParsable`, and `metadata`. Documented countries also include the optional fields `format` (a human-readable display mask), `example` (a valid sample ID), `checksumAlgorithm` (a description of the check-digit algorithm), and `officialName` (the local/official name of the ID).
 
 **Example:**
+
 ```typescript
-const format = getCountryIdFormat('IND');
+const format = getCountryIdFormat('SWE');
 console.log(format);
 // {
-//   countryCode: 'IND',
-//   format: 'XXXX XXXX XXXX',
-//   length: { min: 12, max: 12 },
+//   countryCode: 'SWE',
+//   countryName: 'Sweden',
+//   idType: 'Personal Identity Number',
+//   format: 'YYMMDD[+-]XXXC',
+//   example: '811218-9876',
+//   checksumAlgorithm: 'Luhn (mod 10)',
+//   officialName: 'Personnummer',
+//   length: { min: 10, max: 13 },
+//   hasChecksum: true,
+//   isParsable: true,
 //   ...
 // }
 ```
@@ -177,11 +196,13 @@ console.log(format);
 ## Supported Countries
 
 ### North America (3)
+
 - 🇺🇸 **USA** - Social Security Number (SSN)
 - 🇨🇦 **CAN** - Social Insurance Number (SIN)
 - 🇲🇽 **MEX** - CURP (Clave Única de Registro de Población)
 
 ### South America (5)
+
 - 🇦🇷 **ARG** - DNI (Documento Nacional de Identidad)
 - 🇧🇷 **BRA** - CPF (Cadastro de Pessoas Físicas)
 - 🇨🇱 **CHL** - RUT/RUN (Rol Único Tributario)
@@ -189,6 +210,7 @@ console.log(format);
 - 🇻🇪 **VEN** - Cédula de Identidad
 
 ### Europe (40)
+
 - 🇦🇱 **ALB** - National ID Number
 - 🇦🇹 **AUT** - Social Security Number
 - 🇧🇪 **BEL** - National Register Number
@@ -231,6 +253,7 @@ console.log(format);
 - 🇬🇧 **GBR** - National Insurance Number (NINO)
 
 ### Asia (26)
+
 - 🇧🇭 **BHR** - Personal Number (CPR)
 - 🇧🇩 **BGD** - National ID
 - 🇨🇳 **CHN** - Resident Identity Card
@@ -259,11 +282,13 @@ console.log(format);
 - 🇻🇳 **VNM** - Citizen Identity Card
 
 ### Africa (3)
+
 - 🇳🇬 **NGA** - National Identification Number (NIN)
 - 🇿🇦 **ZAF** - ID Number
 - 🇿🇼 **ZWE** - National ID
 
 ### Oceania (3)
+
 - 🇦🇺 **AUS** - Medicare Number
 - 🇳🇿 **NZL** - Driver License Number
 - 🇵🇬 **PNG** - National ID Number (NID)
@@ -329,7 +354,7 @@ const ids = [
   { countryCode: 'USA', idNumber: '123-45-6789' },
   { countryCode: 'GBR', idNumber: 'AB123456C' },
   { countryCode: 'JPN', idNumber: '123456789012' },
-  { countryCode: 'XXX', idNumber: '123' } // Invalid country
+  { countryCode: 'XXX', idNumber: '123' }, // Invalid country
 ];
 
 const results = validateMultipleIds(ids);
@@ -385,7 +410,10 @@ if (info) {
 ```typescript
 import { validateNationalId } from 'idnumbers';
 
-function validateUserID(country: string, idNumber: string): {
+function validateUserID(
+  country: string,
+  idNumber: string
+): {
   valid: boolean;
   message: string;
 } {
@@ -393,9 +421,7 @@ function validateUserID(country: string, idNumber: string): {
 
   return {
     valid: result.isValid,
-    message: result.isValid
-      ? 'Valid ID number'
-      : result.errorMessage || 'Invalid ID number'
+    message: result.isValid ? 'Valid ID number' : result.errorMessage || 'Invalid ID number',
   };
 }
 
@@ -409,32 +435,38 @@ if (!validation.valid) {
 ## Country-Specific Notes
 
 ### United States (USA)
+
 - Format: `XXX-XX-XXXX` (with or without dashes)
 - Forbidden prefixes: `000`, `666`, `900-999`
 - Example: `123-45-6789`
 
 ### United Kingdom (GBR)
+
 - Format: Two letters, six digits, one letter
 - Forbidden prefixes: `BG`, `GB`, `NK`, `KN`, `TN`, `NT`, `ZZ`
 - Example: `AB123456C`
 
 ### China (CHN)
+
 - Format: 18 digits (17 digits + checksum)
 - Contains: Region code, birth date, sequence number, checksum
 - Checksum can be `X` (representing 10)
 - Example: `11010219840406970X`
 
 ### South Africa (ZAF)
+
 - Format: 13 digits
 - Contains: Birth date (YYMMDD), gender, citizenship
 - Example: `8001015009087`
 
 ### France (FRA)
+
 - Format: 15 digits (Social Security Number)
 - Contains: Gender, year/month of birth, department code
 - Example: `255081416802538`
 
 ### Germany (DEU)
+
 - Format: 11 digits (Tax ID)
 - Contains: Random number with checksum validation
 - Example: `65929970489`
@@ -442,6 +474,7 @@ if (!validation.valid) {
 ## Testing
 
 The library includes comprehensive test coverage with 301 tests covering:
+
 - Format validation
 - Checksum verification
 - Edge cases and error handling
@@ -449,11 +482,13 @@ The library includes comprehensive test coverage with 301 tests covering:
 - Cross-country consistency
 
 Run tests:
+
 ```bash
 npm test
 ```
 
 Run tests with coverage:
+
 ```bash
 npm run test:coverage
 ```
@@ -465,15 +500,18 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ### Development Setup
 
 1. **Clone the repository:**
+
    ```bash
    git clone https://github.com/identique/idnumbers-npm.git
    cd idnumbers-npm
    ```
 
 2. **Install dependencies:**
+
    ```bash
    npm install
    ```
+
    This automatically sets up pre-commit hooks via Husky.
 
 3. **Pre-commit Hooks:**
@@ -486,12 +524,14 @@ Contributions are welcome! Please feel free to submit a Pull Request.
    If any check fails, the commit will be blocked until fixed.
 
 4. **Run tests:**
+
    ```bash
    npm test                # Run all tests
    npm run test:coverage   # Run with coverage report
    ```
 
 5. **Build:**
+
    ```bash
    npm run build          # Compile TypeScript
    ```
@@ -517,6 +557,7 @@ This library is inspired by and maintains compatibility with validation logic fr
 ## Support
 
 For issues, questions, or contributions, please visit:
+
 - GitHub: https://github.com/identique/idnumbers-npm
 - Issues: https://github.com/identique/idnumbers-npm/issues
 
