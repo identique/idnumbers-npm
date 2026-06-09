@@ -1,12 +1,21 @@
-import { CheckDigit, Gender, Citizenship } from '../../constants';
-import { IdMetadata, IdNumberClass } from '../../types';
+import { CheckDigit } from '../../constants';
+import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types';
 
 /**
- * Parse result of Nigeria national ID
+ * Parse result of Nigeria National Identification Number (NIN).
+ *
+ * The NIN is a randomly-assigned 11-digit number issued by the NIMC. It does
+ * NOT encode any personal information — there is no birth date, gender, or
+ * state of origin embedded in it. Parsing therefore only confirms that the
+ * number is structurally valid; there are no demographic fields to extract.
+ *
+ * This mirrors the Python source of truth
+ * (`idnumbers/nationalid/nga/national_id.py`), which sets `parsable: False`
+ * and provides no parse function.
  */
-export interface NationalIdParseResult {
-  /** Check digit */
-  checksum: CheckDigit | null;
+export interface NationalIdParseResult extends ParsedInfo {
+  /** Always `true` — a non-null result is only returned for valid NINs. */
+  isValid: true;
 }
 
 /**
@@ -37,8 +46,10 @@ export class NationalID implements IdNumberClass {
   }
 
   /**
-   * Validate the Nigeria NIN
-   * NIN is 11 digits with no publicly documented checksum algorithm
+   * Validate the Nigeria NIN.
+   *
+   * NIN is 11 digits with no publicly documented checksum algorithm. Non-string
+   * input returns `false` (rather than throwing) for caller safety.
    */
   static validate(idNumber: string): boolean {
     if (typeof idNumber !== 'string') {
@@ -53,18 +64,23 @@ export class NationalID implements IdNumberClass {
   }
 
   /**
-   * Parse Nigeria national ID number
-   * Since NIN doesn't encode personal information in a publicly documented way,
-   * parsing only returns validation status
+   * Parse the Nigeria NIN.
+   *
+   * The NIN encodes no personal information, so a successful parse returns only
+   * `{ isValid: true }`; invalid numbers return `null`.
+   *
+   * Python's source has no parse function (`parsable: False`). This port keeps a
+   * minimal parse() solely to satisfy the registry/migration contract
+   * (`parseIdInfo()` / `extractedInfo` must be non-null for valid IDs) WITHOUT
+   * fabricating birth date / gender / state-of-origin fields that the NIN does
+   * not contain.
    */
   static parse(idNumber: string): NationalIdParseResult | null {
     if (!NationalID.validate(idNumber)) {
       return null;
     }
 
-    return {
-      checksum: null,
-    };
+    return { isValid: true };
   }
 
   parse(idNumber: string): NationalIdParseResult | null {
@@ -72,13 +88,15 @@ export class NationalID implements IdNumberClass {
   }
 
   /**
-   * Nigeria NIN doesn't have a publicly documented checksum algorithm
+   * Nigeria NIN doesn't have a publicly documented checksum algorithm, so this
+   * always returns `null` (mirrors `checksum: false` in METADATA and the Python
+   * source).
    */
-  static checksum(idNumber: string): CheckDigit | null {
+  static checksum(): CheckDigit | null {
     return null;
   }
 
-  checksum(idNumber: string): CheckDigit | null {
-    return NationalID.checksum(idNumber);
+  checksum(): CheckDigit | null {
+    return NationalID.checksum();
   }
 }
