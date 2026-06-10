@@ -43,58 +43,198 @@ export class NationalID implements IdNumberClass {
     maxLength: 17,
     parsable: true,
     checksum: true,
-    regexp: /^(?<citizenship>[0-8])[\s-]?(?<province>\d{2})(?<district>\d{2})[\s-]?(?<sn>\d{5}[\s-]?\d{2})[\s-]?(?<checksum>\d)$/,
+    regexp:
+      /^(?<citizenship>[0-8])[\s-]?(?<province>\d{2})(?<district>\d{2})[\s-]?(?<sn>\d{5}[\s-]?\d{2})[\s-]?(?<checksum>\d)$/,
     displayFormat: '#-####-#####-##-#',
+    example: '3101012345673',
+    checksumAlgorithm: 'Weighted sum mod 11 (weights 13..2; check = (11 - remainder) mod 10)',
+    officialName: 'บัตรประชาชน (Population Identification Code)',
     aliasOf: null,
     names: [
       'National ID Number',
       'Population Identification Code',
       'บัตรประชาชน',
-      'รหัสบัตรประชาชน'
+      'รหัสบัตรประชาชน',
     ],
     links: [
       'https://en.wikipedia.org/wiki/National_identification_number#Thailand',
       'https://thailandformats.com/idcards',
-      'https://learn.microsoft.com/en-us/microsoft-365/compliance/sit-defn-thai-population-identification-code'
+      'https://learn.microsoft.com/en-us/microsoft-365/compliance/sit-defn-thai-population-identification-code',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   /**
    * Valid province codes in Thailand
    */
   private static readonly PROVINCE_LIST = [
-    '10', '11', '12', '13', '14', '15', '16', '17', '18', '19',
-    '20', '21', '22', '23', '24', '25', '26', '27',
-    '30', '31', '32', '33', '34', '35', '36', '37', '38', '39',
-    '40', '41', '42', '43', '44', '45', '46', '47', '48', '49',
-    '50', '51', '52', '53', '54', '55', '56', '57', '58',
-    '60', '61', '62', '63', '64', '65', '66', '67',
-    '70', '71', '72', '73', '74', '75', '76', '77',
-    '80', '81', '82', '83', '84', '85', '86',
-    '90', '91', '92', '93', '94', '95', '96'
+    '10',
+    '11',
+    '12',
+    '13',
+    '14',
+    '15',
+    '16',
+    '17',
+    '18',
+    '19',
+    '20',
+    '21',
+    '22',
+    '23',
+    '24',
+    '25',
+    '26',
+    '27',
+    '30',
+    '31',
+    '32',
+    '33',
+    '34',
+    '35',
+    '36',
+    '37',
+    '38',
+    '39',
+    '40',
+    '41',
+    '42',
+    '43',
+    '44',
+    '45',
+    '46',
+    '47',
+    '48',
+    '49',
+    '50',
+    '51',
+    '52',
+    '53',
+    '54',
+    '55',
+    '56',
+    '57',
+    '58',
+    '60',
+    '61',
+    '62',
+    '63',
+    '64',
+    '65',
+    '66',
+    '67',
+    '70',
+    '71',
+    '72',
+    '73',
+    '74',
+    '75',
+    '76',
+    '77',
+    '80',
+    '81',
+    '82',
+    '83',
+    '84',
+    '85',
+    '86',
+    '90',
+    '91',
+    '92',
+    '93',
+    '94',
+    '95',
+    '96',
   ];
 
   /**
    * Maximum district code value for each province
    */
-  private static readonly DISTRICT_MAX_VALUE: {[key: string]: number} = {
-    '10': 50, '11': 6, '12': 6, '13': 7, '14': 46, '15': 7, '16': 11, '17': 9, '18': 8, '19': 12,
-    '20': 11, '21': 8, '22': 10, '23': 7, '24': 11, '25': 9, '26': 4, '27': 9,
-    '30': 32, '31': 23, '32': 17, '33': 22, '34': 25, '35': 9, '36': 16, '37': 6, '38': 8, '39': 6,
-    '40': 26, '41': 25, '42': 14, '43': 9, '44': 13, '45': 20, '46': 18, '47': 18, '48': 12, '49': 7,
-    '50': 25, '51': 8, '52': 12, '53': 9, '54': 16, '55': 15, '56': 9, '57': 18, '58': 7,
-    '60': 15, '61': 8, '62': 11, '63': 9, '64': 9, '65': 22, '66': 13, '67': 13,
-    '70': 10, '71': 13, '72': 10, '73': 7, '74': 3, '75': 3, '76': 7, '77': 8,
-    '80': 23, '81': 8, '82': 8, '83': 3, '84': 19, '85': 4, '86': 8,
-    '90': 16, '91': 7, '92': 10, '93': 11, '94': 11, '95': 8, '96': 13
+  private static readonly DISTRICT_MAX_VALUE: { [key: string]: number } = {
+    '10': 50,
+    '11': 6,
+    '12': 6,
+    '13': 7,
+    '14': 46,
+    '15': 7,
+    '16': 11,
+    '17': 9,
+    '18': 8,
+    '19': 12,
+    '20': 11,
+    '21': 8,
+    '22': 10,
+    '23': 7,
+    '24': 11,
+    '25': 9,
+    '26': 4,
+    '27': 9,
+    '30': 32,
+    '31': 23,
+    '32': 17,
+    '33': 22,
+    '34': 25,
+    '35': 9,
+    '36': 16,
+    '37': 6,
+    '38': 8,
+    '39': 6,
+    '40': 26,
+    '41': 25,
+    '42': 14,
+    '43': 9,
+    '44': 13,
+    '45': 20,
+    '46': 18,
+    '47': 18,
+    '48': 12,
+    '49': 7,
+    '50': 25,
+    '51': 8,
+    '52': 12,
+    '53': 9,
+    '54': 16,
+    '55': 15,
+    '56': 9,
+    '57': 18,
+    '58': 7,
+    '60': 15,
+    '61': 8,
+    '62': 11,
+    '63': 9,
+    '64': 9,
+    '65': 22,
+    '66': 13,
+    '67': 13,
+    '70': 10,
+    '71': 13,
+    '72': 10,
+    '73': 7,
+    '74': 3,
+    '75': 3,
+    '76': 7,
+    '77': 8,
+    '80': 23,
+    '81': 8,
+    '82': 8,
+    '83': 3,
+    '84': 19,
+    '85': 4,
+    '86': 8,
+    '90': 16,
+    '91': 7,
+    '92': 10,
+    '93': 11,
+    '94': 11,
+    '95': 8,
+    '96': 13,
   };
 
   /**
    * Special case district codes for specific provinces
    */
-  private static readonly DISTRICT_SPECIAL_CASE: {[key: string]: number[]} = {
-    '44': [95]
+  private static readonly DISTRICT_SPECIAL_CASE: { [key: string]: number[] } = {
+    '44': [95],
   };
 
   /**
@@ -196,7 +336,7 @@ export class NationalID implements IdNumberClass {
       provinceCode: province,
       districtCode: district,
       serialNumber,
-      checksum: parseInt(checksumStr, 10) as CheckDigit
+      checksum: parseInt(checksumStr, 10) as CheckDigit,
     };
   }
 
@@ -210,7 +350,10 @@ export class NationalID implements IdNumberClass {
    */
   static checksum(idNumber: string): CheckDigit {
     const normalized = NationalID.normalize(idNumber);
-    const digits = normalized.slice(0, -1).split('').map(d => parseInt(d, 10));
+    const digits = normalized
+      .slice(0, -1)
+      .split('')
+      .map(d => parseInt(d, 10));
 
     const modulus = weightedModulusDigit(digits, NationalID.MAGIC_MULTIPLIER, 11, false);
     return modulusOverflowMod10(modulus) as CheckDigit;
@@ -232,7 +375,12 @@ export class NationalID implements IdNumberClass {
     const digits = normalized.split('').map(d => parseInt(d, 10));
     const expectedChecksum = digits[digits.length - 1];
 
-    const modulus = weightedModulusDigit(digits.slice(0, -1), NationalID.MAGIC_MULTIPLIER, 11, false);
+    const modulus = weightedModulusDigit(
+      digits.slice(0, -1),
+      NationalID.MAGIC_MULTIPLIER,
+      11,
+      false
+    );
     const calculatedChecksum = modulusOverflowMod10(modulus);
 
     return calculatedChecksum === expectedChecksum;

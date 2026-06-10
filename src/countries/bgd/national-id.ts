@@ -11,7 +11,7 @@ export enum ResidentialType {
   CITY = 3,
   OTHERS = 4,
   CANTONMENT = 5,
-  CITY_CORPORATION = 9
+  CITY_CORPORATION = 9,
 }
 
 export interface OldParseResult {
@@ -38,8 +38,8 @@ export const OLD_METADATA = {
   deprecated: true,
   links: [
     'https://en.wikipedia.org/wiki/National_identity_card_(Bangladesh)',
-    'http://nationalidcardbangladesh.blogspot.com/2016/04/voter-id-national-id-card-number.html'
-  ]
+    'http://nationalidcardbangladesh.blogspot.com/2016/04/voter-id-national-id-card-number.html',
+  ],
 };
 
 export const NEW_METADATA = {
@@ -51,11 +51,15 @@ export const NEW_METADATA = {
   regexp: /^(?<yyyy>\d{4})(?<distinct>\d{2})(?<rmo>\d)(?<police>\d{2})(?<union>\d{2})(?<sn>\d{6})$/,
   hasChecksum: false,
   isParsable: true,
+  displayFormat: 'YYYYDDRPPUUSSSSSS',
+  example: '19841592824588424',
+  checksumAlgorithm: 'None (structural validation only)',
+  officialName: 'জাতীয় পরিচয়পত্র (NID)',
   deprecated: false,
   links: [
     'https://en.wikipedia.org/wiki/National_identity_card_(Bangladesh)',
-    'http://nationalidcardbangladesh.blogspot.com/2016/04/voter-id-national-id-card-number.html'
-  ]
+    'http://nationalidcardbangladesh.blogspot.com/2016/04/voter-id-national-id-card-number.html',
+  ],
 };
 
 export class OldNationalID {
@@ -67,7 +71,7 @@ export class OldNationalID {
     '3': ResidentialType.CITY,
     '4': ResidentialType.OTHERS,
     '5': ResidentialType.CANTONMENT,
-    '9': ResidentialType.CITY_CORPORATION
+    '9': ResidentialType.CITY_CORPORATION,
   };
 
   static validate(idNumber: string): boolean {
@@ -96,7 +100,7 @@ export class OldNationalID {
         residentialType: OldNationalID.RMO_MAP[rmo],
         policyStationNo: police,
         unionCode: union,
-        sn
+        sn,
       };
     } catch {
       return null;
@@ -130,7 +134,7 @@ export class NationalID {
 
     return {
       ...oldResult,
-      yyyy: idNumber.substring(0, 4)
+      yyyy: idNumber.substring(0, 4),
     };
   }
 }

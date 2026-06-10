@@ -17,6 +17,11 @@ export class NationalID implements IdNumberClass {
     parsable: false,
     checksum: true,
     regexp: /^[1-9]\d{10}$/,
+    displayFormat: '###########',
+    example: '11111111110',
+    checksumAlgorithm:
+      'Dual check digits: d10 = (7*odd-sum - even-sum) mod 10; d11 = sum of first 10 digits mod 10',
+    officialName: 'T.C. Kimlik Numarası',
     aliasOf: null,
     names: ['TC Kimlik No', 'Turkish Identification Number', 'T.C. Kimlik Numarası'],
     links: [

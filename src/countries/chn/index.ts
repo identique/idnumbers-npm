@@ -18,21 +18,22 @@ export interface ChinaParseResult extends ParsedInfo {
 
 export const METADATA = {
   name: 'China Resident Identity Number',
-  names: [
-    'Resident Identity Number',
-    '居民身份证',
-    'Jūmín Shēnfènzhèng'
-  ],
+  names: ['Resident Identity Number', '居民身份证', 'Jūmín Shēnfènzhèng'],
   iso3166Alpha2: 'CN',
   minLength: 18,
   maxLength: 18,
-  pattern: /^(?<address_code>\d{6})(?<yyyy>\d{4})(?<mm>0[1-9]|1[012])(?<dd>0[1-9]|[12][0-9]|3[01])(?<sn>\d{3})(?<checksum>(\d|X))$/,
+  pattern:
+    /^(?<address_code>\d{6})(?<yyyy>\d{4})(?<mm>0[1-9]|1[012])(?<dd>0[1-9]|[12][0-9]|3[01])(?<sn>\d{3})(?<checksum>(\d|X))$/,
   hasChecksum: true,
   isParsable: true,
+  displayFormat: 'AAAAAAYYYYMMDDSSSC',
+  example: '11010219840406970X',
+  checksumAlgorithm: 'ISO 7064 MOD 11-2 (weights 2^(18-i) mod 11; 10 → X)',
+  officialName: '居民身份证 (Resident Identity Card)',
   links: [
     'https://en.wikipedia.org/wiki/Resident_Identity_Card',
-    'https://en.wikipedia.org/wiki/National_identification_number#China'
-  ]
+    'https://en.wikipedia.org/wiki/National_identification_number#China',
+  ],
 };
 
 /**
@@ -57,10 +58,10 @@ function calculateChecksum(idNumber: string): number | 'X' | null {
   // The magic number is calculated from 2^(17 - index) % 11 (the first number is 1).
   const total = sourceList.reduce((sum, value, index) => {
     const weight = Math.pow(2, 17 - index) % 11;
-    return sum + (value * weight);
+    return sum + value * weight;
   }, 0);
 
-  const checksum = (12 - total % 11) % 11;
+  const checksum = (12 - (total % 11)) % 11;
   return checksum === 10 ? 'X' : checksum;
 }
 
@@ -105,7 +106,7 @@ export function parse(idNumber: string): ChinaParseResult | null {
       serialNumber: sn,
       gender: parseInt(sn) % 2 === 0 ? Gender.FEMALE : Gender.MALE,
       checksum: calculatedChecksum,
-      age: calculateAge(birthDate)
+      age: calculateAge(birthDate),
     };
   } catch {
     return null;
@@ -115,5 +116,5 @@ export function parse(idNumber: string): ChinaParseResult | null {
 export const ResidentID = {
   validate,
   parse,
-  METADATA
+  METADATA,
 };

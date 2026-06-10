@@ -14,13 +14,17 @@ export class NationalID implements IdNumberClass {
     parsable: false,
     checksum: true,
     regexp: /^(\d{9})$/,
+    displayFormat: '#########',
+    example: '000000018',
+    checksumAlgorithm: 'Luhn (mod 10)',
+    officialName: 'מספר זהות (Mispar Zehut)',
     aliasOf: null,
     names: ['Identity Number', 'מספר זהות', 'Mispar Zehut'],
     links: [
       'https://en.wikipedia.org/wiki/National_identification_number#Israel',
-      'https://taxid.pro/docs/countries/israel'
+      'https://taxid.pro/docs/countries/israel',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   get METADATA(): IdMetadata {

@@ -19,17 +19,17 @@ export const METADATA: IdMetadata = {
   parsable: true,
   checksum: true,
   regexp: /^(?<century>\d)(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})(?<sn>\d{4})(?<checksum>\d)$/,
-  displayFormat: 'CYYMMDDSSSS',
+  displayFormat: 'CYYMMDDSSSSK',
+  example: '280010100004',
+  checksumAlgorithm: 'Weighted sum mod 11 (weights 2,1,6,3,7,9,10,5,8,4,2; check = 11 - remainder)',
+  officialName: 'الرقم المدني (Civil Number)',
   aliasOf: null,
-  names: [
-    'Civil Number',
-    'الرقم المدني'
-  ],
+  names: ['Civil Number', 'الرقم المدني'],
   links: [
     'https://en.wikipedia.org/wiki/National_identification_number#Kuwait',
-    'https://prakhar.me/articles/kuwait-civil-id-checksum/'
+    'https://prakhar.me/articles/kuwait-civil-id-checksum/',
   ],
-  deprecated: false
+  deprecated: false,
 };
 
 const MULTIPLIER = [2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
@@ -61,7 +61,7 @@ export function parse(idNumber: string): KuwaitParseResult | null {
 
   const century = match.groups.century;
   let yearBase: number;
-  
+
   if (century === '2') {
     yearBase = 1900;
   } else if (century === '3') {
@@ -82,7 +82,7 @@ export function parse(idNumber: string): KuwaitParseResult | null {
     isValid: true,
     birthDate: new Date(year, month - 1, day),
     serialNumber: match.groups.sn,
-    checksum: calculatedChecksum
+    checksum: calculatedChecksum,
   };
 }
 
@@ -97,12 +97,12 @@ export function checksum(idNumber: string): CheckDigit | null {
 
   const numbers = idNumber.split('').map(char => parseInt(char, 10));
   const modulus = weightedModulusDigit(numbers.slice(0, -1), MULTIPLIER, 11);
-  
+
   if (modulus > 10) {
     // According to the algorithm, it will not be greater than 10
     return null;
   }
-  
+
   return modulus as CheckDigit;
 }
 
@@ -110,7 +110,7 @@ export const CivilNumber = {
   validate,
   parse,
   checksum,
-  METADATA
+  METADATA,
 };
 
 // Alias

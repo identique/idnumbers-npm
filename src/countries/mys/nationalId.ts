@@ -30,17 +30,33 @@ export class NationalID implements IdNumberClass {
     checksum: false,
     regexp: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})-?(?<pb>\d{2})-?(?<sn>\d{4})$/,
     displayFormat: 'YYMMDD-PB-###G',
+    example: '800101011234',
+    checksumAlgorithm: 'None (date/structure validation only)',
+    officialName: 'National Registration Identity Card (NRIC)',
     aliasOf: null,
     names: ['National Registration Identity Card Number', 'NRIC'],
     links: [
-      'https://en.wikipedia.org/wiki/Malaysian_identity_card#Structure_of_the_National_Registration_Identity_Card_Number_(NRIC)'
+      'https://en.wikipedia.org/wiki/Malaysian_identity_card#Structure_of_the_National_Registration_Identity_Card_Number_(NRIC)',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   // Blacklisted place of birth codes (matching Python implementation)
   static readonly WRONG_PB_CODE = [
-    '00', '17', '18', '19', '20', '69', '70', '73', '80', '81', '94', '95', '96', '97'
+    '00',
+    '17',
+    '18',
+    '19',
+    '20',
+    '69',
+    '70',
+    '73',
+    '80',
+    '81',
+    '94',
+    '95',
+    '96',
+    '97',
   ];
 
   get METADATA(): IdMetadata {
@@ -100,9 +116,7 @@ export class NationalID implements IdNumberClass {
       const date = new Date(yyyy, mm - 1, dd);
 
       // Validate the date is actually valid by checking components match
-      if (date.getFullYear() !== yyyy ||
-          date.getMonth() !== mm - 1 ||
-          date.getDate() !== dd) {
+      if (date.getFullYear() !== yyyy || date.getMonth() !== mm - 1 || date.getDate() !== dd) {
         return null;
       }
 
@@ -113,7 +127,7 @@ export class NationalID implements IdNumberClass {
         yyyymmdd: date,
         location: location,
         citizenship: citizenship,
-        sn: sn
+        sn: sn,
       };
     } catch {
       return null;
