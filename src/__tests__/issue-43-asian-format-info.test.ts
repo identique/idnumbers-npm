@@ -210,8 +210,7 @@ describe('Issue #43: Asian country format info', () => {
     });
   });
 
-  // Enriched fields must also surface through alpha-2 aliases (BD/VN cover the
-  // two multi-format/length-contract countries).
+  // Enriched fields must also surface through alpha-2 aliases.
   it.each(['JP', 'KR', 'SG', 'TR', 'BD', 'VN'])(
     'surfaces enriched fields via alpha-2 alias %s',
     alias => {
@@ -235,17 +234,10 @@ describe('Issue #43: Asian country format info', () => {
   });
 
   // Multi-format validators: format info documents the current issuance
-  // format while legacy formats remain accepted, and length reflects the
-  // full accepted range.
-  it('BGD surfaces new-format info while the old 13-digit format still validates', () => {
-    const format = getCountryIdFormat('BGD');
-    expect(format).not.toBeNull();
-    expect(format!.format).toBe(ASIAN_EXPECTED.BGD.format);
-    expect(format!.example).toBe(ASIAN_EXPECTED.BGD.example);
-    expect(validateNationalId('BGD', '1592824588424').isValid).toBe(true);
-  });
-
-  it('exposes the full accepted length range for multi-format countries', () => {
+  // format (already asserted by the fixture above) while legacy formats
+  // remain accepted, and length reflects the full accepted range.
+  it('keeps legacy formats valid and exposes the full length range for multi-format countries', () => {
+    expect(validateNationalId('BGD', '1592824588424').isValid).toBe(true); // 13-digit old NID
     expect(getCountryIdFormat('BGD')!.length).toEqual({ min: 13, max: 17 });
     expect(getCountryIdFormat('VNM')!.length).toEqual({ min: 9, max: 12 });
   });
