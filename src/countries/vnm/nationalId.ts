@@ -36,15 +36,15 @@ export class NationalID implements IdNumberClass {
     parsable: true,
     checksum: false,
     regexp: /^(?:(?<province_country_code>\d{3})(?<gender>\d)(?<yy>\d{2})(?<sn>\d{6})|\d{9})$/,
-    displayFormat: 'Variable (9 or 12 digits)',
+    displayFormat: 'PPPGYYSSSSSS',
     aliasOf: null,
     names: ['National ID Number', 'Thẻ căn cước công dân'],
     links: [
       'https://en.wikipedia.org/wiki/National_identification_number#Vietnam',
       'https://vietnaminsider.vn/what-do-the-12-digits-on-the-citizen-id-card-with-chip-mean/',
-      'https://lawnet.vn/en/vb/Circular-07-2016-TT-BCA-detailing-Law-on-Citizen-Identification-137-2015-ND-CP-5CCC3.html'
+      'https://lawnet.vn/en/vb/Circular-07-2016-TT-BCA-detailing-Law-on-Citizen-Identification-137-2015-ND-CP-5CCC3.html',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   get METADATA(): IdMetadata {
@@ -97,7 +97,7 @@ export class NationalID implements IdNumberClass {
       province_country_code: provinceCountryCode,
       yyyy,
       sn,
-      gender
+      gender,
     };
   }
 

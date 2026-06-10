@@ -120,7 +120,8 @@ import { CivilNumber } from '../countries/kwt';
 
 /** BGD: validates both old (13-digit) and new (17-digit) national ID formats. */
 const bgdComposite: CountryValidator = {
-  METADATA: adaptMetadata(BgdNationalID.METADATA),
+  // Surface the full accepted range (13-digit old + 17-digit new formats).
+  METADATA: { ...adaptMetadata(BgdNationalID.METADATA), minLength: 13, maxLength: 17 },
   validate: (id: string) => BgdOldNationalID.validate(id) || BgdNationalID.validate(id),
   parse: (id: string) =>
     (BgdNationalID.parse(id) ?? BgdOldNationalID.parse(id)) as ParsedInfo | null,
