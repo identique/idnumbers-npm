@@ -22,6 +22,9 @@ export const METADATA: IdMetadata = {
   checksum: true,
   regexp: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})(?<century>\d)(?<sn>\d{4})(?<checksum>\d)$/,
   displayFormat: 'YYMMDDGSSSSC',
+  example: '900101300017',
+  checksumAlgorithm: 'Two-stage weighted sum mod 11 (weights 1..11; shifted weights retry when 10)',
+  officialName: 'Individual Identification Number (ИИН/ЖСН)',
   aliasOf: null,
   names: ['Individual Identification Number', 'ЖСН', 'ZhSN', 'ИИН', 'IIN'],
   links: [

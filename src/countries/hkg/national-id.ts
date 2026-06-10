@@ -13,6 +13,11 @@ export class NationalID {
     parsable: false,
     checksum: true,
     regexp: new RegExp(/^[A-Z]{1,2}[0-9]{6}\(?[0-9A]\)?$/),
+    displayFormat: 'L(L)######(C)',
+    example: 'A123456(3)',
+    checksumAlgorithm:
+      'Weighted sum mod 11 over char values (A=10..Z=35; single-letter IDs padded; remainder 1 → check char A)',
+    officialName: '香港身份證 (HKID)',
     aliasOf: null,
     names: ['National ID Number', '香港身份證'],
     links: [
@@ -35,7 +40,10 @@ export class NationalID {
     const arr = idNumber.slice(0, -1).split('');
     const multiplier = arr.map((_, index) => arr.length + 1 - index);
     let total = arr.length % 2 === 0 ? 0 : 36 * 9;
-    total += arr.reduce((sum, digit, idx) => sum + NationalID.get_number(digit) * multiplier[idx], 0);
+    total += arr.reduce(
+      (sum, digit, idx) => sum + NationalID.get_number(digit) * multiplier[idx],
+      0
+    );
     const rem = total % 11;
     return rem === 1 ? 'A' : rem === 0 ? '0' : String(11 - rem);
   }

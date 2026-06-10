@@ -13,13 +13,17 @@ export class NationalID implements IdNumberClass {
     parsable: false,
     checksum: false,
     regexp: /^\d{11}$/,
+    displayFormat: '###########',
+    example: '12345678901',
+    checksumAlgorithm: 'None (format/length only)',
+    officialName: 'National Identity Number (NIN)',
     aliasOf: null,
     names: ['National ID Number', 'NIN'],
     links: [
       'https://en.wikipedia.org/wiki/National_identification_number#Nepal',
-      'https://nimc.gov.ng/about-nin/'
+      'https://nimc.gov.ng/about-nin/',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   get METADATA(): IdMetadata {

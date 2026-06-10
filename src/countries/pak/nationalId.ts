@@ -31,15 +31,18 @@ export class NationalID implements IdNumberClass {
     checksum: false,
     regexp: /^(?<location>\d{5})-?(?<sn>\d{7})-?(?<gender>\d)$/,
     displayFormat: '#####-#######-#',
+    example: '1234567890123',
+    checksumAlgorithm: 'None (no check digit; final digit encodes gender)',
+    officialName: 'قومی شناختی کارڈ (CNIC)',
     aliasOf: null,
     names: ['National ID Card Number', 'CNIC', 'NIC', 'قومی شناختی کارڈ'],
     links: [
       'https://en.wikipedia.org/wiki/National_identification_number#Pakistan',
       'https://en.wikipedia.org/wiki/CNIC_(Pakistan)#Security_features',
       'https://www.geo.tv/latest/250118-mystery-behind-13-digit-cnic-number',
-      'https://www.informationpk.com/interesting-information-about-or-meaning-of-nadra-cnic-13-digits-number/'
+      'https://www.informationpk.com/interesting-information-about-or-meaning-of-nadra-cnic-13-digits-number/',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   get METADATA(): IdMetadata {
@@ -89,7 +92,7 @@ export class NationalID implements IdNumberClass {
       return {
         location,
         sn,
-        gender
+        gender,
       };
     } catch {
       return null;

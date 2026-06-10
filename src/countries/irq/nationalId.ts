@@ -13,10 +13,14 @@ export class NationalID implements IdNumberClass {
     parsable: false,
     checksum: false,
     regexp: /^\d{12}$/,
+    displayFormat: '############',
+    example: '123456789012',
+    checksumAlgorithm: 'None (format/length only)',
+    officialName: 'البطاقة الوطنية (National Card)',
     aliasOf: null,
     names: ['National Card Number', 'البطاقة الوطنية', 'كارتى نيشتمانى'],
     links: ['https://en.wikipedia.org/wiki/Iraq_National_Card'],
-    deprecated: false
+    deprecated: false,
   };
 
   get METADATA(): IdMetadata {

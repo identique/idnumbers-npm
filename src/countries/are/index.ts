@@ -21,6 +21,10 @@ export const METADATA = {
   pattern: /^784[-]?(?<yyyy>\d{4})[-]?(?<sn>\d{7})[-]?(?<checksum>\d)$/,
   hasChecksum: true,
   isParsable: true,
+  displayFormat: '784-YYYY-NNNNNNN-C',
+  example: '784198012345678',
+  checksumAlgorithm: 'Luhn (mod 10)',
+  officialName: 'رقم الهوية (Emirates ID)',
   links: ['https://en.wikipedia.org/wiki/National_identification_number#United_Arab_Emirates'],
 };
 

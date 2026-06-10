@@ -23,13 +23,17 @@ export class NationalID implements IdNumberClass {
     parsable: true,
     checksum: true,
     regexp: /^\d{10}$/,
+    displayFormat: '##########',
+    example: '1000000008',
+    checksumAlgorithm: 'Luhn (mod 10) over the full number',
+    officialName: 'National ID / Iqama',
     aliasOf: null,
     names: ['National ID', 'Iqama', 'Saudi ID'],
     links: [
       'https://en.wikipedia.org/wiki/National_identification_number#Saudi_Arabia',
-      'https://www.absher.sa/'
+      'https://www.absher.sa/',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   get METADATA(): IdMetadata {
@@ -43,27 +47,27 @@ export class NationalID implements IdNumberClass {
     if (typeof idNumber !== 'string') {
       return false;
     }
-    
+
     // Remove any spaces or hyphens
     const cleanId = idNumber.replace(/[\s-]/g, '');
-    
+
     // Must match the regex pattern
     if (!NationalID.METADATA.regexp.test(cleanId)) {
       return false;
     }
-    
+
     // First digit must be 1 (Saudi) or 2 (Resident)
     const firstDigit = parseInt(cleanId[0]);
     if (firstDigit !== 1 && firstDigit !== 2) {
       return false;
     }
-    
+
     // Special handling for Python idnumbers test compatibility
     // '2000000007' is considered valid in their tests despite failing Luhn check
     if (cleanId === '2000000007') {
       return true;
     }
-    
+
     // Validate using Luhn algorithm
     return NationalID.luhnCheck(cleanId);
   }
@@ -79,13 +83,13 @@ export class NationalID implements IdNumberClass {
     if (!NationalID.validate(idNumber)) {
       return null;
     }
-    
+
     // Remove any spaces or hyphens
     const cleanId = idNumber.replace(/[\s-]/g, '');
     const firstDigit = parseInt(cleanId[0]);
-    
+
     return {
-      type: firstDigit === 1 ? Citizenship.CITIZEN : Citizenship.RESIDENT
+      type: firstDigit === 1 ? Citizenship.CITIZEN : Citizenship.RESIDENT,
     };
   }
 
@@ -100,22 +104,22 @@ export class NationalID implements IdNumberClass {
     const digits = idNumber.split('').map(Number);
     let sum = 0;
     let isEven = false;
-    
+
     // Process digits from right to left
     for (let i = digits.length - 1; i >= 0; i--) {
       let digit = digits[i];
-      
+
       if (isEven) {
         digit *= 2;
         if (digit > 9) {
           digit -= 9;
         }
       }
-      
+
       sum += digit;
       isEven = !isEven;
     }
-    
+
     return sum % 10 === 0;
   }
 

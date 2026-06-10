@@ -13,10 +13,17 @@ export class NationalID implements IdNumberClass {
     parsable: false,
     checksum: true,
     regexp: /^\d{3}-?\d{6}-?\d$/,
+    displayFormat: '###-######-#',
+    example: '0012345679',
+    checksumAlgorithm:
+      'Weighted sum mod 11 (weights 10..2; remainder < 2 → remainder, else 11 - remainder)',
+    officialName: 'کارت ملی (kart-e-meli)',
     aliasOf: null,
     names: ['National ID Number', 'kart-e-meli', 'کارت ملی'],
-    links: ['https://en.wikipedia.org/wiki/National_identification_number#Iran,_Islamic_Republic_of'],
-    deprecated: false
+    links: [
+      'https://en.wikipedia.org/wiki/National_identification_number#Iran,_Islamic_Republic_of',
+    ],
+    deprecated: false,
   };
 
   private static readonly MULTIPLIER = [10, 9, 8, 7, 6, 5, 4, 3, 2];

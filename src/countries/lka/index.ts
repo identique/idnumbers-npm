@@ -34,6 +34,9 @@ export const METADATA: IdMetadata = {
   checksum: true,
   regexp: NEW_FORMAT,
   displayFormat: 'YYYYDDDSSSSC',
+  example: '199001200001',
+  checksumAlgorithm: 'Weighted sum mod 11 (weights 8,4,3,2,7,6,5,7,4,3,2; overflow folded mod 10)',
+  officialName: 'National Identity Card (NIC)',
   aliasOf: null,
   names: ['National ID Number'],
   links: [

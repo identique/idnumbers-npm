@@ -14,18 +14,16 @@ export const METADATA: IdMetadata = {
   checksum: true,
   regexp: /^[2-9]\d{3}[\s-]?\d{4}[\s-]?\d{4}$/,
   displayFormat: 'XXXX XXXX XXXX',
+  example: '892473528038',
+  checksumAlgorithm: 'Verhoeff algorithm',
+  officialName: 'Aadhaar (आधार)',
   aliasOf: null,
-  names: [
-    'National ID Number',
-    'Unique Identification Number',
-    'UID',
-    'Aadhaar'
-  ],
+  names: ['National ID Number', 'Unique Identification Number', 'UID', 'Aadhaar'],
   links: [
     'https://en.wikipedia.org/wiki/National_identification_number#India',
-    'https://archive.org/details/Aadhaar_numbering_scheme/page/n12/mode/1up?view=theater'
+    'https://archive.org/details/Aadhaar_numbering_scheme/page/n12/mode/1up?view=theater',
   ],
-  deprecated: false
+  deprecated: false,
 };
 
 /**
@@ -56,14 +54,14 @@ export function checksum(idNumber: string): boolean {
 
   const normalized = normalize(idNumber);
   const digits = normalized.split('').map(char => parseInt(char, 10));
-  
+
   return verhoeffCheck(digits);
 }
 
 export const NationalID = {
   validate,
   checksum,
-  METADATA
+  METADATA,
 };
 
 // Alias

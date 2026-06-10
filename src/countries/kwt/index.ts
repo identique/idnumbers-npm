@@ -20,6 +20,9 @@ export const METADATA: IdMetadata = {
   checksum: true,
   regexp: /^(?<century>\d)(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})(?<sn>\d{4})(?<checksum>\d)$/,
   displayFormat: 'CYYMMDDSSSSK',
+  example: '280010100004',
+  checksumAlgorithm: 'Weighted sum mod 11 (weights 2,1,6,3,7,9,10,5,8,4,2; check = 11 - remainder)',
+  officialName: 'الرقم المدني (Civil Number)',
   aliasOf: null,
   names: ['Civil Number', 'الرقم المدني'],
   links: [

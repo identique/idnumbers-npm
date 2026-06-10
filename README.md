@@ -473,7 +473,7 @@ if (!validation.valid) {
 
 ## Testing
 
-The library includes comprehensive test coverage with 2070 tests covering:
+The library includes comprehensive test coverage with 2106 tests covering:
 
 - Format validation
 - Checksum verification

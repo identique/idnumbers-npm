@@ -14,6 +14,10 @@ export class NationalID implements IdNumberClass {
     parsable: false,
     checksum: false,
     regexp: /^\d{4}[ -]?\d{7}[ -]?\d$/,
+    displayFormat: 'XXXX-XXXXXXX-X',
+    example: '123456789012',
+    checksumAlgorithm: 'None (format/length only)',
+    officialName: 'PhilSys Number (PSN)',
     aliasOf: null,
     names: ['PhilSys Number', 'PSN', 'Philippine National ID'],
     links: [

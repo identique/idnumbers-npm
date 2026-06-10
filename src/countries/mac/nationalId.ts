@@ -14,7 +14,7 @@ export enum DocType {
   /** Macau Public Security Police */
   MPSP = 'macau public security police',
   /** Entity */
-  ENTITY = 'entity'
+  ENTITY = 'entity',
 }
 
 /**
@@ -41,20 +41,24 @@ export class NationalID implements IdNumberClass {
     parsable: true,
     checksum: false,
     regexp: /^(?<doc_type>[01578])(?<sn>\d{6})\(?(?<extra>\d)\)?$/,
+    displayFormat: '#######(#)',
+    example: '5215432(8)',
+    checksumAlgorithm: 'None (parenthesised digit not algorithmically verified)',
+    officialName: 'Bilhete de Identidade de Residente (BIR)',
     aliasOf: null,
     names: [
       'National ID Number',
       'Permanent Resident Identity Card',
       'BIRP',
       'Non-Permanent Resident Identity Card',
-      'BIRNP'
+      'BIRNP',
     ],
     links: [
       'https://en.wikipedia.org/wiki/National_identification_number#Macau',
       'https://en.wikipedia.org/wiki/Macau_Resident_Identity_Card',
-      'https://validatetin.com/macao/'
+      'https://validatetin.com/macao/',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   private static readonly TYPE_MAP: { [key: string]: DocType } = {
@@ -62,7 +66,7 @@ export class NationalID implements IdNumberClass {
     '1': DocType.FIRST_GEN,
     '5': DocType.MCA,
     '7': DocType.MPSP,
-    '8': DocType.ENTITY
+    '8': DocType.ENTITY,
   };
 
   get METADATA(): IdMetadata {
@@ -103,7 +107,7 @@ export class NationalID implements IdNumberClass {
 
     return {
       docType,
-      sn: sn + extra
+      sn: sn + extra,
     };
   }
 

@@ -24,6 +24,11 @@ export class PersonalNumber {
     parsable: true,
     checksum: false,
     regexp: new RegExp(/^(?<yymm>\d{2}(?:0[1-9]|1[012]))(?<sn>\d{4})(?<checksum>\d)$/),
+    displayFormat: 'YYMMSSSSC',
+    example: '800101001',
+    checksumAlgorithm:
+      'None (check digit algorithm not publicly documented; format-only validation)',
+    officialName: 'الرقم الشخصي (CPR)',
     aliasOf: null,
     names: [
       'Personal number',

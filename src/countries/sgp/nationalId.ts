@@ -33,6 +33,11 @@ export class NationalID implements IdNumberClass {
     parsable: true,
     checksum: true,
     regexp: /^[STFGM]\d{7}[A-Z]$/,
+    displayFormat: 'L#######C',
+    example: 'S1234567D',
+    checksumAlgorithm:
+      'Weighted sum mod 11 mapped to series-specific check letter (weights 2,7,6,5,4,3,2)',
+    officialName: 'National Registration Identity Card (NRIC/FIN)',
     aliasOf: null,
     names: ['NRIC', 'FIN', 'National Registration Identity Card', 'Foreign Identification Number'],
     links: [

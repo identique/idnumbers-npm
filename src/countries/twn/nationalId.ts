@@ -34,22 +34,48 @@ export class NationalID implements IdNumberClass {
     checksum: true,
     regexp: /^(?<location>[A-Z])(?<gender>[12])(?<sn>\d{7})(?<checksum>\d)$/,
     displayFormat: 'X#########',
+    example: 'A123456789',
+    checksumAlgorithm:
+      'Weighted sum mod 10 (location letter → two digits; weights 1,9,8,7,6,5,4,3,2,1; check = (10 - remainder) mod 10)',
+    officialName: '國民身分證統一編號',
     aliasOf: null,
     names: ['National ID Number', '國民身分證統一編號', '身分證字號'],
     links: [
       'https://en.wikipedia.org/wiki/National_identification_number#Taiwan',
-      'https://zh.wikipedia.org/wiki/%E4%B8%AD%E8%8F%AF%E6%B0%91%E5%9C%8B%E5%9C%8B%E6%B0%91%E8%BA%AB%E5%88%86%E8%AD%89'
+      'https://zh.wikipedia.org/wiki/%E4%B8%AD%E8%8F%AF%E6%B0%91%E5%9C%8B%E5%9C%8B%E6%B0%91%E8%BA%AB%E5%88%86%E8%AD%89',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   // Location letter to number mapping (A-Z to index 0-25)
   // Each location maps to [digit1, digit2]
   private static readonly LOCATION_NUM = [
-    [1, 0], [1, 1], [1, 2], [1, 3], [1, 4], [1, 5], [1, 6],
-    [1, 7], [3, 4], [1, 8], [1, 9], [2, 0], [2, 1], [2, 2],
-    [3, 5], [2, 3], [2, 4], [2, 5], [2, 6], [2, 7], [2, 8],
-    [2, 9], [3, 2], [3, 0], [3, 1], [3, 3]
+    [1, 0],
+    [1, 1],
+    [1, 2],
+    [1, 3],
+    [1, 4],
+    [1, 5],
+    [1, 6],
+    [1, 7],
+    [3, 4],
+    [1, 8],
+    [1, 9],
+    [2, 0],
+    [2, 1],
+    [2, 2],
+    [3, 5],
+    [2, 3],
+    [2, 4],
+    [2, 5],
+    [2, 6],
+    [2, 7],
+    [2, 8],
+    [2, 9],
+    [3, 2],
+    [3, 0],
+    [3, 1],
+    [3, 3],
   ];
 
   // Magic multiplier for checksum
@@ -89,7 +115,10 @@ export class NationalID implements IdNumberClass {
 
     // Verify checksum
     const calculatedChecksum = NationalID.checksum(idNumber);
-    if (calculatedChecksum === null || String(calculatedChecksum) !== idNumber[idNumber.length - 1]) {
+    if (
+      calculatedChecksum === null ||
+      String(calculatedChecksum) !== idNumber[idNumber.length - 1]
+    ) {
       return null;
     }
 
@@ -101,7 +130,7 @@ export class NationalID implements IdNumberClass {
       location,
       gender: gender === '1' ? Gender.MALE : Gender.FEMALE,
       sn,
-      checksum: parseInt(match.groups.checksum, 10) as CheckDigit
+      checksum: parseInt(match.groups.checksum, 10) as CheckDigit,
     };
   }
 
@@ -128,7 +157,10 @@ export class NationalID implements IdNumberClass {
     // Build full number array: [location_digit1, location_digit2, gender, ...sn digits]
     const numbers: number[] = [
       ...locationDigits,
-      ...idNumber.substring(1, idNumber.length - 1).split('').map(c => parseInt(c, 10))
+      ...idNumber
+        .substring(1, idNumber.length - 1)
+        .split('')
+        .map(c => parseInt(c, 10)),
     ];
 
     // Calculate weighted sum
