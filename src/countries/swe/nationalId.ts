@@ -36,16 +36,21 @@ export class NationalID implements IdNumberClass {
     maxLength: 13,
     parsable: true,
     checksum: true,
-    regexp: /^(?:(?<yyyy>\d{4})|(?<yy>\d{2}))(?<mm>\d{2})(?<dd>\d{2})(?<sep>[+|-]?)(?!000)(?<birth_number>\d{3})(?<checksum>\d)$/,
+    regexp:
+      /^(?:(?<yyyy>\d{4})|(?<yy>\d{2}))(?<mm>\d{2})(?<dd>\d{2})(?<sep>[+|-]?)(?!000)(?<birth_number>\d{3})(?<checksum>\d)$/,
+    displayFormat: 'YYMMDD[+-]XXXC',
+    example: '811218-9876',
+    checksumAlgorithm: 'Luhn (mod 10)',
+    officialName: 'Personnummer',
     aliasOf: null,
     names: ['Personal Identity Number', 'personnummer'],
     links: [
       'https://en.wikipedia.org/wiki/National_identification_number#Sweden',
       'https://en.wikipedia.org/wiki/Personal_identity_number_(Sweden)',
       'https://swedish.identityinfo.net/',
-      'https://personnummer.dev/'
+      'https://personnummer.dev/',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   get METADATA(): IdMetadata {
@@ -118,7 +123,7 @@ export class NationalID implements IdNumberClass {
       return {
         gender,
         yyyymmdd: date,
-        checksum: checksumStr
+        checksum: checksumStr,
       };
     } catch {
       return null;
@@ -140,7 +145,10 @@ export class NationalID implements IdNumberClass {
     }
 
     const normalized = normalize(idNumber);
-    const digits = normalized.substring(0, normalized.length - 1).split('').map(c => parseInt(c, 10));
+    const digits = normalized
+      .substring(0, normalized.length - 1)
+      .split('')
+      .map(c => parseInt(c, 10));
 
     return NationalID.luhnDigit(digits, true);
   }

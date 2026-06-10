@@ -21,13 +21,17 @@ export class BurgerServiceNumber implements IdNumberClass {
     parsable: false,
     checksum: true,
     regexp: /^(?!0000\.?00\.?000)\d{4}\.?\d{2}\.?\d{3}$/,
+    displayFormat: '####.##.###',
+    example: '123456782',
+    checksumAlgorithm: '11-proof weighted sum (weights 9..2, mod 11)',
+    officialName: 'Burgerservicenummer (BSN)',
     aliasOf: null,
     names: ['Burgerservicenummer', 'BSN', 'Citizen Service Number', 'Personal Number'],
     links: [
       'https://en.wikipedia.org/wiki/National_identification_number#Netherlands',
-      'https://nl.wikipedia.org/wiki/Burgerservicenummer'
+      'https://nl.wikipedia.org/wiki/Burgerservicenummer',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   private static readonly MAGIC_MULTIPLIER = [9, 8, 7, 6, 5, 4, 3, 2];
@@ -64,7 +68,10 @@ export class BurgerServiceNumber implements IdNumberClass {
     const normalized = normalize(idNumber);
 
     // Calculate from first 8 digits
-    const numberList = normalized.substring(0, 8).split('').map(c => parseInt(c, 10));
+    const numberList = normalized
+      .substring(0, 8)
+      .split('')
+      .map(c => parseInt(c, 10));
 
     const total = numberList.reduce((sum, value, index) => {
       return sum + value * BurgerServiceNumber.MAGIC_MULTIPLIER[index];

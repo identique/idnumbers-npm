@@ -18,7 +18,7 @@ export const METADATA = {
     'Uimhir Phearsanta Seirbhíse Poiblí',
     'Uimh. PSP',
     'Revenue and Social Insurance Number',
-    'RSI No'
+    'RSI No',
   ],
   iso3166Alpha2: 'IE',
   minLength: 8,
@@ -26,9 +26,11 @@ export const METADATA = {
   pattern: /^\d{7}[A-W][A-W\s]?$|^\d{7}[A-W]\/[A-W\s]?$/,
   hasChecksum: true,
   isParsable: false,
-  links: [
-    'https://en.wikipedia.org/wiki/Personal_Public_Service_Number'
-  ]
+  displayFormat: '#######L(L)',
+  example: '1234567T',
+  checksumAlgorithm: 'Weighted sum mod 23 -> check letter (A-W)',
+  officialName: 'Uimhir Phearsanta Seirbhíse Poiblí (PPS)',
+  links: ['https://en.wikipedia.org/wiki/Personal_Public_Service_Number'],
 };
 
 const MAGIC_MULTIPLIER = [8, 7, 6, 5, 4, 3, 2, 9];
@@ -46,22 +48,17 @@ function normalize(idNumber: string): string {
 function validateChecksum(idNumber: string): boolean {
   const normalized = normalize(idNumber);
   const numberList = normalized.slice(0, 7).split('').map(Number);
-  
+
   // Add second letter as number if present and not space or W
   if (normalized.length === 9 && normalized[8] !== ' ' && normalized[8] !== 'W') {
     numberList.push(letterToNumber(normalized[8]));
   }
-  
-  const modulus = weightedModulusDigit(
-    numberList, 
-    MAGIC_MULTIPLIER, 
-    23, 
-    true
-  );
-  
+
+  const modulus = weightedModulusDigit(numberList, MAGIC_MULTIPLIER, 23, true);
+
   // The check character is the second-to-last if length is 9, otherwise the last
   const checkChar = normalized.length === 9 ? normalized[7] : normalized[7];
-  
+
   return modulus === letterToNumber(checkChar) % 23;
 }
 
@@ -89,12 +86,12 @@ export function parse(idNumber: string): IrelandParseResult | null {
   }
 
   return {
-    isValid: true
+    isValid: true,
   };
 }
 
 export const PersonalPublicServiceNumber = {
   validate,
   parse,
-  METADATA
+  METADATA,
 };

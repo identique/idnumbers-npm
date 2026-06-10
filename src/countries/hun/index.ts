@@ -17,18 +17,19 @@ export interface HungaryParseResult extends ParsedInfo {
 
 export const METADATA = {
   name: 'Hungary Personal ID Number',
-  names: [
-    'Personal ID Number'
-  ],
+  names: ['Personal ID Number'],
   iso3166Alpha2: 'HU',
   minLength: 9,
   maxLength: 9,
-  pattern: /^(?<gender>\d)[ -]?(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})[ -]?(?<sn>\d{3})(?<checksum>\d)$/,
+  pattern:
+    /^(?<gender>\d)[ -]?(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})[ -]?(?<sn>\d{3})(?<checksum>\d)$/,
   hasChecksum: true,
   isParsable: true,
-  links: [
-    'https://en.wikipedia.org/wiki/National_identification_number#Hungary'
-  ]
+  displayFormat: 'GYYMMDDSSSC',
+  example: '18001010016',
+  checksumAlgorithm: 'Weighted sum mod 11 (weights 1-10)',
+  officialName: 'Személyi azonosító',
+  links: ['https://en.wikipedia.org/wiki/National_identification_number#Hungary'],
 };
 
 const MAGIC_MULTIPLIER = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -51,7 +52,7 @@ function getGenderCitizenshipYearBase(genderCitizenship: number): {
   const gender = genderCitizenship % 2 === 1 ? 'male' : 'female';
   const citizenship = genderCitizenship < 5 ? 'citizen' : 'foreign';
   let yearBase: number;
-  
+
   if (genderCitizenship >= 1 && genderCitizenship <= 2) {
     yearBase = 1900;
   } else if (genderCitizenship >= 3 && genderCitizenship <= 4) {
@@ -63,7 +64,7 @@ function getGenderCitizenshipYearBase(genderCitizenship: number): {
   } else {
     return null;
   }
-  
+
   return { gender, citizenship, yearBase };
 }
 
@@ -105,29 +106,29 @@ export function parse(idNumber: string): HungaryParseResult | null {
 
   try {
     const { gender, yy, mm, dd, sn, checksum } = match.groups;
-    
+
     // Validate checksum
     if (!validateChecksum(idNumber)) {
       return null;
     }
-    
+
     // Get gender, citizenship and year base
     const genderCitizenshipYearBase = getGenderCitizenshipYearBase(parseInt(gender, 10));
     if (!genderCitizenshipYearBase) {
       return null;
     }
-    
+
     const year = parseInt(yy, 10) + genderCitizenshipYearBase.yearBase;
     const month = parseInt(mm, 10);
     const day = parseInt(dd, 10);
-    
+
     // Validate date
     if (!isValidDate(year, month, day)) {
       return null;
     }
-    
+
     const birthDate = new Date(year, month - 1, day);
-    
+
     return {
       isValid: true,
       birthDate,
@@ -135,7 +136,7 @@ export function parse(idNumber: string): HungaryParseResult | null {
       citizenship: genderCitizenshipYearBase.citizenship,
       serialNumber: sn,
       checksum: parseInt(checksum, 10) as CheckDigit,
-      age: calculateAge(birthDate)
+      age: calculateAge(birthDate),
     };
   } catch {
     return null;
@@ -145,5 +146,5 @@ export function parse(idNumber: string): HungaryParseResult | null {
 export const PersonalID = {
   validate,
   parse,
-  METADATA
+  METADATA,
 };

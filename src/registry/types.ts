@@ -25,6 +25,9 @@ export interface IdFormat {
   countryName: string;
   idType: string;
   format?: string;
+  example?: string;
+  checksumAlgorithm?: string;
+  officialName?: string;
   length: { min: number; max: number };
   hasChecksum: boolean;
   isParsable: boolean;

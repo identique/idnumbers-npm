@@ -243,7 +243,7 @@ describe('NIF - registry integration', () => {
     expect(format).not.toBeNull();
     expect(format?.countryCode).toBe('PRT');
     expect(format?.countryName).toBe('Portugal');
-    expect(format?.idType).toBe('Citizen Card');
+    expect(format?.idType).toBe('Tax Identification Number (NIF)');
     expect(format?.hasChecksum).toBe(true);
     expect(format?.isParsable).toBe(false);
   });

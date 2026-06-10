@@ -13,12 +13,16 @@ export class SocialSecurityNumber implements IdNumberClass {
     parsable: false,
     checksum: false,
     regexp: /^\d{9}$/,
+    displayFormat: '#########',
+    example: '123456789',
+    checksumAlgorithm: 'None (format/length only)',
+    officialName: 'Social Security Number (SSI)',
     aliasOf: null,
     names: ['Social Security Number', 'SSI'],
     links: [
-      'https://www.oecd.org/tax/automatic-exchange/crs-implementation-and-assistance/tax-identification-numbers/San-Marino-TIN.pdf'
+      'https://www.oecd.org/tax/automatic-exchange/crs-implementation-and-assistance/tax-identification-numbers/San-Marino-TIN.pdf',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   get METADATA(): IdMetadata {

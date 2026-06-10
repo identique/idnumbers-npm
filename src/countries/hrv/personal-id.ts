@@ -29,6 +29,10 @@ export class PersonalID {
     parsable: false,
     checksum: true,
     regexp: new RegExp(/^\d{11}$/),
+    displayFormat: '###########',
+    example: '12345678903',
+    checksumAlgorithm: 'ISO 7064 MOD 11,10',
+    officialName: 'Osobni identifikacijski broj (OIB)',
     aliasOf: null,
     names: ['Personal ID Number', 'Osobni identifikacijski broj', 'OIB', 'PIN'],
     links: [

@@ -13,10 +13,14 @@ export class PersonalCode implements IdNumberClass {
     parsable: false,
     checksum: false,
     regexp: /^\d{13}$/,
+    displayFormat: '#############',
+    example: '1234567890123',
+    checksumAlgorithm: 'None (format/length only; not validated)',
+    officialName: 'Numărul de identificare (IDNP)',
     aliasOf: null,
     names: ['Personal Code', 'IDNP'],
     links: ['https://en.wikipedia.org/wiki/National_identification_number#Moldova'],
-    deprecated: false
+    deprecated: false,
   };
 
   get METADATA(): IdMetadata {

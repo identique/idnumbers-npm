@@ -19,6 +19,10 @@ export const METADATA = {
   pattern: /^(\d{6}-?\d{5})$/,
   hasChecksum: true,
   isParsable: false,
+  displayFormat: 'DDMMYY-SSSSS',
+  example: '161175-19997',
+  checksumAlgorithm: 'Weighted sum mod 11, then mod 10',
+  officialName: 'personas kods',
   links: [
     'https://en.wikipedia.org/wiki/National_identification_number#Latvia',
     'https://www.oecd.org/tax/automatic-exchange/crs-implementation-and-assistance/tax-identification-numbers/Latvia-TIN.pdf',

@@ -20,7 +20,7 @@ export const METADATA = {
   names: [
     'PESEL',
     'Powszechny Elektroniczny System Ewidencji Ludności',
-    'Universal Electronic System for Registration of the Population'
+    'Universal Electronic System for Registration of the Population',
   ],
   iso3166Alpha2: 'PL',
   minLength: 11,
@@ -28,10 +28,14 @@ export const METADATA = {
   pattern: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})(?<sn>\d{4})(?<checksum>\d)$/,
   hasChecksum: true,
   isParsable: true,
+  displayFormat: 'YYMMDDSSSSC',
+  example: '80010100000',
+  checksumAlgorithm: 'Weighted sum mod 10 (weights 1,3,7,9 repeating)',
+  officialName: 'PESEL',
   links: [
     'https://en.wikipedia.org/wiki/PESEL',
-    'https://en.wikipedia.org/wiki/National_identification_number#Poland'
-  ]
+    'https://en.wikipedia.org/wiki/National_identification_number#Poland',
+  ],
 };
 
 const MAGIC_NUMBERS = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3];
@@ -58,12 +62,12 @@ function getYearBaseMonth(month: number): [number, number] {
  */
 function calculateChecksum(idNumber: string): number | null {
   const numbers = idNumber.substring(0, 10).split('').map(Number);
-  
+
   let weightedSum = 0;
   for (let i = 0; i < numbers.length; i++) {
     weightedSum += numbers[i] * MAGIC_NUMBERS[i];
   }
-  
+
   const modulus = weightedSum % 10;
   return modulus === 0 ? 0 : 10 - modulus;
 }
@@ -90,39 +94,39 @@ export function parse(idNumber: string): PolandParseResult | null {
 
   try {
     const { yy, mm, dd, sn, checksum } = match.groups;
-    
+
     // Validate checksum
     const expectedChecksum = calculateChecksum(idNumber.trim());
     if (expectedChecksum === null || expectedChecksum !== parseInt(checksum, 10)) {
       return null;
     }
-    
+
     const yearValue = parseInt(yy, 10);
     const monthCoded = parseInt(mm, 10);
     const dayValue = parseInt(dd, 10);
-    
+
     // Get actual year and month
     const [yearBase, actualMonth] = getYearBaseMonth(monthCoded);
     const year = yearBase + yearValue;
-    
+
     // Validate date
     if (!isValidDate(year, actualMonth, dayValue)) {
       return null;
     }
-    
+
     const birthDate = new Date(year, actualMonth - 1, dayValue);
-    
+
     // Determine gender from last digit of serial number
     const lastDigit = parseInt(sn[3], 10);
     const gender: 'Male' | 'Female' = lastDigit % 2 === 1 ? 'Male' : 'Female';
-    
+
     return {
       isValid: true,
       birthDate,
       gender,
       serialNumber: sn,
       checksum: parseInt(checksum, 10),
-      age: calculateAge(birthDate)
+      age: calculateAge(birthDate),
     };
   } catch {
     return null;
@@ -132,5 +136,5 @@ export function parse(idNumber: string): PolandParseResult | null {
 export const PESEL = {
   validate,
   parse,
-  METADATA
+  METADATA,
 };

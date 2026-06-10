@@ -13,6 +13,9 @@ export interface FunctionBasedMetadata {
   hasChecksum?: boolean;
   pattern?: RegExp;
   displayFormat?: string;
+  example?: string;
+  checksumAlgorithm?: string;
+  officialName?: string;
   names?: string[];
   links?: string[];
 }
@@ -56,6 +59,9 @@ export function adaptMetadata(meta: AnyMetadata): IdMetadata {
     checksum: fn.hasChecksum ?? false,
     regexp: fn.pattern ?? /./,
     displayFormat: fn.displayFormat,
+    example: fn.example,
+    checksumAlgorithm: fn.checksumAlgorithm,
+    officialName: fn.officialName,
     aliasOf: null,
     names: fn.names ?? [],
     links: fn.links ?? [],
