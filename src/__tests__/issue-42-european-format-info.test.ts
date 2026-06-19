@@ -290,13 +290,14 @@ describe('Issue #42: European country format info', () => {
     expect(typeof format!.officialName).toBe('string');
   });
 
-  // Out-of-scope countries must not gain the enriched fields yet (USA is in #44 scope).
-  it('does not surface enriched fields for out-of-scope countries (USA)', () => {
+  // USA is covered by #44; keep this cross-issue guard so the earlier
+  // "out-of-scope" assertion does not regress after #44 lands.
+  it('surfaces enriched fields for USA after issue #44', () => {
     const format = getCountryIdFormat('USA');
     expect(format).not.toBeNull();
-    expect(format!.example).toBeUndefined();
-    expect(format!.checksumAlgorithm).toBeUndefined();
-    expect(format!.officialName).toBeUndefined();
+    expect(format!.example).toBe('123-45-6789');
+    expect(format!.checksumAlgorithm).toBe('None (area/group/serial rules only)');
+    expect(format!.officialName).toBe('Social Security Number (SSN)');
   });
 
   // PRT idType was aligned to the registered NIF validator; guard the mismatch from recurring.

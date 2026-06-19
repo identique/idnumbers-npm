@@ -15,6 +15,10 @@ export class MedicareNumber implements IdNumberClass {
     checksum: true,
     regexp:
       /^([2-6]\d{10}|[2-6]\d{3} \d{5} \d|[2-6]\d{3}-\d{5}-\d|[2-6]\d{9}|[2-6]\d{9}([-/]\d)?|[2-6]\d{3} \d{5} \d([-/]\d)?|[2-6]\d{3}-\d{5}-\d([-/]\d)?|[2-6]\d{3} \d{5} \d \d|[2-6]\d{3}-\d{5}-\d-\d)$/,
+    displayFormat: '#### ##### #(/#)',
+    example: '2123 45670 1',
+    checksumAlgorithm: 'Weighted sum mod 10 (weights 1,3,7,9,1,3,7,9 over first 8 digits)',
+    officialName: 'Medicare Number',
     aliasOf: null,
     names: ['Medicare Number', 'Medicare No'],
     links: [

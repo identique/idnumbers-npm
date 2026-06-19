@@ -14,10 +14,14 @@ export class SocialSecurityNumber implements IdNumberClass {
     parsable: false,
     checksum: false,
     regexp: /^(?!666|000|9\d{2})\d{3}-(?!00)\d{2}-(?!0{4})\d{4}$/,
+    displayFormat: '###-##-####',
+    example: '123-45-6789',
+    checksumAlgorithm: 'None (area/group/serial rules only)',
+    officialName: 'Social Security Number (SSN)',
     aliasOf: null,
     names: ['Social Security number', 'SSN'],
     links: ['https://en.wikipedia.org/wiki/National_identification_number#United_States'],
-    deprecated: false
+    deprecated: false,
   };
 
   get METADATA(): IdMetadata {

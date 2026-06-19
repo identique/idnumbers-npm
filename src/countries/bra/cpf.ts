@@ -18,12 +18,14 @@ export class CPF implements IdNumberClass {
     parsable: false,
     checksum: true,
     regexp: /^(\d{3}\.?\d{3}\.?\d{3}-?\d{2})$/,
+    displayFormat: '###.###.###-##',
+    example: '111.444.777-35',
+    checksumAlgorithm: 'Dual weighted mod 11 check digits',
+    officialName: 'Cadastro de Pessoas Físicas (CPF)',
     aliasOf: null,
     names: ['CPF number', 'Cadastro de Pessoas Físicas'],
-    links: [
-      'https://en.wikipedia.org/wiki/National_identification_number#Brazil'
-    ],
-    deprecated: false
+    links: ['https://en.wikipedia.org/wiki/National_identification_number#Brazil'],
+    deprecated: false,
   };
 
   private static readonly MULTIPLIER1 = [10, 9, 8, 7, 6, 5, 4, 3, 2];
@@ -52,8 +54,7 @@ export class CPF implements IdNumberClass {
    * Calculate first checksum digit
    */
   private static firstDigitChecksum(numberList: number[]): string {
-    const total = numberList.reduce((sum, value, index) =>
-      sum + (value * CPF.MULTIPLIER1[index]), 0);
+    const total = numberList.reduce((sum, value, index) => sum + value * CPF.MULTIPLIER1[index], 0);
     return CPF.getChecksum(total).toString();
   }
 
@@ -62,8 +63,7 @@ export class CPF implements IdNumberClass {
    */
   private static secondDigitChecksum(numberList: number[]): string {
     const firstChecksum = CPF.firstDigitChecksum(numberList);
-    let total = numberList.reduce((sum, value, index) =>
-      sum + (value * CPF.MULTIPLIER2[index]), 0);
+    let total = numberList.reduce((sum, value, index) => sum + value * CPF.MULTIPLIER2[index], 0);
 
     // Using first digit of the checksum to get total
     total += parseInt(firstChecksum, 10) * 2;
@@ -80,8 +80,7 @@ export class CPF implements IdNumberClass {
     const expectedFirstDigit = CPF.firstDigitChecksum(numberList);
     const expectedSecondDigit = CPF.secondDigitChecksum(numberList);
 
-    return normalized[9] === expectedFirstDigit &&
-           normalized[10] === expectedSecondDigit;
+    return normalized[9] === expectedFirstDigit && normalized[10] === expectedSecondDigit;
   }
 
   /**

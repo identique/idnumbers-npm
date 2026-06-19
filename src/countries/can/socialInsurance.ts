@@ -15,6 +15,10 @@ export class SocialInsuranceNumber implements IdNumberClass {
     parsable: false,
     checksum: true,
     regexp: /^\d{3}[\s-]?\d{3}[\s-]?\d{3}$/,
+    displayFormat: '###-###-###',
+    example: '123-456-782',
+    checksumAlgorithm: 'Luhn (mod 10)',
+    officialName: 'Social Insurance Number (SIN)',
     aliasOf: null,
     names: ['Social Insurance Number', 'SIN'],
     links: [

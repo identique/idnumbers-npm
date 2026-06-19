@@ -19,10 +19,14 @@ export class NationalID implements IdNumberClass {
     parsable: false,
     checksum: false,
     regexp: /^\d{10}$/,
+    displayFormat: '##########',
+    example: '1234567890',
+    checksumAlgorithm: 'None (format/length only)',
+    officialName: 'National Identification Number (NID)',
     aliasOf: null,
     names: ['National ID Number', 'NID'],
     links: ['https://en.wikipedia.org/wiki/National_identification_number#Papua_New_Guinea'],
-    deprecated: false
+    deprecated: false,
   };
 
   get METADATA(): IdMetadata {

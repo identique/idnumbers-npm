@@ -222,15 +222,16 @@ describe('Issue #43: Asian country format info', () => {
     }
   );
 
-  // Out-of-scope countries must not gain the enriched fields yet (MEX is in
-  // #44 scope; #44 will update this assertion when it lands, the same way it
-  // will update issue-42's USA guard).
-  it('does not surface enriched fields for out-of-scope countries (MEX)', () => {
+  // MEX is covered by #44; keep this cross-issue guard so the earlier
+  // "out-of-scope" assertion does not regress after #44 lands.
+  it('surfaces enriched fields for MEX after issue #44', () => {
     const format = getCountryIdFormat('MEX');
     expect(format).not.toBeNull();
-    expect(format!.example).toBeUndefined();
-    expect(format!.checksumAlgorithm).toBeUndefined();
-    expect(format!.officialName).toBeUndefined();
+    expect(format!.example).toBe('HEGG560427MVZRRL04');
+    expect(format!.checksumAlgorithm).toBe(
+      'Weighted alphanumeric sum mod 10 (positions weighted 18..2; check = (10 - remainder) mod 10)'
+    );
+    expect(format!.officialName).toBe('Clave Única de Registro de Población (CURP)');
   });
 
   // Multi-format validators: format info documents the current issuance
