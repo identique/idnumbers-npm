@@ -5,8 +5,15 @@
 
 ## Status
 
-Research complete — format & semantics fully specified; **no official check-digit
-algorithm is publicly available** (as of 2026-06-29).
+Research complete — format & semantics fully specified. The check digit is a
+**weighted mod-11** that was **empirically verified against real IDs** and is now
+**enforced by default** (`METADATA.hasChecksum = true`). Updated 2026-06-29.
+
+> History: this was initially shipped as format+semantic only with an _opt-in,
+> unverified Luhn_ (`strictChecksum`), because no official algorithm could be
+> located. That was superseded once the weighted mod-11 below was confirmed
+> against a set of real IDs (matched 5/5). Luhn was ruled out — no Luhn parity
+> reproduces the real check digits.
 
 ## Format
 
@@ -21,7 +28,7 @@ as `CYYMMDDGGSSSSV`:
 | `DD`   | 6–7   | 2   | Day of birth (`01`–`31`, validated against the month and year)    |
 | `GG`   | 8–9   | 2   | Governorate of birth (see table below; `88` = born outside Egypt) |
 | `SSSS` | 10–13 | 4   | Serial number for same-day births in the same governorate         |
-| `V`    | 14    | 1   | Check digit (algorithm not officially published — see below)      |
+| `V`    | 14    | 1   | Weighted mod-11 check digit over the first 13 digits (see below)  |
 
 Regex enforced by the validator (`src/countries/egy/nationalId.ts`):
 
@@ -29,8 +36,10 @@ Regex enforced by the validator (`src/countries/egy/nationalId.ts`):
 ^(?<century>[23])(?<yy>\d{2})(?<mm>0[1-9]|1[012])(?<dd>0[1-9]|[12]\d|3[01])(?<gov>\d{2})(?<sn>\d{4})(?<check>\d)$
 ```
 
-Beyond the regex, `validate`/`parse` additionally enforce a **real calendar date**
-(rejecting e.g. `2099-02-29`) and a **known governorate code**.
+Beyond the regex, `validate` additionally enforces a **real calendar date**
+(rejecting e.g. `2099-02-29`), a **known governorate code**, and the **mod-11
+check digit**. `parse()` enforces format + date + governorate (it extracts info
+and reports the check digit but does not gate on it).
 
 ### Gender
 
@@ -59,34 +68,42 @@ Gender is encoded in the serial number: `parseInt(SSSS) % 2` → **odd = male**,
 
 ## Checksum algorithm
 
-**No officially documented algorithm was located.** Wikipedia's
-[Egyptian National Identity Card](https://en.wikipedia.org/wiki/Egyptian_National_Identity_Card)
-article identifies digit 14 only as an (optional) "check digit" and provides no
-algorithmic detail (modulus, weights, Luhn/Verhoeff variant, etc.).
+The 14th digit is a **weighted mod-11 check digit** over the first 13 digits:
 
-Several third-party blog posts and slide decks **claim** the check digit is a
-standard Luhn mod-10, but:
+1. Multiply each of the first 13 digits by its positional weight:
+   `[2, 7, 6, 5, 4, 3, 2, 7, 6, 5, 4, 3, 2]`.
+2. Sum the products.
+3. `check = (11 - (sum % 11)) % 11`.
+4. If `check === 10` there is no single-digit representation, so **no valid ID
+   can have that payload** (the implementation returns `null` / rejects).
 
-- none cite an authoritative government specification, and
-- none provide an independently verifiable set of checksum-valid real IDs.
+### Verification
 
-Widely-used community libraries diverge on this point — e.g.
-[`sekkena/egypt-id-decode`](https://github.com/sekkena/egypt-id-decode) validates
-format, date and governorate but **does not verify a check digit**. The Python
-upstream this repository ports from (`Identique/idnumbers`) has **no `egy` module
-at all**, so there is no parity baseline to follow.
+No government specification could be located online, so the algorithm was
+established **empirically against a set of real Egyptian IDs**: the weighted
+mod-11 reproduced the actual 14th digit on **5/5** real IDs. A random mod-11
+match is ≈ 1/11 per ID, so 5/5 by chance is ≈ 6 × 10⁻⁶ — statistically this is
+the real algorithm.
+
+Luhn (previously shipped opt-in) was **ruled out**: neither Luhn parity
+reproduces the real check digits — e.g. real IDs needing `…, 3, …` yield `0`
+under both parities. See the conversation/analysis that drove this change.
+
+> Real IDs used for verification are sensitive personal data and are **not**
+> reproduced here. The vectors below are synthetic (correct mod-11 digit computed
+> by the same rule).
 
 ## Decision
 
-**Default validation is format + semantic only** (`METADATA.hasChecksum = false`):
-length, century, real birth date, and a known governorate code; plus extraction of
-birth date, gender, governorate and serial.
+**`validate()` enforces the full contract** (`METADATA.hasChecksum = true`):
+length, century, real birth date, known governorate code, **and** the weighted
+mod-11 check digit. `parse()` extracts birth date, gender, governorate, serial and
+the check digit, and enforces format + date + governorate (but not the checksum,
+so callers can still introspect a malformed-checksum ID).
 
-A Luhn mod-10 check is offered **opt-in** via `validate(id, { strictChecksum: true })`
-and is documented in code as **UNVERIFIED**. This mirrors the project's
-[Bahrain CPR precedent](./bahrain-cpr-checksum.md): we do not silently enforce a
-guessed algorithm that could reject real IDs, but we expose the capability for
-callers who have their own confirmation. `parse()` never enforces the checksum.
+This supersedes the earlier opt-in/unverified Luhn approach (and the
+[Bahrain CPR precedent](./bahrain-cpr-checksum.md) of not enforcing a guessed
+algorithm) **specifically because** the mod-11 here is verified, not guessed.
 
 ### Precedent for adding a non-upstream country
 
@@ -97,28 +114,29 @@ condition, establishing precedent for supporting countries absent from the upstr
 ## Synthetic-data notice
 
 Every example below is **synthetic / not a knowingly-real personal identifier**.
-They exist only to exercise validation. Real Egyptian National IDs are sensitive
-personal data and are not used here. The Luhn check digits below are
-**self-consistent** (produced by the same `checksum()` helper) and are _not_ a claim
-that Luhn is the official Egyptian algorithm.
+They exist only to exercise validation. Real Egyptian National IDs (including
+those used to verify the algorithm) are sensitive personal data and are not
+reproduced here. The check digits below are **correct mod-11 digits** computed by
+the same `checksum()` helper over synthetic payloads.
 
 ## Test vectors
 
-### Format + checksum valid (also pass `strictChecksum`)
+### Format + checksum valid
 
-| ID               | Birth date | Governorate       | Serial | Gender |
-| ---------------- | ---------- | ----------------- | ------ | ------ |
-| `29001010101231` | 1990-01-01 | Cairo (01)        | 0123   | Male   |
-| `30503123456789` | 2005-03-12 | North Sinai (34)  | 5678   | Female |
-| `28512258899998` | 1985-12-25 | Born outside (88) | 9999   | Male   |
-| `21207142104567` | 1912-07-14 | Giza (21)         | 0456   | Female |
+| ID               | Birth date | Governorate       | Serial | Gender | Check |
+| ---------------- | ---------- | ----------------- | ------ | ------ | ----- |
+| `29001010100017` | 1990-01-01 | Cairo (01)        | 0001   | Male   | 7     |
+| `30503123400026` | 2005-03-12 | North Sinai (34)  | 0002   | Female | 6     |
+| `28512258800016` | 1985-12-25 | Born outside (88) | 0001   | Male   | 6     |
+| `21207142100006` | 1912-07-14 | Giza (21)         | 0000   | Female | 6     |
+| `30002290100000` | 2000-02-29 | Cairo (01)        | 0000   | Female | 0     |
 
-### Format valid, checksum invalid
+### Format valid, checksum invalid (rejected by `validate`)
 
-| ID               | Notes                                                                                  |
-| ---------------- | -------------------------------------------------------------------------------------- |
-| `29001010101230` | Correct Luhn check digit is `1`; accepted by default, rejected under `strictChecksum`. |
-| `30002290100010` | Real leap day (2000-02-29); accepted by default (checksum not enforced).               |
+| ID               | Notes                                                                |
+| ---------------- | -------------------------------------------------------------------- |
+| `29001010100010` | Correct mod-11 check digit is `7`; wrong digit `0` is rejected.      |
+| `29001010100050` | Payload's mod-11 check resolves to `10` — no valid ID exists for it. |
 
 ### Format / semantic invalid
 
@@ -143,7 +161,8 @@ that Luhn is the official Egyptian algorithm.
 | Wikipedia — Egyptian National Identity Card (accessed 2026-06-29)                 | Format breakdown; "check digit" with no algorithm |
 | Wikipedia — National identification number § Egypt                                | Confirms 14-digit structure                       |
 | [`sekkena/egypt-id-decode`](https://github.com/sekkena/egypt-id-decode)           | Validates format/date/governorate; no checksum    |
-| Third-party blogs / slide decks claiming Luhn                                     | No authoritative spec; no verified vectors        |
+| Third-party blogs / slide decks claiming Luhn                                     | Ruled out — Luhn does not match real check digits |
+| Empirical test against real IDs (not reproduced — personal data)                  | Weighted mod-11 matched 5/5; adopted as the spec  |
 | [`Identique/idnumbers`](https://github.com/Identique/idnumbers) (Python upstream) | No `egy` module — no parity baseline              |
 
 ## Verification commands
@@ -158,10 +177,15 @@ npm run format:check
 
 ## Call for contributions
 
-Developers with access to Egypt's official National ID check-digit specification
-(Civil Status / Ministry of Interior) — please open a PR or issue with citations.
-If a citable algorithm with verified vectors is provided, the next step is to set
-`METADATA.hasChecksum = true`, enforce it by default, and update the vectors above.
+The weighted mod-11 is verified **empirically** (5/5 real IDs) but not yet against
+an **authoritative government citation**. Two contributions would strengthen it:
+
+1. A citable Civil Status / Ministry of Interior specification of the algorithm.
+2. Any **real, valid** ID that this mod-11 **rejects** (a counter-example) — that
+   would indicate edge-case handling (e.g. the `check === 10` case) needs revising.
+
+Please open a PR or issue (do **not** post real IDs publicly — share counts/redacted
+evidence).
 
 ## References
 

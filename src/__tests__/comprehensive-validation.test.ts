@@ -211,7 +211,7 @@ describe('Comprehensive National ID Validation Tests', () => {
 
       test('Egypt - National ID', () => {
         // Valid Egyptian National ID (1990-01-01, Cairo)
-        const result = validateNationalId('EGY', '29001010101231');
+        const result = validateNationalId('EGY', '29001010100017');
         expect(result.isValid).toBe(true);
         expect(result.extractedInfo).toBeTruthy();
         expect(result.extractedInfo.birthDate).toBeDefined();
@@ -514,7 +514,7 @@ describe('Comprehensive National ID Validation Tests', () => {
                 // Skip Romania - it's in failingCountries list
 
                 // Egypt - now parsable: extracts birth date, gender, governorate
-                const egyInfo = parseIdInfo('EGY', '29001010101231');
+                const egyInfo = parseIdInfo('EGY', '29001010100017');
                 expect(egyInfo).toBeTruthy();
                 expect(egyInfo.birthDate).toBeDefined();
                 expect(egyInfo.gender).toBeDefined();

@@ -11,16 +11,15 @@
  *   SSSS - serial number (gender: odd => male, even => female)
  *   V    - check digit
  *
- * Checksum note: Egypt publishes no official check-digit algorithm. A Luhn
- * mod-10 check is offered OPT-IN (validate(id, { strictChecksum: true })) and
- * is documented as UNVERIFIED. Default validation is format + semantic only.
- * See docs/research/egypt-national-id.md.
+ * Checksum: the trailing digit (V) is a weighted mod-11 check digit over the
+ * first 13 digits, using the positional weights 2,7,6,5,4,3,2,7,6,5,4,3,2.
+ * Verified against real IDs; enforced by default. See docs/research/egypt-national-id.md.
  *
  * https://en.wikipedia.org/wiki/Egyptian_National_Identity_Card
  */
 
 import { ParsedInfo } from '../../types';
-import { validateRegexp, isValidDate, calculateAge, luhnDigit } from '../../utils';
+import { validateRegexp, isValidDate, calculateAge } from '../../utils';
 import { Gender } from '../../constants';
 
 export interface EgyptParseResult extends ParsedInfo {
@@ -31,16 +30,6 @@ export interface EgyptParseResult extends ParsedInfo {
   serialNumber: string;
   checksum: number;
   age?: number;
-}
-
-/** Optional behaviour flags for {@link validate}. */
-export interface EgyptValidateOptions {
-  /**
-   * When true, additionally verify the trailing check digit via Luhn mod-10.
-   * The algorithm is UNVERIFIED (no official spec) — keep this off unless you
-   * have independently confirmed it against real IDs. See the research doc.
-   */
-  strictChecksum?: boolean;
 }
 
 /**
@@ -86,12 +75,12 @@ export const METADATA = {
   maxLength: 14,
   pattern:
     /^(?<century>[23])(?<yy>\d{2})(?<mm>0[1-9]|1[012])(?<dd>0[1-9]|[12]\d|3[01])(?<gov>\d{2})(?<sn>\d{4})(?<check>\d)$/,
-  hasChecksum: false,
+  hasChecksum: true,
   isParsable: true,
   displayFormat: 'CYYMMDDGGSSSSV',
-  example: '29001010101231',
+  example: '29001010100017',
   checksumAlgorithm:
-    'None by default. Opt-in Luhn mod-10 via validate(id, { strictChecksum: true }) — UNVERIFIED, no official spec (see docs/research/egypt-national-id.md).',
+    'Weighted mod-11 over the first 13 digits with weights 2,7,6,5,4,3,2,7,6,5,4,3,2; check = (11 - sum % 11) % 11 (a result of 10 is not a valid ID). See docs/research/egypt-national-id.md.',
   officialName: 'الرقم القومي (National Number)',
   links: [
     'https://en.wikipedia.org/wiki/Egyptian_National_Identity_Card',
@@ -115,32 +104,37 @@ function resolveYear(century: string, yy: string): number | null {
   return base === null ? null : base + parseInt(yy, 10);
 }
 
+/** Positional weights applied to the first 13 digits for the mod-11 checksum. */
+const CHECKSUM_WEIGHTS = [2, 7, 6, 5, 4, 3, 2, 7, 6, 5, 4, 3, 2];
+
 /**
- * Compute the Luhn mod-10 check digit over the first 13 digits.
- * Returns null when the input does not match the expected format.
+ * Compute the expected mod-11 check digit over the first 13 digits.
  *
- * NOTE: Egypt has no official check-digit specification. This is an UNVERIFIED
- * best-effort Luhn implementation, exposed only for opt-in strict validation.
+ * Each digit is multiplied by its positional weight; the check digit is
+ * `(11 - (sum % 11)) % 11`. A computed value of 10 has no single-digit
+ * representation, so no valid ID can have such a payload — `null` is returned.
+ * `null` is also returned when the input does not match the expected format.
  */
 export function checksum(idNumber: string): number | null {
   const normalized = normalize(idNumber);
   if (!validateRegexp(normalized, METADATA.pattern)) {
     return null;
   }
-  const digits = normalized.slice(0, 13).split('').map(Number);
-  // The 13-digit payload has odd length, so the rightmost payload digit sits
-  // at an even index; pass `true` so luhnDigit doubles it (standard Luhn parity).
-  return luhnDigit(digits, true) as number;
+  let sum = 0;
+  for (let i = 0; i < CHECKSUM_WEIGHTS.length; i++) {
+    sum += Number(normalized[i]) * CHECKSUM_WEIGHTS[i];
+  }
+  const expected = (11 - (sum % 11)) % 11;
+  return expected === 10 ? null : expected;
 }
 
 /**
  * Validate an Egypt National ID.
  *
- * Default validation is format + semantic only (real birth date and a known
- * governorate code). Pass `{ strictChecksum: true }` to additionally verify the
- * trailing check digit via the (unverified) Luhn algorithm.
+ * Enforces the full contract: 14-digit format, supported century, a real birth
+ * date, a known governorate code, and the weighted mod-11 check digit.
  */
-export function validate(idNumber: string, options: EgyptValidateOptions = {}): boolean {
+export function validate(idNumber: string): boolean {
   if (!idNumber) {
     return false;
   }
@@ -162,11 +156,9 @@ export function validate(idNumber: string, options: EgyptValidateOptions = {}): 
     return false;
   }
 
-  if (options.strictChecksum) {
-    const expected = checksum(normalized);
-    if (expected === null || expected !== parseInt(check, 10)) {
-      return false;
-    }
+  const expected = checksum(normalized);
+  if (expected === null || expected !== parseInt(check, 10)) {
+    return false;
   }
 
   return true;

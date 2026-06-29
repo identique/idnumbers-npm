@@ -358,7 +358,7 @@ describe('parseIdInfo parity (registry vs old switch)', () => {
     { code: 'BIH', alias: 'BA', validId: '0101990150002', description: 'Bosnia JMBG' },
     { code: 'KAZ', alias: 'KZ', validId: '900101300017', description: 'Kazakhstan IIN' },
     { code: 'KWT', alias: 'KW', validId: '280010100004', description: 'Kuwait Civil Number' },
-    { code: 'EGY', alias: 'EG', validId: '29001010101231', description: 'Egypt National ID' },
+    { code: 'EGY', alias: 'EG', validId: '29001010100017', description: 'Egypt National ID' },
     { code: 'ROU', alias: 'RO', validId: '1800101226813', description: 'Romania CNP' },
     { code: 'RUS', alias: 'RU', validId: '1234 567890', description: 'Russia Passport' },
     { code: 'SGP', alias: 'SG', validId: 'S1234567D', description: 'Singapore NRIC' },
