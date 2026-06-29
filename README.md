@@ -1,6 +1,6 @@
 # idnumbers
 
-A comprehensive TypeScript/JavaScript library for validating and parsing national identification numbers from 80 countries across 6 continents.
+A comprehensive TypeScript/JavaScript library for validating and parsing national identification numbers from 81 countries across 6 continents.
 
 [![npm version](https://img.shields.io/npm/v/idnumbers.svg)](https://www.npmjs.com/package/idnumbers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -281,8 +281,9 @@ console.log(format);
 - 🇦🇪 **ARE** - Emirates ID
 - 🇻🇳 **VNM** - Citizen Identity Card
 
-### Africa (3)
+### Africa (4)
 
+- 🇪🇬 **EGY** - National ID (الرقم القومي)
 - 🇳🇬 **NGA** - National Identification Number (NIN)
 - 🇿🇦 **ZAF** - ID Number
 - 🇿🇼 **ZWE** - National ID

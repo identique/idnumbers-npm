@@ -12,8 +12,8 @@ import { adaptMetadata, createValidator } from '../registry/adapters';
 // Registry population tests
 // ---------------------------------------------------------------------------
 describe('Registry population', () => {
-  it('should have 80 primary keys registered', () => {
-    expect(registry.list().length).toBe(80);
+  it('should have 81 primary keys registered', () => {
+    expect(registry.list().length).toBe(81);
   });
 
   it('should resolve all expected alpha-3 keys', () => {
@@ -74,6 +74,7 @@ describe('Registry population', () => {
       'JPN',
       'KAZ',
       'KWT',
+      'EGY',
       'IDN',
       'KOR',
       'MEX',
@@ -139,6 +140,7 @@ describe('Registry population', () => {
       BA: 'BIH',
       KZ: 'KAZ',
       KW: 'KWT',
+      EG: 'EGY',
       RO: 'ROU',
       RU: 'RUS',
       SG: 'SGP',

@@ -48,6 +48,7 @@ export * as IND from './countries/ind';
 export * as JPN from './countries/jpn';
 export * as KAZ from './countries/kaz';
 export * as KWT from './countries/kwt';
+export * as EGY from './countries/egy';
 export * as IDN from './countries/idn';
 export * as KOR from './countries/kor';
 export * as MEX from './countries/mex';
