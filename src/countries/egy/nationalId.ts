@@ -13,7 +13,7 @@
  *
  * Checksum: the trailing digit (V) is a weighted mod-11 check digit over the
  * first 13 digits, using the positional weights 2,7,6,5,4,3,2,7,6,5,4,3,2.
- * Verified against real IDs; enforced by default. See docs/research/egypt-national-id.md.
+ * Verified and tested against real IDs; enforced by default. See docs/research/egypt-national-id.md.
  *
  * https://en.wikipedia.org/wiki/Egyptian_National_Identity_Card
  */
