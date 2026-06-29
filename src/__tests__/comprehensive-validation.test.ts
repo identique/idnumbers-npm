@@ -209,6 +209,21 @@ describe('Comprehensive National ID Validation Tests', () => {
         expect(validateNationalId('NGA', '1234567890').isValid).toBe(false);
       });
 
+      test('Egypt - National ID', () => {
+        // Valid Egyptian National ID (1990-01-01, Cairo)
+        const result = validateNationalId('EGY', '29001010101238');
+        expect(result.isValid).toBe(true);
+        expect(result.extractedInfo).toBeTruthy();
+        expect(result.extractedInfo.birthDate).toBeDefined();
+        expect(result.extractedInfo.gender).toBeDefined();
+        expect(result.extractedInfo.governorate).toBe('Cairo');
+
+        // Invalid - unknown governorate code (99)
+        expect(validateNationalId('EGY', '29001019901238').isValid).toBe(false);
+        // Invalid - wrong length
+        expect(validateNationalId('EGY', '2900101010123').isValid).toBe(false);
+      });
+
       describe('American Countries', () => {
         test('USA - Social Security Number', () => {
           // Valid SSN
@@ -458,7 +473,7 @@ describe('Comprehensive National ID Validation Tests', () => {
                 const countries = listSupportedCountries();
 
                 expect(Array.isArray(countries)).toBe(true);
-                expect(countries.length).toBeGreaterThan(75); // We have 80 countries
+                expect(countries.length).toBeGreaterThan(75); // We have 81 countries
 
                 // Check some expected countries
                 const countryCodes = countries.map(c => c.code);
@@ -496,8 +511,14 @@ describe('Comprehensive National ID Validation Tests', () => {
                 expect(zafInfo.citizenship).toBeDefined();
 
                 // Skip China - it's in failingCountries list
-                // Skip Egypt - it's in failingCountries list
                 // Skip Romania - it's in failingCountries list
+
+                // Egypt - now parsable: extracts birth date, gender, governorate
+                const egyInfo = parseIdInfo('EGY', '29001010101238');
+                expect(egyInfo).toBeTruthy();
+                expect(egyInfo.birthDate).toBeDefined();
+                expect(egyInfo.gender).toBeDefined();
+                expect(egyInfo.governorate).toBe('Cairo');
 
                 // Test other working countries with extractable info
                 // South Korea

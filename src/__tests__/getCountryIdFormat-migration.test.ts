@@ -2,7 +2,7 @@
  * Parity tests for getCountryIdFormat registry migration (Issue #53).
  *
  * Verifies that the registry-based getCountryIdFormat returns complete
- * IdFormat info for all 80 registered countries, preserves format strings,
+ * IdFormat info for all 81 registered countries, preserves format strings,
  * resolves aliases, and returns null for unregistered codes.
  */
 import { getCountryIdFormat } from '../index';
@@ -57,6 +57,7 @@ describe('getCountryIdFormat returns IdFormat for all registered countries', () 
     { code: 'JPN', name: 'Japan', idType: 'My Number' },
     { code: 'KAZ', name: 'Kazakhstan', idType: 'Individual Identification Number' },
     { code: 'KWT', name: 'Kuwait', idType: 'Civil Number' },
+    { code: 'EGY', name: 'Egypt', idType: 'National ID' },
     { code: 'IDN', name: 'Indonesia', idType: 'National ID Number' },
     { code: 'KOR', name: 'South Korea', idType: 'Resident Registration Number' },
     { code: 'MEX', name: 'Mexico', idType: 'CURP' },
@@ -159,6 +160,7 @@ describe('Alias resolution in getCountryIdFormat', () => {
     { alias: 'JP', expectedCode: 'JPN' },
     { alias: 'KZ', expectedCode: 'KAZ' },
     { alias: 'KW', expectedCode: 'KWT' },
+    { alias: 'EG', expectedCode: 'EGY' },
     { alias: 'ID', expectedCode: 'IDN' },
     { alias: 'KR', expectedCode: 'KOR' },
     { alias: 'MX', expectedCode: 'MEX' },

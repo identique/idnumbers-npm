@@ -146,6 +146,7 @@ export const SUPPORTED_COUNTRIES: CountryInfo[] = [
   { code: 'JPN', name: 'Japan', idType: 'My Number' },
   { code: 'KAZ', name: 'Kazakhstan', idType: 'Individual Identification Number' },
   { code: 'KWT', name: 'Kuwait', idType: 'Civil Number' },
+  { code: 'EGY', name: 'Egypt', idType: 'National ID' },
   { code: 'IDN', name: 'Indonesia', idType: 'National ID Number' },
   { code: 'KOR', name: 'South Korea', idType: 'Resident Registration Number' },
   { code: 'MEX', name: 'Mexico', idType: 'CURP' },
