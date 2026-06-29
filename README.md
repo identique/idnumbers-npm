@@ -8,7 +8,7 @@ A comprehensive TypeScript/JavaScript library for validating and parsing nationa
 
 ## Features
 
-- ✅ **80 countries supported** - Comprehensive coverage across all continents
+- ✅ **81 countries supported** - Comprehensive coverage across all continents
 - 🔍 **Validation** - Verify ID number format and checksums
 - 📊 **Parsing** - Extract information like birth date, gender, and citizenship
 - 🛡️ **Type-safe** - Full TypeScript support with type definitions
