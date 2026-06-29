@@ -419,7 +419,7 @@ describe('validateNationalId parity (registry vs old switch)', () => {
     {
       code: 'EGY',
       alias: 'EG',
-      validId: '29001010101238',
+      validId: '29001010101231',
       invalidId: 'INVALID',
       hasParse: true,
       description: 'Egypt National ID',

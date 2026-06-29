@@ -89,7 +89,7 @@ export const METADATA = {
   hasChecksum: false,
   isParsable: true,
   displayFormat: 'CYYMMDDGGSSSSV',
-  example: '29001010101238',
+  example: '29001010101231',
   checksumAlgorithm:
     'None by default. Opt-in Luhn mod-10 via validate(id, { strictChecksum: true }) — UNVERIFIED, no official spec (see docs/research/egypt-national-id.md).',
   officialName: 'الرقم القومي (National Number)',
@@ -128,7 +128,9 @@ export function checksum(idNumber: string): number | null {
     return null;
   }
   const digits = normalized.slice(0, 13).split('').map(Number);
-  return luhnDigit(digits) as number;
+  // The 13-digit payload has odd length, so the rightmost payload digit sits
+  // at an even index; pass `true` so luhnDigit doubles it (standard Luhn parity).
+  return luhnDigit(digits, true) as number;
 }
 
 /**

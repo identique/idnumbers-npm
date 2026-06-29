@@ -108,16 +108,16 @@ that Luhn is the official Egyptian algorithm.
 
 | ID               | Birth date | Governorate       | Serial | Gender |
 | ---------------- | ---------- | ----------------- | ------ | ------ |
-| `29001010101238` | 1990-01-01 | Cairo (01)        | 0123   | Male   |
-| `30503123456785` | 2005-03-12 | North Sinai (34)  | 5678   | Female |
-| `28512258899992` | 1985-12-25 | Born outside (88) | 9999   | Male   |
-| `21207142104565` | 1912-07-14 | Giza (21)         | 0456   | Female |
+| `29001010101231` | 1990-01-01 | Cairo (01)        | 0123   | Male   |
+| `30503123456789` | 2005-03-12 | North Sinai (34)  | 5678   | Female |
+| `28512258899998` | 1985-12-25 | Born outside (88) | 9999   | Male   |
+| `21207142104567` | 1912-07-14 | Giza (21)         | 0456   | Female |
 
 ### Format valid, checksum invalid
 
 | ID               | Notes                                                                                  |
 | ---------------- | -------------------------------------------------------------------------------------- |
-| `29001010101230` | Correct Luhn check digit is `8`; accepted by default, rejected under `strictChecksum`. |
+| `29001010101230` | Correct Luhn check digit is `1`; accepted by default, rejected under `strictChecksum`. |
 | `30002290100010` | Real leap day (2000-02-29); accepted by default (checksum not enforced).               |
 
 ### Format / semantic invalid

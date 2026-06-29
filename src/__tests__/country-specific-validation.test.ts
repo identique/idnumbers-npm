@@ -400,9 +400,9 @@ describe('Python idnumbers test cases validation', () => {
   // RUS is covered in comprehensive-validation.test.ts (Eastern European Countries).
   describe('EGY - National ID', () => {
     const validEgyptianIDs = [
-      '29001010101238', // 1990-01-01, Cairo
-      '30503123456785', // 2005-03-12, North Sinai
-      '28512258899992', // 1985-12-25, born abroad (88)
+      '29001010101231', // 1990-01-01, Cairo
+      '30503123456789', // 2005-03-12, North Sinai
+      '28512258899998', // 1985-12-25, born abroad (88)
     ];
 
     const invalidEgyptianIDs = [

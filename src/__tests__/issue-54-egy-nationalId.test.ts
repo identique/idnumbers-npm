@@ -23,10 +23,10 @@ import { validateNationalId, parseIdInfo, getCountryIdFormat } from '../index';
 
 // Strict-valid (also Luhn-valid) synthetic IDs: CYYMMDDGGSSSSV
 const VALID_STRICT = [
-  '29001010101238', // 1990-01-01, Cairo (01),       sn 0123 -> MALE
-  '30503123456785', // 2005-03-12, North Sinai (34), sn 5678 -> FEMALE
-  '28512258899992', // 1985-12-25, Born abroad (88),  sn 9999 -> MALE
-  '21207142104565', // 1912-07-14, Giza (21),         sn 0456 -> FEMALE
+  '29001010101231', // 1990-01-01, Cairo (01),       sn 0123 -> MALE
+  '30503123456789', // 2005-03-12, North Sinai (34), sn 5678 -> FEMALE
+  '28512258899998', // 1985-12-25, Born abroad (88),  sn 9999 -> MALE
+  '21207142104567', // 1912-07-14, Giza (21),         sn 0456 -> FEMALE
 ];
 
 describe('Egypt (EGY) — National ID', () => {
@@ -50,7 +50,7 @@ describe('Egypt (EGY) — National ID', () => {
       expect(NationalID.METADATA).toBe(METADATA);
       expect(NationalID.validate(METADATA.example)).toBe(true);
       expect(NationalID.parse(METADATA.example)).not.toBeNull();
-      expect(NationalID.checksum(METADATA.example)).toBe(8);
+      expect(NationalID.checksum(METADATA.example)).toBe(1);
     });
   });
 
@@ -103,7 +103,7 @@ describe('Egypt (EGY) — National ID', () => {
     });
 
     it('strict mode rejects a wrong check digit that format-only accepts', () => {
-      const wrong = '29001010101230'; // correct check digit is 8
+      const wrong = '29001010101230'; // correct check digit is 1
       expect(validate(wrong)).toBe(true);
       expect(validate(wrong, { strictChecksum: true })).toBe(false);
     });
@@ -111,7 +111,7 @@ describe('Egypt (EGY) — National ID', () => {
 
   describe('checksum()', () => {
     it('returns the Luhn check digit for a well-formed ID', () => {
-      expect(checksum('29001010101238')).toBe(8);
+      expect(checksum('29001010101231')).toBe(1);
     });
 
     it('returns null for a malformed ID', () => {
@@ -122,7 +122,7 @@ describe('Egypt (EGY) — National ID', () => {
 
   describe('parse()', () => {
     it('extracts birth date, gender, governorate and serial', () => {
-      const info = parse('29001010101238');
+      const info = parse('29001010101231');
       expect(info).not.toBeNull();
       expect(info!.isValid).toBe(true);
       expect(info!.birthDate.getFullYear()).toBe(1990);
@@ -132,12 +132,12 @@ describe('Egypt (EGY) — National ID', () => {
       expect(info!.governorateCode).toBe('01');
       expect(info!.governorate).toBe('Cairo');
       expect(info!.serialNumber).toBe('0123');
-      expect(info!.checksum).toBe(8);
+      expect(info!.checksum).toBe(1);
       expect(typeof info!.age).toBe('number');
     });
 
     it('resolves the 2000s century and female gender', () => {
-      const info = parse('30503123456785');
+      const info = parse('30503123456789');
       expect(info).not.toBeNull();
       expect(info!.birthDate.getFullYear()).toBe(2005);
       expect(info!.gender).toBe(Gender.FEMALE);
@@ -145,7 +145,7 @@ describe('Egypt (EGY) — National ID', () => {
     });
 
     it('maps the born-abroad governorate code (88)', () => {
-      const info = parse('28512258899992');
+      const info = parse('28512258899998');
       expect(info!.governorateCode).toBe('88');
       expect(info!.governorate).toBe('Born outside Egypt');
     });
@@ -166,7 +166,7 @@ describe('Egypt (EGY) — National ID', () => {
     });
 
     it('dispatched validation is format-only (does not enforce checksum)', () => {
-      // Correct check digit is 8; a wrong digit still passes default dispatch.
+      // Correct check digit is 1; a wrong digit still passes default dispatch.
       expect(validateNationalId('EGY', '29001010101230').isValid).toBe(true);
     });
 
