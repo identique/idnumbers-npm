@@ -162,7 +162,7 @@ the same `checksum()` helper over synthetic payloads.
 | Wikipedia — National identification number § Egypt                                | Confirms 14-digit structure                       |
 | [`sekkena/egypt-id-decode`](https://github.com/sekkena/egypt-id-decode)           | Validates format/date/governorate; no checksum    |
 | Third-party blogs / slide decks claiming Luhn                                     | Ruled out — Luhn does not match real check digits |
-| Empirical test against real IDs (not reproduced — personal data)                  | Weighted mod-11 matched 5/5; adopted as the spec  |
+| Redacted verification corpus (details withheld for privacy).                      | Weighted mod-11 matched 5/5; adopted as the spec  |
 | [`Identique/idnumbers`](https://github.com/Identique/idnumbers) (Python upstream) | No `egy` module — no parity baseline              |
 
 ## Verification commands
@@ -181,8 +181,7 @@ The weighted mod-11 is verified **empirically** (5/5 real IDs) but not yet again
 an **authoritative government citation**. Two contributions would strengthen it:
 
 1. A citable Civil Status / Ministry of Interior specification of the algorithm.
-2. Any **real, valid** ID that this mod-11 **rejects** (a counter-example) — that
-   would indicate edge-case handling (e.g. the `check === 10` case) needs revising.
+2. A citable government specification or a redacted counter-example that demonstrates the edge case.
 
 Please open a PR or issue (do **not** post real IDs publicly — share counts/redacted
 evidence).
