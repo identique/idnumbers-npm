@@ -283,7 +283,7 @@ console.log(format);
 
 ### Africa (4)
 
-- 🇪🇬 **EGY** - National ID (الرقم القومي)
+- 🇪🇬 **EGY** - National ID (الرقم القومي) — the trailing check digit is validated with a weighted mod-11 algorithm that is empirically derived from a small sample of real IDs, not an official published spec (see [`docs/research/egypt-national-id.md`](docs/research/egypt-national-id.md))
 - 🇳🇬 **NGA** - National Identification Number (NIN)
 - 🇿🇦 **ZAF** - ID Number
 - 🇿🇼 **ZWE** - National ID
@@ -474,7 +474,7 @@ if (!validation.valid) {
 
 ## Testing
 
-The library includes comprehensive test coverage with 2105 tests covering:
+The library includes comprehensive test coverage with 2158 tests covering:
 
 - Format validation
 - Checksum verification

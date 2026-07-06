@@ -8,7 +8,7 @@
 import { getCountryIdFormat } from '../index';
 
 // ---------------------------------------------------------------------------
-// All 80 registered countries should return non-null IdFormat
+// All 81 registered countries should return non-null IdFormat
 // ---------------------------------------------------------------------------
 describe('getCountryIdFormat returns IdFormat for all registered countries', () => {
   const registeredCountries = [
@@ -122,6 +122,7 @@ describe('Format display strings', () => {
     { code: 'JPN', format: 'XXXXXXXXXXXX' },
     { code: 'KAZ', format: 'YYMMDDGSSSSC' },
     { code: 'KWT', format: 'CYYMMDDSSSSK' },
+    { code: 'EGY', format: 'CYYMMDDGGSSSSV' },
     { code: 'IDN', format: 'PPPPPPDDMMYYSSSS' },
     { code: 'KOR', format: 'YYMMDD-GSSSSSS' },
     { code: 'MEX', format: 'AAAANNNNNNAAAAAANN' },

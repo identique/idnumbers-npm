@@ -167,8 +167,9 @@ export function validate(idNumber: string): boolean {
 /**
  * Parse an Egypt National ID into its components.
  *
- * Performs format + semantic validation (NOT the opt-in checksum) and returns
- * the extracted demographic information, or null when invalid.
+ * Enforces the full contract (format, birth date, governorate, and the weighted
+ * mod-11 check digit) and returns the extracted demographic information, or null
+ * when invalid. This keeps `parse()` consistent with `validate()`.
  */
 export function parse(idNumber: string): EgyptParseResult | null {
   if (!idNumber) {
@@ -196,6 +197,11 @@ export function parse(idNumber: string): EgyptParseResult | null {
 
   const governorate = GOVERNORATES[gov];
   if (!governorate) {
+    return null;
+  }
+
+  const expected = checksum(normalized);
+  if (expected === null || expected !== parseInt(check, 10)) {
     return null;
   }
 

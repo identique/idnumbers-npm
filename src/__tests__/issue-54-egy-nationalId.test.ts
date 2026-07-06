@@ -156,6 +156,14 @@ describe('Egypt (EGY) — National ID', () => {
       expect(parse('39902290100456')).toBeNull(); // 2099-02-29 invalid
       expect(parse('29001019901238')).toBeNull(); // governorate 99
     });
+
+    it('rejects a wrong check digit, staying consistent with validate()', () => {
+      // Correct check digit is 7; parse() must not accept a bad one.
+      expect(parse('29001010100010')).toBeNull();
+      expect(validate('29001010100010')).toBe(false);
+      // A well-formed ID with the correct check digit still parses.
+      expect(parse('29001010100017')).not.toBeNull();
+    });
   });
 
   describe('registry dispatch', () => {
