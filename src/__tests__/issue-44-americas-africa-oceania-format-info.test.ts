@@ -136,4 +136,17 @@ describe('Issue #44: Americas/Africa/Oceania country format info', () => {
       expect(typeof format!.officialName).toBe('string');
     }
   );
+
+  // Regression guard: getCountryIdFormat() overlays SUPPORTED_COUNTRIES.idType on
+  // top of the registered validator's format fields. NZL's primary validator is
+  // the Driver Licence (matching the Python source of truth, where
+  // `NationalID = alias_of(DriverLicenseNumber)`), so idType must describe the
+  // same document as officialName/example — not the secondary IRD number.
+  it('reports NZL idType and officialName for the same document (Driver Licence)', () => {
+    const format = getCountryIdFormat('NZL');
+    expect(format).not.toBeNull();
+    expect(format!.idType).toBe('Driver Licence Number');
+    expect(format!.officialName).toBe('Driver Licence Number');
+    expect(format!.idType).not.toMatch(/IRD/i);
+  });
 });
