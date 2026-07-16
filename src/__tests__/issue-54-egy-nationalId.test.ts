@@ -3,13 +3,12 @@
  *
  * Scope: add EGY support following the country-module + registry pattern.
  *
- * Checksum: the trailing digit is a weighted mod-11 check digit over the first
- * 13 digits (weights 2,7,6,5,4,3,2,7,6,5,4,3,2; check = (11 - sum % 11) % 11).
- * This was verified against real IDs and is enforced by default.
+ * Checksum: a trailing check digit exists, but no official or independently
+ * reproducible algorithm is available, so validation is format + semantic only
+ * (`METADATA.hasChecksum === false`). See docs/research/egypt-national-id.md.
  *
  * Synthetic-data notice: every ID below is synthetic — constructed only to
- * exercise validation (real check digit computed by the same mod-11 rule).
- * None is a knowingly-real personal identifier.
+ * exercise validation. None is a knowingly-real personal identifier.
  *
  * Issue: https://github.com/identique/idnumbers-npm/issues/54
  */
@@ -19,7 +18,7 @@ import { NationalID } from '../countries/egy';
 import { Gender } from '../constants';
 import { validateNationalId, parseIdInfo, getCountryIdFormat } from '../index';
 
-// Fully valid synthetic IDs (mod-11 check digit included): CYYMMDDGGSSSSV
+// Valid synthetic IDs: CYYMMDDGGSSSSV
 const VALID = [
   '29001010100017', // 1990-01-01, Cairo (01),        sn 0001 -> MALE
   '30503123400026', // 2005-03-12, North Sinai (34),  sn 0002 -> FEMALE
@@ -34,8 +33,8 @@ describe('Egypt (EGY) — National ID', () => {
       expect(METADATA.minLength).toBe(14);
       expect(METADATA.maxLength).toBe(14);
       expect(METADATA.isParsable).toBe(true);
-      // Checksum is a verified weighted mod-11, enforced by default.
-      expect(METADATA.hasChecksum).toBe(true);
+      // No official check-digit algorithm is available; validation is format-only.
+      expect(METADATA.hasChecksum).toBe(false);
       expect(METADATA.displayFormat).toBe('CYYMMDDGGSSSSV');
     });
 
@@ -51,7 +50,7 @@ describe('Egypt (EGY) — National ID', () => {
     });
   });
 
-  describe('validate() — format, semantics & checksum', () => {
+  describe('validate() — format & semantics', () => {
     test.each(VALID)('accepts valid ID %s', id => {
       expect(validate(id)).toBe(true);
     });
@@ -81,42 +80,48 @@ describe('Egypt (EGY) — National ID', () => {
     });
 
     it('rejects an unknown governorate code (99)', () => {
-      // Governorate is checked before the checksum, so any 99 ID is rejected.
       expect(validate('29001019901238')).toBe(false);
     });
 
-    it('accepts every known governorate code', () => {
+    it('accepts every known governorate code, with no check-digit constraint', () => {
       for (const code of Object.keys(GOVERNORATES)) {
-        // CYYMMDD=2900101 (1990-01-01), GG=code, SSSS=0123, V=mod-11 check.
-        const head = `2900101${code}0123`; // 13 digits
-        const v = checksum(`${head}0`);
-        if (v === null) continue; // payload has no valid single-digit check
-        const candidate = `${head}${v}`;
+        // CYYMMDD=2900101 (1990-01-01), GG=code, SSSS=0123, V=any digit.
+        const candidate = `2900101${code}01238`;
         expect(candidate).toHaveLength(14);
         expect(validate(candidate)).toBe(true);
       }
     });
 
-    it('rejects a wrong check digit on an otherwise valid ID', () => {
-      // Correct check digit for 2900101010001 is 7.
-      expect(validate('29001010100017')).toBe(true);
-      expect(validate('29001010100010')).toBe(false);
+    // Regression guard for PR #114 review: no public/reproducible check-digit
+    // algorithm exists for the Egyptian National ID, so the trailing digit must
+    // not gate validation. Enforcing a guessed rule would reject genuine IDs.
+    it('does not enforce the check digit — every trailing digit is accepted', () => {
+      for (let v = 0; v <= 9; v++) {
+        expect(validate(`2900101010001${v}`)).toBe(true);
+      }
     });
   });
 
-  describe('checksum()', () => {
-    it('returns the weighted mod-11 check digit for a well-formed ID', () => {
+  // `checksum()` is an UNVERIFIED research helper that nothing gates on. These
+  // tests pin what it computes; they do not assert the rule is correct.
+  describe('checksum() — unverified research helper', () => {
+    it('returns the mod-11 hypothesis digit for a well-formed ID', () => {
       expect(checksum('29001010100017')).toBe(7);
       expect(checksum('21207142100006')).toBe(6);
     });
 
-    it('returns null when the payload has no valid single-digit check (mod-11 == 10)', () => {
+    it('returns null when the rule yields 10 (no single-digit representation)', () => {
       expect(checksum('29001010100050')).toBeNull();
     });
 
     it('returns null for a malformed ID', () => {
       expect(checksum('not-an-id')).toBeNull();
       expect(checksum('2900101010123')).toBeNull();
+    });
+
+    it('is not wired into validate() — a checksum-mismatched ID still validates', () => {
+      expect(checksum('29001010100010')).toBe(7);
+      expect(validate('29001010100010')).toBe(true);
     });
   });
 
@@ -157,12 +162,13 @@ describe('Egypt (EGY) — National ID', () => {
       expect(parse('29001019901238')).toBeNull(); // governorate 99
     });
 
-    it('rejects a wrong check digit, staying consistent with validate()', () => {
-      // Correct check digit is 7; parse() must not accept a bad one.
-      expect(parse('29001010100010')).toBeNull();
-      expect(validate('29001010100010')).toBe(false);
-      // A well-formed ID with the correct check digit still parses.
-      expect(parse('29001010100017')).not.toBeNull();
+    it('reports the trailing digit without gating on it, consistent with validate()', () => {
+      // The check digit is not verified, so any trailing digit parses and is
+      // reported back as-is.
+      const info = parse('29001010100010');
+      expect(info).not.toBeNull();
+      expect(info!.checksum).toBe(0);
+      expect(validate('29001010100010')).toBe(true);
     });
   });
 
@@ -173,10 +179,9 @@ describe('Egypt (EGY) — National ID', () => {
       expect(validateNationalId('EGY', '29001010101').isValid).toBe(false);
     });
 
-    it('dispatched validation enforces the checksum', () => {
-      // Correct check digit is 7; a wrong digit is rejected on dispatch too.
+    it('dispatched validation does not enforce a check digit', () => {
       expect(validateNationalId('EGY', '29001010100017').isValid).toBe(true);
-      expect(validateNationalId('EGY', '29001010100010').isValid).toBe(false);
+      expect(validateNationalId('EGY', '29001010100010').isValid).toBe(true);
     });
 
     it('parses via parseIdInfo', () => {
@@ -192,7 +197,7 @@ describe('Egypt (EGY) — National ID', () => {
       expect(fmt!.countryCode).toBe('EGY');
       expect(fmt!.length).toEqual({ min: 14, max: 14 });
       expect(fmt!.isParsable).toBe(true);
-      expect(fmt!.hasChecksum).toBe(true);
+      expect(fmt!.hasChecksum).toBe(false);
     });
   });
 });

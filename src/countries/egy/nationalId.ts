@@ -11,9 +11,12 @@
  *   SSSS - serial number (gender: odd => male, even => female)
  *   V    - check digit
  *
- * Checksum: the trailing digit (V) is a weighted mod-11 check digit over the
- * first 13 digits, using the positional weights 2,7,6,5,4,3,2,7,6,5,4,3,2.
- * Verified and tested against real IDs; enforced by default. See docs/research/egypt-national-id.md.
+ * Checksum note: a check digit (V) exists, but Egypt publishes no official
+ * check-digit algorithm and no independently reproducible specification could be
+ * located. Validation is therefore format + semantic only, matching the Bahrain
+ * CPR precedent. A mod-11 hypothesis is exposed via `checksum()` for research
+ * purposes, but nothing here gates on it — see that function's notes and
+ * docs/research/egypt-national-id.md.
  *
  * https://en.wikipedia.org/wiki/Egyptian_National_Identity_Card
  */
@@ -75,12 +78,12 @@ export const METADATA = {
   maxLength: 14,
   pattern:
     /^(?<century>[23])(?<yy>\d{2})(?<mm>0[1-9]|1[012])(?<dd>0[1-9]|[12]\d|3[01])(?<gov>\d{2})(?<sn>\d{4})(?<check>\d)$/,
-  hasChecksum: true,
+  hasChecksum: false,
   isParsable: true,
   displayFormat: 'CYYMMDDGGSSSSV',
   example: '29001010100017',
   checksumAlgorithm:
-    'Weighted mod-11 over the first 13 digits with weights 2,7,6,5,4,3,2,7,6,5,4,3,2; check = (11 - sum % 11) % 11 (a result of 10 is not a valid ID). See docs/research/egypt-national-id.md.',
+    'None (check digit algorithm not publicly documented; format-only validation). See docs/research/egypt-national-id.md.',
   officialName: 'الرقم القومي (National Number)',
   links: [
     'https://en.wikipedia.org/wiki/Egyptian_National_Identity_Card',
@@ -104,16 +107,29 @@ function resolveYear(century: string, yy: string): number | null {
   return base === null ? null : base + parseInt(yy, 10);
 }
 
-/** Positional weights applied to the first 13 digits for the mod-11 checksum. */
+/** Positional weights applied to the first 13 digits for the mod-11 hypothesis. */
 const CHECKSUM_WEIGHTS = [2, 7, 6, 5, 4, 3, 2, 7, 6, 5, 4, 3, 2];
 
 /**
- * Compute the expected mod-11 check digit over the first 13 digits.
+ * Compute a mod-11 check digit over the first 13 digits, per an UNVERIFIED
+ * hypothesis about the Egyptian check-digit algorithm.
  *
- * Each digit is multiplied by its positional weight; the check digit is
- * `(11 - (sum % 11)) % 11`. A computed value of 10 has no single-digit
- * representation, so no valid ID can have such a payload — `null` is returned.
- * `null` is also returned when the input does not match the expected format.
+ * DO NOT gate validation on this. Nothing in this module calls it; it is
+ * exported only so the hypothesis can be investigated against new data.
+ *
+ * The rule reproduces the real check digit on the 5 IDs it was fitted to, but
+ * those IDs cannot identify it: all 5 are governorate `01` with a serial below
+ * 1000, so digits 8 and 10 are `0` in every sample and their weights are
+ * multiplied by zero. Every one of the 11 possible values for the digit-8 weight
+ * fits that evidence equally well while producing 11 different check digits for
+ * any governorate outside `01`-`04`. The same gap applies at digit 10 for serials
+ * >= 1000. Treat the weights above as one arbitrary pick among ~10^8 that fit.
+ *
+ * Returns null for a malformed ID, and also when the rule yields 10 — which has
+ * no single-digit representation. Reading that as "no valid ID has this payload"
+ * is part of the hypothesis, not an established fact.
+ *
+ * See docs/research/egypt-national-id.md.
  */
 export function checksum(idNumber: string): number | null {
   const normalized = normalize(idNumber);
@@ -131,8 +147,10 @@ export function checksum(idNumber: string): number | null {
 /**
  * Validate an Egypt National ID.
  *
- * Enforces the full contract: 14-digit format, supported century, a real birth
- * date, a known governorate code, and the weighted mod-11 check digit.
+ * Checks the 14-digit format, a supported century, a real birth date and a known
+ * governorate code. The trailing check digit is NOT verified: no official or
+ * independently reproducible algorithm is available, so enforcing a guessed one
+ * would reject genuine IDs. See docs/research/egypt-national-id.md.
  */
 export function validate(idNumber: string): boolean {
   if (!idNumber) {
@@ -145,7 +163,7 @@ export function validate(idNumber: string): boolean {
     return false;
   }
 
-  const { century, yy, mm, dd, gov, check } = match.groups;
+  const { century, yy, mm, dd, gov } = match.groups;
 
   const year = resolveYear(century, yy);
   if (year === null || !isValidDate(year, parseInt(mm, 10), parseInt(dd, 10))) {
@@ -156,20 +174,15 @@ export function validate(idNumber: string): boolean {
     return false;
   }
 
-  const expected = checksum(normalized);
-  if (expected === null || expected !== parseInt(check, 10)) {
-    return false;
-  }
-
   return true;
 }
 
 /**
  * Parse an Egypt National ID into its components.
  *
- * Enforces the full contract (format, birth date, governorate, and the weighted
- * mod-11 check digit) and returns the extracted demographic information, or null
- * when invalid. This keeps `parse()` consistent with `validate()`.
+ * Performs the same format + semantic validation as `validate()` and returns the
+ * extracted demographic information, or null when invalid. The `checksum` field
+ * reports the ID's own trailing digit as-is; it is not verified.
  */
 export function parse(idNumber: string): EgyptParseResult | null {
   if (!idNumber) {
@@ -200,11 +213,6 @@ export function parse(idNumber: string): EgyptParseResult | null {
     return null;
   }
 
-  const expected = checksum(normalized);
-  if (expected === null || expected !== parseInt(check, 10)) {
-    return null;
-  }
-
   const birthDate = new Date(year, month - 1, day);
 
   return {
@@ -222,6 +230,7 @@ export function parse(idNumber: string): EgyptParseResult | null {
 export const NationalID = {
   validate,
   parse,
+  /** UNVERIFIED research helper — not used by validate()/parse(). See `checksum`. */
   checksum,
   METADATA,
 };
