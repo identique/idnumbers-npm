@@ -71,8 +71,11 @@ Gender is encoded in the serial number: `parseInt(SSSS) % 2` → **odd = male**,
 
 ## Checksum investigation
 
-**No publicly documented algorithm was located**, and none of the candidate
-algorithms evaluated can be recommended for enforcement.
+**No authoritative specification was located** — no government document, standards
+publication or academic source describes the algorithm. Two hobby repositories do
+publish a mod-11 rule (see below), but neither cites a source, and they disagree
+with the rule this PR briefly shipped. None of the candidates evaluated can be
+recommended for enforcement.
 
 ### Luhn — ruled out
 
@@ -113,15 +116,51 @@ Enforcing this rule would therefore risk rejecting genuine IDs for **23 of the 2
 governorate codes** at a rate approaching 10/11, with no evidence to distinguish
 the shipped weights from ten equally-supported alternatives.
 
-Separately, the rule implies `check == 10` for ~1/11 of payloads, which the
-implementation treated as "no valid ID can exist with this payload". That is an
-unsupported structural claim about how Egypt's Civil Status Organization
-allocates serials.
+Separately, the rule implies `check == 10` for ~1/11 (~9.2%) of payloads, which
+the implementation treated as "no valid ID can exist with this payload". That is
+an unsupported structural claim about how Egypt's Civil Status Organization
+allocates serials — and a check digit of `10` has no single-digit representation
+at all, which is a strong hint the reduction step was wrong.
 
-The rule remains implemented as `checksum()` in `src/countries/egy/nationalId.ts`
-so it can be re-evaluated against new data, but **nothing calls it** — neither
-`validate()` nor `parse()` gates on it, and `METADATA.hasChecksum` is `false`.
-Callers should not treat its output as authoritative.
+#### The published weights disagree with the reduction we shipped
+
+The weight vector `[2, 7, 6, 5, 4, 3, 2, 7, 6, 5, 4, 3, 2]` **is** published, in
+two hobby repositories:
+
+- [`MohamedAAbdallah/Egyptian-ID-Validator-Py`](https://github.com/MohamedAAbdallah/Egyptian-ID-Validator-Py)
+  (PyPI `egyptian-id-validator`)
+- [`mahmoudEbeid2/egyptian-national-id`](https://github.com/mahmoudEbeid2/egyptian-national-id)
+
+Both reduce as `k = 11 - (sum % 11)`, then map `10 → 0` and `11 → 1`. That is
+**not** `(11 - sum % 11) % 11`. The two forms diverge at exactly two residues:
+
+| `sum % 11` | this PR's rule | both public repos |
+| ---------- | -------------- | ----------------- |
+| 0          | `0`            | `1`               |
+| 1          | `10` (!)       | `0`               |
+| 2–10       | agree          | agree             |
+
+So the rule this PR briefly enforced disagreed with the only two public
+implementations on **~18.3%** of prefixes, and emitted an impossible `10` on
+~9.2%. Enforcing it would have rejected roughly one in five genuine IDs on the
+reduction step **alone**, before even reaching the identifiability problem above.
+
+This does not vindicate the public repos either. They agree with each other on an
+_arbitrary_ tie-break (`10 → 0`, `11 → 1`), which points to common ancestry rather
+than independent derivation; neither cites any source; and
+`MohamedAAbdallah`'s README calls the mechanism "verified but undisclosed" while
+its own MIT-licensed code discloses it in full — an assertion with no corpus or
+citation behind it. The weight pattern itself is a generic mod-11 scheme reused
+across many national ID systems.
+
+Counter-evidence also exists: a SlideShare deck asserting Luhn carries the ID
+`30201095501283`, whose actual check digit is `3` while mod-11 predicts `1` — it
+**fails** mod-11. Its provenance is unknown and it may be synthetic, so this is
+suggestive rather than decisive.
+
+Note that this repository's own example, `29001010100017`, passes all three
+variants — its residue falls in the range where they agree, so it has no power to
+discriminate between them.
 
 ## Decision
 
@@ -184,15 +223,18 @@ The trailing digit is **not verified**, so it is arbitrary in these vectors.
 
 ## Sources consulted
 
-| Source                                                                                              | Result                                                                   |
-| --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Wikipedia — Egyptian National Identity Card (accessed 2026-06-29)                                   | Format breakdown; "check digit" with no algorithm                        |
-| Wikipedia — National identification number § Egypt                                                  | Confirms 14-digit structure                                              |
-| [`sekkena/egypt-id-decode`](https://github.com/sekkena/egypt-id-decode)                             | Validates format/date/governorate; no checksum                           |
-| [signme.it — Egyptian ID fields explained](https://api.signme.it/blog/egyptian-id-fields-explained) | Check-digit algorithm proprietary; recommends structural validation only |
-| Third-party blogs / slide decks claiming Luhn                                                       | Ruled out — Luhn does not match real check digits                        |
-| Private 5-ID corpus (not reproduced; see investigation above)                                       | Cannot identify the weights — insufficient evidence                      |
-| [`Identique/idnumbers`](https://github.com/Identique/idnumbers) (Python upstream)                   | No `egy` module — no parity baseline                                     |
+| Source                                                                                                                | Result                                                                   |
+| --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Wikipedia — Egyptian National Identity Card (accessed 2026-06-29)                                                     | Format breakdown; "check digit" with no algorithm                        |
+| Wikipedia — National identification number § Egypt                                                                    | Confirms 14-digit structure                                              |
+| [`sekkena/egypt-id-decode`](https://github.com/sekkena/egypt-id-decode)                                               | Validates format/date/governorate; no checksum                           |
+| [signme.it — Egyptian ID fields explained](https://api.signme.it/blog/egyptian-id-fields-explained)                   | Check-digit algorithm proprietary; recommends structural validation only |
+| Third-party blogs / slide decks claiming Luhn                                                                         | Ruled out — Luhn does not match real check digits                        |
+| Private 5-ID corpus (not reproduced; see investigation above)                                                         | Cannot identify the weights — insufficient evidence                      |
+| [`MohamedAAbdallah/Egyptian-ID-Validator-Py`](https://github.com/MohamedAAbdallah/Egyptian-ID-Validator-Py)           | Publishes the mod-11 weights, uncited; reduces `10→0, 11→1`              |
+| [`mahmoudEbeid2/egyptian-national-id`](https://github.com/mahmoudEbeid2/egyptian-national-id)                         | Same weights and reduction, uncited; likely common ancestry              |
+| [`python-stdnum`](https://github.com/arthurdejong/python-stdnum) / [`stdnum-js`](https://github.com/koblas/stdnum-js) | **No Egypt national ID module** (Egypt TIN only) — both decline it       |
+| [`Identique/idnumbers`](https://github.com/Identique/idnumbers) (Python upstream)                                     | No `egy` module — no parity baseline                                     |
 
 ## Future work
 

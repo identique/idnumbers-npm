@@ -283,7 +283,7 @@ console.log(format);
 
 ### Africa (4)
 
-- 🇪🇬 **EGY** - National ID (الرقم القومي) — see the Egypt research note for checksum details.
+- 🇪🇬 **EGY** - National ID (الرقم القومي) — format-only validation; Egypt publishes no check-digit algorithm ([research note](docs/research/egypt-national-id.md)).
 - 🇳🇬 **NGA** - National Identification Number (NIN)
 - 🇿🇦 **ZAF** - ID Number
 - 🇿🇼 **ZWE** - National ID
@@ -474,7 +474,7 @@ if (!validation.valid) {
 
 ## Testing
 
-The library includes comprehensive test coverage with 2158 tests covering:
+The library includes comprehensive test coverage with 2155 tests covering:
 
 - Format validation
 - Checksum verification

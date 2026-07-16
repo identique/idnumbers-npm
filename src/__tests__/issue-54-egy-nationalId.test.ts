@@ -13,7 +13,7 @@
  * Issue: https://github.com/identique/idnumbers-npm/issues/54
  */
 
-import { validate, parse, checksum, METADATA, GOVERNORATES } from '../countries/egy/nationalId';
+import { validate, parse, METADATA, GOVERNORATES } from '../countries/egy/nationalId';
 import { NationalID } from '../countries/egy';
 import { Gender } from '../constants';
 import { validateNationalId, parseIdInfo, getCountryIdFormat } from '../index';
@@ -46,7 +46,6 @@ describe('Egypt (EGY) — National ID', () => {
       expect(NationalID.METADATA).toBe(METADATA);
       expect(NationalID.validate(METADATA.example)).toBe(true);
       expect(NationalID.parse(METADATA.example)).not.toBeNull();
-      expect(NationalID.checksum(METADATA.example)).toBe(7);
     });
   });
 
@@ -99,29 +98,6 @@ describe('Egypt (EGY) — National ID', () => {
       for (let v = 0; v <= 9; v++) {
         expect(validate(`2900101010001${v}`)).toBe(true);
       }
-    });
-  });
-
-  // `checksum()` is an UNVERIFIED research helper that nothing gates on. These
-  // tests pin what it computes; they do not assert the rule is correct.
-  describe('checksum() — unverified research helper', () => {
-    it('returns the mod-11 hypothesis digit for a well-formed ID', () => {
-      expect(checksum('29001010100017')).toBe(7);
-      expect(checksum('21207142100006')).toBe(6);
-    });
-
-    it('returns null when the rule yields 10 (no single-digit representation)', () => {
-      expect(checksum('29001010100050')).toBeNull();
-    });
-
-    it('returns null for a malformed ID', () => {
-      expect(checksum('not-an-id')).toBeNull();
-      expect(checksum('2900101010123')).toBeNull();
-    });
-
-    it('is not wired into validate() — a checksum-mismatched ID still validates', () => {
-      expect(checksum('29001010100010')).toBe(7);
-      expect(validate('29001010100010')).toBe(true);
     });
   });
 
