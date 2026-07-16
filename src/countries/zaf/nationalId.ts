@@ -30,14 +30,19 @@ export class NationalID implements IdNumberClass {
     maxLength: 13,
     parsable: true,
     checksum: true,
-    regexp: /^(?<yy>\d{2})(?<mm>0[1-9]|1[012])(?<dd>0[1-9]|[12][0-9]|3[01])(?<sn>\d{4})(?<citizenship>[01])([89])(?<checksum>\d)$/,
+    regexp:
+      /^(?<yy>\d{2})(?<mm>0[1-9]|1[012])(?<dd>0[1-9]|[12][0-9]|3[01])(?<sn>\d{4})(?<citizenship>[01])([89])(?<checksum>\d)$/,
+    displayFormat: 'YYMMDDSSSSCAZ',
+    example: '8001015009087',
+    checksumAlgorithm: 'Luhn (mod 10)',
+    officialName: 'South African Identity Number',
     aliasOf: null,
     names: ['National ID Number'],
     links: [
       'https://en.wikipedia.org/wiki/National_identification_number#South_Africa',
-      'https://www.westerncape.gov.za/general-publication/decoding-your-south-african-id-number-0'
+      'https://www.westerncape.gov.za/general-publication/decoding-your-south-african-id-number-0',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   get METADATA(): IdMetadata {
@@ -64,7 +69,7 @@ export class NationalID implements IdNumberClass {
   static parse(idNumber: string): NationalIdParseResult | null {
     const match = NationalID.METADATA.regexp.exec(idNumber);
     const checkDigit = NationalID.checksum(idNumber);
-    
+
     if (!match || checkDigit !== parseInt(idNumber.slice(-1))) {
       return null;
     }
@@ -75,11 +80,13 @@ export class NationalID implements IdNumberClass {
 
     try {
       const date = new Date(year, parseInt(groups.mm) - 1, parseInt(groups.dd));
-      
+
       // Validate the date is actually valid
-      if (date.getFullYear() !== year || 
-          date.getMonth() !== parseInt(groups.mm) - 1 || 
-          date.getDate() !== parseInt(groups.dd)) {
+      if (
+        date.getFullYear() !== year ||
+        date.getMonth() !== parseInt(groups.mm) - 1 ||
+        date.getDate() !== parseInt(groups.dd)
+      ) {
         return null;
       }
 
@@ -88,7 +95,7 @@ export class NationalID implements IdNumberClass {
         sn: groups.sn,
         gender: parseInt(groups.sn[0]) > 4 ? Gender.MALE : Gender.FEMALE,
         citizenship: groups.citizenship === '0' ? Citizenship.CITIZEN : Citizenship.RESIDENT,
-        checksum: checkDigit as CheckDigit
+        checksum: checkDigit as CheckDigit,
       };
     } catch {
       return null;
@@ -103,7 +110,10 @@ export class NationalID implements IdNumberClass {
    * Calculate checksum using Luhn algorithm
    */
   static checksum(idNumber: string): CheckDigit {
-    const digits = idNumber.slice(0, -1).split('').map(char => parseInt(char));
+    const digits = idNumber
+      .slice(0, -1)
+      .split('')
+      .map(char => parseInt(char));
     return luhnDigit(digits);
   }
 

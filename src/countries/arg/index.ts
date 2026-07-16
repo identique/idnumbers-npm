@@ -12,20 +12,21 @@ export interface ArgentinaParseResult extends ParsedInfo {
 
 export const METADATA = {
   name: 'Argentina National ID',
-  names: [
-    'Documento Nacional de Identidad',
-    'DNI'
-  ],
+  names: ['Documento Nacional de Identidad', 'DNI'],
   iso3166Alpha2: 'AR',
   minLength: 8,
   maxLength: 8,
   pattern: /^(\d{2}\.?\d{3}\.?\d{3})$/,
+  displayFormat: '##.###.###',
+  example: '12.345.678',
+  checksumAlgorithm: 'None (format/length only)',
+  officialName: 'Documento Nacional de Identidad (DNI)',
   hasChecksum: false,
   isParsable: false,
   links: [
     'https://www.protecto.ai/argentina-national-identity-number-download-sample-data-for-testing/',
-    'https://en.wikipedia.org/wiki/Documento_Nacional_de_Identidad_(Argentina)'
-  ]
+    'https://en.wikipedia.org/wiki/Documento_Nacional_de_Identidad_(Argentina)',
+  ],
 };
 
 /**
@@ -49,12 +50,12 @@ export function parse(idNumber: string): ArgentinaParseResult | null {
   }
 
   return {
-    isValid: true
+    isValid: true,
   };
 }
 
 export const NationalID = {
   validate,
   parse,
-  METADATA
+  METADATA,
 };

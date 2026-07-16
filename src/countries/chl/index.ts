@@ -12,21 +12,18 @@ export interface ChileParseResult extends ParsedInfo {
 
 export const METADATA = {
   name: 'Chile National ID',
-  names: [
-    'Rol Único Nacional',
-    'RUN',
-    'Rol Único Tributario',
-    'RUT'
-  ],
+  names: ['Rol Único Nacional', 'RUN', 'Rol Único Tributario', 'RUT'],
   iso3166Alpha2: 'CL',
   minLength: 8,
   maxLength: 12,
   pattern: /^(\d{1,2}\.?\d{3}\.?\d{3}-?[\dK])$/i,
+  displayFormat: '##.###.###-C',
+  example: '11.111.111-1',
+  checksumAlgorithm: 'Weighted sum mod 11 (cyclic weights 2..7; 10 → K, 11 → 0)',
+  officialName: 'Rol Único Nacional / Rol Único Tributario (RUN/RUT)',
   hasChecksum: true,
   isParsable: false,
-  links: [
-    'https://en.wikipedia.org/wiki/National_identification_number#Chile'
-  ]
+  links: ['https://en.wikipedia.org/wiki/National_identification_number#Chile'],
 };
 
 /**
@@ -43,7 +40,10 @@ const MULTIPLIER = [3, 2, 7, 6, 5, 4, 3, 2];
  */
 function calculateChecksum(idNumber: string): string {
   const normalized = normalize(idNumber);
-  const numberList = normalized.slice(0, -1).split('').map(c => parseInt(c, 10));
+  const numberList = normalized
+    .slice(0, -1)
+    .split('')
+    .map(c => parseInt(c, 10));
 
   // Apply weighted modulus algorithm (left to right)
   let sum = 0;
@@ -78,7 +78,7 @@ export function validate(idNumber: string): boolean {
   const normalized = normalize(idNumber);
   const expectedChecksum = calculateChecksum(idNumber);
   const actualChecksum = normalized[normalized.length - 1];
-  
+
   return expectedChecksum === actualChecksum;
 }
 
@@ -91,12 +91,12 @@ export function parse(idNumber: string): ChileParseResult | null {
   }
 
   return {
-    isValid: true
+    isValid: true,
   };
 }
 
 export const NationalID = {
   validate,
   parse,
-  METADATA
+  METADATA,
 };

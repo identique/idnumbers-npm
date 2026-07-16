@@ -157,7 +157,7 @@ export const SUPPORTED_COUNTRIES: CountryInfo[] = [
   { code: 'PAK', name: 'Pakistan', idType: 'National Identity Card' },
   { code: 'THA', name: 'Thailand', idType: 'National Identity Card Number' },
   { code: 'VNM', name: 'Vietnam', idType: 'Citizen Identity Card Number' },
-  { code: 'NZL', name: 'New Zealand', idType: 'IRD Number' },
+  { code: 'NZL', name: 'New Zealand', idType: 'Driver Licence Number' },
   { code: 'PHL', name: 'Philippines', idType: 'PhilSys Number' },
   { code: 'PRT', name: 'Portugal', idType: 'Tax Identification Number (NIF)' },
   { code: 'ROU', name: 'Romania', idType: 'Personal Numeric Code' },
