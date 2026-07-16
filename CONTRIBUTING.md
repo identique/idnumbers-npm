@@ -16,7 +16,7 @@ The published package supports Node.js 16 and newer. Development currently requi
 
 ### Fork and Clone
 
-External contributors should fork `identique/idnumbers-npm` on GitHub, then replace `<your-username>` in the commands below:
+Fork `identique/idnumbers-npm` on GitHub, then replace `<your-username>` in the commands below:
 
 ```bash
 git clone https://github.com/<your-username>/idnumbers-npm.git
@@ -24,12 +24,7 @@ cd idnumbers-npm
 git remote add upstream https://github.com/identique/idnumbers-npm.git
 ```
 
-Maintainers with write access may clone the canonical repository directly:
-
-```bash
-git clone https://github.com/identique/idnumbers-npm.git
-cd idnumbers-npm
-```
+Maintainers with write access may clone the canonical repository directly and use `origin` wherever the workflow below uses `upstream`.
 
 ### Install Dependencies
 
@@ -66,7 +61,7 @@ All four commands should complete successfully before you begin development.
 | `npm run lint:fix`         | Apply supported ESLint fixes                  |
 | `npm run format`           | Format TypeScript source files with Prettier  |
 
-The fix and format commands modify files. Review their changes before committing them, and avoid unrelated repository-wide cleanup in a focused contribution.
+The fix and format commands modify files. Review their changes before committing them.
 
 ## Development Workflow
 
@@ -87,7 +82,7 @@ git merge --ff-only upstream/main
 git switch -c docs/39-contributing-guide
 ```
 
-If you cloned the canonical repository directly, fetch from `origin` instead of `upstream`. Branch names should identify the change and its issue; existing branches may use forms such as `docs/39-contributing-guide` or `idnumbers-node-issue-39`.
+Branch names should identify the change and its issue; existing branches may use forms such as `docs/39-contributing-guide` or `idnumbers-node-issue-39`.
 
 Never push changes directly to `main`.
 
@@ -122,26 +117,13 @@ docs(#39): add contributor setup guide
 
 Keep commits atomic and use the most accurate type for the change.
 
-The pre-commit hook runs the following checks automatically:
-
-1. lint-staged formatting for staged TypeScript, JSON, and Markdown files
-2. TypeScript compilation
-3. The full Jest test suite
-
-The hook does not run `npm run format:check` or `npm run lint`, so run those explicitly before pushing.
+The authoritative pre-commit workflow is defined in [`.husky/pre-commit`](.husky/pre-commit). It currently formats staged files, compiles TypeScript, and runs the Jest suite, but it does not run `npm run format:check` or `npm run lint`.
 
 ### 5. Run the Required Checks
 
-Before pushing or opening a pull request, run:
+Before pushing or opening a pull request, rerun the four commands under [Verify the Setup](#verify-the-setup).
 
-```bash
-npm run format:check
-npm run lint
-npm run build
-npm test
-```
-
-CI also verifies build artifacts, coverage, and the runnable JavaScript examples. If your change affects those areas, run the corresponding checks locally as well.
+The authoritative CI configuration is [`.github/workflows/ci.yml`](.github/workflows/ci.yml). If your change affects build artifacts, coverage, or runnable examples, run the corresponding checks locally as well.
 
 ### 6. Open a Pull Request
 
@@ -151,8 +133,6 @@ Push the branch to your fork and open a pull request against the canonical repos
 - The reason for the change
 - The commands used to verify it
 - A linked issue, such as `Closes #39`
-
-Keep the pull request focused. Do not combine unrelated formatting, refactoring, or dependency changes with the issue being solved.
 
 ### Code Review Expectations
 
@@ -198,7 +178,7 @@ A country directory may contain additional files for secondary ID types or histo
 
 Importing `src/index.ts` loads `src/registry/registerAll.ts` as a side effect. `registerAll.ts` adapts the supported validator styles, registers one primary validator per country in the `ValidatorRegistry` singleton, and registers supported aliases.
 
-Only primary country validators belong in this registry. Secondary ID types remain available through their country-module exports and must not be registered as additional primary countries. Changes must preserve the registry's 80-primary-key invariant.
+Only primary country validators belong in this registry. Secondary ID types remain available through their country-module exports and must not be registered as additional primary countries.
 
 ## Reporting Problems
 
