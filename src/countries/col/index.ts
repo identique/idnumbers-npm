@@ -13,22 +13,22 @@ export interface ColombiaParseResult extends ParsedInfo {
 
 export const METADATA = {
   name: 'Colombia Unique Personal ID',
-  names: [
-    'Unique Personal ID',
-    'NUIP',
-    'Número único de identidad personal'
-  ],
+  names: ['Unique Personal ID', 'NUIP', 'Número único de identidad personal'],
   iso3166Alpha2: 'CO',
   minLength: 9,
   maxLength: 10,
   pattern: /^(\d{2,3}\.?\d{3}\.?\d{3}-?\d)$/,
+  displayFormat: '##(#).###.###-C',
+  example: '12.345.678-8',
+  checksumAlgorithm: 'Weighted sum mod 11 (right-to-left prime weights; 11 → 0, 10 → 1)',
+  officialName: 'Número Único de Identificación Personal (NUIP)',
   hasChecksum: true,
   isParsable: false,
   links: [
     'https://en.wikipedia.org/wiki/Colombian_identity_card',
     'https://en.wikipedia.org/wiki/National_identification_number#Colombia',
-    'https://validatetin.com/colombia/#'
-  ]
+    'https://validatetin.com/colombia/#',
+  ],
 };
 
 const WEIGHTS = [3, 7, 13, 17, 19, 23, 29, 37, 41, 43, 47, 53, 59, 67, 71];
@@ -47,13 +47,13 @@ function calculateChecksum(idNumber: string): CheckDigit | null {
   if (!validateRegexp(idNumber, METADATA.pattern)) {
     return null;
   }
-  
+
   const normalized = normalize(idNumber);
   const numbers = normalized.slice(0, -1).split('').map(Number).reverse();
   const weights = WEIGHTS.slice(0, numbers.length);
-  
+
   const modulus = weightedModulusDigit(numbers, weights, 11);
-  
+
   if (modulus === 11) {
     return 0;
   } else if (modulus === 10) {
@@ -78,7 +78,7 @@ export function validate(idNumber: string): boolean {
   const normalized = normalize(idNumber);
   const expectedChecksum = calculateChecksum(idNumber);
   const actualChecksum = parseInt(normalized[normalized.length - 1], 10);
-  
+
   return expectedChecksum === actualChecksum;
 }
 
@@ -91,12 +91,12 @@ export function parse(idNumber: string): ColombiaParseResult | null {
   }
 
   return {
-    isValid: true
+    isValid: true,
   };
 }
 
 export const UniquePersonalID = {
   validate,
   parse,
-  METADATA
+  METADATA,
 };

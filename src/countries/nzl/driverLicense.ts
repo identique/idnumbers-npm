@@ -18,18 +18,30 @@ export class DriverLicense implements IdNumberClass {
     parsable: false,
     checksum: false,
     regexp: /^[A-Z0-9]{7,8}$/i,
+    displayFormat: 'XXXXXXX(X)',
+    example: 'AB123456',
+    checksumAlgorithm: 'None (format/length and trailing-number blacklist only)',
+    officialName: 'Driver Licence Number',
     aliasOf: null,
     names: ['Driver License', 'Driver Licence Number'],
     links: [
-      'https://techdocs.broadcom.com/us/en/symantec-security-software/information-security/data-loss-prevention/15-8/'
+      'https://techdocs.broadcom.com/us/en/symantec-security-software/information-security/data-loss-prevention/15-8/',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   // Blacklist for trailing 6 digits - cannot be all the same digit
   private static readonly BLACK_TRAILING_NUMBERS = [
-    '000000', '111111', '222222', '333333', '444444',
-    '555555', '666666', '777777', '888888', '999999'
+    '000000',
+    '111111',
+    '222222',
+    '333333',
+    '444444',
+    '555555',
+    '666666',
+    '777777',
+    '888888',
+    '999999',
   ];
 
   get METADATA(): IdMetadata {
