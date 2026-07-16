@@ -1,0 +1,205 @@
+# Contributing to idnumbers
+
+Thank you for your interest in contributing to `idnumbers`. Contributions that improve validator coverage, correctness, tests, documentation, and developer experience are welcome.
+
+## Getting Started
+
+### Prerequisites
+
+Install the following tools before setting up the repository:
+
+- [Git](https://git-scm.com/)
+- Node.js 20.17 or newer
+- npm, which is included with Node.js
+
+The published package supports Node.js 16 and newer. Development currently requires Node.js 20.17 or newer because the locked contributor tooling has a stricter runtime requirement.
+
+### Fork and Clone
+
+External contributors should fork `identique/idnumbers-npm` on GitHub, then replace `<your-username>` in the commands below:
+
+```bash
+git clone https://github.com/<your-username>/idnumbers-npm.git
+cd idnumbers-npm
+git remote add upstream https://github.com/identique/idnumbers-npm.git
+```
+
+Maintainers with write access may clone the canonical repository directly:
+
+```bash
+git clone https://github.com/identique/idnumbers-npm.git
+cd idnumbers-npm
+```
+
+### Install Dependencies
+
+Use the committed lockfile for a reproducible installation:
+
+```bash
+npm ci
+```
+
+The `prepare` script configures the Husky Git hooks automatically.
+
+### Verify the Setup
+
+Run the core project checks after installing dependencies:
+
+```bash
+npm run format:check
+npm run lint
+npm run build
+npm test
+```
+
+All four commands should complete successfully before you begin development.
+
+### Development Commands
+
+| Command                    | Purpose                                       |
+| -------------------------- | --------------------------------------------- |
+| `npm run dev`              | Compile TypeScript in watch mode              |
+| `npm run test:watch`       | Run Jest in watch mode                        |
+| `npm run test:coverage`    | Run the test suite and generate coverage      |
+| `npm run example`          | Build and run the basic TypeScript example    |
+| `npm run example:extended` | Build and run the extended TypeScript example |
+| `npm run lint:fix`         | Apply supported ESLint fixes                  |
+| `npm run format`           | Format TypeScript source files with Prettier  |
+
+The fix and format commands modify files. Review their changes before committing them, and avoid unrelated repository-wide cleanup in a focused contribution.
+
+## Development Workflow
+
+### 1. Start from an Issue
+
+Check existing issues before starting substantial work. If no issue covers the change, open one to discuss the expected behavior and scope.
+
+For validator logic, the corresponding [Python idnumbers implementation](https://github.com/Identique/idnumbers) is the source of truth. Match its accepted inputs, edge cases, error handling, and return values.
+
+### 2. Create a Branch
+
+Update your local `main` branch from the canonical repository, then create an issue-scoped branch:
+
+```bash
+git fetch upstream
+git switch main
+git merge --ff-only upstream/main
+git switch -c docs/39-contributing-guide
+```
+
+If you cloned the canonical repository directly, fetch from `origin` instead of `upstream`. Branch names should identify the change and its issue; existing branches may use forms such as `docs/39-contributing-guide` or `idnumbers-node-issue-39`.
+
+Never push changes directly to `main`.
+
+### 3. Make Focused Changes
+
+Keep the contribution limited to the issue being addressed. Follow the existing implementation patterns in nearby files instead of introducing unrelated abstractions or cleanup.
+
+When behavior changes:
+
+- Add or update tests under `src/__tests__/`.
+- Use an issue-scoped filename such as `issue-123-validator.test.ts`.
+- Cover valid inputs, invalid inputs, and relevant edge cases from the Python implementation.
+- Update the README test count if the total number of Jest tests changes.
+
+Documentation-only changes do not require new Jest tests, but their commands, links, and technical claims must be verified.
+
+### 4. Commit the Change
+
+Use an issue-referencing commit subject:
+
+```text
+type(#issue): concise description
+```
+
+Examples:
+
+```text
+feat(#123): add validator metadata
+fix(#124): reject invalid checksum digits
+docs(#39): add contributor setup guide
+```
+
+Keep commits atomic and use the most accurate type for the change.
+
+The pre-commit hook runs the following checks automatically:
+
+1. lint-staged formatting for staged TypeScript, JSON, and Markdown files
+2. TypeScript compilation
+3. The full Jest test suite
+
+The hook does not run `npm run format:check` or `npm run lint`, so run those explicitly before pushing.
+
+### 5. Run the Required Checks
+
+Before pushing or opening a pull request, run:
+
+```bash
+npm run format:check
+npm run lint
+npm run build
+npm test
+```
+
+CI also verifies build artifacts, coverage, and the runnable JavaScript examples. If your change affects those areas, run the corresponding checks locally as well.
+
+### 6. Open a Pull Request
+
+Push the branch to your fork and open a pull request against the canonical repository's `main` branch. The pull request should include:
+
+- A concise summary of the change
+- The reason for the change
+- The commands used to verify it
+- A linked issue, such as `Closes #39`
+
+Keep the pull request focused. Do not combine unrelated formatting, refactoring, or dependency changes with the issue being solved.
+
+### Code Review Expectations
+
+Reviewers will check correctness, parity with the Python implementation where applicable, test coverage, public API compatibility, documentation accuracy, and whether the change stays within scope.
+
+Respond to actionable feedback with focused follow-up commits. Re-run the relevant checks after each code change and resolve review conversations when the underlying concern has been addressed.
+
+## Project Structure
+
+```text
+.
+├── .github/workflows/          # Continuous integration and release workflows
+├── .husky/pre-commit           # Local pre-commit quality checks
+├── docs/                       # Runnable JavaScript examples and supporting docs
+├── examples/                   # TypeScript usage examples
+├── src/
+│   ├── __tests__/              # Jest test suites, including issue-scoped tests
+│   ├── countries/<iso3>/       # Country validators grouped by ISO alpha-3 code
+│   ├── registry/
+│   │   ├── registerAll.ts      # Primary validator and alias registration
+│   │   └── ValidatorRegistry.ts # Registry singleton implementation
+│   ├── constants.ts            # Shared enums and constants
+│   ├── index.ts                # Public API and registry side-effect import
+│   ├── types.ts                # Shared public types and metadata definitions
+│   └── utils.ts                # Shared validation and checksum utilities
+├── package.json                # npm scripts, metadata, and dependencies
+└── tsconfig.json               # TypeScript compiler configuration
+```
+
+### Validator Organization
+
+Each `src/countries/<iso3>/` directory represents one ISO 3166-1 alpha-3 country code. Its `index.ts` exports the country's validators, which may use class-based or object/function-based implementations.
+
+The primary validator provides:
+
+- `METADATA` describing accepted lengths, checksum support, parsability, and related details
+- `validate(idNumber: string): boolean`
+- Optional `parse` and `checksum` operations when supported
+
+A country directory may contain additional files for secondary ID types or historical formats. Shared country-specific helpers belong in `util.ts` only when multiple validators in that country need them. Reuse `src/utils.ts`, `src/constants.ts`, and `src/types.ts` for cross-country behavior instead of duplicating common logic.
+
+### Registry Flow
+
+Importing `src/index.ts` loads `src/registry/registerAll.ts` as a side effect. `registerAll.ts` adapts the supported validator styles, registers one primary validator per country in the `ValidatorRegistry` singleton, and registers supported aliases.
+
+Only primary country validators belong in this registry. Secondary ID types remain available through their country-module exports and must not be registered as additional primary countries. Changes must preserve the registry's 80-primary-key invariant.
+
+## Reporting Problems
+
+If setup instructions fail or project behavior differs from this guide, open an issue with your operating system, Node.js and npm versions, the command you ran, and the complete error output.
