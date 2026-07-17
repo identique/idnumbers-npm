@@ -1,6 +1,6 @@
 # idnumbers
 
-A comprehensive TypeScript/JavaScript library for validating and parsing national identification numbers from 80 countries across 6 continents.
+A comprehensive TypeScript/JavaScript library for validating and parsing national identification numbers from 81 countries across 6 continents.
 
 [![npm version](https://img.shields.io/npm/v/idnumbers.svg)](https://www.npmjs.com/package/idnumbers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -8,7 +8,7 @@ A comprehensive TypeScript/JavaScript library for validating and parsing nationa
 
 ## Features
 
-- ✅ **80 countries supported** - Comprehensive coverage across all continents
+- ✅ **81 countries supported** - Comprehensive coverage across all continents
 - 🔍 **Validation** - Verify ID number format and checksums
 - 📊 **Parsing** - Extract information like birth date, gender, and citizenship
 - 🛡️ **Type-safe** - Full TypeScript support with type definitions
@@ -195,11 +195,12 @@ console.log(format);
 
 ## Supported Countries
 
-### North America (3)
+### North America (4)
 
 - 🇺🇸 **USA** - Social Security Number (SSN)
 - 🇨🇦 **CAN** - Social Insurance Number (SIN)
 - 🇲🇽 **MEX** - CURP (Clave Única de Registro de Población)
+- 🇬🇹 **GTM** - DPI (Documento Personal de Identificación)
 
 ### South America (5)
 
@@ -473,7 +474,7 @@ if (!validation.valid) {
 
 ## Testing
 
-The library includes comprehensive test coverage with 2139 tests covering:
+The library includes comprehensive test coverage with 2181 tests covering:
 
 - Format validation
 - Checksum verification

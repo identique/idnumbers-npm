@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Guatemala (GTM) DPI/CUI (Documento Personal de Identificación) validator — 13-digit format with a mod-11 weighted-sum check digit over the 8-digit correlative, plus department and municipality validation (municipality checked against its own department, not a global maximum) ([#58](https://github.com/identique/idnumbers-npm/issues/58))
 - Format information for all 40 European countries via `getCountryIdFormat()` — each now returns a `format` display mask, a valid `example`, a `checksumAlgorithm` description, and the `officialName` (local name) ([#42](https://github.com/identique/idnumbers-npm/issues/42))
 - `IdMetadata` and `IdFormat` gain optional `example`, `checksumAlgorithm`, and `officialName` fields, populated from each country's METADATA ([#42](https://github.com/identique/idnumbers-npm/issues/42))
 - Format information for all 26 Asian countries via `getCountryIdFormat()` — `format` display mask, valid `example`, `checksumAlgorithm` description, and `officialName` (local name) ([#43](https://github.com/identique/idnumbers-npm/issues/43))

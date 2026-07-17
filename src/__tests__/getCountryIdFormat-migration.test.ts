@@ -2,7 +2,7 @@
  * Parity tests for getCountryIdFormat registry migration (Issue #53).
  *
  * Verifies that the registry-based getCountryIdFormat returns complete
- * IdFormat info for all 80 registered countries, preserves format strings,
+ * IdFormat info for all 81 registered countries, preserves format strings,
  * resolves aliases, and returns null for unregistered codes.
  */
 import { getCountryIdFormat, SUPPORTED_COUNTRIES } from '../index';
@@ -92,6 +92,7 @@ describe('getCountryIdFormat returns IdFormat for all registered countries', () 
     { code: 'NPL', name: 'Nepal', idType: 'National ID Number' },
     { code: 'PNG', name: 'Papua New Guinea', idType: 'National ID Number' },
     { code: 'SMR', name: 'San Marino', idType: 'Social Security Number / Tax Registration' },
+    { code: 'GTM', name: 'Guatemala', idType: 'Documento Personal de Identificación (DPI)' },
   ];
 
   test.each(registeredCountries)(
@@ -146,6 +147,7 @@ describe('Format display strings', () => {
     { code: 'VEN', format: 'V-######## or E-########' },
     { code: 'ZAF', format: 'YYMMDDSSSSCAZ' },
     { code: 'ZWE', format: 'RR######(N)CDD' },
+    { code: 'GTM', format: 'NNNN NNNNN NNNN' },
   ];
 
   test.each(countriesWithFormat)('$code has format string "$format"', ({ code, format }) => {
@@ -193,6 +195,7 @@ describe('Alias resolution in getCountryIdFormat', () => {
     { alias: 'ES', expectedCode: 'ESP' },
     { alias: 'CN', expectedCode: 'CHN' },
     { alias: 'BR', expectedCode: 'BRA' },
+    { alias: 'GT', expectedCode: 'GTM' },
   ];
 
   test.each(aliasTests)('$alias resolves to $expectedCode', ({ alias, expectedCode }) => {
@@ -236,7 +239,6 @@ describe('Edge cases and unregistered codes', () => {
     'CR',
     'PA',
     'DO',
-    'GT',
     'HN',
     'SV',
     'NI',
