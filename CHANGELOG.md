@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Ecuador (ECU) Cédula de Identidad validator — 10-digit national ID with province code (01-24, or 30 for citizens registered abroad), person-type digit (0-5, narrowed to 4-5 for the consular province 30), and a Luhn (mod 10) check digit; adds `parse()` field decomposition and registers ECU/EC in the country registry ([#55](https://github.com/identique/idnumbers-npm/issues/55))
+
 ## [1.9.0] - 2026-07-17
 
 ### Added
