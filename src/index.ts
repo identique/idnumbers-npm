@@ -32,6 +32,7 @@ export * as CHE from './countries/che';
 export * as CHL from './countries/chl';
 export * as CHN from './countries/chn';
 export * as COL from './countries/col';
+export * as DOM from './countries/dom';
 export * as EST from './countries/est';
 export * as GRC from './countries/grc';
 export * as HUN from './countries/hun';
@@ -129,6 +130,7 @@ export const SUPPORTED_COUNTRIES: CountryInfo[] = [
   { code: 'CHL', name: 'Chile', idType: 'RUN/RUT' },
   { code: 'CHN', name: 'China', idType: 'Resident Identity Number' },
   { code: 'COL', name: 'Colombia', idType: 'Unique Personal ID' },
+  { code: 'DOM', name: 'Dominican Republic', idType: 'Cédula de Identidad y Electoral' },
   { code: 'EST', name: 'Estonia', idType: 'Personal ID Number' },
   { code: 'GRC', name: 'Greece', idType: 'Tax Identity Number' },
   { code: 'HUN', name: 'Hungary', idType: 'Personal ID Number' },

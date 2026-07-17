@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Dominican Republic (DOM) Cédula de Identidad y Electoral validator — 11-digit number (series + document number + check digit) validated with a standard Luhn checksum, plus a documented 576-entry exception list (sourced from `python-stdnum`, with attribution) covering legitimately-issued cédulas — including modern 402-series cards — that fail the Luhn check; a `validate()` result of `false` means the checksum failed, not that the person does not exist ([#57](https://github.com/identique/idnumbers-npm/issues/57))
+
 ## [1.9.0] - 2026-07-17
 
 ### Added

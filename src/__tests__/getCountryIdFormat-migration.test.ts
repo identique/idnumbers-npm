@@ -2,13 +2,13 @@
  * Parity tests for getCountryIdFormat registry migration (Issue #53).
  *
  * Verifies that the registry-based getCountryIdFormat returns complete
- * IdFormat info for all 80 registered countries, preserves format strings,
+ * IdFormat info for all 81 registered countries, preserves format strings,
  * resolves aliases, and returns null for unregistered codes.
  */
 import { getCountryIdFormat, SUPPORTED_COUNTRIES } from '../index';
 
 // ---------------------------------------------------------------------------
-// All 80 registered countries should return non-null IdFormat
+// All 81 registered countries should return non-null IdFormat
 // ---------------------------------------------------------------------------
 describe('getCountryIdFormat returns IdFormat for all registered countries', () => {
   const registeredCountries = [
@@ -41,6 +41,7 @@ describe('getCountryIdFormat returns IdFormat for all registered countries', () 
     { code: 'CHL', name: 'Chile', idType: 'RUN/RUT' },
     { code: 'CHN', name: 'China', idType: 'Resident Identity Number' },
     { code: 'COL', name: 'Colombia', idType: 'Unique Personal ID' },
+    { code: 'DOM', name: 'Dominican Republic', idType: 'Cédula de Identidad y Electoral' },
     { code: 'EST', name: 'Estonia', idType: 'Personal ID Number' },
     { code: 'GRC', name: 'Greece', idType: 'Tax Identity Number' },
     { code: 'HUN', name: 'Hungary', idType: 'Personal ID Number' },
@@ -123,6 +124,7 @@ describe('Format display strings', () => {
     { code: 'CAN', format: '###-###-###' },
     { code: 'CHL', format: '##.###.###-C' },
     { code: 'COL', format: '##(#).###.###-C' },
+    { code: 'DOM', format: 'NNN-NNNNNNN-N' },
     { code: 'IND', format: 'XXXX XXXX XXXX' },
     { code: 'JPN', format: 'XXXXXXXXXXXX' },
     { code: 'KAZ', format: 'YYMMDDGSSSSC' },
@@ -235,7 +237,6 @@ describe('Edge cases and unregistered codes', () => {
     'PY',
     'CR',
     'PA',
-    'DO',
     'GT',
     'HN',
     'SV',
