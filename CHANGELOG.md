@@ -10,18 +10,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Dominican Republic (DOM) Cédula de Identidad y Electoral validator — 11-digit number (series + document number + check digit) validated with a standard Luhn checksum, plus a documented 576-entry exception list (sourced from `python-stdnum`, with attribution) covering legitimately-issued cédulas — including modern 402-series cards — that fail the Luhn check; a `validate()` result of `false` means the checksum failed, not that the person does not exist ([#57](https://github.com/identique/idnumbers-npm/issues/57))
+
+## [1.9.0] - 2026-07-17
+
+### Added
+
 - Format information for all 40 European countries via `getCountryIdFormat()` — each now returns a `format` display mask, a valid `example`, a `checksumAlgorithm` description, and the `officialName` (local name) ([#42](https://github.com/identique/idnumbers-npm/issues/42))
 - `IdMetadata` and `IdFormat` gain optional `example`, `checksumAlgorithm`, and `officialName` fields, populated from each country's METADATA ([#42](https://github.com/identique/idnumbers-npm/issues/42))
 - Format information for all 26 Asian countries via `getCountryIdFormat()` — `format` display mask, valid `example`, `checksumAlgorithm` description, and `officialName` (local name) ([#43](https://github.com/identique/idnumbers-npm/issues/43))
+- Format information for the Americas, Africa, and Oceania countries via `getCountryIdFormat()`, completing `format`, `example`, `checksumAlgorithm`, and `officialName` coverage across all 80 registered countries ([#44](https://github.com/identique/idnumbers-npm/issues/44))
+- New Zealand (NZL) IRD number validation as a secondary `NZL.IRDNumber` id type — two-phase mod-11 checksum, accepting 8/9-digit plain and `XX-XXX-XXX` / `XXX-XXX-XXX` dashed formats. The registered NZL primary remains the Driver Licence, so `validateNationalId('NZ')` behavior is unchanged ([#32](https://github.com/identique/idnumbers-npm/issues/32))
+- Per-country README for Zimbabwe (ZWE) documenting the format, the mod-23 checksum algorithm with its 23-letter table, the 61 valid district/register-office codes, and verified test vectors ([#25](https://github.com/identique/idnumbers-npm/issues/25))
+- Comprehensive Zimbabwe (ZWE) NationalID test coverage — all 61 valid district codes, all 23 checksum residues, 11- and 12-digit parse shapes, instance/static delegation, and registry integration through the `ZWE`, `ZW`, and lowercase `zw` aliases ([#26](https://github.com/identique/idnumbers-npm/issues/26))
+- Bahrain (BHR) CPR checksum research record, documenting that the official check-digit algorithm is not publicly available; validation remains format-only with `METADATA.checksum = false`, in parity with the Python source ([#15](https://github.com/identique/idnumbers-npm/issues/15))
+- Expanded Bahrain (BHR) coverage — falsy and non-string inputs, boundary conditions, and parse-contract assertions at both the module and registry layers ([#17](https://github.com/identique/idnumbers-npm/issues/17))
 
 ### Changed
 
 - Portugal (PRT) `idType` corrected from "Citizen Card" to "Tax Identification Number (NIF)" to match the registered NIF validator ([#42](https://github.com/identique/idnumbers-npm/issues/42))
 - Nigeria (NGA) NIN `parse()` now returns `{ isValid: true }` for valid NINs (previously `{ checksum: null }`) — the NIN is a randomly-assigned number that encodes no personal data, mirroring the Python source (`parsable: False`); added full validate/parse/checksum and registry-integration test coverage ([#46](https://github.com/identique/idnumbers-npm/issues/46))
+- Format display strings moved from the centralized `FORMAT_STRINGS` lookup in `src/index.ts` into each country's METADATA as a new optional `displayFormat` field, so format information lives alongside the validation metadata it describes. `getCountryIdFormat()` surfaces it via `ValidatorRegistry.getFormat()`, and countries without a display string continue to report `format === undefined`. `FORMAT_STRINGS` was module-private, so this is not a breaking change ([#82](https://github.com/identique/idnumbers-npm/issues/82))
 
 ### Fixed
 
 - Corrected inaccurate `displayFormat` masks for Indonesia (IDN), Kazakhstan (KAZ), Kuwait (KWT), and Vietnam (VNM); Bangladesh (BGD) now reports the full accepted length range `{ min: 13, max: 17 }` covering both old and new national ID formats ([#43](https://github.com/identique/idnumbers-npm/issues/43))
+- New Zealand (NZL) `idType` corrected from "IRD Number" to "Driver Licence Number". `getCountryIdFormat('NZL')` previously returned a self-contradictory object, overlaying the IRD `idType` on the Driver Licence `format`, `example`, and `officialName` of the registered primary validator ([#44](https://github.com/identique/idnumbers-npm/issues/44))
 
 ## [1.8.0] - 2026-04-28
 
@@ -164,7 +177,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Full TypeScript support with type definitions
 - Comprehensive documentation and examples
 
-[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v1.6.0...HEAD
+[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v1.9.0...HEAD
+[1.9.0]: https://github.com/identique/idnumbers-npm/compare/v1.8.0...v1.9.0
+[1.8.0]: https://github.com/identique/idnumbers-npm/compare/v1.7.0...v1.8.0
+[1.7.0]: https://github.com/identique/idnumbers-npm/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/identique/idnumbers-npm/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/identique/idnumbers-npm/compare/v1.4.1...v1.5.0
 [1.4.1]: https://github.com/identique/idnumbers-npm/compare/v1.4.0...v1.4.1
