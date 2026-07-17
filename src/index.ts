@@ -87,6 +87,7 @@ export * as MDA from './countries/mda';
 export * as NPL from './countries/npl';
 export * as PNG from './countries/png';
 export * as SMR from './countries/smr';
+export * as ECU from './countries/ecu';
 
 // Export registry
 export * from './registry';
@@ -125,6 +126,7 @@ export const SUPPORTED_COUNTRIES: CountryInfo[] = [
   { code: 'ARG', name: 'Argentina', idType: 'DNI' },
   { code: 'BGR', name: 'Bulgaria', idType: 'Uniform Civil Number' },
   { code: 'BRA', name: 'Brazil', idType: 'CPF Number' },
+  { code: 'ECU', name: 'Ecuador', idType: 'Cédula de Identidad' },
   { code: 'CHE', name: 'Switzerland', idType: 'Social Security Number' },
   { code: 'CHL', name: 'Chile', idType: 'RUN/RUT' },
   { code: 'CHN', name: 'China', idType: 'Resident Identity Number' },
