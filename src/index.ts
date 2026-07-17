@@ -87,6 +87,7 @@ export * as MDA from './countries/mda';
 export * as NPL from './countries/npl';
 export * as PNG from './countries/png';
 export * as SMR from './countries/smr';
+export * as CRI from './countries/cri';
 
 // Export registry
 export * from './registry';
@@ -180,6 +181,7 @@ export const SUPPORTED_COUNTRIES: CountryInfo[] = [
   { code: 'NPL', name: 'Nepal', idType: 'National ID Number' },
   { code: 'PNG', name: 'Papua New Guinea', idType: 'National ID Number' },
   { code: 'SMR', name: 'San Marino', idType: 'Social Security Number / Tax Registration' },
+  { code: 'CRI', name: 'Costa Rica', idType: 'Cédula de Identidad' },
 ];
 
 /**

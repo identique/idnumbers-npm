@@ -2,13 +2,13 @@
  * Parity tests for getCountryIdFormat registry migration (Issue #53).
  *
  * Verifies that the registry-based getCountryIdFormat returns complete
- * IdFormat info for all 80 registered countries, preserves format strings,
+ * IdFormat info for all 81 registered countries, preserves format strings,
  * resolves aliases, and returns null for unregistered codes.
  */
 import { getCountryIdFormat, SUPPORTED_COUNTRIES } from '../index';
 
 // ---------------------------------------------------------------------------
-// All 80 registered countries should return non-null IdFormat
+// All 81 registered countries should return non-null IdFormat
 // ---------------------------------------------------------------------------
 describe('getCountryIdFormat returns IdFormat for all registered countries', () => {
   const registeredCountries = [
@@ -92,6 +92,7 @@ describe('getCountryIdFormat returns IdFormat for all registered countries', () 
     { code: 'NPL', name: 'Nepal', idType: 'National ID Number' },
     { code: 'PNG', name: 'Papua New Guinea', idType: 'National ID Number' },
     { code: 'SMR', name: 'San Marino', idType: 'Social Security Number / Tax Registration' },
+    { code: 'CRI', name: 'Costa Rica', idType: 'Cédula de Identidad' },
   ];
 
   test.each(registeredCountries)(
@@ -123,6 +124,7 @@ describe('Format display strings', () => {
     { code: 'CAN', format: '###-###-###' },
     { code: 'CHL', format: '##.###.###-C' },
     { code: 'COL', format: '##(#).###.###-C' },
+    { code: 'CRI', format: '#-####-####' },
     { code: 'IND', format: 'XXXX XXXX XXXX' },
     { code: 'JPN', format: 'XXXXXXXXXXXX' },
     { code: 'KAZ', format: 'YYMMDDGSSSSC' },
@@ -233,7 +235,6 @@ describe('Edge cases and unregistered codes', () => {
     'EC',
     'BO',
     'PY',
-    'CR',
     'PA',
     'DO',
     'GT',

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Costa Rica (CRI) Cédula de Identidad validator — validates the 9-digit national ID (`P-TTTT-AAAA`: province 1-9, tomo, asiento); notably has no check digit, since Costa Rica confirms validity via Registro Civil / TRIBU-CR database lookup rather than arithmetic ([#56](https://github.com/identique/idnumbers-npm/issues/56))
 - Format information for all 40 European countries via `getCountryIdFormat()` — each now returns a `format` display mask, a valid `example`, a `checksumAlgorithm` description, and the `officialName` (local name) ([#42](https://github.com/identique/idnumbers-npm/issues/42))
 - `IdMetadata` and `IdFormat` gain optional `example`, `checksumAlgorithm`, and `officialName` fields, populated from each country's METADATA ([#42](https://github.com/identique/idnumbers-npm/issues/42))
 - Format information for all 26 Asian countries via `getCountryIdFormat()` — `format` display mask, valid `example`, `checksumAlgorithm` description, and `officialName` (local name) ([#43](https://github.com/identique/idnumbers-npm/issues/43))
