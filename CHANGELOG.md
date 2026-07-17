@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Guatemala (GTM) DPI/CUI (Documento Personal de Identificación) validator — 13-digit format with a mod-11 weighted-sum check digit over the 8-digit correlative, plus department and municipality validation (municipality checked against its own department, not a global maximum) ([#58](https://github.com/identique/idnumbers-npm/issues/58))
+
 ## [1.9.0] - 2026-07-17
 
 ### Added

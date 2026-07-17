@@ -12,8 +12,8 @@ import { adaptMetadata, createValidator } from '../registry/adapters';
 // Registry population tests
 // ---------------------------------------------------------------------------
 describe('Registry population', () => {
-  it('should have 80 primary keys registered', () => {
-    expect(registry.list().length).toBe(80);
+  it('should have 81 primary keys registered', () => {
+    expect(registry.list().length).toBe(81);
   });
 
   it('should resolve all expected alpha-3 keys', () => {
@@ -98,6 +98,7 @@ describe('Registry population', () => {
       'SRB',
       'TWN',
       'VEN',
+      'GTM',
     ];
 
     for (const key of expectedKeys) {
@@ -166,6 +167,7 @@ describe('Registry population', () => {
       LV: 'LVA',
       DE: 'DEU',
       NL: 'NLD',
+      GT: 'GTM',
       AT: 'AUT',
       ES: 'ESP',
       UK: 'GBR',
@@ -383,6 +385,7 @@ describe('parseIdInfo parity (registry vs old switch)', () => {
     { code: 'IRL', alias: 'IE', validId: '1234567T', description: 'Ireland PPS' },
     { code: 'LVA', alias: 'LV', validId: '161175-19997', description: 'Latvia Personal Code' },
     { code: 'LKA', alias: 'LK', validId: '199001200001', description: 'Sri Lanka NIC' },
+    { code: 'GTM', alias: 'GT', validId: '1912345670101', description: 'Guatemala DPI' },
   ];
 
   describe.each(parseableCountries)('$description ($code)', ({ code, alias, validId }) => {
