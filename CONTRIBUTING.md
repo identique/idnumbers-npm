@@ -152,6 +152,7 @@ Respond to actionable feedback with focused follow-up commits. Re-run the releva
 │   ├── __tests__/              # Jest test suites, including issue-scoped tests
 │   ├── countries/<iso3>/       # Country validators grouped by ISO alpha-3 code
 │   ├── registry/
+│   │   ├── adapters.ts         # Validator style adapters and the CountryModule contract
 │   │   ├── registerAll.ts      # Primary validator and alias registration
 │   │   └── ValidatorRegistry.ts # Registry singleton implementation
 │   ├── constants.ts            # Shared enums and constants
@@ -179,6 +180,8 @@ A country directory may contain additional files for secondary ID types or histo
 Importing `src/index.ts` loads `src/registry/registerAll.ts` as a side effect. `registerAll.ts` adapts the supported validator styles, registers one primary validator per country in the `ValidatorRegistry` singleton, and registers supported aliases.
 
 Only primary country validators belong in this registry. Secondary ID types remain available through their country-module exports and must not be registered as additional primary countries.
+
+The number of registered primary validators is asserted in `src/__tests__/parseIdInfo-migration.test.ts`. Adding a new country requires bumping that expected count in the same change, alongside the README test count noted above.
 
 ## Reporting Problems
 
