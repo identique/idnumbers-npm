@@ -59,12 +59,15 @@ src/countries/xyz/
 Conventions:
 
 - **File names are camelCase** — `nationalId.ts`, `taxFile.ts`, `businessId.ts`,
-  `oldPersonalCode.ts`. Some older directories use hyphenated names (`national-id.ts`); that form is
-  legacy and should not be copied into new work.
-- **The primary ID type lives directly in `index.ts`** (see
-  [`kaz/index.ts`](../src/countries/kaz/index.ts), [`lva/index.ts`](../src/countries/lva/index.ts)),
-  not in a separate file that `index.ts` re-exports. The exception is countries whose primary type
-  predates this convention (e.g. [`aus/index.ts`](../src/countries/aus/index.ts) is re-exports only).
+  `oldPersonalCode.ts`. Seven files use hyphenated names (`national-id.ts`), all of them from the
+  initial release; every module added since is camelCase. Use camelCase.
+- **Two `index.ts` layouts are both valid.** The primary type may be defined directly in `index.ts`
+  (31 of 80 countries — [`kaz/`](../src/countries/kaz/index.ts), [`lva/`](../src/countries/lva/index.ts)),
+  or in a named file that `index.ts` re-exports (49 of 80 — [`aus/`](../src/countries/aus/index.ts),
+  [`nzl/`](../src/countries/nzl/index.ts), [`zwe/`](../src/countries/zwe/index.ts)). Neither is
+  deprecated. Prefer defining it directly in `index.ts` for a country with a single ID type, and a
+  named file (`nationalId.ts`) once the country has several — the re-export layout keeps each type in
+  its own file and `index.ts` as the country's export surface.
 - **`util.ts` is for country-shared helpers only** — create it when two files in the same country need
   the same logic (as in [`kaz/util.ts`](../src/countries/kaz/util.ts)). A helper used by exactly one
   file stays private in that file. Anything useful across countries belongs in `src/utils.ts`.
@@ -104,21 +107,28 @@ Check these before writing any checksum or enum by hand.
 Two shapes exist. Both are accepted — [`registry/adapters.ts`](../src/registry/adapters.ts)
 normalizes them — but they are **not** interchangeable field-for-field:
 
-| Canonical `IdMetadata` ([`src/types.ts`](../src/types.ts)) | Legacy `FunctionBasedMetadata` ([`adapters.ts`](../src/registry/adapters.ts)) |
-| ---------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| `regexp`                                                   | `pattern`                                                                     |
-| `parsable`                                                 | `isParsable`                                                                  |
-| `checksum`                                                 | `hasChecksum`                                                                 |
-| `aliasOf`, `deprecated` required                           | omitted (defaulted by the adapter)                                            |
+| Canonical `IdMetadata` ([`src/types.ts`](../src/types.ts)) | Alternate `FunctionBasedMetadata` ([`adapters.ts`](../src/registry/adapters.ts)) |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `regexp`                                                   | `pattern`                                                                        |
+| `parsable`                                                 | `isParsable`                                                                     |
+| `checksum`                                                 | `hasChecksum`                                                                    |
+| `aliasOf`, `deprecated` required                           | omitted (defaulted by the adapter)                                               |
 
 **Use `IdMetadata` for new countries** and annotate it explicitly (`export const METADATA: IdMetadata
-= {...}`) so the compiler catches missing fields. The legacy shape is untyped at the declaration site,
-so typos silently degrade into adapter defaults — a misspelled `isParsable` becomes `parsable: false`
-with no error.
+= {...}`) so the compiler catches missing and misspelled fields.
 
-> Note: the two shapes are independent of whether the module is written as a class or as plain
-> functions. [`kaz/index.ts`](../src/countries/kaz/index.ts) is function-based and uses `IdMetadata`.
-> New code should be function-based, as in the template below.
+⚠️ The alternate shape is usually declared without a type annotation, so a typo is not a compile error —
+it silently becomes an adapter default. `isParsable` → `parsable: false`, `hasChecksum` →
+`checksum: false`, and worst of all `pattern` → [`fn.pattern ?? /./`](../src/registry/adapters.ts),
+a match-anything regex that the registry then reports as the country's pattern. The annotated
+`IdMetadata` form makes each of these a compile error instead. (Tracked in issue #160.)
+
+> Note: the two shapes are independent of the module's style. Class-based modules with
+> `static readonly METADATA` are common ([`zwe/nationalId.ts`](../src/countries/zwe/nationalId.ts)),
+> and [`kaz/index.ts`](../src/countries/kaz/index.ts) is function-based yet uses `IdMetadata`. Prefer
+> function-based for new code, as in the template below: every one of the 12 country modules written
+> in 2026 is function-based, including the most recent
+> ([`nzl/irdNumber.ts`](../src/countries/nzl/irdNumber.ts)).
 
 ### `src/countries/xyz/util.ts`
 
@@ -271,7 +281,8 @@ this is asserted by the format-info tests. Never use a real person's number.
 
 ## 5. Wire it into the library
 
-A new country touches **four** places. Missing any one produces a country that silently does not work.
+A new country touches **three** places, plus one rule to respect. Missing any of the three produces a
+country that silently does not work.
 
 **1. [`src/registry/registerAll.ts`](../src/registry/registerAll.ts)** — import the module and add one
 `COUNTRY_REGISTRY` row. The `key` is the alpha-3 code; `aliases` is normally the alpha-2 code
@@ -294,13 +305,15 @@ export * as XYZ from './countries/xyz';
 ```
 
 **3. `src/index.ts`** — add a `SUPPORTED_COUNTRIES` entry. This is what supplies `countryName` and
-`idType` to `getCountryIdFormat()`; without it the format falls back to the raw country code:
+`idType` to `getCountryIdFormat()`. Without it the registry's own fallbacks apply
+([`ValidatorRegistry.getFormat()`](../src/registry/ValidatorRegistry.ts)): `countryName` becomes the
+raw country code, and `idType` becomes `METADATA.names[0]` (or the country code if `names` is empty):
 
 ```typescript
 { code: 'XYZ', name: 'Xyz', idType: 'National ID' },
 ```
 
-**4. Secondary types stay out of the registry.** Export them from the country module only
+**The rule: secondary types stay out of the registry.** Export them from the country module only
 (`export { TaxNumber } from './taxNumber';`). Adding them as registry keys breaks the count invariant
 below and misrepresents them as countries.
 
@@ -363,7 +376,8 @@ describe('Xyz National ID', () => {
 
 ## 7. Verify
 
-Run all four locally — CI runs exactly these, in this order:
+Run all four locally. CI's quality-gate job (`quality-checks` in
+[`ci.yml`](../.github/workflows/ci.yml)) runs exactly these, in this order:
 
 ```bash
 npm run format:check
@@ -371,6 +385,12 @@ npm run lint
 npm run build
 npm test
 ```
+
+Passing all four is necessary but **not sufficient** — the gate is one of several CI jobs. The others
+run a clean `npm run clean && npm run build` (`build-check`), `npm run test:coverage`
+(`test-coverage`), and execute every runnable example against your build (`examples-check`: the
+scripts in [`docs/examples/`](examples/), plus `npm run example` and `npm run example:extended`). If
+your change could affect build artifacts, coverage, or the examples, run those locally too.
 
 ⚠️ `format:check` uses an **unquoted** glob (`src/**/*.ts`), so shell expansion misses deeply nested
 files and CI will not catch drift in them. Verify your own files explicitly:
@@ -391,7 +411,8 @@ Copy into your PR description:
 - [ ] Located the Python implementation in `idnumbers/nationalid/` and matched its behaviour
       (or documented why it does not exist yet, with official sources cited)
 - [ ] `src/countries/<iso3>/` created; camelCase file names; one file per ID type
-- [ ] Primary type in `index.ts`, exporting `{ validate, METADATA }` (+ `parse`/`checksum` if applicable)
+- [ ] Primary type reachable from `index.ts` — defined there or re-exported from a named file —
+      providing `{ validate, METADATA }` (+ `parse`/`checksum` if applicable)
 - [ ] `METADATA` typed as `IdMetadata`, with `displayFormat`, `example`, `checksumAlgorithm`, `officialName`
 - [ ] `METADATA.example` is synthetic and passes `validateNationalId()`
 - [ ] Reused `src/utils.ts` / `src/constants.ts` instead of reimplementing checksums or enums
@@ -425,5 +446,5 @@ exercises every part of this guide:
 
 [`src/countries/lva/`](../src/countries/lva/) shows a simpler country: a checksum but nothing worth
 parsing (`isParsable: false`), plus a superseded format in
-[`oldPersonalCode.ts`](../src/countries/lva/oldPersonalCode.ts). Note that it uses the legacy METADATA
-shape — follow its structure, not its `pattern`/`hasChecksum` field names.
+[`oldPersonalCode.ts`](../src/countries/lva/oldPersonalCode.ts). Note that it uses the alternate
+`FunctionBasedMetadata` shape — follow its structure, not its `pattern`/`hasChecksum` field names.
