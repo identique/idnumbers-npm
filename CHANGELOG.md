@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Costa Rica (CRI) Cédula de Identidad validator — validates the 9-digit national ID (`P-TTTT-AAAA`: province 1-9, tomo, asiento); notably has no check digit, since Costa Rica confirms validity via Registro Civil / TRIBU-CR database lookup rather than arithmetic ([#56](https://github.com/identique/idnumbers-npm/issues/56))
+
 ## [1.9.0] - 2026-07-17
 
 ### Added
