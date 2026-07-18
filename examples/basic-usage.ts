@@ -74,7 +74,7 @@ if (usaFormat) {
 
 // Example 7: Checksum calculation
 console.log('\n7. Checksum Calculation:');
-if (AUS.MedicareNumber.checksum) {
+if (typeof AUS.MedicareNumber.checksum === 'function') {
   // Note: This would need a valid Medicare number format to work properly
   console.log('Australia Medicare checksum functionality available');
 }
