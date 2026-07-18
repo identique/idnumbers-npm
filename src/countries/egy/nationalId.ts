@@ -108,7 +108,7 @@ function resolveYear(century: string, yy: string): number | null {
 }
 
 /** Positional weights applied to the first 13 digits for the mod-11 hypothesis. */
-const CHECKSUM_WEIGHTS = [2, 7, 6, 5, 4, 3, 2, 7, 6, 5, 4, 3, 2];
+// const CHECKSUM_WEIGHTS = [2, 7, 6, 5, 4, 3, 2, 7, 6, 5, 4, 3, 2];
 
 /**
  * Compute a mod-11 check digit over the first 13 digits, per an UNVERIFIED
@@ -136,12 +136,14 @@ export function checksum(idNumber: string): number | null {
   if (!validateRegexp(normalized, METADATA.pattern)) {
     return null;
   }
-  let sum = 0;
-  for (let i = 0; i < CHECKSUM_WEIGHTS.length; i++) {
-    sum += Number(normalized[i]) * CHECKSUM_WEIGHTS[i];
-  }
-  const expected = (11 - (sum % 11)) % 11;
-  return expected === 10 ? null : expected;
+  // TODO: implement the checksum calculation once a reliable algorithm is found. The following is a placeholder for the mod-11 hypothesis, which is not verified and should not be used for validation.
+  // let sum = 0;
+  // for (let i = 0; i < CHECKSUM_WEIGHTS.length; i++) {
+  //    sum += Number(normalized[i]) * CHECKSUM_WEIGHTS[i];
+  // }
+  // const expected = (11 - (sum % 11)) % 11;
+  // return expected === 10 ? null : expected;
+  return null;
 }
 
 /**
