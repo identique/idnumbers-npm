@@ -175,6 +175,8 @@ The primary validator provides:
 
 A country directory may contain additional files for secondary ID types or historical formats. Shared country-specific helpers belong in `util.ts` only when multiple validators in that country need them. Reuse `src/utils.ts`, `src/constants.ts`, and `src/types.ts` for cross-country behavior instead of duplicating common logic.
 
+Adding a country? [docs/COUNTRY_TEMPLATE.md](docs/COUNTRY_TEMPLATE.md) provides a copy-paste module template, the registration touchpoints, and a submission checklist.
+
 ### Registry Flow
 
 Importing `src/index.ts` loads `src/registry/registerAll.ts` as a side effect. `registerAll.ts` adapts the supported validator styles, registers one primary validator per country in the `ValidatorRegistry` singleton, and registers supported aliases.
