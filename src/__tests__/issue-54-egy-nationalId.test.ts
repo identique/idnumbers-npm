@@ -13,7 +13,7 @@
  * Issue: https://github.com/identique/idnumbers-npm/issues/54
  */
 
-import { validate, parse, METADATA, GOVERNORATES } from '../countries/egy/nationalId';
+import { validate, parse, checksum, METADATA, GOVERNORATES } from '../countries/egy/nationalId';
 import { NationalID } from '../countries/egy';
 import { Gender } from '../constants';
 import { validateNationalId, parseIdInfo, getCountryIdFormat, EGY } from '../index';
@@ -200,6 +200,21 @@ describe('Egypt (EGY) — National ID', () => {
 
     test.each(invalidEgyptianIDs)('rejects invalid National ID: %s', id => {
       expect(validateNationalId('EGY', id).isValid).toBe(false);
+    });
+  });
+
+  describe('checksum()', () => {
+    it('is intentionally unimplemented and always returns null', () => {
+      // Egypt publishes no check-digit algorithm; see docs/research/egypt-national-id.md.
+      expect(checksum(METADATA.example)).toBeNull();
+      expect(checksum('29001010100017')).toBeNull();
+      expect(checksum('not-an-id')).toBeNull();
+      expect(checksum('')).toBeNull();
+    });
+
+    it('agrees with METADATA.hasChecksum', () => {
+      expect(METADATA.hasChecksum).toBe(false);
+      expect(NationalID.checksum(METADATA.example)).toBeNull();
     });
   });
 
