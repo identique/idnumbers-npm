@@ -14,15 +14,15 @@
  * Checksum note: a check digit (V) exists, but Egypt publishes no official
  * check-digit algorithm and no independently reproducible specification could be
  * located. Validation is therefore format + semantic only, matching the Bahrain
- * CPR precedent. A mod-11 hypothesis is exposed via `checksum()` for research
- * purposes, but nothing here gates on it — see that function's notes and
- * docs/research/egypt-national-id.md.
+ * CPR precedent, and `checksum()` is intentionally unimplemented. A mod-11
+ * hypothesis was investigated and rejected as underdetermined; the full record is
+ * in docs/research/egypt-national-id.md.
  *
  * https://en.wikipedia.org/wiki/Egyptian_National_Identity_Card
  */
 
 import { ParsedInfo } from '../../types';
-import { validateRegexp, isValidDate, calculateAge } from '../../utils';
+import { isValidDate, calculateAge } from '../../utils';
 import { Gender } from '../../constants';
 
 export interface EgyptParseResult extends ParsedInfo {
@@ -39,7 +39,7 @@ export interface EgyptParseResult extends ParsedInfo {
  * Governorate codes embedded in digits 8-9.
  * 27 governorates plus `88` for citizens born outside Egypt.
  */
-export const GOVERNORATES: Record<string, string> = {
+export const GOVERNORATES = {
   '01': 'Cairo',
   '02': 'Alexandria',
   '03': 'Port Said',
@@ -68,7 +68,15 @@ export const GOVERNORATES: Record<string, string> = {
   '34': 'North Sinai',
   '35': 'South Sinai',
   '88': 'Born outside Egypt',
-};
+} as const;
+
+/** A governorate code known to {@link GOVERNORATES}. */
+export type GovernorateCode = keyof typeof GOVERNORATES;
+
+/** Narrow an arbitrary 2-digit string to a known governorate code. */
+function isGovernorateCode(code: string): code is GovernorateCode {
+  return code in GOVERNORATES;
+}
 
 export const METADATA = {
   name: 'Egypt National ID',
@@ -83,7 +91,7 @@ export const METADATA = {
   displayFormat: 'CYYMMDDGGSSSSV',
   example: '29001010100017',
   checksumAlgorithm:
-    'None (check digit algorithm not publicly documented; format-only validation). See docs/research/egypt-national-id.md.',
+    'None (check digit algorithm not publicly documented; format + semantic validation, no check-digit validation). See docs/research/egypt-national-id.md.',
   officialName: 'الرقم القومي (National Number)',
   links: [
     'https://en.wikipedia.org/wiki/Egyptian_National_Identity_Card',
@@ -92,10 +100,11 @@ export const METADATA = {
 };
 
 /**
- * Coerce input to a trimmed string.
+ * Trim the input. Non-string input is rejected rather than coerced, so a numeric
+ * literal cannot slip past validation as a string.
  */
-function normalize(idNumber: string): string {
-  return String(idNumber).trim();
+function normalize(idNumber: string): string | null {
+  return typeof idNumber === 'string' ? idNumber.trim() : null;
 }
 
 /**
@@ -107,42 +116,18 @@ function resolveYear(century: string, yy: string): number | null {
   return base === null ? null : base + parseInt(yy, 10);
 }
 
-/** Positional weights applied to the first 13 digits for the mod-11 hypothesis. */
-// const CHECKSUM_WEIGHTS = [2, 7, 6, 5, 4, 3, 2, 7, 6, 5, 4, 3, 2];
-
 /**
- * Compute a mod-11 check digit over the first 13 digits, per an UNVERIFIED
- * hypothesis about the Egyptian check-digit algorithm.
+ * Egypt publishes no official check-digit algorithm and no independently
+ * reproducible specification could be located, so no checksum is computed.
+ * Always returns null, mirroring `hasChecksum: false` in METADATA.
  *
- * DO NOT gate validation on this. Nothing in this module calls it; it is
- * exported only so the hypothesis can be investigated against new data.
+ * The `idNumber` parameter is unused but retained for signature parity with
+ * other country modules.
  *
- * The rule reproduces the real check digit on the 5 IDs it was fitted to, but
- * those IDs cannot identify it: all 5 are governorate `01` with a serial below
- * 1000, so digits 8 and 10 are `0` in every sample and their weights are
- * multiplied by zero. Every one of the 11 possible values for the digit-8 weight
- * fits that evidence equally well while producing 11 different check digits for
- * any governorate outside `01`-`04`. The same gap applies at digit 10 for serials
- * >= 1000. Treat the weights above as one arbitrary pick among ~10^8 that fit.
- *
- * Returns null for a malformed ID, and also when the rule yields 10 — which has
- * no single-digit representation. Reading that as "no valid ID has this payload"
- * is part of the hypothesis, not an established fact.
- *
- * See docs/research/egypt-national-id.md.
+ * The mod-11 hypothesis and why it was rejected: docs/research/egypt-national-id.md
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- retained for signature parity (see JSDoc)
 export function checksum(idNumber: string): number | null {
-  const normalized = normalize(idNumber);
-  if (!validateRegexp(normalized, METADATA.pattern)) {
-    return null;
-  }
-  // TODO: implement the checksum calculation once a reliable algorithm is found. The following is a placeholder for the mod-11 hypothesis, which is not verified and should not be used for validation.
-  // let sum = 0;
-  // for (let i = 0; i < CHECKSUM_WEIGHTS.length; i++) {
-  //    sum += Number(normalized[i]) * CHECKSUM_WEIGHTS[i];
-  // }
-  // const expected = (11 - (sum % 11)) % 11;
-  // return expected === 10 ? null : expected;
   return null;
 }
 
@@ -160,6 +145,10 @@ export function validate(idNumber: string): boolean {
   }
 
   const normalized = normalize(idNumber);
+  if (normalized === null) {
+    return false;
+  }
+
   const match = METADATA.pattern.exec(normalized);
   if (!match || !match.groups) {
     return false;
@@ -172,7 +161,7 @@ export function validate(idNumber: string): boolean {
     return false;
   }
 
-  if (!(gov in GOVERNORATES)) {
+  if (!isGovernorateCode(gov)) {
     return false;
   }
 
@@ -192,6 +181,10 @@ export function parse(idNumber: string): EgyptParseResult | null {
   }
 
   const normalized = normalize(idNumber);
+  if (normalized === null) {
+    return null;
+  }
+
   const match = METADATA.pattern.exec(normalized);
   if (!match || !match.groups) {
     return null;
@@ -210,10 +203,10 @@ export function parse(idNumber: string): EgyptParseResult | null {
     return null;
   }
 
-  const governorate = GOVERNORATES[gov];
-  if (!governorate) {
+  if (!isGovernorateCode(gov)) {
     return null;
   }
+  const governorate = GOVERNORATES[gov];
 
   const birthDate = new Date(year, month - 1, day);
 
@@ -232,7 +225,7 @@ export function parse(idNumber: string): EgyptParseResult | null {
 export const NationalID = {
   validate,
   parse,
-  /** UNVERIFIED research helper — not used by validate()/parse(). See `checksum`. */
+  /** Intentionally unimplemented — always returns null. See `checksum`. */
   checksum,
   METADATA,
 };

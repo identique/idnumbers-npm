@@ -16,7 +16,7 @@
 import { validate, parse, METADATA, GOVERNORATES } from '../countries/egy/nationalId';
 import { NationalID } from '../countries/egy';
 import { Gender } from '../constants';
-import { validateNationalId, parseIdInfo, getCountryIdFormat } from '../index';
+import { validateNationalId, parseIdInfo, getCountryIdFormat, EGY } from '../index';
 
 // Valid synthetic IDs: CYYMMDDGGSSSSV
 const VALID = [
@@ -33,7 +33,8 @@ describe('Egypt (EGY) — National ID', () => {
       expect(METADATA.minLength).toBe(14);
       expect(METADATA.maxLength).toBe(14);
       expect(METADATA.isParsable).toBe(true);
-      // No official check-digit algorithm is available; validation is format-only.
+      // No official check-digit algorithm is available; validation is format +
+      // semantic (real date, known governorate) with no check-digit validation.
       expect(METADATA.hasChecksum).toBe(false);
       expect(METADATA.displayFormat).toBe('CYYMMDDGGSSSSV');
     });
@@ -174,6 +175,48 @@ describe('Egypt (EGY) — National ID', () => {
       expect(fmt!.length).toEqual({ min: 14, max: 14 });
       expect(fmt!.isParsable).toBe(true);
       expect(fmt!.hasChecksum).toBe(false);
+    });
+  });
+
+  // Moved from country-specific-validation.test.ts: that suite asserts parity with
+  // the Python `idnumbers` package, which has no `egy` module to compare against.
+  describe('dispatched validation', () => {
+    const validEgyptianIDs = [
+      '29001010100017', // 1990-01-01, Cairo
+      '30503123400026', // 2005-03-12, North Sinai
+      '28512258800016', // 1985-12-25, born abroad (88)
+    ];
+
+    const invalidEgyptianIDs = [
+      '2900101010123', // too short
+      '29001019901238', // unknown governorate code (99)
+      '19001010101238', // unsupported century digit (1)
+      '39902290100456', // 2099-02-29 is not a real date
+    ];
+
+    test.each(validEgyptianIDs)('validates valid National ID: %s', id => {
+      expect(validateNationalId('EGY', id).isValid).toBe(true);
+    });
+
+    test.each(invalidEgyptianIDs)('rejects invalid National ID: %s', id => {
+      expect(validateNationalId('EGY', id).isValid).toBe(false);
+    });
+  });
+
+  describe('barrel export', () => {
+    it('re-exports the EGY module from the package root', () => {
+      expect(EGY).toBeDefined();
+      expect(EGY.NationalID).toBe(NationalID);
+      expect(EGY.NationalID.METADATA.iso3166Alpha2).toBe('EG');
+      expect(EGY.NationalID.validate(METADATA.example)).toBe(true);
+    });
+  });
+
+  describe('non-string input', () => {
+    it('rejects non-string input rather than coercing it', () => {
+      const numeric = 29001010100017 as unknown as string;
+      expect(validate(numeric)).toBe(false);
+      expect(parse(numeric)).toBeNull();
     });
   });
 });

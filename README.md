@@ -283,7 +283,7 @@ console.log(format);
 
 ### Africa (4)
 
-- 🇪🇬 **EGY** - National ID (الرقم القومي) — format-only validation; Egypt publishes no check-digit algorithm ([research note](docs/research/egypt-national-id.md)).
+- 🇪🇬 **EGY** - National ID (الرقم القومي)
 - 🇳🇬 **NGA** - National Identification Number (NIN)
 - 🇿🇦 **ZAF** - ID Number
 - 🇿🇼 **ZWE** - National ID

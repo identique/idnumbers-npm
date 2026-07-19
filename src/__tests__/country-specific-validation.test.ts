@@ -398,30 +398,8 @@ describe('Python idnumbers test cases validation', () => {
   });
 
   // RUS is covered in comprehensive-validation.test.ts (Eastern European Countries).
-  describe('EGY - National ID', () => {
-    const validEgyptianIDs = [
-      '29001010100017', // 1990-01-01, Cairo
-      '30503123400026', // 2005-03-12, North Sinai
-      '28512258800016', // 1985-12-25, born abroad (88)
-    ];
-
-    const invalidEgyptianIDs = [
-      '2900101010123', // too short
-      '29001019901238', // unknown governorate code (99)
-      '19001010101238', // unsupported century digit (1)
-      '39902290100456', // 2099-02-29 is not a real date
-    ];
-
-    test.each(validEgyptianIDs)('should validate valid National ID: %s', id => {
-      const result = validateNationalId('EGY', id);
-      expect(result.isValid).toBe(true);
-    });
-
-    test.each(invalidEgyptianIDs)('should reject invalid National ID: %s', id => {
-      const result = validateNationalId('EGY', id);
-      expect(result.isValid).toBe(false);
-    });
-  });
+  // EGY is covered in issue-54-egy-nationalId.test.ts — Python `idnumbers` has no
+  // `egy` module, so it has no parity counterpart to assert against here.
 
   describe('UKR - Individual Tax Number', () => {
     const validUkrainianIDs = ['3125612591', '0000000000']; // Both valid in Python
