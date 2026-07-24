@@ -48,6 +48,7 @@ export * as IND from './countries/ind';
 export * as JPN from './countries/jpn';
 export * as KAZ from './countries/kaz';
 export * as KWT from './countries/kwt';
+export * as EGY from './countries/egy';
 export * as IDN from './countries/idn';
 export * as KOR from './countries/kor';
 export * as MEX from './countries/mex';
@@ -145,6 +146,7 @@ export const SUPPORTED_COUNTRIES: CountryInfo[] = [
   { code: 'JPN', name: 'Japan', idType: 'My Number' },
   { code: 'KAZ', name: 'Kazakhstan', idType: 'Individual Identification Number' },
   { code: 'KWT', name: 'Kuwait', idType: 'Civil Number' },
+  { code: 'EGY', name: 'Egypt', idType: 'National ID' },
   { code: 'IDN', name: 'Indonesia', idType: 'National ID Number' },
   { code: 'KOR', name: 'South Korea', idType: 'Resident Registration Number' },
   { code: 'MEX', name: 'Mexico', idType: 'CURP' },

@@ -2,8 +2,11 @@
  * Parity tests for validateNationalId registry migration (Issue #51).
  *
  * Verifies that the registry-based validateNationalId produces identical
- * results to the previous switch-based implementation for every country,
- * including composite validators (BGD, SMR, NZL) and alias resolution.
+ * results to the previous switch-based implementation for every country that
+ * had a switch-based predecessor, including composite validators (BGD, SMR,
+ * NZL) and alias resolution. Countries added after the migration (which never
+ * had a switch entry, e.g. EGY) are also included here to carry post-migration
+ * registry validation coverage.
  */
 import { validateNationalId } from '../index';
 
@@ -415,6 +418,14 @@ describe('validateNationalId parity (registry vs old switch)', () => {
       invalidId: 'INVALID',
       hasParse: true,
       description: 'Kuwait Civil Number',
+    },
+    {
+      code: 'EGY',
+      alias: 'EG',
+      validId: '29001010100017',
+      invalidId: 'INVALID',
+      hasParse: true,
+      description: 'Egypt National ID',
     },
     {
       code: 'ROU',
