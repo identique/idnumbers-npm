@@ -2,7 +2,10 @@
  * Parity tests for parseIdInfo registry migration (Issue #52).
  *
  * Verifies that the registry-based parseIdInfo produces identical results
- * to the previous switch-based implementation for every country.
+ * to the previous switch-based implementation for every country that had a
+ * switch-based predecessor. Countries added after the migration (which never
+ * had a switch entry, e.g. EGY) are also included here to carry post-migration
+ * registry parse coverage.
  */
 import { parseIdInfo } from '../index';
 import { registry } from '../registry/ValidatorRegistry';

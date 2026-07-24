@@ -75,7 +75,7 @@ export type GovernorateCode = keyof typeof GOVERNORATES;
 
 /** Narrow an arbitrary 2-digit string to a known governorate code. */
 function isGovernorateCode(code: string): code is GovernorateCode {
-  return code in GOVERNORATES;
+  return Object.prototype.hasOwnProperty.call(GOVERNORATES, code);
 }
 
 export const METADATA = {
