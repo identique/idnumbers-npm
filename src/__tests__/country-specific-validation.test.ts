@@ -397,7 +397,9 @@ describe('Python idnumbers test cases validation', () => {
     });
   });
 
-  // EGY and RUS removed - not supported in Python idnumbers library
+  // RUS is covered in comprehensive-validation.test.ts (Eastern European Countries).
+  // EGY is covered in issue-54-egy-nationalId.test.ts — Python `idnumbers` has no
+  // `egy` module, so it has no parity counterpart to assert against here.
 
   describe('UKR - Individual Tax Number', () => {
     const validUkrainianIDs = ['3125612591', '0000000000']; // Both valid in Python
