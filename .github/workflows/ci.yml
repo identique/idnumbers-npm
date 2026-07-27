@@ -151,6 +151,11 @@ jobs:
       - name: Test real-world integration example
         run: node docs/examples/real-world-integration.js
 
+      - name: Test TypeScript usage examples
+        run: |
+          npm run example
+          npm run example:extended
+
   summary:
     name: CI Summary
     runs-on: ubuntu-latest
