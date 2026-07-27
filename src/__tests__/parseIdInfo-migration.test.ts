@@ -15,8 +15,8 @@ import { adaptMetadata, createValidator } from '../registry/adapters';
 // Registry population tests
 // ---------------------------------------------------------------------------
 describe('Registry population', () => {
-  it('should have 84 primary keys registered', () => {
-    expect(registry.list().length).toBe(84);
+  it('should have 85 primary keys registered', () => {
+    expect(registry.list().length).toBe(85);
   });
 
   it('should resolve all expected alpha-3 keys', () => {
@@ -105,6 +105,7 @@ describe('Registry population', () => {
       'CRI',
       'DOM',
       'ECU',
+      'GTM',
     ];
 
     for (const key of expectedKeys) {
@@ -175,6 +176,7 @@ describe('Registry population', () => {
       LV: 'LVA',
       DE: 'DEU',
       NL: 'NLD',
+      GT: 'GTM',
       AT: 'AUT',
       ES: 'ESP',
       UK: 'GBR',
@@ -403,6 +405,7 @@ describe('parseIdInfo parity (registry vs old switch)', () => {
       description: 'Costa Rica Cédula de Identidad',
     },
     { code: 'ECU', alias: 'EC', validId: '1710000009', description: 'Ecuador Cedula' },
+    { code: 'GTM', alias: 'GT', validId: '1912345670101', description: 'Guatemala DPI' },
   ];
 
   describe.each(parseableCountries)('$description ($code)', ({ code, alias, validId }) => {

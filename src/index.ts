@@ -91,6 +91,7 @@ export * as PNG from './countries/png';
 export * as SMR from './countries/smr';
 export * as CRI from './countries/cri';
 export * as ECU from './countries/ecu';
+export * as GTM from './countries/gtm';
 
 // Export registry
 export * from './registry';
@@ -188,6 +189,7 @@ export const SUPPORTED_COUNTRIES: CountryInfo[] = [
   { code: 'PNG', name: 'Papua New Guinea', idType: 'National ID Number' },
   { code: 'SMR', name: 'San Marino', idType: 'Social Security Number / Tax Registration' },
   { code: 'CRI', name: 'Costa Rica', idType: 'Cédula de Identidad' },
+  { code: 'GTM', name: 'Guatemala', idType: 'Documento Personal de Identificación (DPI)' },
 ];
 
 /**

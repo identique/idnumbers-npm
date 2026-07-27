@@ -96,6 +96,7 @@ describe('getCountryIdFormat returns IdFormat for all registered countries', () 
     { code: 'SMR', name: 'San Marino', idType: 'Social Security Number / Tax Registration' },
     { code: 'CRI', name: 'Costa Rica', idType: 'Cédula de Identidad' },
     { code: 'ECU', name: 'Ecuador', idType: 'Cédula de Identidad' },
+    { code: 'GTM', name: 'Guatemala', idType: 'Documento Personal de Identificación (DPI)' },
   ];
 
   test.each(registeredCountries)(
@@ -154,6 +155,7 @@ describe('Format display strings', () => {
     { code: 'VEN', format: 'V-######## or E-########' },
     { code: 'ZAF', format: 'YYMMDDSSSSCAZ' },
     { code: 'ZWE', format: 'RR######(N)CDD' },
+    { code: 'GTM', format: 'NNNN NNNNN NNNN' },
   ];
 
   test.each(countriesWithFormat)('$code has format string "$format"', ({ code, format }) => {
@@ -203,6 +205,7 @@ describe('Alias resolution in getCountryIdFormat', () => {
     { alias: 'CN', expectedCode: 'CHN' },
     { alias: 'BR', expectedCode: 'BRA' },
     { alias: 'EC', expectedCode: 'ECU' },
+    { alias: 'GT', expectedCode: 'GTM' },
   ];
 
   test.each(aliasTests)('$alias resolves to $expectedCode', ({ alias, expectedCode }) => {
@@ -237,8 +240,8 @@ describe('Edge cases and unregistered codes', () => {
   });
 
   // Former stub entries for unregistered countries now return null
-  // (EC is no longer a stub -- it now resolves to ECU, see issue #55)
-  const formerStubs = ['QA', 'UY', 'BO', 'PY', 'PA', 'GT', 'HN', 'SV', 'NI', 'JO', 'LB', 'OM'];
+  // (EC, CR, DO, GT are no longer stubs -- they now resolve to ECU, CRI, DOM, GTM)
+  const formerStubs = ['QA', 'UY', 'BO', 'PY', 'PA', 'HN', 'SV', 'NI', 'JO', 'LB', 'OM'];
 
   test.each(formerStubs)('former stub %s now returns null', code => {
     expect(getCountryIdFormat(code)).toBeNull();

@@ -70,6 +70,7 @@ import { CPFNumber } from '../countries/bra';
 import { Cedula as CriCedula } from '../countries/cri';
 import { Cedula as DomCedula } from '../countries/dom';
 import { Cedula as EcuCedula } from '../countries/ecu';
+import { DPI } from '../countries/gtm';
 
 // ---------------------------------------------------------------------------
 // Secondary type imports (entity IDs, old/deprecated formats — not registered
@@ -216,6 +217,7 @@ const COUNTRY_REGISTRY: RegistryEntry[] = [
   { key: 'CRI', module: CriCedula, aliases: ['CR'] },
   { key: 'DOM', module: DomCedula, aliases: ['DO'] },
   { key: 'ECU', module: EcuCedula, aliases: ['EC'] },
+  { key: 'GTM', module: DPI, aliases: ['GT'] },
 
   // --- Function-based modules ---
   { key: 'ALB', module: IdentityNumber, aliases: [] },
