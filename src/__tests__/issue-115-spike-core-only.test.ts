@@ -49,7 +49,8 @@ const SAMPLES: Array<[string, CountryEntry, IdMetadata]> = [
   ['SMR', SMR, SocialSecurityNumber.METADATA],
 ];
 
-const SPIKE_COUNTRY_FILES = ['twn', 'ita', 'aus', 'mkd', 'dom', 'smr'];
+// Derived from SAMPLES so a newly sampled country can never skip the purity check below.
+const SPIKE_COUNTRY_FILES = SAMPLES.map(([key]) => key.toLowerCase());
 
 describe('spike option B core (src/spike/core.ts)', () => {
   it('should start with an empty registry when only core is imported', () => {

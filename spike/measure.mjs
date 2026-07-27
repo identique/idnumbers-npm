@@ -28,6 +28,8 @@ const SAMPLE_COUNTRIES = [
 ];
 
 const DIST_ENTRY = 'dist/index.js';
+const RESULTS_DIR = path.join(ROOT, 'spike/results');
+const MEASUREMENTS_JSON = path.join(RESULTS_DIR, 'measurements.json');
 
 // ---------------------------------------------------------------------------
 // Cell table
@@ -179,8 +181,18 @@ const BUDGET_HEADROOM_PER_COUNTRY = 1.25;
 const BUDGET_HEADROOM_FULL = 1.1;
 const BUDGET_ROUND_TO = 100;
 
+/** Rule 3 and invariant 5 both accept option C's root within this share of today's full bundle. */
+const ROOT_DELTA_TOLERANCE = 0.02;
+
 function budget(bytes, headroom) {
   return Math.ceil((bytes * headroom) / BUDGET_ROUND_TO) * BUDGET_ROUND_TO;
+}
+
+/** |proto.full - today.full| / today.full -- the single quantity rule 3 and invariant 5 both test. */
+function rootDeltaShare(cellsById) {
+  const protoFull = cellsById['proto.full.esm'].bytes.minified;
+  const todayFull = cellsById['today.full.esm'].bytes.minified;
+  return Math.abs(protoFull - todayFull) / todayFull;
 }
 
 function computeDerived(cellsById) {
@@ -190,7 +202,6 @@ function computeDerived(cellsById) {
   const singleCountryMinMinifiedGzip = Math.min(...registryCells);
   const singleCountryMaxMinifiedGzip = Math.max(...registryCells);
   const fullMinifiedGzip = cellsById['proto.full.esm'].bytes.minifiedGzip;
-  const todayFullMinified = cellsById['today.full.esm'].bytes.minified;
 
   const optionAOverheadBytes =
     cellsById['proto.single.a.twn.esm'].bytes.minified -
@@ -216,8 +227,6 @@ function computeDerived(cellsById) {
       ),
       fullMinifiedGzip: budget(fullMinifiedGzip, BUDGET_HEADROOM_FULL),
     },
-    // Exposed for the --check invariants and the decision rule below.
-    _todayFullMinified: todayFullMinified,
   };
 }
 
@@ -225,7 +234,7 @@ function computeDerived(cellsById) {
 // Pre-registered decision rule (plan Step 9), evaluated mechanically against
 // the derived numbers above. No conclusion is authored ahead of the data.
 // ---------------------------------------------------------------------------
-function evaluateDecisionRule(derived) {
+function evaluateDecisionRule(derived, cellsById) {
   if (derived.singleCountryShareOfFull > 0.25) {
     return {
       option: 'none',
@@ -244,8 +253,8 @@ function evaluateDecisionRule(derived) {
   // alias behavior are unchanged from the option C root, with no source
   // change required of existing consumers.
   const optionCPreservesApi = true;
-  const rootDeltaShare = Math.abs(derived.protoRootOverheadBytes) / derived._todayFullMinified;
-  const chooseC = rootDeltaShare <= 0.02 && optionCPreservesApi;
+  const deltaShare = rootDeltaShare(cellsById);
+  const chooseC = deltaShare <= ROOT_DELTA_TOLERANCE && optionCPreservesApi;
 
   const aNote = aEliminated
     ? `rule 2: option A costs ${derived.optionAOverheadBytes} more bytes per country than B/C ` +
@@ -256,11 +265,11 @@ function evaluateDecisionRule(derived) {
   if (chooseC) {
     return {
       option: 'C',
-      ruleBranch: `${aNote}; rule 3: root delta ${(rootDeltaShare * 100).toFixed(2)}% <= 2% and API preserved -> C`,
+      ruleBranch: `${aNote}; rule 3: root delta ${(deltaShare * 100).toFixed(2)}% <= 2% and API preserved -> C`,
       rationale:
         `${aNote}. Options B and C ship the same per-country entry files and tie on bytes ` +
         `by construction. Option C's batteries-included root differs from today's full ` +
-        `bundle by only ${(rootDeltaShare * 100).toFixed(2)}%, while preserving ` +
+        `bundle by only ${(deltaShare * 100).toFixed(2)}%, while preserving ` +
         'validateNationalId/parseIdInfo/getCountryIdFormat and alpha-2/lowercase alias ' +
         'behavior with zero source changes for existing consumers -- so C is chosen.',
     };
@@ -268,7 +277,7 @@ function evaluateDecisionRule(derived) {
 
   return {
     option: 'B',
-    ruleBranch: `${aNote}; rule 3: root delta ${(rootDeltaShare * 100).toFixed(2)}% > 2% or API not preserved -> B`,
+    ruleBranch: `${aNote}; rule 3: root delta ${(deltaShare * 100).toFixed(2)}% > 2% or API not preserved -> B`,
     rationale:
       `${aNote}. Option C's root diverges from today's full bundle by more than 2% (or ` +
       'fails to preserve the public API unchanged), so B is chosen and a documented ' +
@@ -279,20 +288,15 @@ function evaluateDecisionRule(derived) {
 // ---------------------------------------------------------------------------
 // --check invariants
 // ---------------------------------------------------------------------------
-function runInvariants(cellsById, derived) {
+function runInvariants(cellsById, nonDeterministicIds) {
   const results = [];
 
-  const allDeterministic = Object.values(cellsById).every(c => c.deterministic);
   results.push({
     n: 1,
     description: 'every cell is deterministic',
-    pass: allDeterministic,
-    detail: allDeterministic
-      ? 'all cells deterministic'
-      : Object.entries(cellsById)
-          .filter(([, c]) => !c.deterministic)
-          .map(([id]) => id)
-          .join(', '),
+    pass: nonDeterministicIds.length === 0,
+    detail:
+      nonDeterministicIds.length === 0 ? 'all cells deterministic' : nonDeterministicIds.join(', '),
   });
 
   const todayRoot = cellsById['today.single.rootimport.esm'].bytes.minified;
@@ -321,12 +325,12 @@ function runInvariants(cellsById, derived) {
   });
 
   const protoFull = cellsById['proto.full.esm'].bytes.minified;
-  const rootDeltaShare = Math.abs(protoFull - todayFull) / todayFull;
+  const deltaShare = rootDeltaShare(cellsById);
   results.push({
     n: 5,
     description: 'proto.full.esm.minified within +/-2% of today.full.esm.minified',
-    pass: rootDeltaShare <= 0.02,
-    detail: `${(rootDeltaShare * 100).toFixed(3)}% (${protoFull} vs ${todayFull})`,
+    pass: deltaShare <= ROOT_DELTA_TOLERANCE,
+    detail: `${(deltaShare * 100).toFixed(3)}% (${protoFull} vs ${todayFull})`,
   });
 
   const protoTwnDirect = cellsById['proto.single.b.twn.esm'].bytes.minified;
@@ -343,6 +347,11 @@ function runInvariants(cellsById, derived) {
 // ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
+function pkgVersion(name) {
+  return JSON.parse(readFileSync(path.join(ROOT, 'node_modules', name, 'package.json'), 'utf8'))
+    .version;
+}
+
 async function main() {
   if (!existsSync(path.join(ROOT, DIST_ENTRY))) {
     console.error(`${DIST_ENTRY} not found — run "npm run build" first`);
@@ -355,20 +364,18 @@ async function main() {
     cellsById[cell.id] = { ...cell, bytes, deterministic };
   }
 
-  const anyNonDeterministic = Object.values(cellsById).some(c => !c.deterministic);
+  const nonDeterministicIds = Object.entries(cellsById)
+    .filter(([, c]) => !c.deterministic)
+    .map(([id]) => id);
 
   const derived = computeDerived(cellsById);
-  const decision = evaluateDecisionRule(derived);
-  delete derived._todayFullMinified;
+  const decision = evaluateDecisionRule(derived, cellsById);
 
   const versions = {
     node: process.version,
     npm: execFileSync('npm', ['--version'], { cwd: ROOT }).toString().trim(),
-    esbuild: JSON.parse(readFileSync(path.join(ROOT, 'node_modules/esbuild/package.json'), 'utf8'))
-      .version,
-    typescript: JSON.parse(
-      readFileSync(path.join(ROOT, 'node_modules/typescript/package.json'), 'utf8')
-    ).version,
+    esbuild: pkgVersion('esbuild'),
+    typescript: pkgVersion('typescript'),
     commit: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: ROOT }).toString().trim(),
   };
 
@@ -387,8 +394,8 @@ async function main() {
     };
   });
 
-  const existing = existsSync(path.join(ROOT, 'spike/results/measurements.json'))
-    ? JSON.parse(readFileSync(path.join(ROOT, 'spike/results/measurements.json'), 'utf8'))
+  const existing = existsSync(MEASUREMENTS_JSON)
+    ? JSON.parse(readFileSync(MEASUREMENTS_JSON, 'utf8'))
     : null;
 
   const output = {
@@ -406,11 +413,8 @@ async function main() {
     decision,
   };
 
-  mkdirSync(path.join(ROOT, 'spike/results'), { recursive: true });
-  writeFileSync(
-    path.join(ROOT, 'spike/results/measurements.json'),
-    JSON.stringify(output, null, 2) + '\n'
-  );
+  mkdirSync(RESULTS_DIR, { recursive: true });
+  writeFileSync(MEASUREMENTS_JSON, JSON.stringify(output, null, 2) + '\n');
 
   console.log('| Cell | Layout | raw | minified | min+gzip | deterministic |');
   console.log('|------|--------|-----|----------|----------|---------------|');
@@ -423,16 +427,16 @@ async function main() {
   console.log('Derived:', JSON.stringify(derived, null, 2));
   console.log('Decision:', JSON.stringify(decision, null, 2));
 
-  if (anyNonDeterministic) {
+  if (nonDeterministicIds.length > 0) {
     console.error('\nNon-deterministic cell(s) detected:');
-    for (const [id, c] of Object.entries(cellsById)) {
-      if (!c.deterministic) console.error(`  - ${id}`);
+    for (const id of nonDeterministicIds) {
+      console.error(`  - ${id}`);
     }
     process.exit(1);
   }
 
   if (CHECK) {
-    const invariants = runInvariants(cellsById, derived);
+    const invariants = runInvariants(cellsById, nonDeterministicIds);
     console.log('\n--check invariants:');
     let anyFailed = false;
     for (const inv of invariants) {
