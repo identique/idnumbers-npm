@@ -1,0 +1,248 @@
+{
+  "generatedAt": "2026-07-27T07:25:28.516Z",
+  "versions": {
+    "node": "v22.18.0",
+    "npm": "11.5.2",
+    "esbuild": "0.28.1",
+    "typescript": "5.9.3",
+    "commit": "c0b2ef00e9973868c10735b1fd96fd962685481c"
+  },
+  "cells": [
+    {
+      "id": "today.full.esm",
+      "layout": "current",
+      "option": "baseline",
+      "format": "esm",
+      "treeShaken": true,
+      "description": "current layout, full package import",
+      "entrySource": "import * as lib from './src/index'; globalThis.__s = lib.validateNationalId('TWN','A123456789');",
+      "bytes": {
+        "raw": 252795,
+        "minified": 135989,
+        "minifiedGzip": 37976
+      },
+      "deterministic": true
+    },
+    {
+      "id": "today.single.rootimport.esm",
+      "layout": "current",
+      "option": "baseline",
+      "format": "esm",
+      "treeShaken": true,
+      "description": "current layout, one country via named import from the root",
+      "entrySource": "import { validateNationalId } from './src/index'; globalThis.__s = validateNationalId('TWN','A123456789');",
+      "bytes": {
+        "raw": 252808,
+        "minified": 135989,
+        "minifiedGzip": 37976
+      },
+      "deterministic": true
+    },
+    {
+      "id": "today.single.deep.esm",
+      "layout": "current",
+      "option": "baseline",
+      "format": "esm",
+      "treeShaken": true,
+      "description": "current layout, undocumented deep import of a single country module",
+      "entrySource": "import { NationalID } from './src/countries/twn'; globalThis.__s = NationalID.validate('A123456789');",
+      "bytes": {
+        "raw": 3644,
+        "minified": 1805,
+        "minifiedGzip": 976
+      },
+      "deterministic": true
+    },
+    {
+      "id": "today.published.cjs",
+      "layout": "current",
+      "option": "baseline",
+      "format": "cjs",
+      "treeShaken": false,
+      "description": "NOT TREE-SHAKEN -- todays published reality (dist/index.js, CJS)",
+      "entrySource": "entryPoints: [\"dist/index.js\"]",
+      "bytes": {
+        "raw": 392720,
+        "minified": 194815,
+        "minifiedGzip": 49935
+      },
+      "deterministic": true
+    },
+    {
+      "id": "proto.core_only.esm",
+      "layout": "prototype",
+      "option": "core",
+      "format": "esm",
+      "treeShaken": true,
+      "description": "prototype, idnumbers/core fixed cost with no countries registered",
+      "entrySource": "import { validateNationalId } from './src/spike/core'; globalThis.__s = validateNationalId('TWN','A123456789');",
+      "bytes": {
+        "raw": 4990,
+        "minified": 1938,
+        "minifiedGzip": 821
+      },
+      "deterministic": true
+    },
+    {
+      "id": "proto.full.esm",
+      "layout": "prototype",
+      "option": "C",
+      "format": "esm",
+      "treeShaken": true,
+      "description": "prototype, option C batteries-included root",
+      "entrySource": "import { validateNationalId } from './src/spike/index'; globalThis.__s = validateNationalId('TWN','A123456789');",
+      "bytes": {
+        "raw": 246749,
+        "minified": 130868,
+        "minifiedGzip": 36632
+      },
+      "deterministic": true
+    },
+    {
+      "id": "proto.single.a.twn.esm",
+      "layout": "prototype",
+      "option": "A",
+      "format": "esm",
+      "treeShaken": true,
+      "description": "prototype, option A auto-registering per-country entry (TWN)",
+      "entrySource": "import './src/spike/auto/twn'; import { validateNationalId } from './src/spike/core'; globalThis.__s = validateNationalId('TWN','A123456789');",
+      "bytes": {
+        "raw": 10249,
+        "minified": 4639,
+        "minifiedGzip": 1952
+      },
+      "deterministic": true
+    },
+    {
+      "id": "proto.single.b.twn.esm",
+      "layout": "prototype",
+      "option": "B",
+      "format": "esm",
+      "treeShaken": true,
+      "description": "prototype, option B/C pure per-country entry (TWN), used directly, no registry",
+      "entrySource": "import { TWN } from './src/spike/countries/twn'; globalThis.__s = TWN.validator.validate('A123456789');",
+      "bytes": {
+        "raw": 4835,
+        "minified": 2523,
+        "minifiedGzip": 1240
+      },
+      "deterministic": true
+    },
+    {
+      "id": "proto.single.b_registry.twn.esm",
+      "layout": "prototype",
+      "option": "B",
+      "format": "esm",
+      "treeShaken": true,
+      "description": "prototype, option B/C pure per-country entry (TWN) registered via core.register()",
+      "entrySource": "import { register, validateNationalId } from './src/spike/core'; import { TWN } from './src/spike/countries/twn'; register(TWN); globalThis.__s = validateNationalId('TWN', 'x');",
+      "bytes": {
+        "raw": 10223,
+        "minified": 4630,
+        "minifiedGzip": 1952
+      },
+      "deterministic": true
+    },
+    {
+      "id": "proto.single.b_registry.ita.esm",
+      "layout": "prototype",
+      "option": "B",
+      "format": "esm",
+      "treeShaken": true,
+      "description": "prototype, option B/C pure per-country entry (ITA) registered via core.register()",
+      "entrySource": "import { register, validateNationalId } from './src/spike/core'; import { ITA } from './src/spike/countries/ita'; register(ITA); globalThis.__s = validateNationalId('ITA', 'x');",
+      "bytes": {
+        "raw": 11699,
+        "minified": 5246,
+        "minifiedGzip": 2367
+      },
+      "deterministic": true
+    },
+    {
+      "id": "proto.single.b_registry.aus.esm",
+      "layout": "prototype",
+      "option": "B",
+      "format": "esm",
+      "treeShaken": true,
+      "description": "prototype, option B/C pure per-country entry (AUS) registered via core.register()",
+      "entrySource": "import { register, validateNationalId } from './src/spike/core'; import { AUS } from './src/spike/countries/aus'; register(AUS); globalThis.__s = validateNationalId('AUS', 'x');",
+      "bytes": {
+        "raw": 9363,
+        "minified": 4224,
+        "minifiedGzip": 1751
+      },
+      "deterministic": true
+    },
+    {
+      "id": "proto.single.b_registry.mkd.esm",
+      "layout": "prototype",
+      "option": "B",
+      "format": "esm",
+      "treeShaken": true,
+      "description": "prototype, option B/C pure per-country entry (MKD) registered via core.register()",
+      "entrySource": "import { register, validateNationalId } from './src/spike/core'; import { MKD } from './src/spike/countries/mkd'; register(MKD); globalThis.__s = validateNationalId('MKD', 'x');",
+      "bytes": {
+        "raw": 12286,
+        "minified": 5661,
+        "minifiedGzip": 2222
+      },
+      "deterministic": true
+    },
+    {
+      "id": "proto.single.b_registry.dom.esm",
+      "layout": "prototype",
+      "option": "B",
+      "format": "esm",
+      "treeShaken": true,
+      "description": "prototype, option B/C pure per-country entry (DOM) registered via core.register()",
+      "entrySource": "import { register, validateNationalId } from './src/spike/core'; import { DOM } from './src/spike/countries/dom'; register(DOM); globalThis.__s = validateNationalId('DOM', 'x');",
+      "bytes": {
+        "raw": 19975,
+        "minified": 12241,
+        "minifiedGzip": 4766
+      },
+      "deterministic": true
+    },
+    {
+      "id": "proto.single.b_registry.smr.esm",
+      "layout": "prototype",
+      "option": "B",
+      "format": "esm",
+      "treeShaken": true,
+      "description": "prototype, option B/C pure per-country entry (SMR) registered via core.register()",
+      "entrySource": "import { register, validateNationalId } from './src/spike/core'; import { SMR } from './src/spike/countries/smr'; register(SMR); globalThis.__s = validateNationalId('SMR', 'x');",
+      "bytes": {
+        "raw": 8015,
+        "minified": 3504,
+        "minifiedGzip": 1357
+      },
+      "deterministic": true
+    }
+  ],
+  "derived": {
+    "singleCountryMinMinifiedGzip": 1357,
+    "singleCountryMaxMinifiedGzip": 4766,
+    "fullMinifiedGzip": 36632,
+    "singleCountryShareOfFull": 0.13010482638130597,
+    "optionAOverheadBytes": 9,
+    "protoRootOverheadBytes": -5121,
+    "budgetFormula": "budget(x) = ceil(x * 1.25 / 100) * 100 for per-country/core; ceil(x * 1.10 / 100) * 100 for the full bundle",
+    "budgets": {
+      "singleCountryMinifiedGzip": 6000,
+      "coreMinifiedGzip": 1100,
+      "fullMinifiedGzip": 40300
+    }
+  },
+  "sideEffectsDemo": {
+    "attempted": true,
+    "dropped": true,
+    "withSideEffectsFalse": "{\"isValid\":false,\"countryCode\":\"TWN\",\"idNumber\":\"A123456789\",\"errorMessage\":\"Unsupported country code: TWN\"}",
+    "withoutField": "{\"isValid\":true,\"countryCode\":\"TWN\",\"idNumber\":\"A123456789\",\"extractedInfo\":{\"location\":\"A\",\"gender\":\"male\",\"sn\":\"2345678\",\"checksum\":9}}",
+    "note": "esbuild eliminated the bare side-effect import once \"sideEffects\": false was declared; the registration never ran and the program reports the country as unsupported."
+  },
+  "decision": {
+    "option": "B",
+    "ruleBranch": "rule 2: option A costs 9 more bytes per country than B/C and is incompatible with \"sideEffects\": false, so A is eliminated on bytes; rule 3: root delta 3.77% > 2% or API not preserved -> B",
+    "rationale": "rule 2: option A costs 9 more bytes per country than B/C and is incompatible with \"sideEffects\": false, so A is eliminated on bytes. Option C's root diverges from today's full bundle by more than 2% (or fails to preserve the public API unchanged), so B is chosen and a documented breaking change is accepted for v2."
+  }
+}
