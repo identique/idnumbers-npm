@@ -2,7 +2,10 @@
  * Parity tests for parseIdInfo registry migration (Issue #52).
  *
  * Verifies that the registry-based parseIdInfo produces identical results
- * to the previous switch-based implementation for every country.
+ * to the previous switch-based implementation for every country that had a
+ * switch-based predecessor. Countries added after the migration (which never
+ * had a switch entry, e.g. EGY) are also included here to carry post-migration
+ * registry parse coverage.
  */
 import { parseIdInfo } from '../index';
 import { registry } from '../registry/ValidatorRegistry';
@@ -12,8 +15,8 @@ import { adaptMetadata, createValidator } from '../registry/adapters';
 // Registry population tests
 // ---------------------------------------------------------------------------
 describe('Registry population', () => {
-  it('should have 81 primary keys registered', () => {
-    expect(registry.list().length).toBe(81);
+  it('should have 85 primary keys registered', () => {
+    expect(registry.list().length).toBe(85);
   });
 
   it('should resolve all expected alpha-3 keys', () => {
@@ -74,6 +77,7 @@ describe('Registry population', () => {
       'JPN',
       'KAZ',
       'KWT',
+      'EGY',
       'IDN',
       'KOR',
       'MEX',
@@ -98,6 +102,9 @@ describe('Registry population', () => {
       'SRB',
       'TWN',
       'VEN',
+      'CRI',
+      'DOM',
+      'ECU',
       'GTM',
     ];
 
@@ -140,6 +147,7 @@ describe('Registry population', () => {
       BA: 'BIH',
       KZ: 'KAZ',
       KW: 'KWT',
+      EG: 'EGY',
       RO: 'ROU',
       RU: 'RUS',
       SG: 'SGP',
@@ -149,6 +157,7 @@ describe('Registry population', () => {
       RS: 'SRB',
       TW: 'TWN',
       VE: 'VEN',
+      DO: 'DOM',
       ID: 'IDN',
       KR: 'KOR',
       MX: 'MEX',
@@ -182,6 +191,8 @@ describe('Registry population', () => {
       PT: 'PRT',
       SA: 'SAU',
       TR: 'TUR',
+      CR: 'CRI',
+      EC: 'ECU',
     };
 
     for (const [alias, primaryKey] of Object.entries(expectedAliases)) {
@@ -358,6 +369,7 @@ describe('parseIdInfo parity (registry vs old switch)', () => {
     { code: 'BIH', alias: 'BA', validId: '0101990150002', description: 'Bosnia JMBG' },
     { code: 'KAZ', alias: 'KZ', validId: '900101300017', description: 'Kazakhstan IIN' },
     { code: 'KWT', alias: 'KW', validId: '280010100004', description: 'Kuwait Civil Number' },
+    { code: 'EGY', alias: 'EG', validId: '29001010100017', description: 'Egypt National ID' },
     { code: 'ROU', alias: 'RO', validId: '1800101226813', description: 'Romania CNP' },
     { code: 'RUS', alias: 'RU', validId: '1234 567890', description: 'Russia Passport' },
     { code: 'SGP', alias: 'SG', validId: 'S1234567D', description: 'Singapore NRIC' },
@@ -367,6 +379,7 @@ describe('parseIdInfo parity (registry vs old switch)', () => {
     { code: 'SRB', alias: 'RS', validId: '0101990700002', description: 'Serbia JMBG' },
     { code: 'TWN', alias: 'TW', validId: 'A123456789', description: 'Taiwan National ID' },
     { code: 'VEN', alias: 'VE', validId: 'V-12345678', description: 'Venezuela Cedula' },
+    { code: 'DOM', alias: 'DO', validId: '40200000012', description: 'Dominican Republic Cedula' },
     { code: 'IDN', alias: 'ID', validId: '1101010101900001', description: 'Indonesia NIK' },
     { code: 'KOR', alias: 'KR', validId: '800101-1234567', description: 'South Korea RRN' },
     { code: 'MEX', alias: 'MX', validId: 'HEGG560427MVZRRL04', description: 'Mexico CURP' },
@@ -385,6 +398,13 @@ describe('parseIdInfo parity (registry vs old switch)', () => {
     { code: 'IRL', alias: 'IE', validId: '1234567T', description: 'Ireland PPS' },
     { code: 'LVA', alias: 'LV', validId: '161175-19997', description: 'Latvia Personal Code' },
     { code: 'LKA', alias: 'LK', validId: '199001200001', description: 'Sri Lanka NIC' },
+    {
+      code: 'CRI',
+      alias: 'CR',
+      validId: '1-0913-0259',
+      description: 'Costa Rica Cédula de Identidad',
+    },
+    { code: 'ECU', alias: 'EC', validId: '1710000009', description: 'Ecuador Cedula' },
     { code: 'GTM', alias: 'GT', validId: '1912345670101', description: 'Guatemala DPI' },
   ];
 

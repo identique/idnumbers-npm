@@ -8,7 +8,7 @@
 import { getCountryIdFormat, SUPPORTED_COUNTRIES } from '../index';
 
 // ---------------------------------------------------------------------------
-// All 80 registered countries should return non-null IdFormat
+// All 81 registered countries should return non-null IdFormat
 // ---------------------------------------------------------------------------
 describe('getCountryIdFormat returns IdFormat for all registered countries', () => {
   const registeredCountries = [
@@ -41,6 +41,7 @@ describe('getCountryIdFormat returns IdFormat for all registered countries', () 
     { code: 'CHL', name: 'Chile', idType: 'RUN/RUT' },
     { code: 'CHN', name: 'China', idType: 'Resident Identity Number' },
     { code: 'COL', name: 'Colombia', idType: 'Unique Personal ID' },
+    { code: 'DOM', name: 'Dominican Republic', idType: 'Cédula de Identidad y Electoral' },
     { code: 'EST', name: 'Estonia', idType: 'Personal ID Number' },
     { code: 'GRC', name: 'Greece', idType: 'Tax Identity Number' },
     { code: 'HUN', name: 'Hungary', idType: 'Personal ID Number' },
@@ -57,6 +58,7 @@ describe('getCountryIdFormat returns IdFormat for all registered countries', () 
     { code: 'JPN', name: 'Japan', idType: 'My Number' },
     { code: 'KAZ', name: 'Kazakhstan', idType: 'Individual Identification Number' },
     { code: 'KWT', name: 'Kuwait', idType: 'Civil Number' },
+    { code: 'EGY', name: 'Egypt', idType: 'National ID' },
     { code: 'IDN', name: 'Indonesia', idType: 'National ID Number' },
     { code: 'KOR', name: 'South Korea', idType: 'Resident Registration Number' },
     { code: 'MEX', name: 'Mexico', idType: 'CURP' },
@@ -92,6 +94,8 @@ describe('getCountryIdFormat returns IdFormat for all registered countries', () 
     { code: 'NPL', name: 'Nepal', idType: 'National ID Number' },
     { code: 'PNG', name: 'Papua New Guinea', idType: 'National ID Number' },
     { code: 'SMR', name: 'San Marino', idType: 'Social Security Number / Tax Registration' },
+    { code: 'CRI', name: 'Costa Rica', idType: 'Cédula de Identidad' },
+    { code: 'ECU', name: 'Ecuador', idType: 'Cédula de Identidad' },
     { code: 'GTM', name: 'Guatemala', idType: 'Documento Personal de Identificación (DPI)' },
   ];
 
@@ -124,10 +128,14 @@ describe('Format display strings', () => {
     { code: 'CAN', format: '###-###-###' },
     { code: 'CHL', format: '##.###.###-C' },
     { code: 'COL', format: '##(#).###.###-C' },
+    { code: 'CRI', format: '#-####-####' },
+    { code: 'DOM', format: 'NNN-NNNNNNN-N' },
+    { code: 'ECU', format: 'PPTSSSSSSC' },
     { code: 'IND', format: 'XXXX XXXX XXXX' },
     { code: 'JPN', format: 'XXXXXXXXXXXX' },
     { code: 'KAZ', format: 'YYMMDDGSSSSC' },
     { code: 'KWT', format: 'CYYMMDDSSSSK' },
+    { code: 'EGY', format: 'CYYMMDDGGSSSSV' },
     { code: 'IDN', format: 'PPPPPPDDMMYYSSSS' },
     { code: 'KOR', format: 'YYMMDD-GSSSSSS' },
     { code: 'MEX', format: 'AAAANNNNNNAAAAAANN' },
@@ -174,6 +182,7 @@ describe('Alias resolution in getCountryIdFormat', () => {
     { alias: 'JP', expectedCode: 'JPN' },
     { alias: 'KZ', expectedCode: 'KAZ' },
     { alias: 'KW', expectedCode: 'KWT' },
+    { alias: 'EG', expectedCode: 'EGY' },
     { alias: 'ID', expectedCode: 'IDN' },
     { alias: 'KR', expectedCode: 'KOR' },
     { alias: 'MX', expectedCode: 'MEX' },
@@ -195,6 +204,7 @@ describe('Alias resolution in getCountryIdFormat', () => {
     { alias: 'ES', expectedCode: 'ESP' },
     { alias: 'CN', expectedCode: 'CHN' },
     { alias: 'BR', expectedCode: 'BRA' },
+    { alias: 'EC', expectedCode: 'ECU' },
     { alias: 'GT', expectedCode: 'GTM' },
   ];
 
@@ -230,22 +240,8 @@ describe('Edge cases and unregistered codes', () => {
   });
 
   // Former stub entries for unregistered countries now return null
-  const formerStubs = [
-    'QA',
-    'UY',
-    'EC',
-    'BO',
-    'PY',
-    'CR',
-    'PA',
-    'DO',
-    'HN',
-    'SV',
-    'NI',
-    'JO',
-    'LB',
-    'OM',
-  ];
+  // (EC, CR, DO, GT are no longer stubs -- they now resolve to ECU, CRI, DOM, GTM)
+  const formerStubs = ['QA', 'UY', 'BO', 'PY', 'PA', 'HN', 'SV', 'NI', 'JO', 'LB', 'OM'];
 
   test.each(formerStubs)('former stub %s now returns null', code => {
     expect(getCountryIdFormat(code)).toBeNull();

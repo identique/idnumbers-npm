@@ -1,0 +1,1 @@
+export { Cedula } from './cedula';

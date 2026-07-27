@@ -32,6 +32,7 @@ export * as CHE from './countries/che';
 export * as CHL from './countries/chl';
 export * as CHN from './countries/chn';
 export * as COL from './countries/col';
+export * as DOM from './countries/dom';
 export * as EST from './countries/est';
 export * as GRC from './countries/grc';
 export * as HUN from './countries/hun';
@@ -48,6 +49,7 @@ export * as IND from './countries/ind';
 export * as JPN from './countries/jpn';
 export * as KAZ from './countries/kaz';
 export * as KWT from './countries/kwt';
+export * as EGY from './countries/egy';
 export * as IDN from './countries/idn';
 export * as KOR from './countries/kor';
 export * as MEX from './countries/mex';
@@ -87,6 +89,8 @@ export * as MDA from './countries/mda';
 export * as NPL from './countries/npl';
 export * as PNG from './countries/png';
 export * as SMR from './countries/smr';
+export * as CRI from './countries/cri';
+export * as ECU from './countries/ecu';
 export * as GTM from './countries/gtm';
 
 // Export registry
@@ -126,10 +130,12 @@ export const SUPPORTED_COUNTRIES: CountryInfo[] = [
   { code: 'ARG', name: 'Argentina', idType: 'DNI' },
   { code: 'BGR', name: 'Bulgaria', idType: 'Uniform Civil Number' },
   { code: 'BRA', name: 'Brazil', idType: 'CPF Number' },
+  { code: 'ECU', name: 'Ecuador', idType: 'Cédula de Identidad' },
   { code: 'CHE', name: 'Switzerland', idType: 'Social Security Number' },
   { code: 'CHL', name: 'Chile', idType: 'RUN/RUT' },
   { code: 'CHN', name: 'China', idType: 'Resident Identity Number' },
   { code: 'COL', name: 'Colombia', idType: 'Unique Personal ID' },
+  { code: 'DOM', name: 'Dominican Republic', idType: 'Cédula de Identidad y Electoral' },
   { code: 'EST', name: 'Estonia', idType: 'Personal ID Number' },
   { code: 'GRC', name: 'Greece', idType: 'Tax Identity Number' },
   { code: 'HUN', name: 'Hungary', idType: 'Personal ID Number' },
@@ -146,6 +152,7 @@ export const SUPPORTED_COUNTRIES: CountryInfo[] = [
   { code: 'JPN', name: 'Japan', idType: 'My Number' },
   { code: 'KAZ', name: 'Kazakhstan', idType: 'Individual Identification Number' },
   { code: 'KWT', name: 'Kuwait', idType: 'Civil Number' },
+  { code: 'EGY', name: 'Egypt', idType: 'National ID' },
   { code: 'IDN', name: 'Indonesia', idType: 'National ID Number' },
   { code: 'KOR', name: 'South Korea', idType: 'Resident Registration Number' },
   { code: 'MEX', name: 'Mexico', idType: 'CURP' },
@@ -181,6 +188,7 @@ export const SUPPORTED_COUNTRIES: CountryInfo[] = [
   { code: 'NPL', name: 'Nepal', idType: 'National ID Number' },
   { code: 'PNG', name: 'Papua New Guinea', idType: 'National ID Number' },
   { code: 'SMR', name: 'San Marino', idType: 'Social Security Number / Tax Registration' },
+  { code: 'CRI', name: 'Costa Rica', idType: 'Cédula de Identidad' },
   { code: 'GTM', name: 'Guatemala', idType: 'Documento Personal de Identificación (DPI)' },
 ];
 
