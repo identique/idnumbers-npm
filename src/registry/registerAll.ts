@@ -67,7 +67,8 @@ import { NationalID as SrbNationalID } from '../countries/srb';
 import { NationalID as TwnNationalID } from '../countries/twn';
 import { NationalID as VenNationalID } from '../countries/ven';
 import { CPFNumber } from '../countries/bra';
-import { Cedula } from '../countries/ecu';
+import { Cedula as CriCedula } from '../countries/cri';
+import { Cedula as EcuCedula } from '../countries/ecu';
 
 // ---------------------------------------------------------------------------
 // Secondary type imports (entity IDs, old/deprecated formats — not registered
@@ -211,7 +212,8 @@ const COUNTRY_REGISTRY: RegistryEntry[] = [
   { key: 'TWN', module: TwnNationalID, aliases: ['TW'] },
   { key: 'VEN', module: VenNationalID, aliases: ['VE'] },
   { key: 'BRA', module: CPFNumber, aliases: ['BR'] },
-  { key: 'ECU', module: Cedula, aliases: ['EC'] },
+  { key: 'CRI', module: CriCedula, aliases: ['CR'] },
+  { key: 'ECU', module: EcuCedula, aliases: ['EC'] },
 
   // --- Function-based modules ---
   { key: 'ALB', module: IdentityNumber, aliases: [] },

@@ -93,6 +93,7 @@ describe('getCountryIdFormat returns IdFormat for all registered countries', () 
     { code: 'NPL', name: 'Nepal', idType: 'National ID Number' },
     { code: 'PNG', name: 'Papua New Guinea', idType: 'National ID Number' },
     { code: 'SMR', name: 'San Marino', idType: 'Social Security Number / Tax Registration' },
+    { code: 'CRI', name: 'Costa Rica', idType: 'Cédula de Identidad' },
     { code: 'ECU', name: 'Ecuador', idType: 'Cédula de Identidad' },
   ];
 
@@ -125,6 +126,7 @@ describe('Format display strings', () => {
     { code: 'CAN', format: '###-###-###' },
     { code: 'CHL', format: '##.###.###-C' },
     { code: 'COL', format: '##(#).###.###-C' },
+    { code: 'CRI', format: '#-####-####' },
     { code: 'ECU', format: 'PPTSSSSSSC' },
     { code: 'IND', format: 'XXXX XXXX XXXX' },
     { code: 'JPN', format: 'XXXXXXXXXXXX' },
@@ -239,7 +241,6 @@ describe('Edge cases and unregistered codes', () => {
     'UY',
     'BO',
     'PY',
-    'CR',
     'PA',
     'DO',
     'GT',

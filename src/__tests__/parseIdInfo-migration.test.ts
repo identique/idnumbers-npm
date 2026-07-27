@@ -15,8 +15,8 @@ import { adaptMetadata, createValidator } from '../registry/adapters';
 // Registry population tests
 // ---------------------------------------------------------------------------
 describe('Registry population', () => {
-  it('should have 82 primary keys registered', () => {
-    expect(registry.list().length).toBe(82);
+  it('should have 83 primary keys registered', () => {
+    expect(registry.list().length).toBe(83);
   });
 
   it('should resolve all expected alpha-3 keys', () => {
@@ -102,6 +102,7 @@ describe('Registry population', () => {
       'SRB',
       'TWN',
       'VEN',
+      'CRI',
       'ECU',
     ];
 
@@ -186,6 +187,7 @@ describe('Registry population', () => {
       PT: 'PRT',
       SA: 'SAU',
       TR: 'TUR',
+      CR: 'CRI',
       EC: 'ECU',
     };
 
@@ -391,6 +393,12 @@ describe('parseIdInfo parity (registry vs old switch)', () => {
     { code: 'IRL', alias: 'IE', validId: '1234567T', description: 'Ireland PPS' },
     { code: 'LVA', alias: 'LV', validId: '161175-19997', description: 'Latvia Personal Code' },
     { code: 'LKA', alias: 'LK', validId: '199001200001', description: 'Sri Lanka NIC' },
+    {
+      code: 'CRI',
+      alias: 'CR',
+      validId: '1-0913-0259',
+      description: 'Costa Rica Cédula de Identidad',
+    },
     { code: 'ECU', alias: 'EC', validId: '1710000009', description: 'Ecuador Cedula' },
   ];
 
