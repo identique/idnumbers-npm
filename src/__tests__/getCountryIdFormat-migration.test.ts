@@ -57,6 +57,7 @@ describe('getCountryIdFormat returns IdFormat for all registered countries', () 
     { code: 'JPN', name: 'Japan', idType: 'My Number' },
     { code: 'KAZ', name: 'Kazakhstan', idType: 'Individual Identification Number' },
     { code: 'KWT', name: 'Kuwait', idType: 'Civil Number' },
+    { code: 'EGY', name: 'Egypt', idType: 'National ID' },
     { code: 'IDN', name: 'Indonesia', idType: 'National ID Number' },
     { code: 'KOR', name: 'South Korea', idType: 'Resident Registration Number' },
     { code: 'MEX', name: 'Mexico', idType: 'CURP' },
@@ -93,6 +94,7 @@ describe('getCountryIdFormat returns IdFormat for all registered countries', () 
     { code: 'PNG', name: 'Papua New Guinea', idType: 'National ID Number' },
     { code: 'SMR', name: 'San Marino', idType: 'Social Security Number / Tax Registration' },
     { code: 'CRI', name: 'Costa Rica', idType: 'Cédula de Identidad' },
+    { code: 'ECU', name: 'Ecuador', idType: 'Cédula de Identidad' },
   ];
 
   test.each(registeredCountries)(
@@ -125,10 +127,12 @@ describe('Format display strings', () => {
     { code: 'CHL', format: '##.###.###-C' },
     { code: 'COL', format: '##(#).###.###-C' },
     { code: 'CRI', format: '#-####-####' },
+    { code: 'ECU', format: 'PPTSSSSSSC' },
     { code: 'IND', format: 'XXXX XXXX XXXX' },
     { code: 'JPN', format: 'XXXXXXXXXXXX' },
     { code: 'KAZ', format: 'YYMMDDGSSSSC' },
     { code: 'KWT', format: 'CYYMMDDSSSSK' },
+    { code: 'EGY', format: 'CYYMMDDGGSSSSV' },
     { code: 'IDN', format: 'PPPPPPDDMMYYSSSS' },
     { code: 'KOR', format: 'YYMMDD-GSSSSSS' },
     { code: 'MEX', format: 'AAAANNNNNNAAAAAANN' },
@@ -174,6 +178,7 @@ describe('Alias resolution in getCountryIdFormat', () => {
     { alias: 'JP', expectedCode: 'JPN' },
     { alias: 'KZ', expectedCode: 'KAZ' },
     { alias: 'KW', expectedCode: 'KWT' },
+    { alias: 'EG', expectedCode: 'EGY' },
     { alias: 'ID', expectedCode: 'IDN' },
     { alias: 'KR', expectedCode: 'KOR' },
     { alias: 'MX', expectedCode: 'MEX' },
@@ -195,6 +200,7 @@ describe('Alias resolution in getCountryIdFormat', () => {
     { alias: 'ES', expectedCode: 'ESP' },
     { alias: 'CN', expectedCode: 'CHN' },
     { alias: 'BR', expectedCode: 'BRA' },
+    { alias: 'EC', expectedCode: 'ECU' },
   ];
 
   test.each(aliasTests)('$alias resolves to $expectedCode', ({ alias, expectedCode }) => {
@@ -229,10 +235,10 @@ describe('Edge cases and unregistered codes', () => {
   });
 
   // Former stub entries for unregistered countries now return null
+  // (EC is no longer a stub -- it now resolves to ECU, see issue #55)
   const formerStubs = [
     'QA',
     'UY',
-    'EC',
     'BO',
     'PY',
     'PA',
