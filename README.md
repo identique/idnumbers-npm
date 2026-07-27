@@ -1,6 +1,6 @@
 # idnumbers
 
-A comprehensive TypeScript/JavaScript library for validating and parsing national identification numbers from 81 countries across 6 continents.
+A comprehensive TypeScript/JavaScript library for validating and parsing national identification numbers from 82 countries across 6 continents.
 
 [![npm version](https://img.shields.io/npm/v/idnumbers.svg)](https://www.npmjs.com/package/idnumbers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -8,7 +8,7 @@ A comprehensive TypeScript/JavaScript library for validating and parsing nationa
 
 ## Features
 
-- ✅ **81 countries supported** - Comprehensive coverage across all continents
+- ✅ **82 countries supported** - Comprehensive coverage across all continents
 - 🔍 **Validation** - Verify ID number format and checksums
 - 📊 **Parsing** - Extract information like birth date, gender, and citizenship
 - 🛡️ **Type-safe** - Full TypeScript support with type definitions
@@ -282,8 +282,9 @@ console.log(format);
 - 🇦🇪 **ARE** - Emirates ID
 - 🇻🇳 **VNM** - Citizen Identity Card
 
-### Africa (3)
+### Africa (4)
 
+- 🇪🇬 **EGY** - National ID (الرقم القومي)
 - 🇳🇬 **NGA** - National Identification Number (NIN)
 - 🇿🇦 **ZAF** - ID Number
 - 🇿🇼 **ZWE** - National ID
@@ -474,7 +475,7 @@ if (!validation.valid) {
 
 ## Testing
 
-The library includes comprehensive test coverage with 2181 tests covering:
+The library includes comprehensive test coverage with 2193 tests covering:
 
 - Format validation
 - Checksum verification
@@ -498,50 +499,7 @@ npm run test:coverage
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-### Development Setup
-
-1. **Clone the repository:**
-
-   ```bash
-   git clone https://github.com/identique/idnumbers-npm.git
-   cd idnumbers-npm
-   ```
-
-2. **Install dependencies:**
-
-   ```bash
-   npm install
-   ```
-
-   This automatically sets up pre-commit hooks via Husky.
-
-3. **Pre-commit Hooks:**
-
-   The following checks run automatically before each commit:
-   - ✨ **Prettier** - Code formatting on staged files
-   - 🔧 **TypeScript** - Type checking and compilation
-   - 🧪 **Tests** - Full test suite
-
-   If any check fails, the commit will be blocked until fixed.
-
-4. **Run tests:**
-
-   ```bash
-   npm test                # Run all tests
-   npm run test:coverage   # Run with coverage report
-   ```
-
-5. **Build:**
-
-   ```bash
-   npm run build          # Compile TypeScript
-   ```
-
-6. **Linting:**
-   ```bash
-   npm run lint           # Check for issues
-   npm run lint:fix       # Auto-fix issues
-   ```
+See [CONTRIBUTING.md](CONTRIBUTING.md) for local setup, the development workflow, and the pull-request process.
 
 ## License
 

@@ -114,6 +114,7 @@ import { PersonalPublicServiceNumber } from '../countries/irl';
 import { PersonalCode as LvaPersonalCode } from '../countries/lva';
 import { IndividualIDNumber } from '../countries/kaz';
 import { CivilNumber } from '../countries/kwt';
+import { NationalID as EgyNationalID } from '../countries/egy';
 
 // ---------------------------------------------------------------------------
 // Composite validators for countries with multiple ID formats
@@ -239,6 +240,7 @@ const COUNTRY_REGISTRY: RegistryEntry[] = [
   { key: 'LVA', module: LvaPersonalCode, aliases: ['LV'] },
   { key: 'KAZ', module: IndividualIDNumber, aliases: ['KZ'] },
   { key: 'KWT', module: CivilNumber, aliases: ['KW'] },
+  { key: 'EGY', module: EgyNationalID, aliases: ['EG'] },
 ];
 
 // ---------------------------------------------------------------------------
