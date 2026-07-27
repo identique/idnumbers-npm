@@ -497,50 +497,7 @@ npm run test:coverage
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-### Development Setup
-
-1. **Clone the repository:**
-
-   ```bash
-   git clone https://github.com/identique/idnumbers-npm.git
-   cd idnumbers-npm
-   ```
-
-2. **Install dependencies:**
-
-   ```bash
-   npm install
-   ```
-
-   This automatically sets up pre-commit hooks via Husky.
-
-3. **Pre-commit Hooks:**
-
-   The following checks run automatically before each commit:
-   - ✨ **Prettier** - Code formatting on staged files
-   - 🔧 **TypeScript** - Type checking and compilation
-   - 🧪 **Tests** - Full test suite
-
-   If any check fails, the commit will be blocked until fixed.
-
-4. **Run tests:**
-
-   ```bash
-   npm test                # Run all tests
-   npm run test:coverage   # Run with coverage report
-   ```
-
-5. **Build:**
-
-   ```bash
-   npm run build          # Compile TypeScript
-   ```
-
-6. **Linting:**
-   ```bash
-   npm run lint           # Check for issues
-   npm run lint:fix       # Auto-fix issues
-   ```
+See [CONTRIBUTING.md](CONTRIBUTING.md) for local setup, the development workflow, and the pull-request process.
 
 ## License
 
