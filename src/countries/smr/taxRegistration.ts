@@ -16,9 +16,9 @@ export class TaxRegistrationNumber implements IdNumberClass {
     aliasOf: null,
     names: ['Entity Tax Registration Number', 'COE'],
     links: [
-      'https://www.oecd.org/tax/automatic-exchange/crs-implementation-and-assistance/tax-identification-numbers/San-Marino-TIN.pdf'
+      'https://www.oecd.org/tax/automatic-exchange/crs-implementation-and-assistance/tax-identification-numbers/San-Marino-TIN.pdf',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   get METADATA(): IdMetadata {

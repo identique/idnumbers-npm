@@ -4,7 +4,7 @@
 export enum Gender {
   MALE = 'male',
   FEMALE = 'female',
-  NON_BINARY = 'non-binary'
+  NON_BINARY = 'non-binary',
 }
 
 /**
@@ -13,7 +13,7 @@ export enum Gender {
 export enum Citizenship {
   CITIZEN = 'citizen',
   RESIDENT = 'resident',
-  FOREIGN = 'foreign'
+  FOREIGN = 'foreign',
 }
 
 /**
@@ -24,8 +24,33 @@ export type CheckDigit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | null;
 /**
  * Check alpha type - alphabetic check digits A to Z
  */
-export type CheckAlpha = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' |
-  'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z';
+export type CheckAlpha =
+  | 'A'
+  | 'B'
+  | 'C'
+  | 'D'
+  | 'E'
+  | 'F'
+  | 'G'
+  | 'H'
+  | 'I'
+  | 'J'
+  | 'K'
+  | 'L'
+  | 'M'
+  | 'N'
+  | 'O'
+  | 'P'
+  | 'Q'
+  | 'R'
+  | 'S'
+  | 'T'
+  | 'U'
+  | 'V'
+  | 'W'
+  | 'X'
+  | 'Y'
+  | 'Z';
 
 /**
  * Thailand citizenship type enumeration
@@ -49,5 +74,5 @@ export enum ThaiCitizenship {
   /** Children of foreign residents who were born in Thailand */
   FOREIGN_RESIDENT_CHILDREN = 7,
   /** Foreign Nationals living permanently, or Thai nationals by naturalisation */
-  PERMANENT_RESIDENT = 8
+  PERMANENT_RESIDENT = 8,
 }

@@ -9,7 +9,7 @@ export enum EntityType {
   /** First digit 0-2 or 7-9 uses PHASE1 multiplier [1,2,3,4,5,6,7] */
   PHASE1 = 'PHASE1',
   /** First digit 3-6 uses PHASE2 multiplier [7,1,2,3,4,5,6] */
-  PHASE2 = 'PHASE2'
+  PHASE2 = 'PHASE2',
 }
 
 /**
@@ -40,9 +40,9 @@ export class EntityID implements IdNumberClass {
     names: ['Legal Entity ID Number', 'EDRPOU', 'ЄДРПОУ'],
     links: [
       'https://uk.wikipedia.org/wiki/%D0%9A%D0%BE%D0%B4_%D0%84%D0%94%D0%A0%D0%9F%D0%9E%D0%A3',
-      'https://1cinfo.com.ua/Article/Detail/Proverka_koda_po_EDRPOU/'
+      'https://1cinfo.com.ua/Article/Detail/Proverka_koda_po_EDRPOU/',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   private static readonly PHASE1_MULTIPLIER = [1, 2, 3, 4, 5, 6, 7];
@@ -88,16 +88,18 @@ export class EntityID implements IdNumberClass {
     }
 
     // Calculate modulus
-    let modulus = sourceList.reduce((sum, value, index) => {
-      return sum + value * multiplier[index];
-    }, 0) % 11;
+    let modulus =
+      sourceList.reduce((sum, value, index) => {
+        return sum + value * multiplier[index];
+      }, 0) % 11;
 
     // If modulus >= 10, recalculate with adjusted multipliers
     if (modulus >= 10) {
       multiplier = multiplier.map(val => val + 2);
-      modulus = sourceList.reduce((sum, value, index) => {
-        return sum + value * multiplier[index];
-      }, 0) % 11;
+      modulus =
+        sourceList.reduce((sum, value, index) => {
+          return sum + value * multiplier[index];
+        }, 0) % 11;
 
       // If still >= 10 after second pass, normalize to 0
       // (modulus 10 should map to check digit 0)
@@ -139,7 +141,7 @@ export class EntityID implements IdNumberClass {
 
     return {
       checksum: checksumDigit,
-      entityType: EntityID.getEntityType(firstDigit)
+      entityType: EntityID.getEntityType(firstDigit),
     };
   }
 

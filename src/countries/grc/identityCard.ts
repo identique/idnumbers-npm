@@ -19,13 +19,12 @@ export class IdentityCard implements IdNumberClass {
     maxLength: 8,
     parsable: false,
     checksum: false,
-    regexp: /^[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩABEZHIKMNOPTYXαβγδεζηθικλμνξοπρστυφχψωabezhikmnoptyx]{2}[-]?\d{6}$/,
+    regexp:
+      /^[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩABEZHIKMNOPTYXαβγδεζηθικλμνξοπρστυφχψωabezhikmnoptyx]{2}[-]?\d{6}$/,
     aliasOf: null,
     names: ['Identity Card Number', 'Δελτίο Ταυτότητας'],
-    links: [
-      'https://en.wikipedia.org/wiki/National_identification_number#Greece'
-    ],
-    deprecated: false
+    links: ['https://en.wikipedia.org/wiki/National_identification_number#Greece'],
+    deprecated: false,
   };
 
   get METADATA(): IdMetadata {

@@ -22,9 +22,9 @@ export class NationalID implements IdNumberClass {
     names: ['Citizen Card', 'Cartão de Cidadão', 'CC'],
     links: [
       'https://en.wikipedia.org/wiki/National_identification_number#Portugal',
-      'https://www.portaldocidadao.pt/'
+      'https://www.portaldocidadao.pt/',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   get METADATA(): IdMetadata {
@@ -38,27 +38,27 @@ export class NationalID implements IdNumberClass {
     if (typeof idNumber !== 'string') {
       return false;
     }
-    
+
     // Remove spaces if present
     const cleanId = idNumber.replace(/\s/g, '').toUpperCase();
-    
+
     // Must match the regex pattern
     if (!NationalID.METADATA.regexp.test(cleanId)) {
       return false;
     }
-    
+
     // Calculate and verify first check digit
     const firstCheckDigit = NationalID.calculateFirstCheckDigit(cleanId);
     if (firstCheckDigit === null || NationalID.getLetterValue(cleanId[9]) !== firstCheckDigit) {
       return false;
     }
-    
+
     // Calculate and verify second check digit
     const secondCheckDigit = NationalID.calculateSecondCheckDigit(cleanId);
     if (secondCheckDigit === null || NationalID.getLetterValue(cleanId[10]) !== secondCheckDigit) {
       return false;
     }
-    
+
     return true;
   }
 
@@ -82,16 +82,16 @@ export class NationalID implements IdNumberClass {
    */
   private static calculateFirstCheckDigit(idNumber: string): CheckDigit {
     const cleanId = idNumber.replace(/\s/g, '').toUpperCase();
-    
+
     if (cleanId.length < 9) {
       return null;
     }
-    
+
     let sum = 0;
     for (let i = 0; i < 9; i++) {
       sum += NationalID.getLetterValue(cleanId[i]) * (10 - i);
     }
-    
+
     const checkDigit = 11 - (sum % 11);
     return (checkDigit === 10 ? 0 : checkDigit) as CheckDigit;
   }
@@ -101,16 +101,16 @@ export class NationalID implements IdNumberClass {
    */
   private static calculateSecondCheckDigit(idNumber: string): CheckDigit {
     const cleanId = idNumber.replace(/\s/g, '').toUpperCase();
-    
+
     if (cleanId.length < 10) {
       return null;
     }
-    
+
     let sum = 0;
     for (let i = 0; i < 10; i++) {
       sum += NationalID.getLetterValue(cleanId[i]) * (11 - i);
     }
-    
+
     const checkDigit = 11 - (sum % 11);
     return (checkDigit === 10 ? 0 : checkDigit) as CheckDigit;
   }
