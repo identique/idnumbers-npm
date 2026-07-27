@@ -31,7 +31,7 @@ import { FiscalCode } from '../countries/ita';
 import { MedicareNumber } from '../countries/aus';
 import { UniqueMasterCitizenNumber } from '../countries/mkd';
 import { Cedula } from '../countries/dom';
-import { SocialSecurityNumber } from '../countries/smr';
+import { SocialSecurityNumber, TaxRegistrationNumber } from '../countries/smr';
 
 // Captured immediately after the import block, before any test body runs --
 // no test-ordering assumption is involved. Holds even after later tests
@@ -46,7 +46,13 @@ const SAMPLES: Array<[string, CountryEntry, IdMetadata]> = [
   ['DOM', DOM, createValidator(Cedula).METADATA],
   // SMR is a composite: no adapter involved, compared directly against the
   // same production classes registerAll.ts's smrComposite is built from.
-  ['SMR', SMR, SocialSecurityNumber.METADATA],
+  // Shallow-cloned (not the bare `SocialSecurityNumber.METADATA` reference)
+  // so the toEqual below is a real structural comparison rather than an
+  // object compared to itself -- entry.validator.METADATA in smr.ts points
+  // at that same static property directly, with no adapter step to diverge
+  // it into a fresh object the way createValidator(...) does for the other
+  // five rows.
+  ['SMR', SMR, { ...SocialSecurityNumber.METADATA }],
 ];
 
 // Derived from SAMPLES so a newly sampled country can never skip the purity check below.
@@ -124,6 +130,26 @@ describe('spike option B core (src/spike/core.ts)', () => {
       }
     }
   );
+
+  it('should exercise both disjuncts of the SMR composite validator', () => {
+    register(SMR);
+
+    // Social Security Number disjunct (9 digits) -- also covered above via
+    // the it.each's METADATA.example check, repeated here for symmetry.
+    const ssiExample = SocialSecurityNumber.METADATA.example!;
+    expect(SocialSecurityNumber.validate(ssiExample)).toBe(true);
+    expect(SMR.validator.validate(ssiExample)).toBe(true);
+
+    // Tax Registration Number disjunct ("SM" + 5 digits). This input fails
+    // SocialSecurityNumber.validate outright, so the composite only passes
+    // it if the `|| TaxRegistrationNumber.validate(id)` branch is still
+    // wired up -- a future edit that dropped or broke that branch would
+    // fail this assertion.
+    const taxRegistrationExample = 'SM12345';
+    expect(SocialSecurityNumber.validate(taxRegistrationExample)).toBe(false);
+    expect(TaxRegistrationNumber.validate(taxRegistrationExample)).toBe(true);
+    expect(SMR.validator.validate(taxRegistrationExample)).toBe(true);
+  });
 
   it('should keep every sampled entry side-effect free at import time', () => {
     expect(initialKeys).toEqual([]);
