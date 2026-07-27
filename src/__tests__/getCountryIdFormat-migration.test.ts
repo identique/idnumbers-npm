@@ -41,6 +41,7 @@ describe('getCountryIdFormat returns IdFormat for all registered countries', () 
     { code: 'CHL', name: 'Chile', idType: 'RUN/RUT' },
     { code: 'CHN', name: 'China', idType: 'Resident Identity Number' },
     { code: 'COL', name: 'Colombia', idType: 'Unique Personal ID' },
+    { code: 'DOM', name: 'Dominican Republic', idType: 'Cédula de Identidad y Electoral' },
     { code: 'EST', name: 'Estonia', idType: 'Personal ID Number' },
     { code: 'GRC', name: 'Greece', idType: 'Tax Identity Number' },
     { code: 'HUN', name: 'Hungary', idType: 'Personal ID Number' },
@@ -127,6 +128,7 @@ describe('Format display strings', () => {
     { code: 'CHL', format: '##.###.###-C' },
     { code: 'COL', format: '##(#).###.###-C' },
     { code: 'CRI', format: '#-####-####' },
+    { code: 'DOM', format: 'NNN-NNNNNNN-N' },
     { code: 'ECU', format: 'PPTSSSSSSC' },
     { code: 'IND', format: 'XXXX XXXX XXXX' },
     { code: 'JPN', format: 'XXXXXXXXXXXX' },
@@ -236,21 +238,7 @@ describe('Edge cases and unregistered codes', () => {
 
   // Former stub entries for unregistered countries now return null
   // (EC is no longer a stub -- it now resolves to ECU, see issue #55)
-  const formerStubs = [
-    'QA',
-    'UY',
-    'BO',
-    'PY',
-    'PA',
-    'DO',
-    'GT',
-    'HN',
-    'SV',
-    'NI',
-    'JO',
-    'LB',
-    'OM',
-  ];
+  const formerStubs = ['QA', 'UY', 'BO', 'PY', 'PA', 'GT', 'HN', 'SV', 'NI', 'JO', 'LB', 'OM'];
 
   test.each(formerStubs)('former stub %s now returns null', code => {
     expect(getCountryIdFormat(code)).toBeNull();

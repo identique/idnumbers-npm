@@ -68,6 +68,7 @@ import { NationalID as TwnNationalID } from '../countries/twn';
 import { NationalID as VenNationalID } from '../countries/ven';
 import { CPFNumber } from '../countries/bra';
 import { Cedula as CriCedula } from '../countries/cri';
+import { Cedula as DomCedula } from '../countries/dom';
 import { Cedula as EcuCedula } from '../countries/ecu';
 
 // ---------------------------------------------------------------------------
@@ -213,6 +214,7 @@ const COUNTRY_REGISTRY: RegistryEntry[] = [
   { key: 'VEN', module: VenNationalID, aliases: ['VE'] },
   { key: 'BRA', module: CPFNumber, aliases: ['BR'] },
   { key: 'CRI', module: CriCedula, aliases: ['CR'] },
+  { key: 'DOM', module: DomCedula, aliases: ['DO'] },
   { key: 'ECU', module: EcuCedula, aliases: ['EC'] },
 
   // --- Function-based modules ---

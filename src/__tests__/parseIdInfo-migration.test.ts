@@ -15,8 +15,8 @@ import { adaptMetadata, createValidator } from '../registry/adapters';
 // Registry population tests
 // ---------------------------------------------------------------------------
 describe('Registry population', () => {
-  it('should have 83 primary keys registered', () => {
-    expect(registry.list().length).toBe(83);
+  it('should have 84 primary keys registered', () => {
+    expect(registry.list().length).toBe(84);
   });
 
   it('should resolve all expected alpha-3 keys', () => {
@@ -103,6 +103,7 @@ describe('Registry population', () => {
       'TWN',
       'VEN',
       'CRI',
+      'DOM',
       'ECU',
     ];
 
@@ -155,6 +156,7 @@ describe('Registry population', () => {
       RS: 'SRB',
       TW: 'TWN',
       VE: 'VEN',
+      DO: 'DOM',
       ID: 'IDN',
       KR: 'KOR',
       MX: 'MEX',
@@ -375,6 +377,7 @@ describe('parseIdInfo parity (registry vs old switch)', () => {
     { code: 'SRB', alias: 'RS', validId: '0101990700002', description: 'Serbia JMBG' },
     { code: 'TWN', alias: 'TW', validId: 'A123456789', description: 'Taiwan National ID' },
     { code: 'VEN', alias: 'VE', validId: 'V-12345678', description: 'Venezuela Cedula' },
+    { code: 'DOM', alias: 'DO', validId: '40200000012', description: 'Dominican Republic Cedula' },
     { code: 'IDN', alias: 'ID', validId: '1101010101900001', description: 'Indonesia NIK' },
     { code: 'KOR', alias: 'KR', validId: '800101-1234567', description: 'South Korea RRN' },
     { code: 'MEX', alias: 'MX', validId: 'HEGG560427MVZRRL04', description: 'Mexico CURP' },
