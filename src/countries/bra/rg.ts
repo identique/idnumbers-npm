@@ -22,9 +22,9 @@ export class RG implements IdNumberClass {
     names: ['RG number', 'Registro Geral number'],
     links: [
       'https://en.wikipedia.org/wiki/National_identification_number#Brazil',
-      'https://en.wikipedia.org/wiki/Brazilian_identity_card'
+      'https://en.wikipedia.org/wiki/Brazilian_identity_card',
     ],
-    deprecated: false
+    deprecated: false,
   };
 
   private static readonly MULTIPLIER = [2, 3, 4, 5, 6, 7, 8, 9];
@@ -60,7 +60,10 @@ export class RG implements IdNumberClass {
    */
   static checksumValidate(idNumber: string): boolean {
     const normalized = RG.normalize(idNumber);
-    const numberList = normalized.slice(0, 8).split('').map(c => parseInt(c, 10));
+    const numberList = normalized
+      .slice(0, 8)
+      .split('')
+      .map(c => parseInt(c, 10));
 
     // X is equal to 11 in check digit
     const checkDigit = normalized[8] === 'X' ? 11 : parseInt(normalized[8], 10);

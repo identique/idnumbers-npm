@@ -16,15 +16,15 @@ export function validateRegexp(idNumber: string, regexp: RegExp): boolean {
 export function isValidDate(year: number, month: number, day: number): boolean {
   if (month < 1 || month > 12) return false;
   if (day < 1) return false;
-  
+
   // Check days in month
   const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-  
+
   // Handle leap year
   if (month === 2 && isLeapYear(year)) {
     return day <= 29;
   }
-  
+
   return day <= daysInMonth[month - 1];
 }
 
@@ -32,7 +32,7 @@ export function isValidDate(year: number, month: number, day: number): boolean {
  * Check if a year is a leap year
  */
 export function isLeapYear(year: number): boolean {
-  return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+  return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
 }
 
 /**
@@ -42,11 +42,11 @@ export function calculateAge(birthDate: Date): number {
   const today = new Date();
   let age = today.getFullYear() - birthDate.getFullYear();
   const monthDiff = today.getMonth() - birthDate.getMonth();
-  
+
   if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
     age--;
   }
-  
+
   return age;
 }
 
@@ -70,13 +70,13 @@ export function luhnDigit(digits: number[], multipliersStartByTwo: boolean = fal
     if (idx % 2 === 0) {
       totalSum += intVal;
     } else if (intVal > 4) {
-      totalSum += (2 * intVal - 9);
+      totalSum += 2 * intVal - 9;
     } else {
-      totalSum += (2 * intVal);
+      totalSum += 2 * intVal;
     }
   }
 
-  return ((10 - totalSum % 10) % 10) as CheckDigit;
+  return ((10 - (totalSum % 10)) % 10) as CheckDigit;
 }
 
 /**
@@ -93,7 +93,7 @@ const VERHOEFF_TABLES = {
     [6, 5, 9, 8, 7, 1, 0, 4, 3, 2],
     [7, 6, 5, 9, 8, 2, 1, 0, 4, 3],
     [8, 7, 6, 5, 9, 3, 2, 1, 0, 4],
-    [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+    [9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
   ],
   P_TABLE: [
     [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -103,8 +103,8 @@ const VERHOEFF_TABLES = {
     [9, 4, 5, 3, 1, 2, 6, 8, 7, 0],
     [4, 2, 8, 6, 5, 7, 3, 9, 0, 1],
     [2, 7, 9, 3, 8, 0, 6, 4, 1, 5],
-    [7, 0, 4, 6, 9, 1, 3, 2, 5, 8]
-  ]
+    [7, 0, 4, 6, 9, 1, 3, 2, 5, 8],
+  ],
 };
 
 /**
@@ -114,12 +114,12 @@ const VERHOEFF_TABLES = {
 export function verhoeffCheck(digits: number[]): boolean {
   const revDigits = [...digits].reverse();
   let c = 0;
-  
+
   for (let idx = 0; idx < revDigits.length; idx++) {
     const pVal = VERHOEFF_TABLES.P_TABLE[idx % 8][revDigits[idx]];
     c = VERHOEFF_TABLES.D_TABLE[c][pVal];
   }
-  
+
   return c === 0;
 }
 
@@ -133,14 +133,14 @@ export function weightedModulusDigit(
   modulusOnly: boolean = false
 ): number {
   const actualWeights = weights || new Array(numbers.length).fill(1);
-  
+
   if (numbers.length > actualWeights.length) {
     throw new Error('numbers length must be less than or equal to weights length');
   }
-  
-  const modulus = numbers.reduce((sum, value, index) => 
-    sum + (value * actualWeights[index]), 0) % divider;
-  
+
+  const modulus =
+    numbers.reduce((sum, value, index) => sum + value * actualWeights[index], 0) % divider;
+
   return modulusOnly ? modulus : divider - modulus;
 }
 
@@ -149,7 +149,7 @@ export function weightedModulusDigit(
  */
 export function mnModulusDigit(numbers: number[], m: number, n: number): number {
   let product = m;
-  
+
   for (const number of numbers) {
     let total = (number + product) % m;
     if (total === 0) {
@@ -157,7 +157,7 @@ export function mnModulusDigit(numbers: number[], m: number, n: number): number 
     }
     product = (2 * total) % n;
   }
-  
+
   return n - product;
 }
 
@@ -168,7 +168,7 @@ export function letterToNumber(letter: string, capital: boolean = true): number 
   if (letter.length !== 1 || !/[a-zA-Z]/.test(letter)) {
     throw new Error('only allow one alphabet');
   }
-  
+
   return capital ? letter.charCodeAt(0) - 64 : letter.charCodeAt(0) - 96;
 }
 
@@ -198,7 +198,7 @@ export function ean13Digit(numbers: number[]): CheckDigit {
   const total = even * 2 + odd;
   const modulus = total % 10;
 
-  return (modulus === 0 ? 0 : (10 - modulus)) as CheckDigit;
+  return (modulus === 0 ? 0 : 10 - modulus) as CheckDigit;
 }
 
 /**
