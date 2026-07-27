@@ -1,22 +1,43 @@
 // Issue #115 -- registration-model spike. Bundle-size measurement harness.
 //
 // Bundles every consumer program in CELLS with esbuild, records raw/minified/
-// gzip byte counts, verifies determinism (each build runs twice), derives the
-// headline comparisons and CI budgets, and writes spike/results/measurements.json.
+// gzip byte counts, verifies determinism (each build runs twice and the two
+// outputs must be byte-for-byte identical -- raw, minified, AND minified+gzip),
+// derives the headline comparisons and CI budgets, and writes
+// spike/results/measurements.json.
 //
 // Usage:
 //   node spike/measure.mjs            # build every cell, write the JSON
 //   node spike/measure.mjs --check    # also assert the 6 measurement-validity invariants
+//
+// Every "sideEffectsDemo" section of the JSON is reset by this script (see
+// main()) -- run spike/sideeffects-demo.mjs afterward to repopulate it. This
+// script never carries the previous run's demo result forward, so a stale
+// demo can never survive a fresh measurement run undetected.
 
 import * as esbuild from 'esbuild';
 import { gzipSync } from 'node:zlib';
-import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'node:fs';
+import { writeFileSync, mkdirSync, existsSync, readFileSync, statSync, readdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {
+  computeDerived,
+  evaluateDecisionRule,
+  rootDeltaShare,
+  ROOT_DELTA_TOLERANCE,
+} from './decision-rule.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const CHECK = process.argv.includes('--check');
+
+// CLAUDE.md requires this identity on every git invocation in this repository.
+const GIT_IDENTITY = ['-c', 'user.name=Angus Hsu', '-c', 'user.email=apangus611@gmail.com'];
+function git(args) {
+  return execFileSync('git', [...GIT_IDENTITY, ...args], { cwd: ROOT })
+    .toString()
+    .trim();
+}
 
 const SAMPLE_COUNTRIES = [
   { iso3: 'twn', key: 'TWN' },
@@ -163,125 +184,83 @@ async function sizeOf(cell) {
   const min = await build(true);
   const rawAgain = await build(false);
   const minAgain = await build(true);
+  const minGzip = gzipSync(min, { level: 9 });
+  const minGzipAgain = gzipSync(minAgain, { level: 9 });
 
   return {
     bytes: {
       raw: raw.length,
       minified: min.length,
-      minifiedGzip: gzipSync(min, { level: 9 }).length,
+      minifiedGzip: minGzip.length,
     },
-    deterministic: raw.length === rawAgain.length && min.length === minAgain.length,
+    // Byte-for-byte content equality, not just matching lengths -- two builds
+    // that happen to produce the same length but different bytes (or the
+    // same minified bytes but a different gzip stream) must be reported
+    // non-deterministic, not silently passed.
+    deterministic: raw.equals(rawAgain) && min.equals(minAgain) && minGzip.equals(minGzipAgain),
   };
 }
 
 // ---------------------------------------------------------------------------
-// Derived values + CI budgets
+// Derived values, CI budgets, and the pre-registered decision rule now live
+// in ./decision-rule.mjs (imported above) so they can be unit-tested in
+// isolation -- see spike/__tests__/decision-rule.test.mjs -- without running
+// the full esbuild measurement harness.
 // ---------------------------------------------------------------------------
-const BUDGET_HEADROOM_PER_COUNTRY = 1.25;
-const BUDGET_HEADROOM_FULL = 1.1;
-const BUDGET_ROUND_TO = 100;
 
-/** Rule 3 and invariant 5 both accept option C's root within this share of today's full bundle. */
-const ROOT_DELTA_TOLERANCE = 0.02;
+// ---------------------------------------------------------------------------
+// API-parity check: measures, rather than assumes, whether option C's root
+// preserves validateNationalId/parseIdInfo/getCountryIdFormat and alias
+// behavior unchanged from production. This feeds evaluateDecisionRule's
+// `optionCPreservesApi` input -- the rule never hardcodes that value.
+//
+// Production (src/index.ts) and the spike's option C root (src/spike/index.ts)
+// both populate the SAME ValidatorRegistry singleton, so they cannot be
+// compared within one process without one contaminating the other. Each side
+// is therefore bundled and run in its own fresh `node` subprocess.
+// ---------------------------------------------------------------------------
+const WORK_DIR = path.join(ROOT, 'spike/.work');
 
-function budget(bytes, headroom) {
-  return Math.ceil((bytes * headroom) / BUDGET_ROUND_TO) * BUDGET_ROUND_TO;
-}
+const API_PARITY_PROBE_TEMPLATE = [
+  "import { getCountryIdFormat, validateNationalId, parseIdInfo } from '__ENTRY__';",
+  'console.log(JSON.stringify({',
+  "  format: getCountryIdFormat('TWN'),",
+  "  aliasResolved: validateNationalId('tw', 'A123456789').countryCode,",
+  "  lowercaseResolved: validateNationalId('twn', 'A123456789').countryCode,",
+  "  parsed: parseIdInfo('TWN', 'A123456789'),",
+  '}));',
+].join('\n');
 
-/** |proto.full - today.full| / today.full -- the single quantity rule 3 and invariant 5 both test. */
-function rootDeltaShare(cellsById) {
-  const protoFull = cellsById['proto.full.esm'].bytes.minified;
-  const todayFull = cellsById['today.full.esm'].bytes.minified;
-  return Math.abs(protoFull - todayFull) / todayFull;
-}
-
-function computeDerived(cellsById) {
-  const registryCells = SAMPLE_COUNTRIES.map(
-    ({ iso3 }) => cellsById[`proto.single.b_registry.${iso3}.esm`].bytes.minifiedGzip
-  );
-  const singleCountryMinMinifiedGzip = Math.min(...registryCells);
-  const singleCountryMaxMinifiedGzip = Math.max(...registryCells);
-  const fullMinifiedGzip = cellsById['proto.full.esm'].bytes.minifiedGzip;
-
-  const optionAOverheadBytes =
-    cellsById['proto.single.a.twn.esm'].bytes.minified -
-    cellsById['proto.single.b_registry.twn.esm'].bytes.minified;
-  const protoRootOverheadBytes =
-    cellsById['proto.full.esm'].bytes.minified - cellsById['today.full.esm'].bytes.minified;
-
-  return {
-    singleCountryMinMinifiedGzip,
-    singleCountryMaxMinifiedGzip,
-    fullMinifiedGzip,
-    singleCountryShareOfFull: singleCountryMaxMinifiedGzip / fullMinifiedGzip,
-    optionAOverheadBytes,
-    protoRootOverheadBytes,
-    budgetFormula:
-      'budget(x) = ceil(x * 1.25 / 100) * 100 for per-country/core; ' +
-      'ceil(x * 1.10 / 100) * 100 for the full bundle',
-    budgets: {
-      singleCountryMinifiedGzip: budget(singleCountryMaxMinifiedGzip, BUDGET_HEADROOM_PER_COUNTRY),
-      coreMinifiedGzip: budget(
-        cellsById['proto.core_only.esm'].bytes.minifiedGzip,
-        BUDGET_HEADROOM_PER_COUNTRY
-      ),
-      fullMinifiedGzip: budget(fullMinifiedGzip, BUDGET_HEADROOM_FULL),
+async function bundleAndCapture(entry, outFile) {
+  const result = await esbuild.build({
+    stdin: {
+      contents: API_PARITY_PROBE_TEMPLATE.replace('__ENTRY__', entry),
+      resolveDir: ROOT,
+      loader: 'ts',
+      sourcefile: `${outFile}.ts`,
     },
-  };
+    bundle: true,
+    write: false,
+    format: 'esm',
+    platform: 'node',
+    target: 'es2020',
+    legalComments: 'none',
+    logLevel: 'silent',
+    absWorkingDir: ROOT,
+  });
+  mkdirSync(WORK_DIR, { recursive: true });
+  const outPath = path.join(WORK_DIR, `${outFile}.mjs`);
+  writeFileSync(outPath, Buffer.from(result.outputFiles[0].contents));
+  return JSON.parse(execFileSync('node', [outPath], { cwd: ROOT }).toString().trim());
 }
 
-// ---------------------------------------------------------------------------
-// Pre-registered decision rule (plan Step 9), evaluated mechanically against
-// the derived numbers above. No conclusion is authored ahead of the data.
-// ---------------------------------------------------------------------------
-function evaluateDecisionRule(derived, cellsById) {
-  if (derived.singleCountryShareOfFull > 0.25) {
-    return {
-      option: 'none',
-      ruleBranch: 'rule 1: singleCountryShareOfFull > 0.25',
-      rationale:
-        'Per-country isolation is not worth pursuing: the largest sampled country still ' +
-        `costs ${(derived.singleCountryShareOfFull * 100).toFixed(1)}% of the full bundle, ` +
-        'so subpath exports (#122) would not pay for their complexity. Recommend keeping ' +
-        "today's model and closing #122 as not-worth-doing.",
-    };
-  }
-
-  const aEliminated = derived.optionAOverheadBytes > 0;
-  // Asserted by src/__tests__/issue-115-spike-root.test.ts, which passed:
-  // validateNationalId/parseIdInfo/getCountryIdFormat and alpha-2/lowercase
-  // alias behavior are unchanged from the option C root, with no source
-  // change required of existing consumers.
-  const optionCPreservesApi = true;
-  const deltaShare = rootDeltaShare(cellsById);
-  const chooseC = deltaShare <= ROOT_DELTA_TOLERANCE && optionCPreservesApi;
-
-  const aNote = aEliminated
-    ? `rule 2: option A costs ${derived.optionAOverheadBytes} more bytes per country than B/C ` +
-      'and is incompatible with "sideEffects": false, so A is eliminated on bytes'
-    : 'rule 2: option A does not cost more bytes than B/C on this measurement -- ' +
-      're-examine before eliminating A on bytes alone';
-
-  if (chooseC) {
-    return {
-      option: 'C',
-      ruleBranch: `${aNote}; rule 3: root delta ${(deltaShare * 100).toFixed(2)}% <= 2% and API preserved -> C`,
-      rationale:
-        `${aNote}. Options B and C ship the same per-country entry files and tie on bytes ` +
-        `by construction. Option C's batteries-included root differs from today's full ` +
-        `bundle by only ${(deltaShare * 100).toFixed(2)}%, while preserving ` +
-        'validateNationalId/parseIdInfo/getCountryIdFormat and alpha-2/lowercase alias ' +
-        'behavior with zero source changes for existing consumers -- so C is chosen.',
-    };
-  }
-
+async function checkApiParity() {
+  const production = await bundleAndCapture('./src/index', 'api-parity-production');
+  const prototype = await bundleAndCapture('./src/spike/index', 'api-parity-prototype');
   return {
-    option: 'B',
-    ruleBranch: `${aNote}; rule 3: root delta ${(deltaShare * 100).toFixed(2)}% > 2% or API not preserved -> B`,
-    rationale:
-      `${aNote}. Option C's root diverges from today's full bundle by more than 2% (or ` +
-      'fails to preserve the public API unchanged), so B is chosen and a documented ' +
-      'breaking change is accepted for v2.',
+    production,
+    prototype,
+    preserved: JSON.stringify(production) === JSON.stringify(prototype),
   };
 }
 
@@ -352,11 +331,46 @@ function pkgVersion(name) {
     .version;
 }
 
-async function main() {
-  if (!existsSync(path.join(ROOT, DIST_ENTRY))) {
+/** Newest mtime (ms) of any file under `dir`, recursively. */
+function newestMtimeMs(dir) {
+  let newest = 0;
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      newest = Math.max(newest, newestMtimeMs(full));
+    } else if (entry.isFile()) {
+      newest = Math.max(newest, statSync(full).mtimeMs);
+    }
+  }
+  return newest;
+}
+
+/**
+ * `today.published.cjs` measures dist/index.js as-built. A `dist/index.js`
+ * left over from an earlier source tree would silently measure stale bytes.
+ * Fail loudly instead of assuming freshness: require dist/index.js to be at
+ * least as new as every file under src/.
+ */
+function assertDistIsFresh() {
+  const distPath = path.join(ROOT, DIST_ENTRY);
+  if (!existsSync(distPath)) {
     console.error(`${DIST_ENTRY} not found — run "npm run build" first`);
     process.exit(1);
   }
+  const distMtime = statSync(distPath).mtimeMs;
+  const srcMtime = newestMtimeMs(path.join(ROOT, 'src'));
+  if (srcMtime > distMtime) {
+    console.error(
+      `${DIST_ENTRY} is older than the newest file under src/ -- it may not reflect the ` +
+        'current source and would measure a stale "as published" cell. Run "npm run build" ' +
+        'before measuring today.published.cjs.'
+    );
+    process.exit(1);
+  }
+}
+
+async function main() {
+  assertDistIsFresh();
 
   const cellsById = {};
   for (const cell of CELLS) {
@@ -368,15 +382,23 @@ async function main() {
     .filter(([, c]) => !c.deterministic)
     .map(([id]) => id);
 
-  const derived = computeDerived(cellsById);
-  const decision = evaluateDecisionRule(derived, cellsById);
+  const sampleIso3s = SAMPLE_COUNTRIES.map(({ iso3 }) => iso3);
+  const derived = computeDerived(cellsById, sampleIso3s);
+  const apiParity = await checkApiParity();
+  const decision = evaluateDecisionRule(derived, cellsById, apiParity.preserved);
 
+  // `commit` identifies the tree this run measured against. `dirty` makes
+  // clear whether that tree matched `commit` exactly (false) or carried
+  // uncommitted changes on top of it (true) -- so the artifact never claims
+  // a commit reproduces these numbers when the working tree diverged from it.
+  const dirty = git(['status', '--porcelain']).length > 0;
   const versions = {
     node: process.version,
     npm: execFileSync('npm', ['--version'], { cwd: ROOT }).toString().trim(),
     esbuild: pkgVersion('esbuild'),
     typescript: pkgVersion('typescript'),
-    commit: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: ROOT }).toString().trim(),
+    commit: git(['rev-parse', 'HEAD']),
+    dirty,
   };
 
   const cells = CELLS.map(cell => {
@@ -394,21 +416,22 @@ async function main() {
     };
   });
 
-  const existing = existsSync(MEASUREMENTS_JSON)
-    ? JSON.parse(readFileSync(MEASUREMENTS_JSON, 'utf8'))
-    : null;
-
   const output = {
     generatedAt: new Date().toISOString(),
     versions,
     cells,
     derived,
-    sideEffectsDemo: existing?.sideEffectsDemo ?? {
+    apiParity,
+    // Always reset, never carried forward from a previous run's JSON: a
+    // stale sideEffectsDemo result from a different source state must never
+    // silently survive a fresh measurement. Run spike/sideeffects-demo.mjs
+    // after this script to (re)populate it for the current source tree.
+    sideEffectsDemo: {
       attempted: false,
       dropped: false,
       withSideEffectsFalse: '',
       withoutField: '',
-      note: 'spike/sideeffects-demo.mjs has not been run yet',
+      note: 'spike/sideeffects-demo.mjs has not been run yet for this measurement run',
     },
     decision,
   };

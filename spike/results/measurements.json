@@ -1,11 +1,12 @@
 {
-  "generatedAt": "2026-07-27T07:25:28.516Z",
+  "generatedAt": "2026-07-27T10:20:52.037Z",
   "versions": {
     "node": "v22.18.0",
     "npm": "11.5.2",
     "esbuild": "0.28.1",
     "typescript": "5.9.3",
-    "commit": "c0b2ef00e9973868c10735b1fd96fd962685481c"
+    "commit": "b42c35f0252d9ecc2592593173ebd11c7feaac73",
+    "dirty": true
   },
   "cells": [
     {
@@ -233,6 +234,97 @@
       "fullMinifiedGzip": 40300
     }
   },
+  "apiParity": {
+    "production": {
+      "format": {
+        "countryCode": "TWN",
+        "countryName": "Taiwan",
+        "idType": "National Identification Card",
+        "format": "X#########",
+        "example": "A123456789",
+        "checksumAlgorithm": "Weighted sum mod 10 (location letter → two digits; weights 1,9,8,7,6,5,4,3,2,1; check = (10 - remainder) mod 10)",
+        "officialName": "國民身分證統一編號",
+        "length": {
+          "min": 10,
+          "max": 10
+        },
+        "hasChecksum": true,
+        "isParsable": true,
+        "metadata": {
+          "iso3166Alpha2": "TW",
+          "minLength": 10,
+          "maxLength": 10,
+          "parsable": true,
+          "checksum": true,
+          "regexp": {},
+          "displayFormat": "X#########",
+          "example": "A123456789",
+          "checksumAlgorithm": "Weighted sum mod 10 (location letter → two digits; weights 1,9,8,7,6,5,4,3,2,1; check = (10 - remainder) mod 10)",
+          "officialName": "國民身分證統一編號",
+          "aliasOf": null,
+          "names": ["National ID Number", "國民身分證統一編號", "身分證字號"],
+          "links": [
+            "https://en.wikipedia.org/wiki/National_identification_number#Taiwan",
+            "https://zh.wikipedia.org/wiki/%E4%B8%AD%E8%8F%AF%E6%B0%91%E5%9C%8B%E5%9C%8B%E6%B0%91%E8%BA%AB%E5%88%86%E8%AD%89"
+          ],
+          "deprecated": false
+        }
+      },
+      "aliasResolved": "TWN",
+      "lowercaseResolved": "TWN",
+      "parsed": {
+        "location": "A",
+        "gender": "male",
+        "sn": "2345678",
+        "checksum": 9
+      }
+    },
+    "prototype": {
+      "format": {
+        "countryCode": "TWN",
+        "countryName": "TWN",
+        "idType": "National ID Number",
+        "format": "X#########",
+        "example": "A123456789",
+        "checksumAlgorithm": "Weighted sum mod 10 (location letter → two digits; weights 1,9,8,7,6,5,4,3,2,1; check = (10 - remainder) mod 10)",
+        "officialName": "國民身分證統一編號",
+        "length": {
+          "min": 10,
+          "max": 10
+        },
+        "hasChecksum": true,
+        "isParsable": true,
+        "metadata": {
+          "iso3166Alpha2": "TW",
+          "minLength": 10,
+          "maxLength": 10,
+          "parsable": true,
+          "checksum": true,
+          "regexp": {},
+          "displayFormat": "X#########",
+          "example": "A123456789",
+          "checksumAlgorithm": "Weighted sum mod 10 (location letter → two digits; weights 1,9,8,7,6,5,4,3,2,1; check = (10 - remainder) mod 10)",
+          "officialName": "國民身分證統一編號",
+          "aliasOf": null,
+          "names": ["National ID Number", "國民身分證統一編號", "身分證字號"],
+          "links": [
+            "https://en.wikipedia.org/wiki/National_identification_number#Taiwan",
+            "https://zh.wikipedia.org/wiki/%E4%B8%AD%E8%8F%AF%E6%B0%91%E5%9C%8B%E5%9C%8B%E6%B0%91%E8%BA%AB%E5%88%86%E8%AD%89"
+          ],
+          "deprecated": false
+        }
+      },
+      "aliasResolved": "TWN",
+      "lowercaseResolved": "TWN",
+      "parsed": {
+        "location": "A",
+        "gender": "male",
+        "sn": "2345678",
+        "checksum": 9
+      }
+    },
+    "preserved": false
+  },
   "sideEffectsDemo": {
     "attempted": true,
     "dropped": true,
@@ -242,7 +334,7 @@
   },
   "decision": {
     "option": "B",
-    "ruleBranch": "rule 2: option A costs 9 more bytes per country than B/C and is incompatible with \"sideEffects\": false, so A is eliminated on bytes; rule 3: root delta 3.77% > 2% or API not preserved -> B",
-    "rationale": "rule 2: option A costs 9 more bytes per country than B/C and is incompatible with \"sideEffects\": false, so A is eliminated on bytes. Option C's root diverges from today's full bundle by more than 2% (or fails to preserve the public API unchanged), so B is chosen and a documented breaking change is accepted for v2."
+    "ruleBranch": "rule 2: option A costs 9 more bytes per country than B/C and is incompatible with \"sideEffects\": false, so A is eliminated on bytes; rule 3: root delta 3.77% > 2% and API not fully preserved (getCountryIdFormat diverges from production) -> B",
+    "rationale": "rule 2: option A costs 9 more bytes per country than B/C and is incompatible with \"sideEffects\": false, so A is eliminated on bytes. Option C's root diverges from today's behavior (root delta 3.77% > 2%; API not fully preserved (getCountryIdFormat diverges from production)), so B is chosen and a documented breaking change is accepted for v2."
   }
 }

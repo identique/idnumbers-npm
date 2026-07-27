@@ -67,10 +67,25 @@ property of the two designs versus a fixable defect in today's code.
 
 3. **B vs C.**
    `abs(derived.protoRootOverheadBytes) / today.full.esm.minified = 5121 / 135989 = 0.03766`
-   (3.77%) — **exceeds** the 2% tolerance. By the letter of the rule, **B is
-   chosen** and a documented breaking change (explicit `register()` calls) is
-   accepted for v2 subpath consumers. Root (`idnumbers`) consumers are
-   unaffected either way — both A/B/C proposals keep the root batteries-included.
+   (3.77%) — **exceeds** the 2% tolerance, so **B is chosen** on that basis alone.
+   The rule's second condition for choosing C — that the root preserves the
+   public API unchanged — was also checked empirically rather than assumed
+   (`measurements.json`'s `apiParity` field): a probe program compares
+   `getCountryIdFormat('TWN')`, alias/lowercase resolution, and `parseIdInfo`
+   between production's `src/index.ts` and the spike's option C root
+   (`src/spike/index.ts`) in two isolated `node` subprocesses. `apiParity.preserved`
+   is **`false`** — `getCountryIdFormat('TWN')` diverges (production:
+   `countryName: "Taiwan"`, `idType: "National Identification Card"`; option C
+   root: `countryName: "TWN"`, `idType: "National ID Number"`), because the root
+   registers via `registerAll` directly rather than through `core.ts`'s
+   `register()`, so `core.ts`'s `displayInfo` map is never populated. Both
+   conditions therefore fail independently, and **B is chosen** with a
+   documented breaking change (explicit `register()` calls) accepted for v2
+   subpath consumers. Root (`idnumbers`) consumers are unaffected either way —
+   both A/B/C proposals keep the root batteries-included, and `validateNationalId`/
+   `parseIdInfo`/alias resolution DID measure as identical (see **`apiParity`
+   evidence** below) — only `getCountryIdFormat`'s display-metadata enrichment
+   diverges.
 
 4. **Half-registered-registry risk (mandatory regardless of B/C).**
    `validateNationalId` on an unregistered key currently returns
@@ -100,11 +115,16 @@ property of the two designs versus a fixable defect in today's code.
 ## Measurements
 
 esbuild `0.28.1`, Node `v22.18.0`, npm `11.5.2`, TypeScript `5.9.3`, commit
-`c0b2ef00e9973868c10735b1fd96fd962685481c`. Format ESM unless noted,
-`platform=browser`, `target=es2020`. All sizes in bytes. Every cell was built
-twice (raw and minified) and the byte lengths matched — **all 14 cells report
-`deterministic: true`**; the determinism double-build check passed with no
-exceptions.
+`b42c35f0252d9ecc2592593173ebd11c7feaac73` (the branch tip that actually
+contains the measured `src/spike/**` source — `versions.dirty: true` in
+`measurements.json` because this specific re-run was taken while this
+review-fixup round's own harness/test/doc changes were still uncommitted on
+top of that commit; the measured spike source files themselves are unchanged
+from that commit). Format ESM unless noted, `platform=browser`,
+`target=es2020`. All sizes in bytes. Every cell was built twice (raw and
+minified, gzip recomputed from each) and the outputs were compared **byte-for-byte**,
+not just by length — **all 14 cells report `deterministic: true`**; the
+determinism double-build check passed with no exceptions.
 
 | Cell                              | Layout / option                                                        | raw     | minified | min+gzip |
 | --------------------------------- | ---------------------------------------------------------------------- | ------- | -------- | -------- |
@@ -125,7 +145,7 @@ exceptions.
 
 **Headline:** a consumer who needs one country pays 37,976 B (min+gzip) today
 via the root and 1,952 B under the prototype (TWN via `register()`) — a
-**≈19.5×** reduction (37,976 / 1,952 = 19.459). Range across the six sampled
+**≈19.5×** reduction (37,976 / 1,952 = 19.455). Range across the six sampled
 countries (TWN, ITA, AUS, MKD, DOM, SMR): **1,357–4,766 B** min+gzip
 (SMR minimum, DOM maximum — DOM pulls in `exceptions.ts`, the largest single
 country file in the repository).
@@ -170,6 +190,32 @@ Invariant 5 failing is itself reported as a finding rather than fixed. See
 or the prototype to force a pass, per this spike's own ground rule against
 fabricating conclusions.
 
+### `apiParity` evidence (feeds rule 3's `optionCPreservesApi` input)
+
+The decision rule's "does option C's root preserve the public API" condition
+is measured, not assumed. `measure.mjs` bundles a small probe program against
+both `src/index.ts` (production) and `src/spike/index.ts` (option C root) and
+runs each in its own `node` subprocess (they cannot share a process: both
+populate the same `ValidatorRegistry` singleton), then compares
+`getCountryIdFormat('TWN')`, alpha-2/lowercase alias resolution for
+`validateNationalId`, and `parseIdInfo('TWN', ...)`. Recorded verbatim in
+`measurements.json`'s `apiParity` field:
+
+| Field                      | Production                       | Option C root          |
+| -------------------------- | -------------------------------- | ---------------------- |
+| `format.countryName`       | `"Taiwan"`                       | `"TWN"`                |
+| `format.idType`            | `"National Identification Card"` | `"National ID Number"` |
+| alias/lowercase resolution | `"TWN"`                          | `"TWN"` (identical)    |
+| `parseIdInfo(...)`         | identical                        | identical              |
+
+`apiParity.preserved: false` — `validateNationalId`, `parseIdInfo`, and alias
+resolution are byte-identical between production and the option C root, but
+`getCountryIdFormat` is not: the root registers via `registerAll` directly,
+so `core.ts`'s `displayInfo` map (populated only by `core.ts`'s own
+`register()`) never receives country name/idType data. See **Caveats** for
+why this is a fixable defect in how this spike coded option C's root, not an
+inherent property of the option.
+
 ### Threshold derivation (feeds #122's bundle-size regression check)
 
 ```
@@ -202,16 +248,16 @@ reality, which makes its standalone gzip figure indicative rather than exact.
 
 ## Ergonomics and compatibility matrix
 
-| Column                                                  | Option A (auto-register)                                                                                                | Option B (pure + explicit `register()`)                                                                                                                       | Option C (hybrid)                                                                                                                                                  |
-| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `validateNationalId`/`parseIdInfo`/`getCountryIdFormat` | preserved unchanged, once the side-effect import has run                                                                | preserved unchanged in shape, but nothing resolves until `register()` is called — a source change from today                                                  | root: preserved unchanged; subpath: same as B                                                                                                                      |
-| registry singleton + alpha-2 + lowercase aliases        | preserved (lowercase via `key.toUpperCase()` normalization, not a registered alias)                                     | preserved, for entries actually registered                                                                                                                    | root: preserved from `registerAll`; subpath: same as B                                                                                                             |
-| `listSupportedCountries()`                              | breaking: only registered countries are listable, not the static 85-entry array                                         | breaking: same                                                                                                                                                | root: unchanged (or its `registerAll`-derived equivalent); subpath: same as B                                                                                      |
-| v2 consumer code                                        | `import 'idnumbers/countries/twn'; import { validateNationalId } from 'idnumbers/core'; validateNationalId('TWN', id);` | `import { register, validateNationalId } from 'idnumbers/core'; import { TWN } from 'idnumbers/countries/twn'; register(TWN); validateNationalId('TWN', id);` | root: `import { validateNationalId } from 'idnumbers'; validateNationalId('TWN', id);` (unchanged); subpath: same snippet as B                                     |
-| migration cost                                          | none added on the surface, but silently unsafe (see risk row)                                                           | rewrite of call sites: one `register()` call per country used                                                                                                 | none for root consumers; same as B for subpath consumers                                                                                                           |
-| half-registered registry risk                           | **severe and silent**: an unused bare import is exactly what linters/bundlers strip, with no error at all               | present but _loud_: `validateNationalId` returns a (currently under-specific) error — mitigated by the #117/#123 reason code                                  | none for root; same as B for subpath                                                                                                                               |
-| `sideEffects: false` compatibility                      | **No** — demonstrated empirically in this spike                                                                         | **Yes** — no bare import anywhere in this shape                                                                                                               | root entry point is itself a side-effect import (by design), same class of risk as A, unless expressed per-subpath in `exports`/`sideEffects` (not attempted here) |
-| tree-shaking outcome (measured)                         | 4,639 B minified / 1,952 B min+gzip (TWN) — 9 B larger than B/C for the same country                                    | 4,630 B minified / 1,952 B min+gzip (TWN); 1,357–4,766 B min+gzip across the six-country sample                                                               | subpath ties B by construction; root measured 130,868 B minified (36,632 B min+gzip) — see Caveats for why this is _not_ today's number                            |
+| Column                                                  | Option A (auto-register)                                                                                                | Option B (pure + explicit `register()`)                                                                                                                       | Option C (hybrid)                                                                                                                                                                                                                                                                                                                         |
+| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `validateNationalId`/`parseIdInfo`/`getCountryIdFormat` | preserved unchanged, once the side-effect import has run                                                                | preserved unchanged in shape, but nothing resolves until `register()` is called — a source change from today                                                  | root: `validateNationalId`/`parseIdInfo`/alias resolution measured identical (see `apiParity` evidence above); `getCountryIdFormat` diverges (`countryName`/`idType` fall back to registry defaults instead of production's enriched values) — a fixable defect in this spike's root, not measured as fully preserved; subpath: same as B |
+| registry singleton + alpha-2 + lowercase aliases        | preserved (lowercase via `key.toUpperCase()` normalization, not a registered alias)                                     | preserved, for entries actually registered                                                                                                                    | root: preserved from `registerAll`; subpath: same as B                                                                                                                                                                                                                                                                                    |
+| `listSupportedCountries()`                              | breaking: only registered countries are listable, not the static 85-entry array                                         | breaking: same                                                                                                                                                | root: unchanged (or its `registerAll`-derived equivalent); subpath: same as B                                                                                                                                                                                                                                                             |
+| v2 consumer code                                        | `import 'idnumbers/countries/twn'; import { validateNationalId } from 'idnumbers/core'; validateNationalId('TWN', id);` | `import { register, validateNationalId } from 'idnumbers/core'; import { TWN } from 'idnumbers/countries/twn'; register(TWN); validateNationalId('TWN', id);` | root: `import { validateNationalId } from 'idnumbers'; validateNationalId('TWN', id);` (unchanged); subpath: same snippet as B                                                                                                                                                                                                            |
+| migration cost                                          | none added on the surface, but silently unsafe (see risk row)                                                           | rewrite of call sites: one `register()` call per country used                                                                                                 | none for root consumers; same as B for subpath consumers                                                                                                                                                                                                                                                                                  |
+| half-registered registry risk                           | **severe and silent**: an unused bare import is exactly what linters/bundlers strip, with no error at all               | present but _loud_: `validateNationalId` returns a (currently under-specific) error — mitigated by the #117/#123 reason code                                  | none for root; same as B for subpath                                                                                                                                                                                                                                                                                                      |
+| `sideEffects: false` compatibility                      | **No** — demonstrated empirically in this spike                                                                         | **Yes** — no bare import anywhere in this shape                                                                                                               | root entry point is itself a side-effect import (by design), same class of risk as A, unless expressed per-subpath in `exports`/`sideEffects` (not attempted here)                                                                                                                                                                        |
+| tree-shaking outcome (measured)                         | 4,639 B minified / 1,952 B min+gzip (TWN) — 9 B larger than B/C for the same country                                    | 4,630 B minified / 1,952 B min+gzip (TWN); 1,357–4,766 B min+gzip across the six-country sample                                                               | subpath ties B by construction; root measured 130,868 B minified (36,632 B min+gzip) — see Caveats for why this is _not_ today's number                                                                                                                                                                                                   |
 
 ---
 
@@ -267,6 +313,17 @@ or Rollup.
 
 ## Caveats
 
+- **`versions.commit` names the branch tip _before_ this review-fixup round's
+  own commit, not that commit itself.** A commit cannot embed its own hash, so
+  `measurements.json` cannot literally cite the commit it ships in.
+  `versions.commit` (`b42c35f0...`) is the nearest ancestor that already
+  contains every measured `src/spike/**` file; `versions.dirty: true` records
+  that this specific measurement run had additional, uncommitted
+  harness/test/doc changes on top of it (this round's own review fixes). The
+  measured spike source itself is unchanged from that commit — only files
+  outside what is actually measured (this document, `measure.mjs`,
+  `decision-rule.mjs`, and the Jest test additions) were dirty at
+  measurement time.
 - **esbuild's TypeScript lowering differs from `tsc`'s.** Class static fields,
   enum emit, and helper injection are not identical, so no ESM cell equals the
   exact bytes a `tsc`-built package would ship. Every ESM cell goes through
@@ -285,10 +342,13 @@ or Rollup.
   `registerAll([...85 CountryEntry objects])`.** `core.ts`'s `displayInfo` map
   is therefore empty under this root, so `getCountryIdFormat()` from
   `src/spike/index.ts` returns registry-derived naming only (`countryName`
-  falls back to the raw code, e.g. `"TWN"` instead of `"Taiwan"` — verified by
-  `issue-115-spike-root.test.ts`'s dedicated fallback assertion). For byte
-  purposes the 85 country _validator_ modules are retained either way; the
-  divergence below is about a different piece of `src/index.ts`.
+  falls back to the raw code, e.g. `"TWN"` instead of `"Taiwan"` — verified
+  both by `issue-115-spike-root.test.ts`'s dedicated fallback assertion and,
+  mechanically, by `measure.mjs`'s `apiParity` check, which is what makes
+  `optionCPreservesApi = false` in the decision rule above rather than an
+  assumption). For byte purposes the 85 country _validator_ modules are
+  retained either way; the divergence below is about a different piece of
+  `src/index.ts`.
 - **Invariant 5 failed for a diagnosed, real reason: `src/index.ts`'s
   `SUPPORTED_COUNTRIES` enrichment loop defeats tree-shaking.** `src/index.ts`
   builds `countryInfoMap` with a top-level, unconditionally-executed
@@ -357,12 +417,16 @@ or Rollup.
 <details><summary>How to reproduce</summary>
 
 ```bash
-git checkout idnumbers-node-issue-115
+git -c user.name="Angus Hsu" -c user.email="apangus611@gmail.com" checkout idnumbers-node-issue-115
 npm ci
-npm run build          # required for the CJS "as published" row
-node spike/measure.mjs
+npm run build              # required for the CJS "as published" row; measure.mjs
+                            # refuses to run against a dist/ older than src/
+node spike/measure.mjs     # writes measurements.json (resets sideEffectsDemo)
 node spike/measure.mjs --check
-node spike/sideeffects-demo.mjs
+node spike/sideeffects-demo.mjs   # repopulates measurements.json's sideEffectsDemo
+npm run test:spike         # decision-rule unit tests (branches + 0.25 / 2% boundaries)
+npm test                   # includes the measurements.json <-> RESULTS.md/decision-comment.md
+                            # consistency check (issue-115-spike-results-consistency.test.ts)
 ```
 
 </details>

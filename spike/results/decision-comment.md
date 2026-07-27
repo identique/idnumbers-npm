@@ -4,8 +4,11 @@
 
 ### Measurements
 
-esbuild `0.28.1`, Node `v22.18.0`, commit `c0b2ef00e9973868c10735b1fd96fd962685481c`,
-format ESM unless noted, `platform=browser`, `target=es2020`. Sizes are bytes.
+esbuild `0.28.1`, Node `v22.18.0`, commit `b42c35f0252d9ecc2592593173ebd11c7feaac73`
+(the branch tip whose `src/spike/**` files these numbers were measured
+against; see `spike/results/RESULTS.md`'s Caveats for why a commit can never
+cite itself and what `measurements.json`'s `dirty` flag records), format ESM
+unless noted, `platform=browser`, `target=es2020`. Sizes are bytes.
 
 | Cell                              | Layout                                                                 | raw     | minified | min+gzip |
 | --------------------------------- | ---------------------------------------------------------------------- | ------- | -------- | -------- |
@@ -41,12 +44,20 @@ detail in `spike/results/RESULTS.md`):
    (below, demonstrated empirically), **A is eliminated.**
 3. B vs C: `|protoRootOverheadBytes| / today.full.esm.minified = 3.77%`,
    which **exceeds** the 2% tolerance for treating C's root as a faithful
-   stand-in for today's behavior, so **B is chosen** and a documented breaking
+   stand-in for today's behavior. The rule's other C-condition — API
+   preservation — is measured empirically too (`measurements.json`'s
+   `apiParity` field), not assumed: `validateNationalId`/`parseIdInfo`/alias
+   resolution matched production exactly, but `getCountryIdFormat('TWN')`
+   diverged (`countryName`/`idType` fall back to registry defaults instead of
+   production's enriched values), so `apiParity.preserved = false`. Both
+   conditions fail independently, so **B is chosen** and a documented breaking
    change (explicit `register()` per subpath import) is accepted for v2.
-   (Caveat: this 3.77% gap is mostly explained by a real, separate defect in
-   today's `src/index.ts` — see the full write-up — not by an inherent cost
-   difference between the two designs. The rule fired on the numbers as
-   measured, per this spike's rule against inventing conclusions.)
+   (Caveat: the 3.77% gap and the `getCountryIdFormat` divergence are both
+   explained by the same real, separate defect in today's `src/index.ts` and
+   in how this spike's root re-registers — see the full write-up — not by an
+   inherent cost or capability difference between the two designs. The rule
+   fired on the numbers as measured, per this spike's rule against inventing
+   conclusions.)
 4. Regardless of B/C, the half-registered-registry failure mode
    (`Unsupported country code: X`) must become actionable — a requirement
    handed to #117/#123, not an optional nicety.
@@ -59,8 +70,9 @@ risk, `sideEffects` compatibility, tree-shaking outcome) for A/B/C is in
 `spike/results/RESULTS.md`. Summary: A is silently unsafe under
 `"sideEffects": false` and shows no error when it fails; B is the most honest
 about the trade-off (loud failure until you call `register()`, fully
-compatible with `sideEffects: false`); C preserves today's root behavior
-unchanged but its subpath behaves like B.
+compatible with `sideEffects: false`); C's root measured identical to
+production for `validateNationalId`/`parseIdInfo`/alias resolution but not for
+`getCountryIdFormat` (see `apiParity` above), and its subpath behaves like B.
 
 ### `sideEffects: false`
 
@@ -109,12 +121,16 @@ is a real, demonstrable hazard under esbuild, not just a theoretical concern.
 <details><summary>How to reproduce</summary>
 
 ```bash
-git checkout idnumbers-node-issue-115
+git -c user.name="Angus Hsu" -c user.email="apangus611@gmail.com" checkout idnumbers-node-issue-115
 npm ci
-npm run build          # required for the CJS "as published" row
-node spike/measure.mjs
+npm run build              # required for the CJS "as published" row; measure.mjs
+                            # refuses to run against a dist/ older than src/
+node spike/measure.mjs     # writes measurements.json (resets sideEffectsDemo)
 node spike/measure.mjs --check
-node spike/sideeffects-demo.mjs
+node spike/sideeffects-demo.mjs   # repopulates measurements.json's sideEffectsDemo
+npm run test:spike         # decision-rule unit tests (branches + 0.25 / 2% boundaries)
+npm test                   # includes the measurements.json <-> RESULTS.md/decision-comment.md
+                            # consistency check
 ```
 
 </details>

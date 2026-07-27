@@ -7,7 +7,18 @@
  */
 import '../spike/index';
 import { registry } from '../registry/ValidatorRegistry';
-import { listRegisteredCountries, validateNationalId, getCountryIdFormat } from '../spike/core';
+import {
+  listRegisteredCountries,
+  validateNationalId,
+  getCountryIdFormat,
+  parseIdInfo,
+} from '../spike/core';
+// Production's root shares the same registry singleton and the same
+// registerAll module as the spike's option C root (src/spike/index.ts), so
+// importing it here does not double-register anything -- it gives a direct
+// parity target for parseIdInfo, the one public API surface the decision
+// rule assumes is preserved but that no test previously exercised.
+import { parseIdInfo as productionParseIdInfo } from '../index';
 
 describe('spike option C root (src/spike/index.ts)', () => {
   it('should register the same primary key set as the production registry', () => {
@@ -61,5 +72,25 @@ describe('spike option C root (src/spike/index.ts)', () => {
     const format = getCountryIdFormat('TWN');
     expect(format).not.toBeNull();
     expect(format!.countryName).toBe('TWN');
+  });
+
+  it('should parse a valid ID through parseIdInfo identically to production', () => {
+    const spikeResult = parseIdInfo('TWN', 'A123456789');
+    const productionResult = productionParseIdInfo('TWN', 'A123456789');
+    expect(spikeResult).not.toBeNull();
+    expect(spikeResult).toEqual(productionResult);
+  });
+
+  it('should resolve alpha-2 and lowercase aliases in parseIdInfo the same as the primary key', () => {
+    const byAlpha3 = parseIdInfo('TWN', 'A123456789');
+    const byAlias = parseIdInfo('TW', 'A123456789');
+    const byLowercase = parseIdInfo('twn', 'A123456789');
+    expect(byAlias).toEqual(byAlpha3);
+    expect(byLowercase).toEqual(byAlpha3);
+  });
+
+  it('should return null from parseIdInfo for an unknown key, matching production', () => {
+    expect(parseIdInfo('ZZZ', '123')).toBeNull();
+    expect(parseIdInfo('ZZZ', '123')).toEqual(productionParseIdInfo('ZZZ', '123'));
   });
 });

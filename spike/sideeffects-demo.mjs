@@ -80,6 +80,27 @@ async function bundleAndRun() {
   return execFileSync('node', [outPath], { cwd: WORK }).toString().trim();
 }
 
+/**
+ * Classify the two program outputs. `dropped: true` requires a genuine
+ * contrast: the "sideEffects: false" run must report the specific
+ * "unsupported country" failure AND the control run (no `sideEffects` field)
+ * must report a valid result. If the control run itself doesn't validate --
+ * e.g. the fixture is broken -- neither run is evidence about the hazard,
+ * and that must fail loudly rather than be silently recorded as `dropped: true`
+ * (a broken control that also reports isValid:false would otherwise look
+ * identical to a genuine demonstration of the hazard).
+ */
+function classifyDemo(withSideEffectsFalseJson, withoutFieldJson) {
+  const withFlag = JSON.parse(withSideEffectsFalseJson);
+  const withoutFlag = JSON.parse(withoutFieldJson);
+
+  const controlOk = withoutFlag.isValid === true && withoutFlag.countryCode === 'TWN';
+  const flagIndicatesDropped =
+    withFlag.isValid === false && withFlag.errorMessage === 'Unsupported country code: TWN';
+
+  return { controlOk, dropped: controlOk && flagIndicatesDropped };
+}
+
 async function main() {
   await buildFixturePackage();
   writeAppEntry();
@@ -90,7 +111,17 @@ async function main() {
   writePackageJson(false);
   const withoutField = await bundleAndRun();
 
-  const dropped = withSideEffectsFalse.includes('"isValid":false');
+  const { controlOk, dropped } = classifyDemo(withSideEffectsFalse, withoutField);
+
+  if (!controlOk) {
+    console.error('Side-effects demo control arm failed: expected the run without');
+    console.error('"sideEffects" to report a valid TWN registration, but it did not.');
+    console.error('This is not evidence about the "sideEffects": false hazard either way.');
+    console.error('with "sideEffects": false ->', withSideEffectsFalse);
+    console.error('without the field          ->', withoutField);
+    process.exit(1);
+  }
+
   const esbuildVersion = JSON.parse(
     readFileSync(path.join(ROOT, 'node_modules/esbuild/package.json'), 'utf8')
   ).version;

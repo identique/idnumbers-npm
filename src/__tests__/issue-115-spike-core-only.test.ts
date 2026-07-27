@@ -14,6 +14,7 @@ import { CountryEntry } from '../spike/define';
 import {
   register,
   validateNationalId,
+  parseIdInfo,
   getCountryIdFormat,
   listRegisteredCountries,
   defaultRegistry,
@@ -72,11 +73,31 @@ describe('spike option B core (src/spike/core.ts)', () => {
     expect(result.errorMessage).toBe('Unsupported country code: TWN');
   });
 
+  it('should return null from parseIdInfo before the country is registered', () => {
+    // Same hazard as validateNationalId above, for the other public parse entry point.
+    expect(parseIdInfo('TWN', 'A123456789')).toBeNull();
+  });
+
   it('should validate after the country entry is explicitly registered', () => {
     register(TWN);
     const result = validateNationalId('TWN', 'A123456789');
     expect(result.isValid).toBe(true);
     expect(result.countryCode).toBe('TWN');
+  });
+
+  it('should parse a valid ID through parseIdInfo once registered, matching the production validator directly', () => {
+    // Deliberately compares against the raw production class (already
+    // imported above for the METADATA parity checks) rather than importing
+    // ../index or ../spike/index, which would populate the registry with all
+    // 85 countries and defeat this file's empty-registry premise.
+    register(TWN);
+    const result = parseIdInfo('TWN', 'A123456789');
+    expect(result).not.toBeNull();
+    expect(result).toEqual(TwnNationalID.parse('A123456789'));
+  });
+
+  it('should return null from parseIdInfo for a key that was never registered', () => {
+    expect(parseIdInfo('ZZZ_NEVER_REGISTERED', 'A123456789')).toBeNull();
   });
 
   it('should register the entry aliases as well as its primary key', () => {
@@ -88,6 +109,15 @@ describe('spike option B core (src/spike/core.ts)', () => {
     const byLowercaseAlias = validateNationalId('tw', 'A123456789');
     expect(byLowercaseAlias.isValid).toBe(true);
     expect(byLowercaseAlias.countryCode).toBe('TWN');
+  });
+
+  it('should resolve alpha-2 and lowercase aliases in parseIdInfo the same as the primary key', () => {
+    register(TWN);
+    const byAlpha3 = parseIdInfo('TWN', 'A123456789');
+    const byAlias = parseIdInfo('TW', 'A123456789');
+    const byLowercase = parseIdInfo('twn', 'A123456789');
+    expect(byAlias).toEqual(byAlpha3);
+    expect(byLowercase).toEqual(byAlpha3);
   });
 
   it('should be idempotent when the same entry is registered twice', () => {
