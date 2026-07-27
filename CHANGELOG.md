@@ -7,11 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.10.0] - 2026-07-27
+
 ### Added
 
 - Costa Rica (CRI) Cédula de Identidad validator — validates the 9-digit national ID (`P-TTTT-AAAA`: province 1-9, tomo, asiento); notably has no check digit, since Costa Rica confirms validity via Registro Civil / TRIBU-CR database lookup rather than arithmetic ([#56](https://github.com/identique/idnumbers-npm/issues/56))
 - Dominican Republic (DOM) Cédula de Identidad y Electoral validator — 11-digit number (series + document number + check digit) validated with a standard Luhn checksum, plus a documented 576-entry exception list (sourced from `python-stdnum`, with attribution) covering legitimately-issued cédulas — including modern 402-series cards — that fail the Luhn check; a `validate()` result of `false` means the checksum failed, not that the person does not exist ([#57](https://github.com/identique/idnumbers-npm/issues/57))
 - Ecuador (ECU) Cédula de Identidad validator — 10-digit national ID with province code (01-24, or 30 for citizens registered abroad), person-type digit (0-5, narrowed to 4-5 for the consular province 30), and a Luhn (mod 10) check digit; adds `parse()` field decomposition and registers ECU/EC in the country registry ([#55](https://github.com/identique/idnumbers-npm/issues/55))
+- Egypt (EGY) National ID (الرقم القومي) validator — 14-digit `CYYMMDDGGSSSSV` format validated against real dates and known governorate codes; the official check-digit algorithm is not publicly available, so validation is format + semantic only (`METADATA.hasChecksum = false`, in parity with the Bahrain CPR precedent), with an opt-in unverified Luhn check available via `{ strictChecksum: true }`; `parse()` extracts birth date, gender, governorate, and age ([#54](https://github.com/identique/idnumbers-npm/issues/54))
 - Guatemala (GTM) DPI/CUI (Documento Personal de Identificación) validator — 13-digit format with a mod-11 weighted-sum check digit over the 8-digit correlative, plus department and municipality validation (municipality checked against its own department, not a global maximum) ([#58](https://github.com/identique/idnumbers-npm/issues/58))
 
 ## [1.9.0] - 2026-07-17
@@ -180,7 +183,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Full TypeScript support with type definitions
 - Comprehensive documentation and examples
 
-[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v1.9.0...HEAD
+[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v1.10.0...HEAD
+[1.10.0]: https://github.com/identique/idnumbers-npm/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/identique/idnumbers-npm/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/identique/idnumbers-npm/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/identique/idnumbers-npm/compare/v1.6.0...v1.7.0
