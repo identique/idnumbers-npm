@@ -1,0 +1,23 @@
+/**
+ * Issue #115 -- registration-model spike, option A (auto-register on import).
+ *
+ * Imports ONLY `../spike/auto/twn` and `../spike/core`, mirroring the exact
+ * graph a v2 consumer of `idnumbers/countries/twn` (option A shape) would pull in.
+ */
+import { TWN } from '../spike/auto/twn';
+import { validateNationalId, listRegisteredCountries } from '../spike/core';
+
+describe('spike option A auto-registering entry (src/spike/auto/twn.ts)', () => {
+  it('should register the country as a side effect of importing the auto entry', () => {
+    expect(listRegisteredCountries()).toEqual(['TWN']);
+  });
+
+  it('should validate without any explicit register call', () => {
+    const result = validateNationalId('TWN', 'A123456789');
+    expect(result.isValid).toBe(true);
+  });
+
+  it('should still export the entry for direct use', () => {
+    expect(TWN.validator.validate('A123456789')).toBe(true);
+  });
+});
