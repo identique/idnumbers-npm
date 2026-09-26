@@ -19,8 +19,8 @@ export const METADATA = {
   name: 'Hungary Personal ID Number',
   names: ['Personal ID Number'],
   iso3166Alpha2: 'HU',
-  minLength: 9,
-  maxLength: 9,
+  minLength: 11,
+  maxLength: 11,
   pattern:
     /^(?<gender>\d)[ -]?(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})[ -]?(?<sn>\d{3})(?<checksum>\d)$/,
   hasChecksum: true,
