@@ -4,6 +4,7 @@ import { CountryValidator } from './types';
 /**
  * METADATA shape used by function-based country modules.
  * Uses isParsable/hasChecksum/pattern instead of parsable/checksum/regexp.
+ * @deprecated The function-based METADATA dialect is removed in v2.0.0 (#121); modules move to the canonical IdMetadata shape.
  */
 export interface FunctionBasedMetadata {
   iso3166Alpha2?: string;
@@ -11,8 +12,11 @@ export interface FunctionBasedMetadata {
   idType?: string;
   minLength?: number;
   maxLength?: number;
+  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
   isParsable?: boolean;
+  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
   hasChecksum?: boolean;
+  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
   pattern?: RegExp;
   displayFormat?: string;
   example?: string;

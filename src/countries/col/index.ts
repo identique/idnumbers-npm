@@ -19,12 +19,15 @@ export const METADATA = {
   idType: 'Unique Personal ID',
   minLength: 9,
   maxLength: 10,
+  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
   pattern: /^(\d{2,3}\.?\d{3}\.?\d{3}-?\d)$/,
   displayFormat: '##(#).###.###-C',
   example: '12.345.678-8',
   checksumAlgorithm: 'Weighted sum mod 11 (right-to-left prime weights; 11 → 0, 10 → 1)',
   officialName: 'Número Único de Identificación Personal (NUIP)',
+  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
   hasChecksum: true,
+  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
   isParsable: false,
   links: [
     'https://en.wikipedia.org/wiki/Colombian_identity_card',

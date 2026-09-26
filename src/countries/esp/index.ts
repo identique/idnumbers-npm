@@ -11,8 +11,11 @@ export const METADATA = {
   idType: 'DNI',
   minLength: 9,
   maxLength: 9,
+  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
   pattern: /^(\d{8})([A-Z])$/,
+  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
   hasChecksum: true,
+  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
   isParsable: false,
   displayFormat: '########L',
   example: '12345678Z',

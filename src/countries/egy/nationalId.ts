@@ -86,9 +86,12 @@ export const METADATA = {
   idType: 'National ID',
   minLength: 14,
   maxLength: 14,
+  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
   pattern:
     /^(?<century>[23])(?<yy>\d{2})(?<mm>0[1-9]|1[012])(?<dd>0[1-9]|[12]\d|3[01])(?<gov>\d{2})(?<sn>\d{4})(?<check>\d)$/,
+  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
   hasChecksum: false,
+  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
   isParsable: true,
   displayFormat: 'CYYMMDDGGSSSSV',
   example: '29001010100017',

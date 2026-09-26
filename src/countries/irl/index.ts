@@ -25,8 +25,11 @@ export const METADATA = {
   idType: 'Personal Public Service Number',
   minLength: 8,
   maxLength: 10,
+  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
   pattern: /^\d{7}[A-W][A-W\s]?$|^\d{7}[A-W]\/[A-W\s]?$/,
+  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
   hasChecksum: true,
+  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
   isParsable: false,
   displayFormat: '#######L(L)',
   example: '1234567T',

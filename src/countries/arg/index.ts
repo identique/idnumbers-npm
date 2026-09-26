@@ -18,12 +18,15 @@ export const METADATA = {
   idType: 'DNI',
   minLength: 8,
   maxLength: 8,
+  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
   pattern: /^(\d{2}\.?\d{3}\.?\d{3})$/,
   displayFormat: '##.###.###',
   example: '12.345.678',
   checksumAlgorithm: 'None (format/length only)',
   officialName: 'Documento Nacional de Identidad (DNI)',
+  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
   hasChecksum: false,
+  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
   isParsable: false,
   links: [
     'https://www.protecto.ai/argentina-national-identity-number-download-sample-data-for-testing/',

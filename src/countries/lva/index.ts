@@ -18,8 +18,11 @@ export const METADATA = {
   idType: 'Personal Code',
   minLength: 11,
   maxLength: 11,
+  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
   pattern: /^(\d{6}-?\d{5})$/,
+  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
   hasChecksum: true,
+  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
   isParsable: false,
   displayFormat: 'DDMMYY-SSSSS',
   example: '161175-19997',

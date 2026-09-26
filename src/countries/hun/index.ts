@@ -23,9 +23,12 @@ export const METADATA = {
   idType: 'Personal ID Number',
   minLength: 11,
   maxLength: 11,
+  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
   pattern:
     /^(?<gender>\d)[ -]?(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})[ -]?(?<sn>\d{3})(?<checksum>\d)$/,
+  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
   hasChecksum: true,
+  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
   isParsable: true,
   displayFormat: 'GYYMMDDSSSC',
   example: '18001010016',

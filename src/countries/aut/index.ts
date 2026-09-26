@@ -11,8 +11,11 @@ export const METADATA = {
   idType: 'Tax Identification Number',
   minLength: 9,
   maxLength: 11, // Allow up to 11 for formats with spaces
+  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
   pattern: /^(\d{2}-?\d{3}\/?\d{4}|\d{4}\s?\d{6})$/,
+  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
   hasChecksum: true,
+  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
   isParsable: false,
   displayFormat: 'NN-NNN/NNNN',
   example: '12-345/6782',

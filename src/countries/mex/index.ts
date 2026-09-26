@@ -30,6 +30,7 @@ export const METADATA = {
   idType: 'CURP',
   minLength: 18,
   maxLength: 18,
+  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
   pattern:
     /^(?<initial>[A-Z]{4})(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})(?<gender>[HMX])(?<location>[A-Z]{2})(?<consonant>[A-Z]{3})(?<sn>[0-9A-Z])(?<checksum>\d)$/,
   displayFormat: 'AAAANNNNNNAAAAAANN',
@@ -37,7 +38,9 @@ export const METADATA = {
   checksumAlgorithm:
     'Weighted alphanumeric sum mod 10 (positions weighted 18..2; check = (10 - remainder) mod 10)',
   officialName: 'Clave Única de Registro de Población (CURP)',
+  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
   hasChecksum: true,
+  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
   isParsable: true,
   links: [
     'https://en.wikipedia.org/wiki/Unique_Population_Registry_Code',

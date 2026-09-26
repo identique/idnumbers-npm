@@ -20,8 +20,11 @@ export const METADATA = {
   idType: 'Emirates ID',
   minLength: 15,
   maxLength: 15,
+  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
   pattern: /^784[-]?(?<yyyy>\d{4})[-]?(?<sn>\d{7})[-]?(?<checksum>\d)$/,
+  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
   hasChecksum: true,
+  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
   isParsable: true,
   displayFormat: '784-YYYY-NNNNNNN-C',
   example: '784198012345678',
