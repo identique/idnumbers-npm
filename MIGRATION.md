@@ -2,9 +2,9 @@
 
 > **Status:** v2.0.0 has not been released yet. This guide is a **skeleton** — it is
 > filled in as each [epic #127](https://github.com/identique/idnumbers-npm/issues/127)
-> item lands, and the exact API details below may still change before release. The
-> current release line (v1.x) ships `@deprecated` JSDoc for everything listed here so
-> your editor can flag affected call sites ahead of time.
+> item lands, and the exact API details below may still change before release. v1.11.0
+> adds `@deprecated` JSDoc for everything listed here, so your editor flags affected
+> call sites before you upgrade.
 
 ## At a glance
 
@@ -128,7 +128,7 @@ if (result.isValid) {
 
 ## Removals (#124)
 
-**Planned.** Two long-deprecated symbols are removed:
+**Planned.** The two symbols deprecated in v1.11.0 are removed:
 
 | Removed               | Replacement                | Available today? |
 | --------------------- | -------------------------- | ---------------- |
@@ -147,9 +147,10 @@ import { listSupportedCountries, IdMetadata } from 'idnumbers';
 const countries = listSupportedCountries();
 ```
 
-Per-country input rules (which formats/characters each validator accepts) are
-documented per country; this removal makes **zero acceptance changes** — the same
-IDs validate before and after.
+As part of [#124](https://github.com/identique/idnumbers-npm/issues/124), each
+country's accepted input formats (case, whitespace, separators) will be documented.
+This is documentation only, with **zero acceptance changes** — the same IDs validate
+before and after.
 
 ## Deprecated in v1.11.0
 
@@ -159,7 +160,7 @@ strikethrough ahead of their v2.0.0 removal/change:
 - `IMetadata` — use `IdMetadata` instead ([#124](https://github.com/identique/idnumbers-npm/issues/124))
 - `IdMetadata.aliasOf`'s `any` type — the field stays, but its type narrows in v2.0.0; don't depend on its current shape ([#123](https://github.com/identique/idnumbers-npm/issues/123))
 - The function-based METADATA dialect — `isParsable`, `hasChecksum`, `pattern` (renamed to `parsable`, `checksum`, `regexp`), and the `FunctionBasedMetadata` interface itself ([#121](https://github.com/identique/idnumbers-npm/issues/121))
-- `SUPPORTED_COUNTRIES` — use `listSupportedCountries()` instead (deprecated since v1.10.0, [#118](https://github.com/identique/idnumbers-npm/issues/118); listed here for completeness since it's removed in the same v2.0.0 pass, [#124](https://github.com/identique/idnumbers-npm/issues/124))
+- `SUPPORTED_COUNTRIES` — use `listSupportedCountries()` instead ([#118](https://github.com/identique/idnumbers-npm/issues/118) deprecation; removed in v2.0.0 by [#124](https://github.com/identique/idnumbers-npm/issues/124))
 
 ## What stays the same
 
