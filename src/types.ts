@@ -1,3 +1,5 @@
+import { ValidationFailureReason } from './constants';
+
 /**
  * Metadata interface for ID number types
  */
@@ -61,6 +63,12 @@ export interface ValidationResult {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- untyped parse result; typed results tracked in #123
   extractedInfo?: any;
   errorMessage?: string;
+  /**
+   * Machine-readable cause of the failure. Present only when `isValid` is false.
+   * Best-effort and non-exhaustive: derivation may fall back to a generic code
+   * rather than risk a wrong specific one, and future releases may add new values.
+   */
+  reason?: ValidationFailureReason;
 }
 
 /**

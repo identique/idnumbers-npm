@@ -137,8 +137,19 @@ const bgdComposite: CountryValidator = {
 
 /** SMR: validates both SSI (9-digit) and COE (SM#####) formats. */
 const smrComposite: CountryValidator = {
-  METADATA: SmrSSI.METADATA,
+  // Surface the full accepted range and shape (9-digit SSI + 7-char COE).
+  METADATA: {
+    ...SmrSSI.METADATA,
+    minLength: SmrCOE.METADATA.minLength,
+    regexp: /^(?:\d{9}|SM\d{5})$/,
+  },
   validate: (id: string) => SmrSSI.validate(id) || SmrCOE.validate(id),
+};
+
+/** LKA: registry metadata covers both the NEW (12-digit) and OLD (9 digits + V/X) formats that validate()/checksum() accept. */
+const lkaComposite: CountryValidator = {
+  ...createValidator(LkaNationalID),
+  METADATA: { ...LkaNationalID.METADATA, regexp: /^(?:\d{12}|\d{9}[VvXx])$/ },
 };
 
 // ---------------------------------------------------------------------------
@@ -192,7 +203,7 @@ const COUNTRY_REGISTRY: RegistryEntry[] = [
   { key: 'IDN', module: IdnNationalID, aliases: ['ID'] },
   { key: 'KOR', module: ResidentRegistration, aliases: ['KR'] },
   { key: 'MEX', module: CURP, aliases: ['MX'] },
-  { key: 'LKA', module: LkaNationalID, aliases: ['LK'] },
+  { key: 'LKA', validator: lkaComposite, aliases: ['LK'] },
   { key: 'NGA', module: NgaNationalID, aliases: ['NG'] },
   { key: 'MYS', module: MysNationalID, aliases: ['MY'] },
   { key: 'NOR', module: NorNationalID, aliases: ['NO'] },
