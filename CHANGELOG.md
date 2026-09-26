@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - `getCountryIdFormat('SMR')` now reports the full accepted length range 7–9, covering both the 9-digit SSI and the 7-character COE `SM#####`, and the registry metadata for SMR and LKA now describes every format their validators accept ([#117](https://github.com/identique/idnumbers-npm/issues/117))
+- Hungary (HUN) METADATA now declares the 11-digit personal ID length (was 9), so `getCountryIdFormat('HUN').length` reports 11–11, matching the Python source of truth ([#170](https://github.com/identique/idnumbers-npm/issues/170))
 
 ## [1.10.0] - 2026-07-27
 
