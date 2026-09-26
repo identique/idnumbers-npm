@@ -6,7 +6,13 @@
  * Every input used below was verified against the real validators before being
  * chosen (see the derivation rules in src/registry/failureReason.ts).
  */
-import { validateNationalId, validateMultipleIds, ValidationFailureReason } from '../index';
+import {
+  validateNationalId,
+  validateMultipleIds,
+  getCountryIdFormat,
+  parseIdInfo,
+  ValidationFailureReason,
+} from '../index';
 import { registry } from '../registry/ValidatorRegistry';
 import { deriveFailureReason } from '../registry/failureReason';
 
@@ -197,6 +203,81 @@ describe('Issue #117: ValidationFailureReason', () => {
       }
 
       expect(offenders).toEqual([]);
+    });
+
+    it('never derives invalid_length or invalid_format for known alternate-format valid IDs', () => {
+      // Curated fixtures for validators whose registry METADATA.example only
+      // documents one of several accepted formats (LKA old format, SMR COE).
+      const ALTERNATE_FORMAT_VALID_IDS: Record<string, string[]> = {
+        LKA: ['961203996V', '923404716V'],
+        SMR: ['SM12345'],
+      };
+      const offenders: string[] = [];
+
+      for (const [key, ids] of Object.entries(ALTERNATE_FORMAT_VALID_IDS)) {
+        const validator = registry.get(key)!;
+        for (const id of ids) {
+          expect(validateNationalId(key, id).isValid).toBe(true);
+
+          const reason = deriveFailureReason(validator, id);
+          if (
+            reason === ValidationFailureReason.INVALID_LENGTH ||
+            reason === ValidationFailureReason.INVALID_FORMAT
+          ) {
+            offenders.push(`${key}: ${id} -> ${reason}`);
+          }
+        }
+      }
+
+      expect(offenders).toEqual([]);
+    });
+  });
+
+  describe('LKA and SMR multi-format registry metadata (PR #169 fix)', () => {
+    it('reports checksum_mismatch (not invalid_format) for a corrupted LKA old-format ID', () => {
+      // '961203996V' is a valid old-format fixture; only its check digit is changed.
+      const result = validateNationalId('LKA', '961203997V');
+
+      expect(result.isValid).toBe(false);
+      expect(result.reason).toBe(ValidationFailureReason.CHECKSUM_MISMATCH);
+    });
+
+    it('reports the same reason through the LK alias', () => {
+      expect(validateNationalId('LK', '961203997V').reason).toBe(
+        ValidationFailureReason.CHECKSUM_MISMATCH
+      );
+    });
+
+    it('still validates and parses LKA old- and new-format IDs exactly as before', () => {
+      const oldFormat = validateNationalId('LKA', '961203996V');
+      expect(oldFormat.isValid).toBe(true);
+      expect(oldFormat).not.toHaveProperty('reason');
+      expect(parseIdInfo('LKA', '961203996V')).not.toBeNull();
+
+      const newFormat = validateNationalId('LKA', '199001200001');
+      expect(newFormat.isValid).toBe(true);
+      expect(newFormat).not.toHaveProperty('reason');
+    });
+
+    it('reports invalid_format for a malformed SMR COE typo', () => {
+      // 'SMA2345' is 7 characters (COE-valid length) but the digit block is
+      // broken by a stray letter, so it fails both accepted shapes.
+      const result = validateNationalId('SMR', 'SMA2345');
+
+      expect(result.isValid).toBe(false);
+      expect(result.reason).toBe(ValidationFailureReason.INVALID_FORMAT);
+    });
+
+    it('reports invalid_length for an SMR input shorter than either accepted format', () => {
+      const result = validateNationalId('SMR', '12345');
+
+      expect(result.isValid).toBe(false);
+      expect(result.reason).toBe(ValidationFailureReason.INVALID_LENGTH);
+    });
+
+    it('surfaces the full accepted length range via getCountryIdFormat', () => {
+      expect(getCountryIdFormat('SMR')?.length).toEqual({ min: 7, max: 9 });
+      expect(getCountryIdFormat('LKA')?.length).toEqual({ min: 10, max: 12 });
     });
   });
 });
