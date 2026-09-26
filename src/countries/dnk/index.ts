@@ -26,6 +26,8 @@ export const METADATA = {
   name: 'Denmark Personal Identity Number',
   names: ['personal identity number', 'CPR', 'Det Centrale Personregister'],
   iso3166Alpha2: 'DK',
+  countryName: 'Denmark',
+  idType: 'Personal Identity Number',
   minLength: 10,
   maxLength: 10,
   pattern: /^(?<dd>\d{2})(?<mm>\d{2})(?<yy>\d{2})-?(?<sn>\d{4})$/,

@@ -28,6 +28,8 @@ const OLD_FORMAT =
 
 export const METADATA: IdMetadata = {
   iso3166Alpha2: 'LK',
+  countryName: 'Sri Lanka',
+  idType: 'National ID Number',
   minLength: 10,
   maxLength: 12,
   parsable: true,

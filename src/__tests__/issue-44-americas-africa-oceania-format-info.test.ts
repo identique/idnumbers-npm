@@ -137,9 +137,9 @@ describe('Issue #44: Americas/Africa/Oceania country format info', () => {
     }
   );
 
-  // Regression guard: getCountryIdFormat() overlays SUPPORTED_COUNTRIES.idType on
-  // top of the registered validator's format fields. NZL's primary validator is
-  // the Driver Licence (matching the Python source of truth, where
+  // Regression guard: getCountryIdFormat() surfaces idType from the registered
+  // validator's own METADATA.idType. NZL's primary validator is the Driver
+  // Licence (matching the Python source of truth, where
   // `NationalID = alias_of(DriverLicenseNumber)`), so idType must describe the
   // same document as officialName/example — not the secondary IRD number.
   it('reports NZL idType and officialName for the same document (Driver Licence)', () => {

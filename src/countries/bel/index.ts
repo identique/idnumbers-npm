@@ -26,6 +26,8 @@ export const METADATA = {
     'Personalausweis',
   ],
   iso3166Alpha2: 'BE',
+  countryName: 'Belgium',
+  idType: 'National Registration Number',
   minLength: 11,
   maxLength: 11,
   pattern: /^(?<yy>\d{2})\.?(?<mm>\d{2})\.?(?<dd>\d{2})-?(?<sn>\d{3})\.?(?<checksum>\d{2})$/,

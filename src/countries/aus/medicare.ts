@@ -9,6 +9,8 @@ import { validateRegexp, normalize } from '../../utils';
 export class MedicareNumber implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'AU',
+    countryName: 'Australia',
+    idType: 'Medicare Number',
     minLength: 9,
     maxLength: 11,
     parsable: false,

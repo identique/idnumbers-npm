@@ -7,6 +7,8 @@ import { CountryValidator } from './types';
  */
 export interface FunctionBasedMetadata {
   iso3166Alpha2?: string;
+  countryName?: string;
+  idType?: string;
   minLength?: number;
   maxLength?: number;
   isParsable?: boolean;
@@ -53,6 +55,8 @@ export function adaptMetadata(meta: AnyMetadata): IdMetadata {
   const fn = meta as FunctionBasedMetadata;
   return {
     iso3166Alpha2: fn.iso3166Alpha2 ?? '',
+    countryName: fn.countryName,
+    idType: fn.idType,
     minLength: fn.minLength ?? 0,
     maxLength: fn.maxLength ?? 0,
     parsable: fn.isParsable ?? false,

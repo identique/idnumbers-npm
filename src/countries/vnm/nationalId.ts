@@ -31,6 +31,8 @@ export interface NationalIdParseResult {
 export class NationalID implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'VN',
+    countryName: 'Vietnam',
+    idType: 'Citizen Identity Card Number',
     minLength: 9,
     maxLength: 12,
     parsable: true,

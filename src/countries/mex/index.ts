@@ -26,6 +26,8 @@ export const METADATA = {
     'Personal ID Code Number',
   ],
   iso3166Alpha2: 'MX',
+  countryName: 'Mexico',
+  idType: 'CURP',
   minLength: 18,
   maxLength: 18,
   pattern:

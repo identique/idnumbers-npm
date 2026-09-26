@@ -13,6 +13,8 @@ import { validateRegexp } from '../../utils';
 export class CPF implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'BR',
+    countryName: 'Brazil',
+    idType: 'CPF Number',
     minLength: 11,
     maxLength: 11,
     parsable: false,

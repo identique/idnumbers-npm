@@ -104,95 +104,24 @@ import { IdFormat } from './registry/types';
 import { deriveFailureReason } from './registry/failureReason';
 
 /**
- * List of supported countries
+ * Return the list of supported countries, derived from the registry.
+ *
+ * Sorted by ISO 3166-1 alpha-3 code. Returns a fresh array on every call, so
+ * mutating the result of one call never affects another.
  */
-export const SUPPORTED_COUNTRIES: CountryInfo[] = [
-  { code: 'USA', name: 'United States', idType: 'Social Security Number' },
-  { code: 'AUS', name: 'Australia', idType: 'Medicare Number' },
-  { code: 'ZAF', name: 'South Africa', idType: 'National ID Number' },
-  { code: 'GBR', name: 'United Kingdom', idType: 'National Insurance Number' },
-  { code: 'CAN', name: 'Canada', idType: 'Social Insurance Number' },
-  { code: 'DEU', name: 'Germany', idType: 'Tax Identification Number' },
-  { code: 'FRA', name: 'France', idType: 'Social Security Number' },
-  { code: 'NLD', name: 'Netherlands', idType: 'Burgerservicenummer (BSN)' },
-  { code: 'ALB', name: 'Albania', idType: 'Identity Number' },
-  { code: 'AUT', name: 'Austria', idType: 'Tax Identification Number' },
-  { code: 'BEL', name: 'Belgium', idType: 'National Registration Number' },
-  { code: 'ITA', name: 'Italy', idType: 'Fiscal Code' },
-  { code: 'ESP', name: 'Spain', idType: 'DNI' },
-  { code: 'DNK', name: 'Denmark', idType: 'Personal Identity Number' },
-  { code: 'POL', name: 'Poland', idType: 'PESEL' },
-  { code: 'CZE', name: 'Czech Republic', idType: 'Birth Number' },
-  { code: 'FIN', name: 'Finland', idType: 'Personal Identity Code' },
-  { code: 'ISL', name: 'Iceland', idType: 'Icelandic Identification Number (kennitala)' },
-  { code: 'LTU', name: 'Lithuania', idType: 'Personal Code' },
-  { code: 'LUX', name: 'Luxembourg', idType: 'National Identification Number' },
-  { code: 'SVK', name: 'Slovakia', idType: 'Birth Number' },
-  { code: 'ARE', name: 'United Arab Emirates', idType: 'Emirates ID' },
-  { code: 'ARG', name: 'Argentina', idType: 'DNI' },
-  { code: 'BGR', name: 'Bulgaria', idType: 'Uniform Civil Number' },
-  { code: 'BRA', name: 'Brazil', idType: 'CPF Number' },
-  { code: 'ECU', name: 'Ecuador', idType: 'Cédula de Identidad' },
-  { code: 'CHE', name: 'Switzerland', idType: 'Social Security Number' },
-  { code: 'CHL', name: 'Chile', idType: 'RUN/RUT' },
-  { code: 'CHN', name: 'China', idType: 'Resident Identity Number' },
-  { code: 'COL', name: 'Colombia', idType: 'Unique Personal ID' },
-  { code: 'DOM', name: 'Dominican Republic', idType: 'Cédula de Identidad y Electoral' },
-  { code: 'EST', name: 'Estonia', idType: 'Personal ID Number' },
-  { code: 'GRC', name: 'Greece', idType: 'Tax Identity Number' },
-  { code: 'HUN', name: 'Hungary', idType: 'Personal ID Number' },
-  { code: 'IRL', name: 'Ireland', idType: 'Personal Public Service Number' },
-  { code: 'LVA', name: 'Latvia', idType: 'Personal Code' },
-  { code: 'BGD', name: 'Bangladesh', idType: 'National ID' },
-  { code: 'BHR', name: 'Bahrain', idType: 'Personal Number' },
-  { code: 'BIH', name: 'Bosnia and Herzegovina', idType: 'Unique Master Citizen Number' },
-  { code: 'CYP', name: 'Cyprus', idType: 'Tax Number' },
-  { code: 'GEO', name: 'Georgia', idType: 'Personal Number' },
-  { code: 'HKG', name: 'Hong Kong', idType: 'National ID Number' },
-  { code: 'HRV', name: 'Croatia', idType: 'Personal ID Number' },
-  { code: 'IND', name: 'India', idType: 'Aadhaar (UID)' },
-  { code: 'JPN', name: 'Japan', idType: 'My Number' },
-  { code: 'KAZ', name: 'Kazakhstan', idType: 'Individual Identification Number' },
-  { code: 'KWT', name: 'Kuwait', idType: 'Civil Number' },
-  { code: 'EGY', name: 'Egypt', idType: 'National ID' },
-  { code: 'IDN', name: 'Indonesia', idType: 'National ID Number' },
-  { code: 'KOR', name: 'South Korea', idType: 'Resident Registration Number' },
-  { code: 'MEX', name: 'Mexico', idType: 'CURP' },
-  { code: 'LKA', name: 'Sri Lanka', idType: 'National ID Number' },
-  { code: 'NGA', name: 'Nigeria', idType: 'National Identification Number' },
-  { code: 'MYS', name: 'Malaysia', idType: 'National Registration Identity Card Number' },
-  { code: 'NOR', name: 'Norway', idType: 'National Identity Number' },
-  { code: 'PAK', name: 'Pakistan', idType: 'National Identity Card' },
-  { code: 'THA', name: 'Thailand', idType: 'National Identity Card Number' },
-  { code: 'VNM', name: 'Vietnam', idType: 'Citizen Identity Card Number' },
-  { code: 'NZL', name: 'New Zealand', idType: 'Driver Licence Number' },
-  { code: 'PHL', name: 'Philippines', idType: 'PhilSys Number' },
-  { code: 'PRT', name: 'Portugal', idType: 'Tax Identification Number (NIF)' },
-  { code: 'ROU', name: 'Romania', idType: 'Personal Numeric Code' },
-  { code: 'RUS', name: 'Russia', idType: 'Internal Passport' },
-  { code: 'SAU', name: 'Saudi Arabia', idType: 'National ID' },
-  { code: 'SGP', name: 'Singapore', idType: 'NRIC/FIN' },
-  { code: 'SWE', name: 'Sweden', idType: 'Personal Identity Number' },
-  { code: 'TUR', name: 'Turkey', idType: 'National ID Number' },
-  { code: 'UKR', name: 'Ukraine', idType: 'Individual Tax Number' },
-  { code: 'SVN', name: 'Slovenia', idType: 'EMŠO' },
-  { code: 'SRB', name: 'Serbia', idType: 'JMBG' },
-  { code: 'TWN', name: 'Taiwan', idType: 'National Identification Card' },
-  { code: 'VEN', name: 'Venezuela', idType: 'Cédula de Identidad' },
-  { code: 'MKD', name: 'North Macedonia', idType: 'Unique Master Citizen Number (JMBG)' },
-  { code: 'MNE', name: 'Montenegro', idType: 'Unique Master Citizen Number (JMBG)' },
-  { code: 'ZWE', name: 'Zimbabwe', idType: 'National ID Number' },
-  { code: 'IRN', name: 'Iran', idType: 'National ID Number' },
-  { code: 'IRQ', name: 'Iraq', idType: 'National Card Number' },
-  { code: 'ISR', name: 'Israel', idType: 'Identity Number' },
-  { code: 'MAC', name: 'Macau', idType: 'Resident Identity Card' },
-  { code: 'MDA', name: 'Moldova', idType: 'Personal Code (IDNP)' },
-  { code: 'NPL', name: 'Nepal', idType: 'National ID Number' },
-  { code: 'PNG', name: 'Papua New Guinea', idType: 'National ID Number' },
-  { code: 'SMR', name: 'San Marino', idType: 'Social Security Number / Tax Registration' },
-  { code: 'CRI', name: 'Costa Rica', idType: 'Cédula de Identidad' },
-  { code: 'GTM', name: 'Guatemala', idType: 'Documento Personal de Identificación (DPI)' },
-];
+export function listSupportedCountries(): CountryInfo[] {
+  return registry.list().map(code => {
+    const format = registry.getFormat(code)!;
+    return { code: format.countryCode, name: format.countryName, idType: format.idType };
+  });
+}
+
+/**
+ * Snapshot of {@link listSupportedCountries}, taken once at module load.
+ *
+ * @deprecated Use listSupportedCountries() instead; SUPPORTED_COUNTRIES will be removed in v2.0.0 (#124).
+ */
+export const SUPPORTED_COUNTRIES: CountryInfo[] = listSupportedCountries();
 
 /**
  * Validate a national ID number for a specific country.
@@ -270,39 +199,11 @@ export function validateMultipleIds(
 }
 
 /**
- * Get supported countries list
- */
-export function listSupportedCountries(): CountryInfo[] {
-  return [...SUPPORTED_COUNTRIES];
-}
-
-// ---------------------------------------------------------------------------
-// Format enrichment: overlay countryName + idType from SUPPORTED_COUNTRIES.
-// Format display strings now live in each country's METADATA.displayFormat and
-// are surfaced by registry.getFormat().
-// ---------------------------------------------------------------------------
-const countryInfoMap = new Map<string, { countryName: string; idType: string }>();
-for (const entry of SUPPORTED_COUNTRIES) {
-  countryInfoMap.set(entry.code, { countryName: entry.name, idType: entry.idType });
-}
-
-/**
  * Get information about the ID number format for a specific country.
  *
  * Delegates to the registry. Aliases (e.g. "IN", "jp") are resolved to their
  * primary alpha-3 key. Returns null for unregistered country codes.
  */
 export function getCountryIdFormat(countryCode: string): IdFormat | null {
-  const format = registry.getFormat(countryCode);
-  if (!format) {
-    return null;
-  }
-
-  // Build enriched copy instead of mutating the registry object
-  const info = countryInfoMap.get(format.countryCode);
-
-  return {
-    ...format,
-    ...(info && { countryName: info.countryName, idType: info.idType }),
-  };
+  return registry.getFormat(countryCode) ?? null;
 }

@@ -19,6 +19,8 @@ export const METADATA = {
   name: 'Hungary Personal ID Number',
   names: ['Personal ID Number'],
   iso3166Alpha2: 'HU',
+  countryName: 'Hungary',
+  idType: 'Personal ID Number',
   minLength: 11,
   maxLength: 11,
   pattern:

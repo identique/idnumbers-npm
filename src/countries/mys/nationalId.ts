@@ -24,6 +24,8 @@ export interface NationalIdParseResult {
 export class NationalID implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'MY',
+    countryName: 'Malaysia',
+    idType: 'National Registration Identity Card Number',
     minLength: 12,
     maxLength: 12,
     parsable: true,

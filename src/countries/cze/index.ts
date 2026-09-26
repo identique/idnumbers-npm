@@ -19,6 +19,8 @@ export const METADATA = {
   name: 'Czech Republic Birth Number',
   names: ['Birth Number', 'rodné číslo', 'RČ'],
   iso3166Alpha2: 'CZ',
+  countryName: 'Czech Republic',
+  idType: 'Birth Number',
   minLength: 10,
   maxLength: 10,
   pattern: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})\/?(?<sn>\d{3})(?<checksum>\d)$/,

@@ -37,6 +37,8 @@ const PROVINCE_NAMES: Record<number, string> = {
 export class Cedula implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'CR',
+    countryName: 'Costa Rica',
+    idType: 'Cédula de Identidad',
     minLength: 9,
     maxLength: 9,
     parsable: true,

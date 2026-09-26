@@ -15,6 +15,8 @@ export const METADATA = {
   name: 'Colombia Unique Personal ID',
   names: ['Unique Personal ID', 'NUIP', 'Número único de identidad personal'],
   iso3166Alpha2: 'CO',
+  countryName: 'Colombia',
+  idType: 'Unique Personal ID',
   minLength: 9,
   maxLength: 10,
   pattern: /^(\d{2,3}\.?\d{3}\.?\d{3}-?\d)$/,

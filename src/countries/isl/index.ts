@@ -17,6 +17,8 @@ export const METADATA = {
   name: 'Iceland Icelandic Identification Number',
   names: ['Icelandic identification number', 'kennitala', 'kt.'],
   iso3166Alpha2: 'IS',
+  countryName: 'Iceland',
+  idType: 'Icelandic Identification Number (kennitala)',
   minLength: 10,
   maxLength: 10,
   pattern: /^(?<dd>\d{2})(?<mm>\d{2})(?<yy>\d{2})-?(?<sn>\d{2})(?<checksum>\d)(?<century>\d)$/,

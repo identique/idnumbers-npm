@@ -24,6 +24,8 @@ export const METADATA = {
     'Jumin Deungnok Beonho',
   ],
   iso3166Alpha2: 'KR',
+  countryName: 'South Korea',
+  idType: 'Resident Registration Number',
   minLength: 13,
   maxLength: 14,
   pattern: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})-(?<gender>\d)(?<sn>\d{6})$/,

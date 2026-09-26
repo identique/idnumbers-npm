@@ -114,11 +114,13 @@ export class ValidatorRegistry implements IValidatorRegistry {
     // Extract ISO country code from qualified keys (e.g. "USA:SSN" -> "USA")
     const countryCode = resolvedKey.includes(':') ? resolvedKey.split(':')[0] : resolvedKey;
 
-    // Derive the ID type name from METADATA.names (first entry) or the key itself
-    const idType = METADATA.names.length > 0 ? METADATA.names[0] : resolvedKey;
+    // Derive the ID type name from METADATA.idType, falling back to
+    // METADATA.names (first entry) or the key itself when absent.
+    const idType = METADATA.idType ?? (METADATA.names.length > 0 ? METADATA.names[0] : resolvedKey);
 
-    // Country name is not stored in METADATA, so we use the country code
-    const countryName = countryCode;
+    // Country name comes from METADATA.countryName, falling back to the
+    // country code when a validator hasn't set it (e.g. custom registrations).
+    const countryName = METADATA.countryName ?? countryCode;
 
     return {
       countryCode,

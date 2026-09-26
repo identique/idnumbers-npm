@@ -10,6 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Optional machine-readable `reason` field on `ValidationResult`, populated whenever `isValid` is `false`, plus the exported `ValidationFailureReason` enum (`unsupported_country`, `invalid_length`, `invalid_format`, `checksum_mismatch`, `validation_failed`); derivation is best-effort and the enum is non-exhaustive — future releases may add more specific codes ([#117](https://github.com/identique/idnumbers-npm/issues/117))
+- Optional `countryName`/`idType` fields on `IdMetadata`, populated on the registered METADATA for all 85 registered countries, making each country's own METADATA the single source of truth for its name and ID type ([#118](https://github.com/identique/idnumbers-npm/issues/118))
+
+### Changed
+
+- `listSupportedCountries()` and `SUPPORTED_COUNTRIES` are now derived from the registry at call/load time instead of a hand-maintained array, and are sorted by ISO 3166-1 alpha-3 code instead of a hand-maintained order ([#118](https://github.com/identique/idnumbers-npm/issues/118))
+- `registry.getFormat()` now reports each country's real `countryName`/`idType` from its METADATA; previously it always returned the ISO code as `countryName` and the first `METADATA.names` entry as `idType` ([#118](https://github.com/identique/idnumbers-npm/issues/118))
+
+### Deprecated
+
+- `SUPPORTED_COUNTRIES` — use `listSupportedCountries()` instead. Scheduled for removal in v2.0.0 ([#118](https://github.com/identique/idnumbers-npm/issues/118))
 
 ### Fixed
 

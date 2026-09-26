@@ -24,6 +24,8 @@ function modulusOverflowMod10(modulus: number): number {
 export class PersonalID {
   public static METADATA: IMetadata = {
     iso3166Alpha2: 'HR',
+    countryName: 'Croatia',
+    idType: 'Personal ID Number',
     minLength: 11,
     maxLength: 11,
     parsable: false,

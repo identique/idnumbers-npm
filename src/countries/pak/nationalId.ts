@@ -25,6 +25,8 @@ export interface NationalIdParseResult {
 export class NationalID implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'PK',
+    countryName: 'Pakistan',
+    idType: 'National Identity Card',
     minLength: 13,
     maxLength: 13,
     parsable: true,

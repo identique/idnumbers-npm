@@ -28,6 +28,8 @@ export interface NationalIdParseResult {
 export class NationalID implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'TW',
+    countryName: 'Taiwan',
+    idType: 'National Identification Card',
     minLength: 10,
     maxLength: 10,
     parsable: true,

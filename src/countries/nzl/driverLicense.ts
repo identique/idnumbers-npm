@@ -13,6 +13,8 @@ import { validateRegexp } from '../../utils';
 export class DriverLicense implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'NZ',
+    countryName: 'New Zealand',
+    idType: 'Driver Licence Number',
     minLength: 7,
     maxLength: 8,
     parsable: false,

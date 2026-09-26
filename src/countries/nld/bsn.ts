@@ -16,6 +16,8 @@ function normalize(idNumber: string): string {
 export class BurgerServiceNumber implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'NL',
+    countryName: 'Netherlands',
+    idType: 'Burgerservicenummer (BSN)',
     minLength: 9,
     maxLength: 11,
     parsable: false,

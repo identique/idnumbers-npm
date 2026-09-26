@@ -10,6 +10,8 @@ import { validateRegexp, mnModulusDigit, modulusOverflowMod10 } from '../../util
 export class TaxIdentificationNumber implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'DE',
+    countryName: 'Germany',
+    idType: 'Tax Identification Number',
     minLength: 11,
     maxLength: 11,
     parsable: false,

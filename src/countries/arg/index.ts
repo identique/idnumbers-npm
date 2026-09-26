@@ -14,6 +14,8 @@ export const METADATA = {
   name: 'Argentina National ID',
   names: ['Documento Nacional de Identidad', 'DNI'],
   iso3166Alpha2: 'AR',
+  countryName: 'Argentina',
+  idType: 'DNI',
   minLength: 8,
   maxLength: 8,
   pattern: /^(\d{2}\.?\d{3}\.?\d{3})$/,

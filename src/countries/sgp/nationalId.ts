@@ -28,6 +28,8 @@ export interface NationalIdParseResult {
 export class NationalID implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'SG',
+    countryName: 'Singapore',
+    idType: 'NRIC/FIN',
     minLength: 9,
     maxLength: 9,
     parsable: true,

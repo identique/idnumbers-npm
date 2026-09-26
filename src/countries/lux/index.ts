@@ -15,6 +15,8 @@ export interface LuxembourgParseResult extends ParsedInfo {
 
 export const METADATA: IdMetadata = {
   iso3166Alpha2: 'LU',
+  countryName: 'Luxembourg',
+  idType: 'National Identification Number',
   minLength: 13,
   maxLength: 13,
   parsable: true,

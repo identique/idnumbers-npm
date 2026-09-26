@@ -32,6 +32,8 @@ function normalize(idNumber: string): string {
 export class NationalID implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'SE',
+    countryName: 'Sweden',
+    idType: 'Personal Identity Number',
     minLength: 10,
     maxLength: 13,
     parsable: true,

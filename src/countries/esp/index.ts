@@ -7,6 +7,8 @@ export const METADATA = {
   name: 'Spain National ID Number',
   names: ['Documento Nacional de Identidad', 'DNI'],
   iso3166Alpha2: 'ES',
+  countryName: 'Spain',
+  idType: 'DNI',
   minLength: 9,
   maxLength: 9,
   pattern: /^(\d{8})([A-Z])$/,

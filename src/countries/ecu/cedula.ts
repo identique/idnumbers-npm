@@ -50,6 +50,8 @@ const VALID_PROVINCE_CODES = new Set<string>([
 export class Cedula implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'EC',
+    countryName: 'Ecuador',
+    idType: 'Cédula de Identidad',
     minLength: 10,
     maxLength: 10,
     parsable: true,

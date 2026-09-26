@@ -9,6 +9,8 @@ import { validateRegexp, luhnDigit } from '../../utils';
 export class NationalID implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'IL',
+    countryName: 'Israel',
+    idType: 'Identity Number',
     minLength: 9,
     maxLength: 9,
     parsable: false,

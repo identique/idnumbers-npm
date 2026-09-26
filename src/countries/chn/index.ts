@@ -20,6 +20,8 @@ export const METADATA = {
   name: 'China Resident Identity Number',
   names: ['Resident Identity Number', '居民身份证', 'Jūmín Shēnfènzhèng'],
   iso3166Alpha2: 'CN',
+  countryName: 'China',
+  idType: 'Resident Identity Number',
   minLength: 18,
   maxLength: 18,
   pattern:

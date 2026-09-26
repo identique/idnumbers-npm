@@ -13,6 +13,8 @@ export const METADATA = {
   name: 'Switzerland Social Security Number',
   names: ['Social Security Number', 'AHV-Nr.', 'No AVS'],
   iso3166Alpha2: 'CH',
+  countryName: 'Switzerland',
+  idType: 'Social Security Number',
   minLength: 13,
   maxLength: 16,
   pattern: /^756\.?\d{4}\.?\d{4}\.?\d{2}$/,

@@ -8,6 +8,8 @@ function validateRegexp(idNumber: string, regexp: RegExp): boolean {
 export class PersonalNumber {
   public static METADATA: IMetadata = {
     iso3166Alpha2: 'GE',
+    countryName: 'Georgia',
+    idType: 'Personal Number',
     minLength: 9,
     maxLength: 9,
     parsable: false,

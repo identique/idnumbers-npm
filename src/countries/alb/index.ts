@@ -25,6 +25,8 @@ export const METADATA = {
     'NIPT',
   ],
   iso3166Alpha2: 'AL',
+  countryName: 'Albania',
+  idType: 'Identity Number',
   minLength: 10,
   maxLength: 10,
   pattern: /^(?<yy>[0-9A-T]\d)(?<mm>\d{2})(?<dd>\d{2})(?<sn>\d{3})[-]?(?<checksum>[A-W])$/,

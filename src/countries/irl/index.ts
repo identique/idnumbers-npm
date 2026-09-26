@@ -21,6 +21,8 @@ export const METADATA = {
     'RSI No',
   ],
   iso3166Alpha2: 'IE',
+  countryName: 'Ireland',
+  idType: 'Personal Public Service Number',
   minLength: 8,
   maxLength: 10,
   pattern: /^\d{7}[A-W][A-W\s]?$|^\d{7}[A-W]\/[A-W\s]?$/,
