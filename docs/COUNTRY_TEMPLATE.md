@@ -304,13 +304,20 @@ adding a second key — see `bgdComposite` / `smrComposite` in the same file.
 export * as XYZ from './countries/xyz';
 ```
 
-**3. `src/index.ts`** — add a `SUPPORTED_COUNTRIES` entry. This is what supplies `countryName` and
-`idType` to `getCountryIdFormat()`. Without it the registry's own fallbacks apply
+**3. the primary module's `METADATA`** — set `countryName` and `idType` directly on it (the same
+object the registry key in step 1 points to). `listSupportedCountries()` — and the deprecated
+`SUPPORTED_COUNTRIES` — derive from the registry automatically, so no separate country-list entry
+is needed. Without these fields the registry's own fallbacks apply
 ([`ValidatorRegistry.getFormat()`](../src/registry/ValidatorRegistry.ts)): `countryName` becomes the
 raw country code, and `idType` becomes `METADATA.names[0]` (or the country code if `names` is empty):
 
 ```typescript
-{ code: 'XYZ', name: 'Xyz', idType: 'National ID' },
+static readonly METADATA: IdMetadata = {
+  iso3166Alpha2: 'XY',
+  countryName: 'Xyz',
+  idType: 'National ID',
+  // ...
+};
 ```
 
 **The rule: secondary types stay out of the registry.** Export them from the country module only
@@ -328,7 +335,7 @@ The registry count is hard-asserted, so adding country #81 fails the suite until
 | File                                                                                                          | What to change                                                                                                                                                                                       |
 | ------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`src/__tests__/parseIdInfo-migration.test.ts`](../src/__tests__/parseIdInfo-migration.test.ts)               | **Breaks the build:** `expect(registry.list().length).toBe(80)` → `81`. Also extend the `expectedKeys` list, the `expectedAliases` map, and — if the ID is parsable — the `parseableCountries` table |
-| [`src/__tests__/getCountryIdFormat-migration.test.ts`](../src/__tests__/getCountryIdFormat-migration.test.ts) | add the country to the `registeredCountries` fixture — this fixture is an independent copy of `SUPPORTED_COUNTRIES` and must move in lockstep with METADATA/format changes                           |
+| [`src/__tests__/getCountryIdFormat-migration.test.ts`](../src/__tests__/getCountryIdFormat-migration.test.ts) | add the country to the `registeredCountries` fixture — this fixture is an independent copy of each country's `countryName`/`idType` and must move in lockstep with METADATA/format changes           |
 | [`README.md`](../README.md)                                                                                   | the "80 countries" claims and the "comprehensive test coverage with N tests" count                                                                                                                   |
 
 ### Add a country test file
@@ -416,7 +423,7 @@ Copy into your PR description:
 - [ ] `parse()` returns `null` on invalid input and never throws
 - [ ] Registered in `registerAll.ts` (alpha-3 key + alpha-2 alias)
 - [ ] `export * as <ISO3>` added to `src/index.ts`
-- [ ] `SUPPORTED_COUNTRIES` entry added to `src/index.ts`
+- [ ] `countryName` and `idType` set on the primary METADATA
 - [ ] Secondary ID types exported from the country module only — NOT registered
 - [ ] Registry count bumped in `parseIdInfo-migration.test.ts`
 - [ ] `getCountryIdFormat-migration.test.ts` fixture updated

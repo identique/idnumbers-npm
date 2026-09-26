@@ -189,7 +189,11 @@ results.forEach(result => {
 
 ### `listSupportedCountries()`
 
-Returns a list of all supported countries.
+Returns a list of all supported countries, derived from the registry at call time and sorted by
+ISO 3166-1 alpha-3 code. Each call returns a fresh array.
+
+The `SUPPORTED_COUNTRIES` constant is a deprecated snapshot of this same list, kept for backward
+compatibility; it will be removed in v2.0.0 — use `listSupportedCountries()` instead.
 
 **Returns:** Array of country information
 
@@ -526,7 +530,7 @@ if (!validation.valid) {
 
 ## Testing
 
-The library includes comprehensive test coverage with 2389 tests covering:
+The library includes comprehensive test coverage with 2569 tests covering:
 
 - Format validation
 - Checksum verification
