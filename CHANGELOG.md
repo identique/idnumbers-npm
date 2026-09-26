@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Optional machine-readable `reason` field on `ValidationResult`, populated whenever `isValid` is `false`, plus the exported `ValidationFailureReason` enum (`unsupported_country`, `invalid_length`, `invalid_format`, `checksum_mismatch`, `validation_failed`); derivation is best-effort and the enum is non-exhaustive — future releases may add more specific codes ([#117](https://github.com/identique/idnumbers-npm/issues/117))
+
 ## [1.10.0] - 2026-07-27
 
 ### Added
