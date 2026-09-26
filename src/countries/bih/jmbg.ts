@@ -24,7 +24,7 @@ export class UniqueMasterCitizenNumber extends YugoslaviaJMBG {
     if (!locCitizenship) {
       return null;
     }
-    const [citizenship, location] = locCitizenship;
+    const [citizenship] = locCitizenship;
     result.citizenship = citizenship;
     return result;
   }

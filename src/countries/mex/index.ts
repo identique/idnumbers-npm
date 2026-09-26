@@ -3,7 +3,7 @@
  * Unique Population Registry Code
  */
 
-import { ValidationResult, ParsedInfo } from '../../types';
+import { ParsedInfo } from '../../types';
 import { isValidDate } from '../../utils';
 import { Gender } from '../../constants';
 

@@ -2,8 +2,8 @@
  * Switzerland Social Security Number (AHV-Nr. / No AVS)
  */
 
-import { ValidationResult, ParsedInfo } from '../../types';
-import { validateRegexp, ean13Digit } from '../../utils';
+import { ParsedInfo } from '../../types';
+import { ean13Digit } from '../../utils';
 
 export interface SwitzerlandParseResult extends ParsedInfo {
   // Social Security Number doesn't contain parsable information beyond validation

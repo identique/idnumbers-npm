@@ -72,7 +72,7 @@ export class DriverLicense implements IdNumberClass {
   /**
    * No checksum for NZ Driver License
    */
-  static checksum(idNumber: string): null {
+  static checksum(_idNumber: string): null {
     return null;
   }
 

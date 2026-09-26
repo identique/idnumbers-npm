@@ -3,7 +3,7 @@
  * Número único de identidad personal
  */
 
-import { ValidationResult, ParsedInfo } from '../../types';
+import { ParsedInfo } from '../../types';
 import { validateRegexp, weightedModulusDigit } from '../../utils';
 import { CheckDigit } from '../../constants';
 

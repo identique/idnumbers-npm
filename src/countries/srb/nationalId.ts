@@ -47,7 +47,6 @@ export class NationalID implements IdNumberClass {
     // Extract components
     const day = parseInt(cleanId.substring(0, 2));
     const month = parseInt(cleanId.substring(2, 4));
-    const year = parseInt(cleanId.substring(4, 7));
     const region = parseInt(cleanId.substring(7, 9));
     const sequence = parseInt(cleanId.substring(9, 12));
 
@@ -96,6 +95,7 @@ export class NationalID implements IdNumberClass {
   /**
    * Parse Serbian JMBG to extract information
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- untyped parse result; typed results tracked in #123
   static parse(idNumber: string): any | null {
     if (!NationalID.validate(idNumber)) {
       return null;
@@ -168,6 +168,7 @@ export class NationalID implements IdNumberClass {
     return NationalID.validate(idNumber);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- untyped parse result; typed results tracked in #123
   parse(idNumber: string): any | null {
     return NationalID.parse(idNumber);
   }

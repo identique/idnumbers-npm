@@ -2,7 +2,7 @@
  * Latvia Personal Code (personas kods)
  */
 
-import { ValidationResult, ParsedInfo } from '../../types';
+import { ParsedInfo } from '../../types';
 import { validateRegexp } from '../../utils';
 import { CheckDigit } from '../../constants';
 

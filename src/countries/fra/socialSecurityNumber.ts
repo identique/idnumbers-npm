@@ -1,4 +1,4 @@
-import { CheckDigit, Gender } from '../../constants';
+import { Gender } from '../../constants';
 import { IdMetadata, IdNumberClass } from '../../types';
 import { validateRegexp } from '../../utils';
 
@@ -70,6 +70,7 @@ export class SocialSecurityNumber implements IdNumberClass {
   /**
    * Parse French Social Security Number
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- untyped parse result; typed results tracked in #123
   static parse(idNumber: string): any | null {
     const match = SocialSecurityNumber.METADATA.regexp.exec(idNumber);
     if (!match || !match.groups) {
@@ -117,6 +118,7 @@ export class SocialSecurityNumber implements IdNumberClass {
   /**
    * Validate birth department according to French rules
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- untyped parse result; typed results tracked in #123
   static validateBirthDepartment(birthDepartment: string): any | null {
     const departmentCode = birthDepartment.substring(0, 2).toUpperCase();
 
@@ -153,6 +155,7 @@ export class SocialSecurityNumber implements IdNumberClass {
     return null;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- untyped parse result; typed results tracked in #123
   parse(idNumber: string): any | null {
     return SocialSecurityNumber.parse(idNumber);
   }

@@ -3,7 +3,7 @@
  * Henkilötunnus
  */
 
-import { ValidationResult, ParsedInfo } from '../../types';
+import { ParsedInfo } from '../../types';
 import { isValidDate, calculateAge } from '../../utils';
 
 export interface FinlandParseResult extends ParsedInfo {

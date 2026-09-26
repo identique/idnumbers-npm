@@ -2,7 +2,7 @@
  * Italy Fiscal Code (Codice fiscale)
  */
 
-import { ValidationResult, ParsedInfo } from '../../types';
+import { ParsedInfo } from '../../types';
 import { isValidDate, calculateAge } from '../../utils';
 
 export interface ItalyParseResult extends ParsedInfo {

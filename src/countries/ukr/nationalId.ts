@@ -1,4 +1,4 @@
-import { CheckDigit, Gender } from '../../constants';
+import { Gender } from '../../constants';
 import { IdMetadata, IdNumberClass } from '../../types';
 
 /**

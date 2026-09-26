@@ -205,5 +205,5 @@ export function ean13Digit(numbers: number[]): CheckDigit {
  * Normalize an ID number by removing common separators
  */
 export function normalize(idNumber: string): string {
-  return idNumber.replace(/[\s\-\/]/g, '');
+  return idNumber.replace(/[\s\-/]/g, '');
 }

@@ -1,4 +1,4 @@
-import { CheckDigit, Gender, Citizenship } from '../../constants';
+import { CheckDigit, Gender } from '../../constants';
 import { IdMetadata, IdNumberClass } from '../../types';
 
 /**
@@ -106,7 +106,7 @@ export class NationalID implements IdNumberClass {
   /**
    * Pakistan CNIC doesn't have a publicly documented checksum algorithm
    */
-  static checksum(idNumber: string): CheckDigit | null {
+  static checksum(_idNumber: string): CheckDigit | null {
     return null;
   }
 

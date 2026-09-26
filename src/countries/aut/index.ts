@@ -3,8 +3,6 @@
  * Abgabenkontonummer
  */
 
-import { ValidationResult } from '../../types';
-
 export const METADATA = {
   name: 'Austria Tax Identification Number',
   names: ['Tax ID number', 'ATIN', 'Abgabenkontonummer'],
@@ -38,7 +36,7 @@ const OVERFLOW_SUM: { [key: number]: number } = {
  * Normalize the ID number by removing separators
  */
 function normalize(idNumber: string): string {
-  return idNumber.replace(/[-\/\s]/g, '');
+  return idNumber.replace(/[-/\s]/g, '');
 }
 
 /**

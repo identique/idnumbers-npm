@@ -4,7 +4,7 @@
  */
 
 import { IdMetadata } from '../../types';
-import { validateRegexp, weightedModulusDigit } from '../../utils';
+import { validateRegexp } from '../../utils';
 
 export const METADATA: IdMetadata = {
   iso3166Alpha2: 'JP',

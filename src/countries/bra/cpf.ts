@@ -39,7 +39,7 @@ export class CPF implements IdNumberClass {
    * Normalize CPF by removing dots and dashes
    */
   private static normalize(idNumber: string): string {
-    return idNumber.replace(/[\-/]|[./]/g, '');
+    return idNumber.replace(/[-/]|[./]/g, '');
   }
 
   /**

@@ -3,7 +3,7 @@
  * Nomor Induk Kependudukan
  */
 
-import { ValidationResult, ParsedInfo } from '../../types';
+import { ParsedInfo } from '../../types';
 import { DISTRICT_CODES } from './districts';
 
 export interface IndonesiaParseResult extends ParsedInfo {

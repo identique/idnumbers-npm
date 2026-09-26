@@ -13,7 +13,7 @@
  * https://en.wikipedia.org/wiki/Personal_identification_number_(Denmark)
  */
 
-import { ValidationResult, ParsedInfo } from '../../types';
+import { ParsedInfo } from '../../types';
 import { isValidDate, calculateAge } from '../../utils';
 
 export interface DenmarkParseResult extends ParsedInfo {

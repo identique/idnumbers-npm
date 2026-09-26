@@ -141,7 +141,7 @@ export class NationalID implements IdNumberClass {
   /**
    * Malaysia NRIC doesn't have a checksum digit
    */
-  static checksum(idNumber: string): CheckDigit | null {
+  static checksum(_idNumber: string): CheckDigit | null {
     return null;
   }
 

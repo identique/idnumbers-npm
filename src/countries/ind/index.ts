@@ -3,7 +3,7 @@
  * Unique Identification Number
  */
 
-import { IdMetadata, ValidationResult } from '../../types';
+import { IdMetadata } from '../../types';
 import { validateRegexp, verhoeffCheck } from '../../utils';
 
 export const METADATA: IdMetadata = {

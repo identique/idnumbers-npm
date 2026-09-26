@@ -4,7 +4,7 @@
  * Universal Electronic System for Registration of the Population
  */
 
-import { ValidationResult, ParsedInfo } from '../../types';
+import { ParsedInfo } from '../../types';
 import { isValidDate, calculateAge } from '../../utils';
 
 export interface PolandParseResult extends ParsedInfo {
