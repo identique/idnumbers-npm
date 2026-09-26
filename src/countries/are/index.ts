@@ -16,6 +16,8 @@ export const METADATA = {
   name: 'Emirates ID',
   names: ['Emirates ID', 'Resident ID', 'رقم الهوية'],
   iso3166Alpha2: 'AE',
+  countryName: 'United Arab Emirates',
+  idType: 'Emirates ID',
   minLength: 15,
   maxLength: 15,
   pattern: /^784[-]?(?<yyyy>\d{4})[-]?(?<sn>\d{7})[-]?(?<checksum>\d)$/,

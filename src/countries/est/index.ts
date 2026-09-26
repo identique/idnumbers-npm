@@ -18,6 +18,8 @@ export const METADATA = {
   name: 'Estonia Personal ID Number',
   names: ['Personal ID Number', 'isikukood'],
   iso3166Alpha2: 'EE',
+  countryName: 'Estonia',
+  idType: 'Personal ID Number',
   minLength: 11,
   maxLength: 11,
   pattern: /^(?<gender_century>\d)(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})(?<sn>\d{3})(?<checksum>\d)$/,

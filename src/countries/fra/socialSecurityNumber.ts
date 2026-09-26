@@ -19,6 +19,8 @@ export interface BirthDepartment {
 export class SocialSecurityNumber implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'FR',
+    countryName: 'France',
+    idType: 'Social Security Number',
     minLength: 15,
     maxLength: 15,
     parsable: true,

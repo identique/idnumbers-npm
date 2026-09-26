@@ -15,6 +15,8 @@ export const METADATA = {
   name: 'Greece Tax Identity Number',
   names: ['Tax Identity Number', 'AFM', 'ΑΦΜ', 'Αριθμός Φορολογικού Μητρώου'],
   iso3166Alpha2: 'GR',
+  countryName: 'Greece',
+  idType: 'Tax Identity Number',
   minLength: 9,
   maxLength: 9,
   pattern: /^\d{9}$/,

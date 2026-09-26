@@ -14,6 +14,8 @@ export interface KuwaitParseResult extends ParsedInfo {
 
 export const METADATA: IdMetadata = {
   iso3166Alpha2: 'KW',
+  countryName: 'Kuwait',
+  idType: 'Civil Number',
   minLength: 12,
   maxLength: 12,
   parsable: true,

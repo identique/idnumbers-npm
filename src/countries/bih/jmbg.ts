@@ -5,6 +5,8 @@ export class UniqueMasterCitizenNumber extends YugoslaviaJMBG {
   public static METADATA = {
     ...YugoslaviaJMBG.METADATA,
     iso3166_alpha2: 'BA',
+    countryName: 'Bosnia and Herzegovina',
+    idType: 'Unique Master Citizen Number',
     displayFormat: 'DDMMYYYRRSSSC',
     example: '0101990150002',
     checksumAlgorithm: 'JMBG weighted sum mod 11 (folded pairs x 7,6,5,4,3,2)',

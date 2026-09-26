@@ -7,6 +7,8 @@ import { IdMetadata, IdNumberClass } from '../../types';
 export class NationalID implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'SI',
+    countryName: 'Slovenia',
+    idType: 'EMŠO',
     minLength: 13,
     maxLength: 13,
     parsable: true,

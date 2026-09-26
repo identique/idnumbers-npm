@@ -25,6 +25,8 @@ export interface NationalIdParseResult {
 export class NationalID implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'UA',
+    countryName: 'Ukraine',
+    idType: 'Individual Tax Number',
     minLength: 10,
     maxLength: 10,
     parsable: true,

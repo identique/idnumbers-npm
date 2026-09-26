@@ -36,6 +36,8 @@ export interface NationalIdParseResult {
 export class NationalID implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'MO',
+    countryName: 'Macau',
+    idType: 'Resident Identity Card',
     minLength: 8,
     maxLength: 8,
     parsable: true,

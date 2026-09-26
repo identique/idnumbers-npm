@@ -19,6 +19,8 @@ export const METADATA = {
   name: 'Indonesia National ID Number',
   names: ['ID Number', 'NIK', 'Nomor Induk Kependudukan'],
   iso3166Alpha2: 'IDN',
+  countryName: 'Indonesia',
+  idType: 'National ID Number',
   minLength: 16,
   maxLength: 16,
   pattern: /^(?<district>\d{6})(?<dd>[0-7]\d)(?<mm>(0[1-9]|1[012]))(?<yy>\d{2})(?!0000)\d{4}$/,

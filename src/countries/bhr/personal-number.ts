@@ -19,6 +19,8 @@ export type ParseResult = {
 export class PersonalNumber {
   public static METADATA: IMetadata = {
     iso3166Alpha2: 'BH',
+    countryName: 'Bahrain',
+    idType: 'Personal Number',
     minLength: 9,
     maxLength: 9,
     parsable: true,

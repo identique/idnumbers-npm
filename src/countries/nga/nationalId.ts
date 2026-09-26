@@ -27,6 +27,8 @@ export interface NationalIdParseResult extends ParsedInfo {
 export class NationalID implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'NG',
+    countryName: 'Nigeria',
+    idType: 'National Identification Number',
     minLength: 11,
     maxLength: 11,
     parsable: false,

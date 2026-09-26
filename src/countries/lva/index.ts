@@ -14,6 +14,8 @@ export const METADATA = {
   name: 'Latvia Personal Code',
   names: ['Personal Code', 'personas kods'],
   iso3166Alpha2: 'LV',
+  countryName: 'Latvia',
+  idType: 'Personal Code',
   minLength: 11,
   maxLength: 11,
   pattern: /^(\d{6}-?\d{5})$/,

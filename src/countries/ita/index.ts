@@ -19,6 +19,8 @@ export const METADATA = {
   name: 'Italy Fiscal Code',
   names: ['Fiscal Code', 'Codice fiscale'],
   iso3166Alpha2: 'IT',
+  countryName: 'Italy',
+  idType: 'Fiscal Code',
   minLength: 16,
   maxLength: 16,
   pattern:

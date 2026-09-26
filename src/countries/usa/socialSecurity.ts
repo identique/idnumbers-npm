@@ -9,6 +9,8 @@ import { validateRegexp } from '../../utils';
 export class SocialSecurityNumber implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'US',
+    countryName: 'United States',
+    idType: 'Social Security Number',
     minLength: 9,
     maxLength: 9,
     parsable: false,

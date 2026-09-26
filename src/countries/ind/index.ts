@@ -8,6 +8,8 @@ import { validateRegexp, verhoeffCheck } from '../../utils';
 
 export const METADATA: IdMetadata = {
   iso3166Alpha2: 'IN',
+  countryName: 'India',
+  idType: 'Aadhaar (UID)',
   minLength: 12,
   maxLength: 14,
   parsable: false,

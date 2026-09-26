@@ -6,6 +6,10 @@ import { ValidationFailureReason } from './constants';
 export interface IdMetadata {
   /** ISO 3166-1 alpha-2 country code */
   iso3166Alpha2: string;
+  /** English country name (e.g. 'Hungary') */
+  countryName?: string;
+  /** English name of the ID document (e.g. 'Personal ID Number') */
+  idType?: string;
   /** Minimum length without insignificant characters */
   minLength: number;
   /** Maximum length without insignificant characters */

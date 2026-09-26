@@ -23,6 +23,8 @@ export const METADATA = {
     'Universal Electronic System for Registration of the Population',
   ],
   iso3166Alpha2: 'PL',
+  countryName: 'Poland',
+  idType: 'PESEL',
   minLength: 11,
   maxLength: 11,
   pattern: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})(?<sn>\d{4})(?<checksum>\d)$/,

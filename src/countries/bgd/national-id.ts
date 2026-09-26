@@ -44,6 +44,8 @@ export const NEW_METADATA = {
   name: 'Bangladesh National ID',
   names: ['Bangladesh national ID number', 'জাতীয় পরিচয়পত্র', 'NID', 'BD'],
   iso3166Alpha2: 'BD',
+  countryName: 'Bangladesh',
+  idType: 'National ID',
   minLength: 17,
   maxLength: 17,
   regexp: /^(?<yyyy>\d{4})(?<distinct>\d{2})(?<rmo>\d)(?<police>\d{2})(?<union>\d{2})(?<sn>\d{6})$/,

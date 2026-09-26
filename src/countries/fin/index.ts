@@ -18,6 +18,8 @@ export const METADATA = {
   name: 'Finland Personal Identity Code',
   names: ['personal identity code', 'HETU', 'Henkilötunnus'],
   iso3166Alpha2: 'FI',
+  countryName: 'Finland',
+  idType: 'Personal Identity Code',
   minLength: 11,
   maxLength: 11,
   pattern:

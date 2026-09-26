@@ -14,6 +14,8 @@ export const METADATA = {
   name: 'Chile National ID',
   names: ['Rol Único Nacional', 'RUN', 'Rol Único Tributario', 'RUT'],
   iso3166Alpha2: 'CL',
+  countryName: 'Chile',
+  idType: 'RUN/RUT',
   minLength: 8,
   maxLength: 12,
   pattern: /^(\d{1,2}\.?\d{3}\.?\d{3}-?[\dK])$/i,

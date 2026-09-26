@@ -29,6 +29,8 @@ const CHECK_DIGIT_WEIGHTS = [2, 3, 4, 5, 6, 7, 8, 9];
 export class DPI implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'GT',
+    countryName: 'Guatemala',
+    idType: 'Documento Personal de Identificación (DPI)',
     minLength: 13,
     maxLength: 13,
     parsable: true,

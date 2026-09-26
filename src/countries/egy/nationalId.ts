@@ -82,6 +82,8 @@ export const METADATA = {
   name: 'Egypt National ID',
   names: ['National ID', 'الرقم القومي', 'National Number'],
   iso3166Alpha2: 'EG',
+  countryName: 'Egypt',
+  idType: 'National ID',
   minLength: 14,
   maxLength: 14,
   pattern:

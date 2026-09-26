@@ -16,6 +16,8 @@ export interface KazakhstanParseResult extends ParsedInfo {
 
 export const METADATA: IdMetadata = {
   iso3166Alpha2: 'KZ',
+  countryName: 'Kazakhstan',
+  idType: 'Individual Identification Number',
   minLength: 12,
   maxLength: 12,
   parsable: true,

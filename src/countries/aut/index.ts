@@ -7,6 +7,8 @@ export const METADATA = {
   name: 'Austria Tax Identification Number',
   names: ['Tax ID number', 'ATIN', 'Abgabenkontonummer'],
   iso3166Alpha2: 'AT',
+  countryName: 'Austria',
+  idType: 'Tax Identification Number',
   minLength: 9,
   maxLength: 11, // Allow up to 11 for formats with spaces
   pattern: /^(\d{2}-?\d{3}\/?\d{4}|\d{4}\s?\d{6})$/,

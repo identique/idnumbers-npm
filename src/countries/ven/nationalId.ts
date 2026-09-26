@@ -8,6 +8,8 @@ export interface NationalIdParseResult {
 export class NationalID implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'VE',
+    countryName: 'Venezuela',
+    idType: 'Cédula de Identidad',
     minLength: 8,
     maxLength: 12,
     parsable: true,

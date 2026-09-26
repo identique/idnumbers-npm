@@ -24,6 +24,8 @@ export const METADATA = {
     'EGN',
   ],
   iso3166Alpha2: 'BG',
+  countryName: 'Bulgaria',
+  idType: 'Uniform Civil Number',
   minLength: 10,
   maxLength: 10,
   pattern: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})\d{2}(?<gender>\d)(?<checksum>\d)$/,

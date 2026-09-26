@@ -140,6 +140,8 @@ const smrComposite: CountryValidator = {
   // Surface the full accepted range and shape (9-digit SSI + 7-char COE).
   METADATA: {
     ...SmrSSI.METADATA,
+    countryName: 'San Marino',
+    idType: 'Social Security Number / Tax Registration',
     minLength: SmrCOE.METADATA.minLength,
     regexp: /^(?:\d{9}|SM\d{5})$/,
   },

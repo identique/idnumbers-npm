@@ -14,6 +14,8 @@ export type NationalIdParseResult = null;
 export class NationalID implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'PG',
+    countryName: 'Papua New Guinea',
+    idType: 'National ID Number',
     minLength: 10,
     maxLength: 10,
     parsable: false,

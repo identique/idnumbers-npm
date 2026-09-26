@@ -11,6 +11,8 @@ import { IdMetadata, IdNumberClass } from '../../types';
 export class NIF implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'PT',
+    countryName: 'Portugal',
+    idType: 'Tax Identification Number (NIF)',
     minLength: 9,
     maxLength: 9,
     parsable: false,

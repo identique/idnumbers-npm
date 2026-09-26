@@ -15,6 +15,8 @@ export interface LithuaniaParseResult extends ParsedInfo {
 
 export const METADATA: IdMetadata = {
   iso3166Alpha2: 'LT',
+  countryName: 'Lithuania',
+  idType: 'Personal Code',
   minLength: 11,
   maxLength: 11,
   parsable: true,

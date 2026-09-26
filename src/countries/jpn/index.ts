@@ -8,6 +8,8 @@ import { validateRegexp } from '../../utils';
 
 export const METADATA: IdMetadata = {
   iso3166Alpha2: 'JP',
+  countryName: 'Japan',
+  idType: 'My Number',
   minLength: 12,
   maxLength: 12,
   parsable: false,

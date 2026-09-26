@@ -33,6 +33,8 @@ export interface CedulaParseResult {
 export class Cedula implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'DO',
+    countryName: 'Dominican Republic',
+    idType: 'Cédula de Identidad y Electoral',
     minLength: 11,
     maxLength: 11,
     parsable: true,
