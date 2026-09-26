@@ -98,8 +98,10 @@ export * from './registry';
 
 // Imports for exported functions
 import { ValidationResult, CountryInfo } from './types';
+import { ValidationFailureReason } from './constants';
 import { registry } from './registry/ValidatorRegistry';
 import { IdFormat } from './registry/types';
+import { deriveFailureReason } from './registry/failureReason';
 
 /**
  * List of supported countries
@@ -208,12 +210,23 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
         countryCode,
         idNumber,
         errorMessage: `Unsupported country code: ${countryCode}`,
+        reason: ValidationFailureReason.UNSUPPORTED_COUNTRY,
       };
     }
 
     const validator = registry.get(resolvedKey)!;
     const isValid = validator.validate(idNumber);
     const extractedInfo = isValid && validator.parse ? validator.parse(idNumber) : null;
+
+    if (!isValid) {
+      return {
+        isValid,
+        countryCode: resolvedKey,
+        idNumber,
+        extractedInfo,
+        reason: deriveFailureReason(validator, idNumber),
+      };
+    }
 
     return { isValid, countryCode: resolvedKey, idNumber, extractedInfo };
   } catch (error) {
@@ -222,6 +235,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
       countryCode,
       idNumber,
       errorMessage: error instanceof Error ? error.message : 'Unknown error occurred',
+      reason: ValidationFailureReason.VALIDATION_FAILED,
     };
   }
 }
