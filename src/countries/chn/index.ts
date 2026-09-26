@@ -3,8 +3,8 @@
  * 居民身份证 (Jūmín Shēnfènzhèng)
  */
 
-import { ValidationResult, ParsedInfo } from '../../types';
-import { validateRegexp, isValidDate, calculateAge } from '../../utils';
+import { ParsedInfo } from '../../types';
+import { validateRegexp, calculateAge } from '../../utils';
 import { Gender } from '../../constants';
 
 export interface ChinaParseResult extends ParsedInfo {

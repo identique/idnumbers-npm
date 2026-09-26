@@ -4,7 +4,7 @@
  * https://en.wikipedia.org/wiki/National_identification_number#Czech_Republic_and_Slovakia
  */
 
-import { ValidationResult, ParsedInfo } from '../../types';
+import { ParsedInfo } from '../../types';
 import { isValidDate, calculateAge } from '../../utils';
 
 export interface CzechParseResult extends ParsedInfo {

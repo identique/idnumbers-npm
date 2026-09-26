@@ -2,7 +2,7 @@
  * Iceland Icelandic Identification Number (kennitala)
  */
 
-import { ValidationResult, ParsedInfo } from '../../types';
+import { ParsedInfo } from '../../types';
 import { validateRegexp, weightedModulusDigit, isValidDate, calculateAge } from '../../utils';
 import { CheckDigit } from '../../constants';
 

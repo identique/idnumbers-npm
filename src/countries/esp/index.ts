@@ -3,8 +3,6 @@
  * Documento Nacional de Identidad
  */
 
-import { ValidationResult } from '../../types';
-
 export const METADATA = {
   name: 'Spain National ID Number',
   names: ['Documento Nacional de Identidad', 'DNI'],

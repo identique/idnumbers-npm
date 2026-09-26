@@ -1,6 +1,6 @@
 import { CheckDigit } from '../../constants';
 import { IdMetadata, IdNumberClass } from '../../types';
-import { validateRegexp, luhnDigit } from '../../utils';
+import { validateRegexp } from '../../utils';
 
 /**
  * Canada Social Insurance Number (SIN) format
@@ -85,7 +85,7 @@ export class SocialInsuranceNumber implements IdNumberClass {
 
     let sum = 0;
     for (let i = 0; i < 8; i++) {
-      let value = digits[i] * SocialInsuranceNumber.MULTIPLIER[i];
+      const value = digits[i] * SocialInsuranceNumber.MULTIPLIER[i];
       sum += Math.floor(value / 10) + (value % 10);
     }
 

@@ -3,7 +3,7 @@
  * Uimhir Phearsanta Seirbhíse Poiblí
  */
 
-import { ValidationResult, ParsedInfo } from '../../types';
+import { ParsedInfo } from '../../types';
 import { validateRegexp, weightedModulusDigit, letterToNumber } from '../../utils';
 
 export interface IrelandParseResult extends ParsedInfo {

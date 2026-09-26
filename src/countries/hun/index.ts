@@ -2,9 +2,9 @@
  * Hungary Personal ID Number
  */
 
-import { ValidationResult, ParsedInfo } from '../../types';
+import { ParsedInfo } from '../../types';
 import { validateRegexp, weightedModulusDigit, isValidDate, calculateAge } from '../../utils';
-import { CheckDigit, Citizenship, Gender } from '../../constants';
+import { CheckDigit } from '../../constants';
 
 export interface HungaryParseResult extends ParsedInfo {
   birthDate: Date;

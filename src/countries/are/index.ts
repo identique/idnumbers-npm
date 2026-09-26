@@ -3,7 +3,7 @@
  * رقم الهوية
  */
 
-import { ValidationResult, ParsedInfo } from '../../types';
+import { ParsedInfo } from '../../types';
 import { luhnDigit } from '../../utils';
 
 export interface EmiratesParseResult extends ParsedInfo {

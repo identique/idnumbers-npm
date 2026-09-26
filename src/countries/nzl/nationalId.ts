@@ -56,7 +56,7 @@ export class NationalID implements IdNumberClass {
     return NationalID.validate(idNumber);
   }
 
-  static checksum(idNumber: string): null {
+  static checksum(_idNumber: string): null {
     return null;
   }
 

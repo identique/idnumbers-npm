@@ -3,7 +3,7 @@
  * ΑΦΜ - Αριθμός Φορολογικού Μητρώου - Tax Registry Number
  */
 
-import { ValidationResult, ParsedInfo } from '../../types';
+import { ParsedInfo } from '../../types';
 import { validateRegexp, weightedModulusDigit, modulusOverflowMod10 } from '../../utils';
 import { CheckDigit } from '../../constants';
 

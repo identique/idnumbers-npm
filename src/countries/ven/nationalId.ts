@@ -12,7 +12,7 @@ export class NationalID implements IdNumberClass {
     maxLength: 12,
     parsable: true,
     checksum: false,
-    regexp: /^[VEJG][\d\.\-\s]{7,}$/,
+    regexp: /^[VEJG][\d.\-\s]{7,}$/,
     displayFormat: 'V-######## or E-########',
     example: 'V-12345678',
     checksumAlgorithm: 'None (prefix and serial length only)',

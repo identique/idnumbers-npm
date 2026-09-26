@@ -3,8 +3,6 @@
  * Old format (13 digits) and New format (17 digits)
  */
 
-import { validateRegexp } from '../../utils';
-
 export enum ResidentialType {
   RURAL = 1,
   MUNICIPALITY = 2,

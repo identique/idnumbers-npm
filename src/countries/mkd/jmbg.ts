@@ -1,4 +1,4 @@
-import { Citizenship, Gender } from '../../constants';
+import { Citizenship } from '../../constants';
 import { IdMetadata } from '../../types';
 import { UniqueMasterCitizenNumber as YugoslaviaJMBG, ParseResult } from '../bih/yugoslavia';
 

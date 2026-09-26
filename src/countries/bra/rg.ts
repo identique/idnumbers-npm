@@ -75,7 +75,7 @@ export class RG implements IdNumberClass {
     return (total + checkDigit * 100) % 11 === 0;
   }
 
-  checksum(idNumber: string): number | null {
+  checksum(_idNumber: string): number | null {
     // RG doesn't have a calculable checksum - it's state-dependent
     return null;
   }

@@ -49,7 +49,7 @@ export class IdentityCard implements IdNumberClass {
   /**
    * Identity Card has no checksum
    */
-  static checksum(idNumber: string): null {
+  static checksum(_idNumber: string): null {
     return null;
   }
 

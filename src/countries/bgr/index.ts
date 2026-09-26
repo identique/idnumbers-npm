@@ -3,7 +3,7 @@
  * Единен граждански номер / Edinen grazhdanski nomer
  */
 
-import { ValidationResult, ParsedInfo } from '../../types';
+import { ParsedInfo } from '../../types';
 import { validateRegexp, weightedModulusDigit, isValidDate, calculateAge } from '../../utils';
 import { CheckDigit } from '../../constants';
 
@@ -85,7 +85,7 @@ export function parse(idNumber: string): BulgariaParseResult | null {
     }
 
     const yearPart = parseInt(yy, 10);
-    let monthPart = parseInt(mm, 10);
+    const monthPart = parseInt(mm, 10);
     const dayPart = parseInt(dd, 10);
 
     let year: number;

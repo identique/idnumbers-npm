@@ -3,7 +3,7 @@
  * Identiteitskaart / Carte d'identité / Personalausweis
  */
 
-import { ValidationResult, ParsedInfo } from '../../types';
+import { ParsedInfo } from '../../types';
 import { isValidDate, calculateAge } from '../../utils';
 import { Gender } from '../../constants';
 

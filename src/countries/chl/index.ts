@@ -3,7 +3,7 @@
  * Rol Único Nacional / Rol Único Tributario
  */
 
-import { ValidationResult, ParsedInfo } from '../../types';
+import { ParsedInfo } from '../../types';
 import { validateRegexp } from '../../utils';
 
 export interface ChileParseResult extends ParsedInfo {

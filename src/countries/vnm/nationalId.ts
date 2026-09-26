@@ -111,11 +111,11 @@ export class NationalID implements IdNumberClass {
   /**
    * Vietnam ID doesn't have a checksum
    */
-  static checksum(idNumber: string): null {
+  static checksum(_idNumber: string): null {
     return null;
   }
 
-  checksum(idNumber: string): null {
+  checksum(_idNumber: string): null {
     return null;
   }
 }

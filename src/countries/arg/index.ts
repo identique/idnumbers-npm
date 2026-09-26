@@ -3,7 +3,7 @@
  * Documento Nacional de Identidad
  */
 
-import { ValidationResult, ParsedInfo } from '../../types';
+import { ParsedInfo } from '../../types';
 import { validateRegexp } from '../../utils';
 
 export interface ArgentinaParseResult extends ParsedInfo {

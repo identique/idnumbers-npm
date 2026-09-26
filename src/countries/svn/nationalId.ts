@@ -47,7 +47,6 @@ export class NationalID implements IdNumberClass {
     // Extract components
     const day = parseInt(cleanId.substring(0, 2));
     const month = parseInt(cleanId.substring(2, 4));
-    const year = parseInt(cleanId.substring(4, 7));
     const region = parseInt(cleanId.substring(7, 9));
     const sequence = parseInt(cleanId.substring(9, 12));
 

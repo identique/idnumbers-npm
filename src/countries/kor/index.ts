@@ -3,9 +3,8 @@
  * 주민등록번호 (Jumin Deungnok Beonho)
  */
 
-import { ValidationResult, ParsedInfo } from '../../types';
+import { ParsedInfo } from '../../types';
 import { validateRegexp, isValidDate, calculateAge } from '../../utils';
-import { Citizenship, Gender } from '../../constants';
 
 export interface KoreaParseResult extends ParsedInfo {
   birthDate: Date;
@@ -67,28 +66,6 @@ const DOB_BASE_MAP: { [key: number]: number } = {
   7: 2000,
   8: 2000,
 };
-
-/**
- * Calculate checksum for Korean RRN
- */
-function calculateChecksum(idNumber: string): boolean {
-  // Remove dash if present
-  const clean = idNumber.replace(/-/g, '');
-  if (clean.length !== 13) {
-    return false;
-  }
-
-  // Weights for checksum calculation
-  const weights = [2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5];
-  let sum = 0;
-
-  for (let i = 0; i < 12; i++) {
-    sum += parseInt(clean[i], 10) * weights[i];
-  }
-
-  const checkDigit = (11 - (sum % 11)) % 10;
-  return checkDigit === parseInt(clean[12], 10);
-}
 
 /**
  * Validate South Korea Resident Registration Number

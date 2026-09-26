@@ -250,7 +250,7 @@ export class NationalID implements IdNumberClass {
    * Normalize ID by removing spaces and hyphens
    */
   private static normalize(idNumber: string): string {
-    return idNumber.replace(/[ \-\/]/g, '');
+    return idNumber.replace(/[ \-/]/g, '');
   }
 
   /**
