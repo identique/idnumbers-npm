@@ -392,12 +392,9 @@ run a clean `npm run clean && npm run build` (`build-check`), `npm run test:cove
 scripts in [`docs/examples/`](examples/), plus `npm run example` and `npm run example:extended`). If
 your change could affect build artifacts, coverage, or the examples, run those locally too.
 
-⚠️ `format:check` uses an **unquoted** glob (`src/**/*.ts`), so shell expansion misses deeply nested
-files and CI will not catch drift in them. Verify your own files explicitly:
-
-```bash
-npx prettier --check "src/countries/xyz/**/*.ts" "src/__tests__/issue-<n>-xyz.test.ts"
-```
+`format:check` and `lint` both cover every `.ts` file under `src/` (the scripts quote their glob so
+the tools expand it recursively), and both steps are blocking in CI, so a clean local run is a
+faithful preview of the quality gate.
 
 Never mix a repo-wide reformat into a country PR.
 
@@ -425,7 +422,7 @@ Copy into your PR description:
 - [ ] `getCountryIdFormat-migration.test.ts` fixture updated
 - [ ] README country count and test count updated
 - [ ] Tests added as `src/__tests__/issue-<n>-*.test.ts`
-- [ ] `format:check`, `lint`, `build`, `test` all pass; own files checked with a quoted Prettier glob
+- [ ] `format:check`, `lint`, `build`, `test` all pass
 ```
 
 ---

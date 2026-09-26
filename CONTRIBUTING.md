@@ -307,7 +307,9 @@ Avoid `any`. Note that `@typescript-eslint/no-explicit-any` is set to `warn`, no
 | `@typescript-eslint/no-inferrable-types`            | `off`   |
 | `@typescript-eslint/no-var-requires`                | `off`   |
 
-Run `npm run lint`, or `npm run lint:fix` to apply supported fixes. Note that the ESLint step in CI is configured with `continue-on-error: true`, so lint findings do not fail the build; keep the source clean locally regardless.
+`@typescript-eslint/no-unused-vars` is configured with `argsIgnorePattern: '^_'`. When a method must accept a parameter to satisfy an interface but deliberately ignores it, prefix the name with an underscore — for example `checksum(_idNumber: string): null` on an ID type that has no checksum.
+
+Run `npm run lint`, or `npm run lint:fix` to apply supported fixes. The ESLint step in CI is blocking: any lint error fails the build. Warnings do not, but keep your changes warning-free — where an `any` is genuinely unavoidable, suppress it on that line with a reason, e.g. `// eslint-disable-next-line @typescript-eslint/no-explicit-any -- <reason and tracking issue>`.
 
 ### Prettier
 
@@ -327,19 +329,13 @@ Run `npm run lint`, or `npm run lint:fix` to apply supported fixes. Note that th
 
 Check with `npm run format:check`; apply with `npm run format`.
 
-### Formatting Scope Gotcha
+### Script Globs
 
-The `format`, `format:check`, `lint`, and `lint:fix` scripts pass an **unquoted** `src/**/*.ts` glob, so the shell expands it before the tool sees it, and the result depends on the shell:
+The `format`, `format:check`, `lint`, and `lint:fix` scripts pass their glob quoted — `"src/**/*.ts"` in `package.json` — so Prettier and ESLint expand it themselves and match every `.ts` file under `src/` recursively. CI therefore checks formatting and lint across the whole source tree, including every country validator and the test suite.
 
-- In `bash` without `globstar` — the shell CI uses — `**` collapses to a single `*`, so `src/**/*.ts` matches only files exactly one directory below `src/`. In practice that is `src/__tests__/` and `src/registry/` alone: **no country validator is checked, nor is `src/index.ts` or `src/utils.ts`.**
-- In `zsh`, or `bash` with `globstar` enabled, the same pattern matches all files recursively.
+Keep the quotes if you edit these scripts. npm runs scripts through `/bin/sh`, which has no `globstar`, so an unquoted `src/**/*.ts` degrades to `src/*/*.ts` and silently checks only files one directory below `src/`. Use escaped double quotes rather than single quotes: Windows `cmd.exe` does not strip single quotes, so the tool would receive a literal quoted string and match nothing.
 
-Two consequences:
-
-1. A green `format:check` in CI does not mean the tree is formatted. Latent Prettier drift exists on `main` in files CI never inspects. To see the true state, quote the glob so Prettier expands it itself: `npx prettier --check "src/**/*.ts"`.
-2. **Never mix a repo-wide reformat into a feature pull request.** Fixing the drift, and quoting the globs that hide it, belongs in its own dedicated pull request.
-
-Keep the files you touch formatted. The pre-commit hook formats staged files, which covers this for normal work.
+Keep the files you touch formatted — the pre-commit hook formats staged files, which covers this for normal work — and **never mix a repo-wide reformat into a feature pull request**; a sweeping formatting change belongs in its own dedicated pull request.
 
 ### File Structure and Exports
 
