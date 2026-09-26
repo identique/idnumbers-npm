@@ -16,6 +16,18 @@ A comprehensive TypeScript/JavaScript library for validating and parsing nationa
 - ✨ **Well-tested** - Comprehensive test coverage with 100% pass rate
 - 🌍 **Multiple formats** - Supports various ID number formats per country
 
+## v2.0.0 is coming
+
+A future v2.0.0 release will ship breaking changes ([epic #127](https://github.com/identique/idnumbers-npm/issues/127)). Highlights of the planned direction:
+
+- The root `idnumbers` import stays batteries-included and unchanged.
+- New tree-shakeable, per-country entry points (`idnumbers/countries/<iso3>`) alongside a registry-only `idnumbers/core`.
+- Typed `parseIdInfo()` results instead of `any | null`.
+- A Node.js >= 22 baseline (CI runs 22.x/24.x).
+- Removal of APIs already marked `@deprecated` today, such as `SUPPORTED_COUNTRIES` and `IMetadata`.
+
+See [MIGRATION.md](./MIGRATION.md) for the full breakdown and how to prepare today.
+
 ## Installation
 
 ```bash
@@ -530,7 +542,7 @@ if (!validation.valid) {
 
 ## Testing
 
-The library includes comprehensive test coverage with 2569 tests covering:
+The library includes comprehensive test coverage with 2581 tests covering:
 
 - Format validation
 - Checksum verification
