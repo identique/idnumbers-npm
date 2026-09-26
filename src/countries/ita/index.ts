@@ -23,9 +23,12 @@ export const METADATA = {
   idType: 'Fiscal Code',
   minLength: 16,
   maxLength: 16,
+  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
   pattern:
     /^(?<surname>[A-Z]{3})(?<firstname>[A-Z]{3})(?<yy>[0-9A-Z]{2})(?<m>[A-EHLMPR-T])(?<dd>[0-9A-Z]{2})(?<area_code>[A-Z][0-9A-Z]{3})(?<checksum>[A-Z])$/,
+  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
   hasChecksum: true,
+  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
   isParsable: true,
   displayFormat: 'LLLLLLYYMDDXXXXC',
   example: 'RSSMRA85M01H501Q',

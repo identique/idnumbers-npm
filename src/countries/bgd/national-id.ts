@@ -31,7 +31,9 @@ export const OLD_METADATA = {
   minLength: 13,
   maxLength: 13,
   regexp: /^(?<distinct>\d{2})(?<rmo>\d)(?<police>\d{2})(?<union>\d{2})(?<sn>\d{6})$/,
+  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
   hasChecksum: false,
+  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
   isParsable: true,
   deprecated: true,
   links: [
@@ -49,7 +51,9 @@ export const NEW_METADATA = {
   minLength: 17,
   maxLength: 17,
   regexp: /^(?<yyyy>\d{4})(?<distinct>\d{2})(?<rmo>\d)(?<police>\d{2})(?<union>\d{2})(?<sn>\d{6})$/,
+  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
   hasChecksum: false,
+  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
   isParsable: true,
   displayFormat: 'YYYYDDRPPUUSSSSSS',
   example: '19841592824588424',

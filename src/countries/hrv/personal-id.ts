@@ -1,4 +1,4 @@
-import { IMetadata } from '../../types';
+import { IdMetadata } from '../../types';
 
 // Helper functions from util.py
 function validateRegexp(idNumber: string, regexp: RegExp): boolean {
@@ -22,7 +22,7 @@ function modulusOverflowMod10(modulus: number): number {
 }
 
 export class PersonalID {
-  public static METADATA: IMetadata = {
+  public static METADATA: IdMetadata = {
     iso3166Alpha2: 'HR',
     countryName: 'Croatia',
     idType: 'Personal ID Number',

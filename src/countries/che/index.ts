@@ -17,8 +17,11 @@ export const METADATA = {
   idType: 'Social Security Number',
   minLength: 13,
   maxLength: 16,
+  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
   pattern: /^756\.?\d{4}\.?\d{4}\.?\d{2}$/,
+  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
   hasChecksum: true,
+  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
   isParsable: false,
   displayFormat: '756.XXXX.XXXX.XX',
   example: '756.1234.5678.97',

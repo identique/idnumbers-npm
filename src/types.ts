@@ -28,7 +28,10 @@ export interface IdMetadata {
   checksumAlgorithm?: string;
   /** Official/local name of the ID (e.g. "Personnummer") */
   officialName?: string;
-  /** If this is an alias of another ID type */
+  /**
+   * If this is an alias of another ID type.
+   * @deprecated Typed as `any` today; v2.0.0 narrows this type (#123), so don't depend on its current shape.
+   */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- METADATA contract unification tracked in #121
   aliasOf: any | null;
   /** Common names for this ID type */
@@ -39,7 +42,7 @@ export interface IdMetadata {
   deprecated: boolean;
 }
 
-// Alias for backward compatibility
+/** @deprecated Use {@link IdMetadata} instead. Removed in v2.0.0 (#124). */
 export type IMetadata = IdMetadata;
 
 /**

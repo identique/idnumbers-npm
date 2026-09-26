@@ -30,8 +30,11 @@ export const METADATA = {
   idType: 'National Registration Number',
   minLength: 11,
   maxLength: 11,
+  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
   pattern: /^(?<yy>\d{2})\.?(?<mm>\d{2})\.?(?<dd>\d{2})-?(?<sn>\d{3})\.?(?<checksum>\d{2})$/,
+  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
   hasChecksum: true,
+  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
   isParsable: true,
   displayFormat: 'YY.MM.DD-SSS.CC',
   example: '85073003328',

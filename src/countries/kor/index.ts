@@ -28,12 +28,15 @@ export const METADATA = {
   idType: 'Resident Registration Number',
   minLength: 13,
   maxLength: 14,
+  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
   pattern: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})-(?<gender>\d)(?<sn>\d{6})$/,
   displayFormat: 'YYMMDD-GSSSSSS',
   example: '800101-1234567',
   checksumAlgorithm: 'None (not validated; modern RRNs no longer carry a verifiable check digit)',
   officialName: '주민등록번호 (RRN)',
+  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
   hasChecksum: false,
+  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
   isParsable: true,
   links: [
     'https://en.wikipedia.org/wiki/Resident_registration_number',

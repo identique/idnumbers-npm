@@ -23,12 +23,15 @@ export const METADATA = {
   idType: 'National ID Number',
   minLength: 16,
   maxLength: 16,
+  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
   pattern: /^(?<district>\d{6})(?<dd>[0-7]\d)(?<mm>(0[1-9]|1[012]))(?<yy>\d{2})(?!0000)\d{4}$/,
   displayFormat: 'PPPPPPDDMMYYSSSS',
   example: '1101010101900001',
   checksumAlgorithm: 'None (district/date structure only)',
   officialName: 'Nomor Induk Kependudukan (NIK)',
+  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
   hasChecksum: false,
+  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
   isParsable: true,
   links: ['https://en.wikipedia.org/wiki/National_identification_number#Indonesia'],
 };

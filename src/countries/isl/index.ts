@@ -21,8 +21,11 @@ export const METADATA = {
   idType: 'Icelandic Identification Number (kennitala)',
   minLength: 10,
   maxLength: 10,
+  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
   pattern: /^(?<dd>\d{2})(?<mm>\d{2})(?<yy>\d{2})-?(?<sn>\d{2})(?<checksum>\d)(?<century>\d)$/,
+  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
   hasChecksum: true,
+  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
   isParsable: true,
   displayFormat: 'DDMMYY-SSKC',
   example: '120174-3399',

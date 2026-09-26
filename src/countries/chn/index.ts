@@ -24,9 +24,12 @@ export const METADATA = {
   idType: 'Resident Identity Number',
   minLength: 18,
   maxLength: 18,
+  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
   pattern:
     /^(?<address_code>\d{6})(?<yyyy>\d{4})(?<mm>0[1-9]|1[012])(?<dd>0[1-9]|[12][0-9]|3[01])(?<sn>\d{3})(?<checksum>(\d|X))$/,
+  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
   hasChecksum: true,
+  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
   isParsable: true,
   displayFormat: 'AAAAAAYYYYMMDDSSSC',
   example: '11010219840406970X',

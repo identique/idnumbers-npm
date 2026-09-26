@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Optional machine-readable `reason` field on `ValidationResult`, populated whenever `isValid` is `false`, plus the exported `ValidationFailureReason` enum (`unsupported_country`, `invalid_length`, `invalid_format`, `checksum_mismatch`, `validation_failed`); derivation is best-effort and the enum is non-exhaustive — future releases may add more specific codes ([#117](https://github.com/identique/idnumbers-npm/issues/117))
 - Optional `countryName`/`idType` fields on `IdMetadata`, populated on the registered METADATA for all 85 registered countries, making each country's own METADATA the single source of truth for its name and ID type ([#118](https://github.com/identique/idnumbers-npm/issues/118))
+- `MIGRATION.md` skeleton documenting every planned v2.0.0 breaking change and how to prepare for it today ([#119](https://github.com/identique/idnumbers-npm/issues/119))
 
 ### Changed
 
@@ -20,6 +21,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Deprecated
 
 - `SUPPORTED_COUNTRIES` — use `listSupportedCountries()` instead. Scheduled for removal in v2.0.0 ([#118](https://github.com/identique/idnumbers-npm/issues/118))
+- `IMetadata` — use `IdMetadata` instead. Scheduled for removal in v2.0.0 ([#119](https://github.com/identique/idnumbers-npm/issues/119))
+- `IdMetadata.aliasOf`'s `any` type — the field stays, but its type narrows in v2.0.0; don't depend on its current shape ([#119](https://github.com/identique/idnumbers-npm/issues/119))
+- The function-based METADATA dialect's `isParsable`/`hasChecksum`/`pattern`, plus the `FunctionBasedMetadata` interface itself — renamed to `parsable`/`checksum`/`regexp` in v2.0.0 ([#119](https://github.com/identique/idnumbers-npm/issues/119))
 
 ### Fixed
 

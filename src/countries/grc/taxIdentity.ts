@@ -19,8 +19,11 @@ export const METADATA = {
   idType: 'Tax Identity Number',
   minLength: 9,
   maxLength: 9,
+  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
   pattern: /^\d{9}$/,
+  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
   hasChecksum: true,
+  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
   isParsable: false,
   displayFormat: '#########',
   example: '094014250',
