@@ -116,9 +116,10 @@ describe('Issue #117: ValidationFailureReason', () => {
 
     it('is reported (not invalid_length) for a well-shaped 11-digit Hungary ID that fails validation', () => {
       // METADATA.example is '18001010016' (11 digits); only the final (check) digit
-      // is changed. HUN's own METADATA.minLength/maxLength are buggily set to 9
-      // (a separate, pre-existing issue) -- the regexp match must take priority so
-      // this well-shaped input is never mislabeled invalid_length.
+      // is changed. HUN's METADATA.minLength/maxLength were fixed to 11 in #170
+      // (previously buggily set to 9) -- the regexp-first rule this test guards
+      // still matters, since it protects against any future length-metadata
+      // drift mislabeling a well-shaped input as invalid_length.
       const result = validateNationalId('HUN', '18001010017');
 
       expect(result.isValid).toBe(false);
