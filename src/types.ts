@@ -23,6 +23,7 @@ export interface IdMetadata {
   /** Official/local name of the ID (e.g. "Personnummer") */
   officialName?: string;
   /** If this is an alias of another ID type */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- METADATA contract unification tracked in #121
   aliasOf: any | null;
   /** Common names for this ID type */
   names: string[];
@@ -46,6 +47,7 @@ export interface IdNumberClass {
   /** Calculate checksum (if applicable) */
   checksum?(idNumber: string): number | boolean | null;
   /** Parse ID number (if applicable) */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- untyped parse result; typed results tracked in #123
   parse?(idNumber: string): any | null;
 }
 
@@ -56,6 +58,7 @@ export interface ValidationResult {
   isValid: boolean;
   countryCode: string;
   idNumber: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- untyped parse result; typed results tracked in #123
   extractedInfo?: any;
   errorMessage?: string;
 }
@@ -74,6 +77,7 @@ export interface CountryInfo {
  */
 export interface ParsedInfo {
   isValid: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- untyped parse result; typed results tracked in #123
   [key: string]: any;
 }
 

@@ -233,6 +233,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
  * parse() method. Returns null when the country is unknown or the validator
  * has no parse method.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- untyped parse result; typed results tracked in #123
 export function parseIdInfo(countryCode: string, idNumber: string): any | null {
   try {
     const validator = registry.get(countryCode);

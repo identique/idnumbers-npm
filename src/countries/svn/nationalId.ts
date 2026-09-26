@@ -90,6 +90,7 @@ export class NationalID implements IdNumberClass {
   /**
    * Parse Slovenian EMŠO to extract information
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- untyped parse result; typed results tracked in #123
   static parse(idNumber: string): any | null {
     if (!NationalID.validate(idNumber)) {
       return null;
@@ -140,6 +141,7 @@ export class NationalID implements IdNumberClass {
     return NationalID.validate(idNumber);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- untyped parse result; typed results tracked in #123
   parse(idNumber: string): any | null {
     return NationalID.parse(idNumber);
   }
