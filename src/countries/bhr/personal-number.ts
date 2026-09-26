@@ -1,4 +1,4 @@
-import { IMetadata } from '../../types';
+import { IdMetadata } from '../../types';
 
 export type ParseResult = {
   yymm: string;
@@ -17,7 +17,7 @@ export type ParseResult = {
  * https://en.wikipedia.org/wiki/National_identification_number#Bahrain
  */
 export class PersonalNumber {
-  public static METADATA: IMetadata = {
+  public static METADATA: IdMetadata = {
     iso3166Alpha2: 'BH',
     countryName: 'Bahrain',
     idType: 'Personal Number',

@@ -1,4 +1,4 @@
-import { IMetadata } from '../../types';
+import { IdMetadata } from '../../types';
 
 // Helper function from util.py (already implemented in yugoslavia.ts, but can be local)
 function validateRegexp(idNumber: string, regexp: RegExp): boolean {
@@ -6,7 +6,7 @@ function validateRegexp(idNumber: string, regexp: RegExp): boolean {
 }
 
 export class NationalID {
-  public static METADATA: IMetadata = {
+  public static METADATA: IdMetadata = {
     iso3166Alpha2: 'HK',
     countryName: 'Hong Kong',
     idType: 'National ID Number',

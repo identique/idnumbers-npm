@@ -1,4 +1,4 @@
-import { IMetadata, Citizenship, Gender } from '../../types';
+import { IdMetadata, Citizenship, Gender } from '../../types';
 
 // Helper functions from util.py
 function validateRegexp(idNumber: string, regexp: RegExp): boolean {
@@ -37,7 +37,7 @@ export type ParseResult = {
 };
 
 export class UniqueMasterCitizenNumber {
-  public static METADATA: IMetadata = {
+  public static METADATA: IdMetadata = {
     iso3166Alpha2: 'YU',
     minLength: 13,
     maxLength: 13,
