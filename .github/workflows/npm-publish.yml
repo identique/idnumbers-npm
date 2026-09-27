@@ -23,7 +23,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
 
@@ -58,15 +58,17 @@ jobs:
             echo "Error: dist folder not created"
             exit 1
           fi
-          if [ ! -f "dist/index.js" ]; then
-            echo "Error: dist/index.js not found"
-            exit 1
-          fi
-          if [ ! -f "dist/index.d.ts" ]; then
-            echo "Error: dist/index.d.ts not found"
-            exit 1
-          fi
+          for f in dist/cjs/index.js dist/cjs/index.d.ts dist/cjs/package.json \
+                   dist/esm/index.js dist/esm/index.d.ts dist/esm/package.json; do
+            if [ ! -f "$f" ]; then
+              echo "Error: $f not found"
+              exit 1
+            fi
+          done
           echo "✓ Build artifacts verified"
+
+      - name: Smoke-test packed package
+        run: npm run test:pack
 
       - name: Check if version matches tag
         run: |

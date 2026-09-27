@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x, 18.x, 20.x]
+        node-version: [22.x, 24.x]
 
     steps:
       - name: Checkout code
@@ -45,7 +45,7 @@ jobs:
         run: npm test
 
       - name: Upload test coverage
-        if: matrix.node-version == '20.x'
+        if: matrix.node-version == '22.x'
         uses: actions/upload-artifact@v4
         with:
           name: test-coverage
@@ -63,7 +63,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: '22.x'
           cache: 'npm'
 
       - name: Install dependencies
@@ -81,14 +81,13 @@ jobs:
             echo "Error: dist folder not created"
             exit 1
           fi
-          if [ ! -f "dist/index.js" ]; then
-            echo "Error: dist/index.js not found"
-            exit 1
-          fi
-          if [ ! -f "dist/index.d.ts" ]; then
-            echo "Error: dist/index.d.ts not found"
-            exit 1
-          fi
+          for f in dist/cjs/index.js dist/cjs/index.d.ts dist/cjs/package.json \
+                   dist/esm/index.js dist/esm/index.d.ts dist/esm/package.json; do
+            if [ ! -f "$f" ]; then
+              echo "Error: $f not found"
+              exit 1
+            fi
+          done
           echo "✓ Build artifacts verified"
 
   test-coverage:
@@ -102,7 +101,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: '22.x'
           cache: 'npm'
 
       - name: Install dependencies
@@ -130,7 +129,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: '22.x'
           cache: 'npm'
 
       - name: Install dependencies
@@ -156,10 +155,36 @@ jobs:
           npm run example
           npm run example:extended
 
+  package-check:
+    name: Package Verification
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Lint packed package (publint + attw)
+        run: npm run lint:package
+
+      - name: Smoke-test packed package
+        run: npm run test:pack
+
   summary:
     name: CI Summary
     runs-on: ubuntu-latest
-    needs: [quality-checks, build-check, test-coverage, examples-check]
+    needs: [quality-checks, build-check, test-coverage, examples-check, package-check]
     if: always()
 
     steps:
@@ -179,6 +204,10 @@ jobs:
           fi
           if [ "${{ needs.examples-check.result }}" != "success" ]; then
             echo "❌ Examples verification failed"
+            exit 1
+          fi
+          if [ "${{ needs.package-check.result }}" != "success" ]; then
+            echo "❌ Package verification failed"
             exit 1
           fi
           echo "✅ All CI checks passed!"
