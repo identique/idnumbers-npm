@@ -2,11 +2,25 @@
   "name": "idnumbers",
   "version": "1.11.0",
   "description": "A TypeScript library for verifying and parsing national ID numbers - supports 85 countries across 6 continents including USA, UK, France, Germany, Japan, China, India, Brazil, and many more",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/cjs/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "npm run clean && tsc -p tsconfig.build.cjs.json && tsc -p tsconfig.build.esm.json && node scripts/write-dist-markers.mjs",
+    "dev": "tsc -p tsconfig.build.cjs.json --watch",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -17,7 +31,7 @@
     "example": "npm run build && tsx examples/basic-usage.ts",
     "example:extended": "npm run build && tsx examples/basic-usage-extended.ts",
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run clean && npm run build && npm test",
+    "prepublishOnly": "npm run build && npm test",
     "release:patch": "npm version patch && npm publish",
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish",
@@ -68,7 +82,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/identique/idnumbers-npm.git"
+    "url": "git+https://github.com/identique/idnumbers-npm.git"
   },
   "bugs": {
     "url": "https://github.com/identique/idnumbers-npm/issues"
@@ -76,7 +90,7 @@
   "homepage": "https://github.com/identique/idnumbers-npm#readme",
   "devDependencies": {
     "@types/jest": "^29.5.5",
-    "@types/node": "^20.6.0",
+    "@types/node": "^22.20.4",
     "@typescript-eslint/eslint-plugin": "^6.7.0",
     "@typescript-eslint/parser": "^6.7.0",
     "eslint": "^8.49.0",
@@ -89,16 +103,12 @@
     "typescript": "^5.2.2"
   },
   "files": [
-    "dist/**/*.js",
-    "dist/**/*.d.ts",
-    "dist/**/*.d.ts.map",
-    "!dist/**/*.test.*",
-    "!dist/__tests__",
-    "README.md",
-    "LICENSE"
+    "dist",
+    "CHANGELOG.md",
+    "MIGRATION.md"
   ],
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=22"
   },
   "lint-staged": {
     "src/**/*.ts": [

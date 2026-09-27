@@ -12,7 +12,7 @@ import {
   listSupportedCountries,
   getCountryIdFormat,
   ValidationResult
-} from '../../dist/index.js';
+} from 'idnumbers';
 
 console.log('=== TypeScript Usage Examples ===\n');
 

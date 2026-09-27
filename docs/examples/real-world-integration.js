@@ -5,7 +5,7 @@
  * including form validation, user registration, and API integration.
  */
 
-import { validateNationalId, parseIdInfo } from '../../dist/index.js';
+import { validateNationalId, parseIdInfo } from 'idnumbers';
 
 console.log('=== Real-World Integration Examples ===\n');
 
