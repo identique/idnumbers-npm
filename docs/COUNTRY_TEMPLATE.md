@@ -107,33 +107,32 @@ Check these before writing any checksum or enum by hand.
 
 ## 4. The validator module
 
-### Pick the METADATA shape
+### The METADATA shape
 
-Two shapes exist. Both are accepted — [`registry/adapters.ts`](../src/registry/adapters.ts)
-normalizes them — but they are **not** interchangeable field-for-field:
+Every country module uses the canonical [`IdMetadata`](../src/types.ts) shape — `regexp`,
+`parsable`, `checksum`, plus `aliasOf`, `names`, `links`, and `deprecated` ([#121](https://github.com/identique/idnumbers-npm/issues/121)).
+Let the compiler check it: annotate a class static as `IdMetadata`, or end a module-level const with
+`satisfies IdMetadata`, which also rejects missing, misspelled, and extra fields while keeping precise
+literal types (`example` stays a `string`, not `string | undefined`):
 
-| Canonical `IdMetadata` ([`src/types.ts`](../src/types.ts)) | Alternate `FunctionBasedMetadata` ([`adapters.ts`](../src/registry/adapters.ts)) |
-| ---------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| `regexp`                                                   | `pattern`                                                                        |
-| `parsable`                                                 | `isParsable`                                                                     |
-| `checksum`                                                 | `hasChecksum`                                                                    |
-| `aliasOf`, `deprecated` required                           | omitted (defaulted by the adapter)                                               |
+```typescript
+export const METADATA = {
+  // ...
+} satisfies IdMetadata;
+```
 
-**Use `IdMetadata` for new countries** and annotate it explicitly (`export const METADATA: IdMetadata
-= {...}`) so the compiler catches missing and misspelled fields.
+v2.0.0 removed the older function-dialect fields (`pattern`, `isParsable`, `hasChecksum`, `name`) and
+the adapter that translated them. That adapter silently defaulted anything it could not find — a
+missing `pattern` became the match-anything `/./` ([#160](https://github.com/identique/idnumbers-npm/issues/160)).
+[`issue-121-module-contract.test.ts`](../src/__tests__/issue-121-module-contract.test.ts) now fails
+if any exported country `METADATA` uses those fields or lacks a canonical one.
 
-⚠️ The alternate shape is usually declared without a type annotation, so a typo is not a compile error —
-it silently becomes an adapter default. `isParsable` → `parsable: false`, `hasChecksum` →
-`checksum: false`, and worst of all `pattern` → [`fn.pattern ?? /./`](../src/registry/adapters.ts),
-a match-anything regex that the registry then reports as the country's pattern. The annotated
-`IdMetadata` form makes each of these a compile error instead. (Tracked in issue #160.)
-
-> Note: the two shapes are independent of the module's style. Class-based modules with
+> Note: the shape does not depend on the module's style. Class-based modules with
 > `static readonly METADATA` are common ([`zwe/nationalId.ts`](../src/countries/zwe/nationalId.ts)),
-> and [`kaz/index.ts`](../src/countries/kaz/index.ts) is function-based yet uses `IdMetadata`. Prefer
-> function-based for new code, as in the template below: every one of the 12 country modules written
-> in 2026 is function-based, including the most recent
-> ([`nzl/irdNumber.ts`](../src/countries/nzl/irdNumber.ts)).
+> and so are function-based modules with a module-level `METADATA` const
+> ([`kaz/index.ts`](../src/countries/kaz/index.ts)). Prefer function-based for new code, as in the
+> template below: every one of the 12 country modules written in 2026 is function-based, including
+> the most recent ([`nzl/irdNumber.ts`](../src/countries/nzl/irdNumber.ts)).
 
 ### `src/countries/xyz/util.ts`
 
@@ -181,7 +180,7 @@ export interface XyzParseResult extends ParsedInfo {
   checksum: CheckDigit;
 }
 
-export const METADATA: IdMetadata = {
+export const METADATA = {
   iso3166Alpha2: 'XY',
   minLength: 10,
   maxLength: 10,
@@ -196,7 +195,7 @@ export const METADATA: IdMetadata = {
   names: ['National ID', 'Identiteitsnommer'],
   links: ['https://en.wikipedia.org/wiki/National_identification_number#Xyz'],
   deprecated: false,
-};
+} satisfies IdMetadata;
 
 /**
  * Validate an Xyz National ID
@@ -302,15 +301,18 @@ import { NationalID as XyzNationalID } from '../countries/xyz/index.js';
 { key: 'XYZ', module: XyzNationalID, aliases: ['XY'] },
 ```
 
-For a country with two coexisting valid formats, build a composite `CountryValidator` instead of
-adding a second key — see `bgdComposite` / `smrComposite` / `lkaComposite` in the same file.
+For a country with two coexisting valid formats, register one composite instead of adding a second
+key: [`createCompositeValidator([primary, other], overrides?)`](../src/registry/composite.ts) validates
+when any member does, parses with the first member that returns a result, and derives METADATA that
+spans the members' lengths and matches either shape — see `bgdComposite` / `smrComposite` in the same
+file.
 
 ⚠️ **The METADATA registered for a country must describe every shape its `validate()` accepts.**
 `regexp`, `minLength`, and `maxLength` feed both `getCountryIdFormat()` and the
 `ValidationResult.reason` derivation (#117) — an input that doesn't match them is reported as
 `invalid_format`/`invalid_length` instead of `checksum_mismatch`. When a validator accepts a format
 its module METADATA doesn't describe (e.g. an older format), override the metadata at the registry
-level as those composites do. Never rewrite the country module's public METADATA.
+level as `lkaComposite` does. Never rewrite the country module's public METADATA.
 
 **2. [`src/index.ts`](../src/index.ts)** — export the country namespace:
 
@@ -431,12 +433,12 @@ Copy into your PR description:
 - [ ] `src/countries/<iso3>/` created; camelCase file names; one file per ID type
 - [ ] Primary type reachable from `index.ts` — defined there or re-exported from a named file —
       providing `{ validate, METADATA }` (+ `parse`/`checksum` if applicable)
-- [ ] `METADATA` typed as `IdMetadata`, with `displayFormat`, `example`, `checksumAlgorithm`, `officialName`
+- [ ] `METADATA` checked as `IdMetadata` (`satisfies IdMetadata`, or `: IdMetadata` on a class static), with `displayFormat`, `example`, `checksumAlgorithm`, `officialName`
 - [ ] `METADATA.example` is synthetic and passes `validateNationalId()`
 - [ ] Reused `src/utils.ts` / `src/constants.ts` instead of reimplementing checksums or enums
 - [ ] `parse()` returns `null` on invalid input and never throws
 - [ ] Registered in `registerAll.ts` (alpha-3 key + alpha-2 alias matching `METADATA.iso3166Alpha2`)
-- [ ] Registered METADATA covers every format `validate()` accepts (composite/registry-level override if needed)
+- [ ] Registered METADATA covers every format `validate()` accepts (`createCompositeValidator` or a registry-level override if needed)
 - [ ] `export * as <ISO3>` added to `src/index.ts`
 - [ ] `countryName` and `idType` set on the primary METADATA
 - [ ] Secondary ID types exported from the country module only — NOT registered
@@ -464,6 +466,5 @@ exercises every part of this guide:
 | Registration + alias                                                            | `{ key: 'KAZ', module: IndividualIDNumber, aliases: ['KZ'] }` in [`registerAll.ts`](../src/registry/registerAll.ts) |
 
 [`src/countries/lva/`](../src/countries/lva/) shows a simpler country: a checksum but nothing worth
-parsing (`isParsable: false`), plus a superseded format in
-[`oldPersonalCode.ts`](../src/countries/lva/oldPersonalCode.ts). Note that it uses the alternate
-`FunctionBasedMetadata` shape — follow its structure, not its `pattern`/`hasChecksum` field names.
+parsing (`parsable: false`), plus a superseded format in
+[`oldPersonalCode.ts`](../src/countries/lva/oldPersonalCode.ts).

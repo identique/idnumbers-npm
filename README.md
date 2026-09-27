@@ -163,11 +163,11 @@ switch (result.reason) {
 `reason` is also **best-effort**: `checksum_mismatch` is only reported for
 validators whose `checksum()` reports a definite pass/fail (a boolean); validators
 that expose a computed check digit instead, or none at all, fall back to
-`validation_failed`. Bangladesh's registry metadata currently carries a
-match-anything placeholder pattern for its regexp (a known bug,
-[#160](https://github.com/identique/idnumbers-npm/issues/160)) — validation itself
-is unaffected, but as a result its shape-related codes (`invalid_length`/`invalid_format`)
-can never trigger. More granular, per-country reason codes are planned in
+`validation_failed`. In the 1.x releases, Bangladesh's registry metadata carries a
+match-anything placeholder regexp ([#160](https://github.com/identique/idnumbers-npm/issues/160)),
+so its shape-related codes (`invalid_length`/`invalid_format`) never trigger there — validation
+itself is unaffected, and v2.0.0 fixes the metadata ([#121](https://github.com/identique/idnumbers-npm/issues/121)).
+More granular, per-country reason codes are planned in
 [#130](https://github.com/identique/idnumbers-npm/issues/130).
 
 ### `parseIdInfo(countryCode, idNumber)`
@@ -568,7 +568,7 @@ if (!validation.valid) {
 
 ## Testing
 
-The library includes comprehensive test coverage with 2698 tests covering:
+The library includes comprehensive test coverage with 2799 tests covering:
 
 - Format validation
 - Checksum verification

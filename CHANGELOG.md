@@ -10,12 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - A native ES module build alongside the existing CommonJS build. `import` loads the ESM build and `require` loads the CJS build, both resolved through a `package.json` `exports` map with per-condition type declarations ([#120](https://github.com/identique/idnumbers-npm/issues/120))
+- `createCompositeValidator(members, overrides?)` for countries that accept several ID formats: it validates when any member does, parses with the first member that returns a result, and derives METADATA spanning every member's lengths and shapes. Bangladesh (BGD) and San Marino (SMR) are now built with it ([#121](https://github.com/identique/idnumbers-npm/issues/121))
 
 ### Changed
 
 - **BREAKING:** Node.js >= 22 is now required (`engines.node`), and CI tests Node.js 22.x and 24.x instead of 16.x/18.x/20.x ([#120](https://github.com/identique/idnumbers-npm/issues/120))
 - **BREAKING:** the `exports` map limits public entry points to `idnumbers` and `idnumbers/package.json`, so deep imports like `idnumbers/dist/countries/twn` no longer resolve ([#120](https://github.com/identique/idnumbers-npm/issues/120))
 - Compiled output moved from `dist/` to `dist/cjs/` and `dist/esm/` and is now compiled for ES2022. Declaration maps and source maps are no longer shipped; the previous ones pointed at unpublished `src/` files ([#120](https://github.com/identique/idnumbers-npm/issues/120))
+- **BREAKING:** the 26 country modules that used the function-based METADATA dialect (plus BGD's `OLD_METADATA`/`NEW_METADATA`) now use the canonical `IdMetadata` field names — `isParsable` → `parsable`, `hasChecksum` → `checksum`, `pattern` → `regexp` — and gain `aliasOf`/`deprecated`; their dialect-only `name` field is removed in favor of `countryName`/`idType`. Validation, parsing, and `getCountryIdFormat()` field names are unchanged ([#121](https://github.com/identique/idnumbers-npm/issues/121))
+- **BREAKING:** removed `FunctionBasedMetadata`, `AnyMetadata`, and `adaptMetadata` (including its match-anything `regexp: /./` fallback); `CountryModule` now requires `IdMetadata`, and `createValidator()` passes a module's METADATA through unchanged ([#121](https://github.com/identique/idnumbers-npm/issues/121))
+
+### Fixed
+
+- Bangladesh (BGD) registered metadata reported the match-anything `regexp: /./`, because its METADATA mixed both dialects and the adapter discarded the real regexp. It now matches both the 13-digit old and 17-digit new formats, so `getCountryIdFormat('BGD').metadata.regexp` is accurate and invalid BGD input gets a specific `reason` (`invalid_length`/`invalid_format`) instead of `validation_failed`; which IDs validate is unchanged ([#160](https://github.com/identique/idnumbers-npm/issues/160), [#121](https://github.com/identique/idnumbers-npm/issues/121))
 
 ## [1.11.0] - 2026-09-27
 

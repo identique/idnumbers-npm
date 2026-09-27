@@ -375,7 +375,7 @@ Use `camelCase.ts` for new ID-type modules. A handful of existing files use `keb
 
 ### Validator METADATA
 
-Every validator exposes a `METADATA` object, but **how** it is declared and **which shape** it uses are two independent choices. Do not infer one from the other; match the file you are editing.
+Every validator exposes a `METADATA` object in the canonical `IdMetadata` shape; only **how** it is declared varies with the module's style. Match the file you are editing.
 
 _Declaration_ follows the module's style, as described under [Validator Organization](#validator-organization). Class-based validators expose it as a class static:
 
@@ -387,27 +387,15 @@ export class NationalID {
 }
 ```
 
-Object and function-based modules export it as a const:
+Object and function-based modules export it as a const checked with `satisfies`, which enforces the `IdMetadata` shape (including excess-property checks) while keeping precise literal types:
 
 ```ts
 export const METADATA = {
   /* ... */
-};
+} satisfies IdMetadata;
 ```
 
-_Shape_ is the part that bites. Two are in use, and both are valid. Either shape can appear under either declaration style, so read the keys rather than assuming from the surrounding code:
-
-| Shape                                                                            | Keys                                   |
-| -------------------------------------------------------------------------------- | -------------------------------------- |
-| [`IdMetadata`](src/types.ts)                                                     | `regexp`, `parsable`, `checksum`       |
-| `FunctionBasedMetadata` ([`src/registry/adapters.ts`](src/registry/adapters.ts)) | `pattern`, `isParsable`, `hasChecksum` |
-
-`adaptMetadata()` in [`src/registry/adapters.ts`](src/registry/adapters.ts) normalizes the second shape into the first at registration time, which is why both work.
-
-Two rules follow from how that adapter behaves:
-
-1. **Pick one shape and use its keys consistently — never mix them.** The adapter treats metadata as `IdMetadata` only when **both** `parsable` and `regexp` are present; otherwise it reads the function-based keys. An object that pairs `regexp` with `isParsable`/`hasChecksum` therefore takes the function-based path, where `regexp` is sourced from `pattern` — which such an object does not define. The registered pattern silently degrades instead of failing loudly.
-2. **Annotate with `: IdMetadata` only when the object genuinely uses that shape.** Annotating a `pattern`/`isParsable`/`hasChecksum` object as `IdMetadata` fails `tsc` with `TS2353`, because `IdMetadata` requires `regexp`, `parsable`, and `checksum` (along with `aliasOf`, `names`, `links`, and `deprecated`). An unannotated `export const METADATA` in the function-based shape is correct and has many precedents.
+_Shape_ is the same everywhere: every country module's `METADATA` uses the canonical [`IdMetadata`](src/types.ts) keys — `regexp`, `parsable`, `checksum`, plus `aliasOf`, `names`, `links`, and `deprecated`. v2.0.0 removed the older function-dialect keys (`pattern`, `isParsable`, `hasChecksum`, `name`) and the adapter that translated them ([#121](https://github.com/identique/idnumbers-npm/issues/121)); `src/__tests__/issue-121-module-contract.test.ts` fails if any exported country `METADATA` reintroduces them. The registry uses a module's `METADATA` as-is, so its `regexp`, `minLength`, and `maxLength` must describe every shape `validate()` accepts; a country with several ID formats is registered through `createCompositeValidator` instead (see [docs/COUNTRY_TEMPLATE.md](docs/COUNTRY_TEMPLATE.md)).
 
 When in doubt, copy the file next to the one you are adding.
 
