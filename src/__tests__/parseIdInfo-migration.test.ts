@@ -115,6 +115,10 @@ describe('Registry population', () => {
 
   it('should resolve all expected alpha-2 aliases', () => {
     const expectedAliases: Record<string, string> = {
+      US: 'USA',
+      AU: 'AUS',
+      ZA: 'ZAF',
+      CA: 'CAN',
       FR: 'FRA',
       BE: 'BEL',
       IT: 'ITA',
@@ -135,6 +139,7 @@ describe('Registry population', () => {
       SM: 'SMR',
       FI: 'FIN',
       AE: 'ARE',
+      AR: 'ARG',
       BG: 'BGR',
       CN: 'CHN',
       EE: 'EST',
@@ -170,6 +175,7 @@ describe('Registry population', () => {
       VN: 'VNM',
       BR: 'BRA',
       CH: 'CHE',
+      CL: 'CHL',
       CO: 'COL',
       GR: 'GRC',
       IE: 'IRL',
@@ -177,9 +183,11 @@ describe('Registry population', () => {
       DE: 'DEU',
       NL: 'NLD',
       GT: 'GTM',
+      AL: 'ALB',
       AT: 'AUT',
       ES: 'ESP',
       UK: 'GBR',
+      GB: 'GBR',
       CY: 'CYP',
       GE: 'GEO',
       HK: 'HKG',

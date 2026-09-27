@@ -173,11 +173,11 @@ interface RegistryEntry {
 // ---------------------------------------------------------------------------
 const COUNTRY_REGISTRY: RegistryEntry[] = [
   // --- Class-based modules ---
-  { key: 'USA', module: SocialSecurityNumber, aliases: [] },
-  { key: 'AUS', module: MedicareNumber, aliases: [] },
-  { key: 'ZAF', module: ZafNationalID, aliases: [] },
-  { key: 'GBR', module: NationalInsuranceNumber, aliases: ['UK'] },
-  { key: 'CAN', module: SocialInsuranceNumber, aliases: [] },
+  { key: 'USA', module: SocialSecurityNumber, aliases: ['US'] },
+  { key: 'AUS', module: MedicareNumber, aliases: ['AU'] },
+  { key: 'ZAF', module: ZafNationalID, aliases: ['ZA'] },
+  { key: 'GBR', module: NationalInsuranceNumber, aliases: ['UK', 'GB'] },
+  { key: 'CAN', module: SocialInsuranceNumber, aliases: ['CA'] },
   { key: 'DEU', module: DeuTaxId, aliases: ['DE'] },
   { key: 'FRA', module: FraSocialSecurityNumber, aliases: ['FR'] },
   { key: 'NLD', module: BurgerServiceNumber, aliases: ['NL'] },
@@ -233,7 +233,7 @@ const COUNTRY_REGISTRY: RegistryEntry[] = [
   { key: 'GTM', module: DPI, aliases: ['GT'] },
 
   // --- Function-based modules ---
-  { key: 'ALB', module: IdentityNumber, aliases: [] },
+  { key: 'ALB', module: IdentityNumber, aliases: ['AL'] },
   { key: 'AUT', module: AutTaxId, aliases: ['AT'] },
   { key: 'BEL', module: NationalRegistrationNumber, aliases: ['BE'] },
   { key: 'ITA', module: FiscalCode, aliases: ['IT'] },
@@ -246,10 +246,10 @@ const COUNTRY_REGISTRY: RegistryEntry[] = [
   { key: 'LTU', module: LtuPersonalCode, aliases: ['LT'] },
   { key: 'LUX', module: LuxNationalID, aliases: ['LU'] },
   { key: 'ARE', module: EmiratesID, aliases: ['AE'] },
-  { key: 'ARG', module: ArgNationalID, aliases: [] },
+  { key: 'ARG', module: ArgNationalID, aliases: ['AR'] },
   { key: 'BGR', module: UniformCivilNumber, aliases: ['BG'] },
   { key: 'CHE', module: CheSocialSecurityNumber, aliases: ['CH'] },
-  { key: 'CHL', module: ChlNationalID, aliases: [] },
+  { key: 'CHL', module: ChlNationalID, aliases: ['CL'] },
   { key: 'CHN', module: ResidentID, aliases: ['CN'] },
   { key: 'COL', module: UniquePersonalID, aliases: ['CO'] },
   { key: 'EST', module: EstPersonalID, aliases: ['EE'] },
