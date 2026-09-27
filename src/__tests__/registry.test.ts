@@ -392,7 +392,6 @@ describe('ValidatorRegistry', () => {
 
     it('should be the same reference on repeated imports', () => {
       // Dynamic re-import to prove the module cache returns the same object
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
       const { registry: registry2 } = require('../registry');
       expect(registry2).toBe(registry);
     });
