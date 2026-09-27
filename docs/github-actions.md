@@ -12,14 +12,15 @@ Runs on every push and pull request to the main branch.
 
 - Prettier format check
 - ESLint check
-- TypeScript compilation
+- TypeScript compilation (dual ESM/CJS build)
 - Full Jest test suite
-- Runs on Node.js 16.x, 18.x, and 20.x
+- Runs on Node.js 22.x and 24.x
 
 **Build Verification:**
 
 - Clean build check
-- Validates build artifacts exist
+- Validates both `dist/cjs/` and `dist/esm/` build artifacts exist, including each subfolder's
+  `index.js`, `index.d.ts`, and `package.json` module-type marker
 
 **Test Coverage:**
 
@@ -29,6 +30,14 @@ Runs on every push and pull request to the main branch.
 **Examples Check:**
 
 - Tests all example files to ensure documentation is correct
+
+**Package Verification (`package-check`):**
+
+- Builds the package, then runs `npm run lint:package` (publint + Are the Types Wrong)
+  and `npm run test:pack` (packs the tarball, installs it into a throwaway consumer
+  project, and smoke-tests both the CJS and ESM entry points) — see
+  [Packaging (#120)](../MIGRATION.md#packaging-120) in `MIGRATION.md` for what these
+  validate and why.
 
 ### 2. NPM Publish Workflow (`npm-publish.yml`)
 
@@ -67,9 +76,10 @@ Automatically publishes the package to npm when you create a new GitHub release.
 - Install dependencies
 - Run Prettier format check
 - Run ESLint (continues on error)
-- Run TypeScript compilation
+- Run TypeScript compilation (dual ESM/CJS build), on Node.js 22.x
 - Run the full Jest test suite
-- Verify build artifacts
+- Verify build artifacts (both `dist/cjs/` and `dist/esm/`)
+- Smoke-test the packed tarball (`npm run test:pack`)
 - Check tag version matches package.json
 - Publish to npm with public access
 - Show success message with package URL

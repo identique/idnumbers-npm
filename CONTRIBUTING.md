@@ -9,10 +9,10 @@ Thank you for your interest in contributing to `idnumbers`. Contributions that i
 Install the following tools before setting up the repository:
 
 - [Git](https://git-scm.com/)
-- Node.js 20.17 or newer
+- Node.js 22 or newer
 - npm, which is included with Node.js
 
-The published package supports Node.js 16 and newer. Development currently requires Node.js 20.17 or newer because the locked contributor tooling has a stricter runtime requirement.
+The published package requires Node.js 22 or newer (`engines.node` in `package.json`; CI tests 22.x and 24.x). Development requires the same Node.js 22+ baseline.
 
 ### Fork and Clone
 
@@ -51,15 +51,17 @@ All four commands should complete successfully before you begin development.
 
 ### Development Commands
 
-| Command                    | Purpose                                       |
-| -------------------------- | --------------------------------------------- |
-| `npm run dev`              | Compile TypeScript in watch mode              |
-| `npm run test:watch`       | Run Jest in watch mode                        |
-| `npm run test:coverage`    | Run the test suite and generate coverage      |
-| `npm run example`          | Build and run the basic TypeScript example    |
-| `npm run example:extended` | Build and run the extended TypeScript example |
-| `npm run lint:fix`         | Apply supported ESLint fixes                  |
-| `npm run format`           | Format TypeScript source files with Prettier  |
+| Command                    | Purpose                                                       |
+| -------------------------- | ------------------------------------------------------------- |
+| `npm run dev`              | Compile the CJS build in watch mode                           |
+| `npm run test:watch`       | Run Jest in watch mode                                        |
+| `npm run test:coverage`    | Run the test suite and generate coverage                      |
+| `npm run example`          | Build and run the basic TypeScript example                    |
+| `npm run example:extended` | Build and run the extended TypeScript example                 |
+| `npm run lint:fix`         | Apply supported ESLint fixes                                  |
+| `npm run format`           | Format TypeScript source files with Prettier                  |
+| `npm run lint:package`     | Validate the packed package's `exports`/types (publint, attw) |
+| `npm run test:pack`        | Pack, install, and smoke-test the tarball in a temp consumer  |
 
 The fix and format commands modify files. Review their changes before committing them.
 
@@ -123,7 +125,7 @@ The authoritative pre-commit workflow is defined in [`.husky/pre-commit`](.husky
 
 Before pushing or opening a pull request, rerun the four commands under [Verify the Setup](#verify-the-setup).
 
-The authoritative CI configuration is [`.github/workflows/ci.yml`](.github/workflows/ci.yml). If your change affects build artifacts, coverage, or runnable examples, run the corresponding checks locally as well.
+The authoritative CI configuration is [`.github/workflows/ci.yml`](.github/workflows/ci.yml). If your change affects build artifacts, coverage, or runnable examples, run the corresponding checks locally as well. If your change touches packaging (`package.json`'s `exports`/`files`/`engines`, the `tsconfig.build.*.json` files, or anything under `scripts/`), also run `npm run lint:package` and `npm run test:pack` — these validate the actual packed tarball the way CI's `package-check` job does, which the four core commands above do not exercise.
 
 ### 6. Open a Pull Request
 
@@ -159,8 +161,10 @@ Respond to actionable feedback with focused follow-up commits. Re-run the releva
 │   ├── index.ts                # Public API and registry side-effect import
 │   ├── types.ts                # Shared public types and metadata definitions
 │   └── utils.ts                # Shared validation and checksum utilities
-├── package.json                # npm scripts, metadata, and dependencies
-└── tsconfig.json               # TypeScript compiler configuration
+├── package.json                # npm scripts, metadata, dependencies, and the exports map
+├── tsconfig.json                    # Base compiler options (IDE/ESLint/ts-jest)
+├── tsconfig.build.cjs.json          # CJS build (dist/cjs/), extends tsconfig.json
+└── tsconfig.build.esm.json          # ESM build (dist/esm/), extends tsconfig.json
 ```
 
 ### Validator Organization
@@ -278,13 +282,13 @@ Style is enforced by Prettier and ESLint, with TypeScript's compiler acting as t
 
 ### TypeScript
 
-[`tsconfig.json`](tsconfig.json) compiles `src/**/*` to CommonJS targeting ES2020, emitting declarations, declaration maps, and source maps to `dist/`.
+[`tsconfig.json`](tsconfig.json) holds the base compiler options (`target`/`lib` ES2022, `strict`, and the rest) used by the IDE, ESLint, and `ts-jest`; it is not invoked directly by `npm run build`. [`tsconfig.build.cjs.json`](tsconfig.build.cjs.json) and [`tsconfig.build.esm.json`](tsconfig.build.esm.json) each extend it and compile `src/**/*` (excluding `src/__tests__`) to `dist/cjs/` and `dist/esm/` respectively — CommonJS/`node10` resolution for the former, `es2022`/`bundler` resolution for the latter. Neither build emits source maps or declaration maps; the previous ones pointed at unpublished `src/` files.
 
 `strict` is enabled, which turns on the whole strict family — including `noImplicitAny`, `strictNullChecks`, `strictFunctionTypes`, `strictPropertyInitialization`, and `useUnknownInCatchVariables`. The exact membership grows with each TypeScript release, so treat `npx tsc --showConfig` as the answer for a given checkout rather than any list written here.
 
 Stricter opt-in flags outside that family are **not** enabled, notably `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes`. An index access is therefore typed as defined even when it is `undefined` at runtime, so validate lengths and bounds explicitly instead of expecting the compiler to flag them.
 
-`npm run build` runs `tsc` and must pass; it is also run by the pre-commit hook and by CI.
+`npm run build` runs both `tsc` invocations plus [`scripts/write-dist-markers.mjs`](scripts/write-dist-markers.mjs) (which drops a `{"type": "commonjs"}`/`{"type": "module"}` marker into each `dist/` subfolder) and must pass; it is also run by the pre-commit hook and by CI.
 
 ### Type Annotations
 
@@ -345,8 +349,16 @@ Modules use **named exports only** — there are no default exports anywhere in 
 
 ```ts
 // src/countries/nga/index.ts
-export { NationalID, type NationalIdParseResult } from './nationalId';
+export { NationalID, type NationalIdParseResult } from './nationalId.js';
 ```
+
+Relative imports/exports/requires in non-test `src/` files must use explicit `.js` specifiers —
+`'./utils.js'`, `'../countries/usa/index.js'` — even though the source files are `.ts`. This is
+what lets the compiled ESM build (`dist/esm/`) resolve its own relative imports the way Node's
+native ESM loader does; CommonJS and `tsc` both tolerate the extensionless form, but Node's ESM
+resolver does not. [`src/__tests__/issue-120-esm-specifiers.test.ts`](src/__tests__/issue-120-esm-specifiers.test.ts)
+enforces this for every non-test `.ts` file under `src/`. Test files under `src/__tests__/` are
+exempt and may keep extensionless imports.
 
 ### Naming Conventions
 

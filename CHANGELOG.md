@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- A native ES module build alongside the existing CommonJS build. `import` loads the ESM build and `require` loads the CJS build, both resolved through a `package.json` `exports` map with per-condition type declarations ([#120](https://github.com/identique/idnumbers-npm/issues/120))
+
+### Changed
+
+- **BREAKING:** Node.js >= 22 is now required (`engines.node`), and CI tests Node.js 22.x and 24.x instead of 16.x/18.x/20.x ([#120](https://github.com/identique/idnumbers-npm/issues/120))
+- **BREAKING:** the `exports` map limits public entry points to `idnumbers` and `idnumbers/package.json`, so deep imports like `idnumbers/dist/countries/twn` no longer resolve ([#120](https://github.com/identique/idnumbers-npm/issues/120))
+- Compiled output moved from `dist/` to `dist/cjs/` and `dist/esm/` and is now compiled for ES2022. Declaration maps and source maps are no longer shipped; the previous ones pointed at unpublished `src/` files ([#120](https://github.com/identique/idnumbers-npm/issues/120))
+
 ## [1.11.0] - 2026-09-27
 
 ### Added
