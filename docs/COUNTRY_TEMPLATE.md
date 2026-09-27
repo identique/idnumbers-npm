@@ -62,8 +62,8 @@ Conventions:
   `oldPersonalCode.ts`. Seven files use hyphenated names (`national-id.ts`), all of them from the
   initial release; every module added since is camelCase. Use camelCase.
 - **Two `index.ts` layouts are both valid.** The primary type may be defined directly in `index.ts`
-  (36 of 85 countries — [`kaz/`](../src/countries/kaz/index.ts), [`lva/`](../src/countries/lva/index.ts)),
-  or in a named file that `index.ts` re-exports (49 of 85 — [`aus/`](../src/countries/aus/index.ts),
+  (31 of 85 countries — [`kaz/`](../src/countries/kaz/index.ts), [`lva/`](../src/countries/lva/index.ts)),
+  or in a named file that `index.ts` re-exports (54 of 85 — [`aus/`](../src/countries/aus/index.ts),
   [`nzl/`](../src/countries/nzl/index.ts), [`zwe/`](../src/countries/zwe/index.ts)). Neither is
   deprecated. Prefer defining it directly in `index.ts` for a country with a single ID type, and a
   named file (`nationalId.ts`) once the country has several — the re-export layout keeps each type in
