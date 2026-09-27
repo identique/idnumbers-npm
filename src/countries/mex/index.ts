@@ -3,9 +3,9 @@
  * Unique Population Registry Code
  */
 
-import { ParsedInfo } from '../../types';
-import { isValidDate } from '../../utils';
-import { Gender } from '../../constants';
+import { ParsedInfo } from '../../types.js';
+import { isValidDate } from '../../utils.js';
+import { Gender } from '../../constants.js';
 
 export interface MexicoParseResult extends ParsedInfo {
   nameInitialChars: string;

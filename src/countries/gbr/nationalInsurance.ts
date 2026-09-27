@@ -1,5 +1,5 @@
-import { IdMetadata, IdNumberClass } from '../../types';
-import { validateRegexp } from '../../utils';
+import { IdMetadata, IdNumberClass } from '../../types.js';
+import { validateRegexp } from '../../utils.js';
 
 /**
  * United Kingdom National Insurance Number (NINO) format

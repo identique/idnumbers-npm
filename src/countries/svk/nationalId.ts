@@ -1,5 +1,5 @@
-import { CheckDigit, Gender } from '../../constants';
-import { IdMetadata, IdNumberClass } from '../../types';
+import { CheckDigit, Gender } from '../../constants.js';
+import { IdMetadata, IdNumberClass } from '../../types.js';
 
 /**
  * Parse result for Slovakia Birth Number

@@ -4,7 +4,7 @@
  * https://en.wikipedia.org/wiki/National_identification_number#Greece
  */
 
-import { validateRegexp } from '../../utils';
+import { validateRegexp } from '../../utils.js';
 
 // Greek uppercase alphabet only (no Latin letters)
 const REGEXP = /^[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ]-?\d{6}$/;

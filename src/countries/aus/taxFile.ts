@@ -4,8 +4,8 @@
  * Note: Australian law specifically prohibits use of the TFN as a national identification number.
  */
 
-import { IdMetadata } from '../../types';
-import { validateRegexp, normalize } from '../../utils';
+import { IdMetadata } from '../../types.js';
+import { validateRegexp, normalize } from '../../utils.js';
 
 export const METADATA: IdMetadata = {
   iso3166Alpha2: 'AU',

@@ -1,5 +1,5 @@
-import { ValidationFailureReason } from '../constants';
-import { CountryValidator } from './types';
+import { ValidationFailureReason } from '../constants.js';
+import { CountryValidator } from './types.js';
 
 /** Separators stripped when producing the normalized candidate form. */
 const SEPARATOR_PATTERN = /[\s.\-/()]/g;

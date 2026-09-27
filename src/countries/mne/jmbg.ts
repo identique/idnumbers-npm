@@ -1,6 +1,6 @@
-import { Citizenship } from '../../constants';
-import { IdMetadata } from '../../types';
-import { UniqueMasterCitizenNumber as YugoslaviaJMBG, ParseResult } from '../bih/yugoslavia';
+import { Citizenship } from '../../constants.js';
+import { IdMetadata } from '../../types.js';
+import { UniqueMasterCitizenNumber as YugoslaviaJMBG, ParseResult } from '../bih/yugoslavia.js';
 
 /**
  * Montenegro Unique Master Citizen Number (JMBG) format

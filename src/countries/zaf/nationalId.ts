@@ -1,6 +1,6 @@
-import { CheckDigit, Gender, Citizenship } from '../../constants';
-import { IdMetadata, IdNumberClass } from '../../types';
-import { luhnDigit } from '../../utils';
+import { CheckDigit, Gender, Citizenship } from '../../constants.js';
+import { IdMetadata, IdNumberClass } from '../../types.js';
+import { luhnDigit } from '../../utils.js';
 
 /**
  * Parse result of South Africa national ID

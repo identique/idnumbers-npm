@@ -21,9 +21,9 @@
  * https://en.wikipedia.org/wiki/Egyptian_National_Identity_Card
  */
 
-import { ParsedInfo } from '../../types';
-import { isValidDate, calculateAge } from '../../utils';
-import { Gender } from '../../constants';
+import { ParsedInfo } from '../../types.js';
+import { isValidDate, calculateAge } from '../../utils.js';
+import { Gender } from '../../constants.js';
 
 export interface EgyptParseResult extends ParsedInfo {
   birthDate: Date;

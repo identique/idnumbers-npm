@@ -3,9 +3,9 @@
  * Identiteitskaart / Carte d'identité / Personalausweis
  */
 
-import { ParsedInfo } from '../../types';
-import { isValidDate, calculateAge } from '../../utils';
-import { Gender } from '../../constants';
+import { ParsedInfo } from '../../types.js';
+import { isValidDate, calculateAge } from '../../utils.js';
+import { Gender } from '../../constants.js';
 
 export interface BelgiumParseResult extends ParsedInfo {
   birthDate: Date;
@@ -147,4 +147,4 @@ export const NationalRegistrationNumber = {
   METADATA,
 };
 
-export { EntityVAT } from './entityVat';
+export { EntityVAT } from './entityVat.js';

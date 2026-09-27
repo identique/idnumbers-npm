@@ -1,4 +1,4 @@
-import { IdMetadata } from '../../types';
+import { IdMetadata } from '../../types.js';
 
 // Helper function from util.py (already implemented in yugoslavia.ts, but can be local)
 function validateRegexp(idNumber: string, regexp: RegExp): boolean {

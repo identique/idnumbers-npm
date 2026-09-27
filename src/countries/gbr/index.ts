@@ -1,1 +1,1 @@
-export { NationalInsuranceNumber } from './nationalInsurance';
+export { NationalInsuranceNumber } from './nationalInsurance.js';

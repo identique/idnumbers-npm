@@ -3,8 +3,8 @@
  * Numri i Identitetit / Numri i Identitetit të Shtetasit
  */
 
-import { ParsedInfo } from '../../types';
-import { isValidDate, calculateAge } from '../../utils';
+import { ParsedInfo } from '../../types.js';
+import { isValidDate, calculateAge } from '../../utils.js';
 
 export interface AlbaniaParseResult extends ParsedInfo {
   birthDate: Date;

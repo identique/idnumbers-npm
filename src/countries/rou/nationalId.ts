@@ -1,5 +1,5 @@
-import { CheckDigit, Gender, Citizenship } from '../../constants';
-import { IdMetadata, IdNumberClass } from '../../types';
+import { CheckDigit, Gender, Citizenship } from '../../constants.js';
+import { IdMetadata, IdNumberClass } from '../../types.js';
 
 /**
  * Parse result of Romanian national ID

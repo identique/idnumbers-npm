@@ -1,4 +1,4 @@
-export { ValidatorRegistry, registry } from './ValidatorRegistry';
-export { adaptMetadata, createValidator } from './adapters';
-export type { CountryModule, AnyMetadata, FunctionBasedMetadata } from './adapters';
-export type { CountryValidator, ValidatorKey, IdFormat, IValidatorRegistry } from './types';
+export { ValidatorRegistry, registry } from './ValidatorRegistry.js';
+export { adaptMetadata, createValidator } from './adapters.js';
+export type { CountryModule, AnyMetadata, FunctionBasedMetadata } from './adapters.js';
+export type { CountryValidator, ValidatorKey, IdFormat, IValidatorRegistry } from './types.js';

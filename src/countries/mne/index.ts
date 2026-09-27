@@ -1,1 +1,1 @@
-export * from './jmbg';
+export * from './jmbg.js';

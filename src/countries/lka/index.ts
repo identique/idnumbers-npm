@@ -7,9 +7,9 @@
  * https://drp.gov.lk/Templates/Artical%20-%20English%20new%20number.html
  */
 
-import { IdMetadata, ParsedInfo, Gender } from '../../types';
-import { weightedModulusDigit, modulusOverflowMod10 } from '../../utils';
-import { CheckDigit, Citizenship } from '../../constants';
+import { IdMetadata, ParsedInfo, Gender } from '../../types.js';
+import { weightedModulusDigit, modulusOverflowMod10 } from '../../utils.js';
+import { CheckDigit, Citizenship } from '../../constants.js';
 
 export interface SriLankaParseResult extends ParsedInfo {
   birthDate: Date;

@@ -5,14 +5,17 @@ This directory contains comprehensive examples demonstrating various use cases o
 ## Available Examples
 
 ### 1. Basic Validation (`basic-validation.js`)
+
 Demonstrates basic validation of national ID numbers from various countries.
 
 **Run:**
+
 ```bash
 node docs/examples/basic-validation.js
 ```
 
 **Topics Covered:**
+
 - Validating IDs from 10+ countries
 - Handling valid and invalid IDs
 - Understanding error messages
@@ -21,14 +24,17 @@ node docs/examples/basic-validation.js
 ---
 
 ### 2. Parsing Information (`parsing-information.js`)
+
 Shows how to extract information (birth date, gender, citizenship, etc.) from ID numbers.
 
 **Run:**
+
 ```bash
 node docs/examples/parsing-information.js
 ```
 
 **Topics Covered:**
+
 - Extracting birth dates
 - Determining gender from IDs
 - Getting citizenship information
@@ -38,14 +44,17 @@ node docs/examples/parsing-information.js
 ---
 
 ### 3. Batch Validation (`batch-validation.js`)
+
 Demonstrates how to validate multiple ID numbers efficiently.
 
 **Run:**
+
 ```bash
 node docs/examples/batch-validation.js
 ```
 
 **Topics Covered:**
+
 - Validating multiple IDs from different countries
 - Handling mixed valid/invalid results
 - User registration validation
@@ -55,14 +64,17 @@ node docs/examples/batch-validation.js
 ---
 
 ### 4. TypeScript Usage (`typescript-usage.ts`)
+
 Shows TypeScript-specific features and type safety.
 
 **Run:**
+
 ```bash
-npx ts-node docs/examples/typescript-usage.ts
+npx tsx docs/examples/typescript-usage.ts
 ```
 
 **Topics Covered:**
+
 - Type-safe validation with ValidationResult
 - Working with typed parsing results
 - Custom type guards
@@ -72,14 +84,17 @@ npx ts-node docs/examples/typescript-usage.ts
 ---
 
 ### 5. Real-World Integration (`real-world-integration.js`)
+
 Demonstrates real-world use cases and integration patterns.
 
 **Run:**
+
 ```bash
 node docs/examples/real-world-integration.js
 ```
 
 **Topics Covered:**
+
 - Form validation
 - User registration systems
 - API endpoint handlers
@@ -94,18 +109,21 @@ node docs/examples/real-world-integration.js
 To run any example:
 
 1. Build the project first:
+
 ```bash
 npm run build
 ```
 
 2. Run the example:
+
 ```bash
 node docs/examples/[example-file].js
 ```
 
 For TypeScript examples:
+
 ```bash
-npx ts-node docs/examples/[example-file].ts
+npx tsx docs/examples/[example-file].ts
 ```
 
 ---
@@ -113,6 +131,7 @@ npx ts-node docs/examples/[example-file].ts
 ## Example Output
 
 ### Basic Validation Example
+
 ```
 === Basic Validation Examples ===
 
@@ -127,6 +146,7 @@ npx ts-node docs/examples/[example-file].ts
 ```
 
 ### Parsing Information Example
+
 ```
 === Parsing Information Examples ===
 
@@ -143,15 +163,19 @@ npx ts-node docs/examples/[example-file].ts
 ## Common Use Cases
 
 ### Form Validation
+
 See `real-world-integration.js` for a complete form validation example with error handling.
 
 ### Batch Processing
+
 See `batch-validation.js` for examples of validating multiple IDs and generating reports.
 
 ### API Integration
+
 See `real-world-integration.js` for API endpoint examples and request/response handling.
 
 ### Database Integration
+
 See `real-world-integration.js` for examples of validating IDs before database operations.
 
 ---

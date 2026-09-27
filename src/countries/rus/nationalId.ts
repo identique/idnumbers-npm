@@ -1,4 +1,4 @@
-import { IdMetadata, IdNumberClass } from '../../types';
+import { IdMetadata, IdNumberClass } from '../../types.js';
 
 /**
  * Parse result of Russian passport

@@ -1,4 +1,4 @@
-import { IdMetadata, ParsedInfo } from '../types';
+import { IdMetadata, ParsedInfo } from '../types.js';
 
 /**
  * Interface that all country validators must implement.

@@ -3,7 +3,7 @@
  * https://www.bfs.admin.ch/bfs/en/home/registers/enterprise-register/enterprise-identification/uid-general.html
  */
 
-import { validateRegexp } from '../../utils';
+import { validateRegexp } from '../../utils.js';
 
 const REGEXP = /^CHE-?\d{3}\.?\d{3}\.?\d{3}$/;
 

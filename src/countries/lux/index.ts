@@ -2,9 +2,9 @@
  * Luxembourg National ID Number
  */
 
-import { IdMetadata, ParsedInfo } from '../../types';
-import { validateRegexp, luhnDigit, verhoeffCheck, isValidDate } from '../../utils';
-import { CheckDigit } from '../../constants';
+import { IdMetadata, ParsedInfo } from '../../types.js';
+import { validateRegexp, luhnDigit, verhoeffCheck, isValidDate } from '../../utils.js';
+import { CheckDigit } from '../../constants.js';
 
 export interface LuxembourgParseResult extends ParsedInfo {
   birthDate: Date;

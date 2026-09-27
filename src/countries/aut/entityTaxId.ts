@@ -5,7 +5,7 @@
  * https://www.bmf.gv.at/dam/jcr:9f9f8d5f-5496-4886-aa4f-81a4e39ba83e/BMF_UID_Konstruktionsregeln.pdf
  */
 
-import { validateRegexp, normalize } from '../../utils';
+import { validateRegexp, normalize } from '../../utils.js';
 
 // Austrian UIDs always start with 'U'. The Python source uses a permissive [A-Z] regex
 // with an open question comment, but the official UID spec mandates the 'U' prefix.

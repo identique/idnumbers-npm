@@ -1,5 +1,5 @@
-import { CheckDigit } from '../../constants';
-import { IdMetadata, IdNumberClass } from '../../types';
+import { CheckDigit } from '../../constants.js';
+import { IdMetadata, IdNumberClass } from '../../types.js';
 
 /**
  * Turkish National Identification Number (TC Kimlik No) - 11 digits

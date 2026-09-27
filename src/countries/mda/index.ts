@@ -1,1 +1,1 @@
-export * from './personalCode';
+export * from './personalCode.js';

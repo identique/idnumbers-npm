@@ -2,8 +2,8 @@
  * Switzerland Social Security Number (AHV-Nr. / No AVS)
  */
 
-import { ParsedInfo } from '../../types';
-import { ean13Digit } from '../../utils';
+import { ParsedInfo } from '../../types.js';
+import { ean13Digit } from '../../utils.js';
 
 export interface SwitzerlandParseResult extends ParsedInfo {
   // Social Security Number doesn't contain parsable information beyond validation
@@ -85,4 +85,4 @@ export const SocialSecurityNumber = {
   METADATA,
 };
 
-export { BusinessID } from './businessId';
+export { BusinessID } from './businessId.js';

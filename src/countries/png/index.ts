@@ -1,1 +1,1 @@
-export { NationalID, NationalIdParseResult } from './nationalId';
+export { NationalID, NationalIdParseResult } from './nationalId.js';

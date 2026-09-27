@@ -1,6 +1,6 @@
-import { CheckDigit } from '../../constants';
-import { IdMetadata, IdNumberClass } from '../../types';
-import { validateRegexp, normalize } from '../../utils';
+import { CheckDigit } from '../../constants.js';
+import { IdMetadata, IdNumberClass } from '../../types.js';
+import { validateRegexp, normalize } from '../../utils.js';
 
 /**
  * Australia Medicare number format

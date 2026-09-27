@@ -13,8 +13,8 @@
  * https://en.wikipedia.org/wiki/Personal_identification_number_(Denmark)
  */
 
-import { ParsedInfo } from '../../types';
-import { isValidDate, calculateAge } from '../../utils';
+import { ParsedInfo } from '../../types.js';
+import { isValidDate, calculateAge } from '../../utils.js';
 
 export interface DenmarkParseResult extends ParsedInfo {
   birthDate: Date;

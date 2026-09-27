@@ -1,1 +1,1 @@
-export { BurgerServiceNumber } from './bsn';
+export { BurgerServiceNumber } from './bsn.js';

@@ -1,5 +1,5 @@
-import { CheckDigit } from '../../constants';
-import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types';
+import { CheckDigit } from '../../constants.js';
+import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
 
 /**
  * Parse result of Nigeria National Identification Number (NIN).

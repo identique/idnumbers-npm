@@ -3,8 +3,8 @@
  * (National identity card number for Costa Rican citizens)
  */
 
-import { IdNumberClass, IdMetadata } from '../../types';
-import { normalize } from '../../utils';
+import { IdNumberClass, IdMetadata } from '../../types.js';
+import { normalize } from '../../utils.js';
 
 export interface CedulaParseResult {
   /** Province digit (1-9); see PROVINCE_NAMES for what each value represents */

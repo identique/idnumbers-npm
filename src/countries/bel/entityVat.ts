@@ -4,7 +4,7 @@
  * https://docs.oracle.com/en/cloud/saas/financials/22d/faitx/belgium.html#s20077698
  */
 
-import { validateRegexp } from '../../utils';
+import { validateRegexp } from '../../utils.js';
 
 const REGEXP = /^\d{9,10}$/;
 

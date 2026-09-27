@@ -1,5 +1,5 @@
-import { IdMetadata, ParsedInfo } from '../types';
-import { CountryValidator } from './types';
+import { IdMetadata, ParsedInfo } from '../types.js';
+import { CountryValidator } from './types.js';
 
 /**
  * METADATA shape used by function-based country modules.

@@ -101,4 +101,4 @@ export const TaxIdentificationNumber = {
   METADATA,
 };
 
-export { EntityTaxIDNumber } from './entityTaxId';
+export { EntityTaxIDNumber } from './entityTaxId.js';

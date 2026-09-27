@@ -3,9 +3,9 @@
  * Documento Personal de Identificación / Código Único de Identificación
  */
 
-import { IdMetadata, IdNumberClass } from '../../types';
-import { validateRegexp, weightedModulusDigit } from '../../utils';
-import { isValidDepartmentMunicipality } from './util';
+import { IdMetadata, IdNumberClass } from '../../types.js';
+import { validateRegexp, weightedModulusDigit } from '../../utils.js';
+import { isValidDepartmentMunicipality } from './util.js';
 
 export interface DPIParseResult {
   correlative: string;

@@ -3,9 +3,9 @@
  * ΑΦΜ - Αριθμός Φορολογικού Μητρώου - Tax Registry Number
  */
 
-import { ParsedInfo } from '../../types';
-import { validateRegexp, weightedModulusDigit, modulusOverflowMod10 } from '../../utils';
-import { CheckDigit } from '../../constants';
+import { ParsedInfo } from '../../types.js';
+import { validateRegexp, weightedModulusDigit, modulusOverflowMod10 } from '../../utils.js';
+import { CheckDigit } from '../../constants.js';
 
 export interface GreeceParseResult extends ParsedInfo {
   // Tax Identity Number doesn't contain parsable information beyond validation

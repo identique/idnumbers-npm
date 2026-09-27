@@ -14,8 +14,8 @@
     "lint:fix": "eslint \"src/**/*.ts\" --fix",
     "format": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
-    "example": "npm run build && node -r ts-node/register examples/basic-usage.ts",
-    "example:extended": "npm run build && node -r ts-node/register examples/basic-usage-extended.ts",
+    "example": "npm run build && tsx examples/basic-usage.ts",
+    "example:extended": "npm run build && tsx examples/basic-usage-extended.ts",
     "clean": "rm -rf dist",
     "prepublishOnly": "npm run clean && npm run build && npm test",
     "release:patch": "npm version patch && npm publish",
@@ -85,7 +85,7 @@
     "lint-staged": "^16.2.6",
     "prettier": "^3.0.3",
     "ts-jest": "^29.1.1",
-    "ts-node": "^10.9.1",
+    "tsx": "^4.23.15",
     "typescript": "^5.2.2"
   },
   "files": [

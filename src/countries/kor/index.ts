@@ -3,8 +3,8 @@
  * 주민등록번호 (Jumin Deungnok Beonho)
  */
 
-import { ParsedInfo } from '../../types';
-import { validateRegexp, isValidDate, calculateAge } from '../../utils';
+import { ParsedInfo } from '../../types.js';
+import { validateRegexp, isValidDate, calculateAge } from '../../utils.js';
 
 export interface KoreaParseResult extends ParsedInfo {
   birthDate: Date;
@@ -138,4 +138,4 @@ export const ResidentRegistration = {
   METADATA,
 };
 
-export { OldResidentRegistration } from './oldResidentRegistration';
+export { OldResidentRegistration } from './oldResidentRegistration.js';

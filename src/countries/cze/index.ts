@@ -4,8 +4,8 @@
  * https://en.wikipedia.org/wiki/National_identification_number#Czech_Republic_and_Slovakia
  */
 
-import { ParsedInfo } from '../../types';
-import { isValidDate, calculateAge } from '../../utils';
+import { ParsedInfo } from '../../types.js';
+import { isValidDate, calculateAge } from '../../utils.js';
 
 export interface CzechParseResult extends ParsedInfo {
   birthDate: Date;

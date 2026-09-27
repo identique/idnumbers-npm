@@ -1,4 +1,4 @@
-import { TaxNumber } from './tax-number';
+import { TaxNumber } from './tax-number.js';
 
 export { TaxNumber };
 export const NationalID = TaxNumber; // Alias

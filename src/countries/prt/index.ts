@@ -1,1 +1,1 @@
-export { NIF as NationalID } from './nif';
+export { NIF as NationalID } from './nif.js';

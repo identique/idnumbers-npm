@@ -1,5 +1,5 @@
-import { CheckDigit, Citizenship } from '../../constants';
-import { IdMetadata, IdNumberClass } from '../../types';
+import { CheckDigit, Citizenship } from '../../constants.js';
+import { IdMetadata, IdNumberClass } from '../../types.js';
 
 /**
  * Parse result of Singapore NRIC/FIN

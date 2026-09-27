@@ -1,4 +1,4 @@
-import { IdMetadata, IdNumberClass } from '../../types';
+import { IdMetadata, IdNumberClass } from '../../types.js';
 
 /**
  * Serbian JMBG (Unique Master Citizen Number)

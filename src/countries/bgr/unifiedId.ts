@@ -4,8 +4,8 @@
  * https://bg.wikipedia.org/wiki/Единен_идентификационен_код
  */
 
-import { validateRegexp, weightedModulusDigit } from '../../utils';
-import { CheckDigit } from '../../constants';
+import { validateRegexp, weightedModulusDigit } from '../../utils.js';
+import { CheckDigit } from '../../constants.js';
 
 const REGEXP = /^(\d{9}|\d{13})$/;
 

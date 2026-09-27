@@ -1,1 +1,1 @@
-export { DPI } from './dpi';
+export { DPI } from './dpi.js';

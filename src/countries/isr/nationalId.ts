@@ -1,5 +1,5 @@
-import { IdMetadata, IdNumberClass } from '../../types';
-import { validateRegexp, luhnDigit } from '../../utils';
+import { IdMetadata, IdNumberClass } from '../../types.js';
+import { validateRegexp, luhnDigit } from '../../utils.js';
 
 /**
  * Israel Identity Number (מספר זהות, Mispar Zehut)

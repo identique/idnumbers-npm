@@ -1,3 +1,3 @@
-export { MedicareNumber } from './medicare';
-export { TaxFileNumber } from './taxFile';
-export { DriverLicenseNumber } from './driverLicense';
+export { MedicareNumber } from './medicare.js';
+export { TaxFileNumber } from './taxFile.js';
+export { DriverLicenseNumber } from './driverLicense.js';

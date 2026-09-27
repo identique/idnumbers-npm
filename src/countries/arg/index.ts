@@ -3,8 +3,8 @@
  * Documento Nacional de Identidad
  */
 
-import { ParsedInfo } from '../../types';
-import { validateRegexp } from '../../utils';
+import { ParsedInfo } from '../../types.js';
+import { validateRegexp } from '../../utils.js';
 
 export interface ArgentinaParseResult extends ParsedInfo {
   // No specific parsing for Argentina DNI - just validation

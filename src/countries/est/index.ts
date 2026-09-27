@@ -2,9 +2,9 @@
  * Estonia Personal ID Number (isikukood)
  */
 
-import { ParsedInfo } from '../../types';
-import { validateRegexp, weightedModulusDigit, isValidDate, calculateAge } from '../../utils';
-import { CheckDigit } from '../../constants';
+import { ParsedInfo } from '../../types.js';
+import { validateRegexp, weightedModulusDigit, isValidDate, calculateAge } from '../../utils.js';
+import { CheckDigit } from '../../constants.js';
 
 export interface EstoniaParseResult extends ParsedInfo {
   birthDate: Date;

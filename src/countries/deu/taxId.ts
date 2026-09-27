@@ -1,6 +1,6 @@
-import { CheckDigit } from '../../constants';
-import { IdMetadata, IdNumberClass } from '../../types';
-import { validateRegexp, mnModulusDigit, modulusOverflowMod10 } from '../../utils';
+import { CheckDigit } from '../../constants.js';
+import { IdMetadata, IdNumberClass } from '../../types.js';
+import { validateRegexp, mnModulusDigit, modulusOverflowMod10 } from '../../utils.js';
 
 /**
  * Germany Tax Identification Number (Steuerliche Identifikationsnummer) format
