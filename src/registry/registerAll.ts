@@ -11,7 +11,7 @@ import { createCompositeValidator } from './composite.js';
 import { CountryValidator } from './types.js';
 
 // ---------------------------------------------------------------------------
-// Class-based imports (IdMetadata shape: parsable, checksum, regexp)
+// Class-based imports (classes with static METADATA/validate/parse; all modules share IdMetadata)
 // ---------------------------------------------------------------------------
 import { SocialSecurityNumber } from '../countries/usa/index.js';
 import { MedicareNumber } from '../countries/aus/index.js';
@@ -95,7 +95,7 @@ import { DPI } from '../countries/gtm/index.js';
 // VEN: FiscalInformationNumber (RIF)
 
 // ---------------------------------------------------------------------------
-// Function-based imports (convenience objects with METADATA, validate, parse)
+// Function-based imports (plain objects bundling module-level METADATA, validate, parse)
 // ---------------------------------------------------------------------------
 import { IdentityNumber } from '../countries/alb/index.js';
 import { TaxIdentificationNumber as AutTaxId } from '../countries/aut/index.js';

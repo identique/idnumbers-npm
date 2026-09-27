@@ -28,7 +28,6 @@ import {
   IdMetadata,
   HUN,
   ITA,
-  FunctionBasedMetadata,
   listSupportedCountries,
   validateNationalId,
   getCountryIdFormat,
@@ -48,8 +47,6 @@ export const hunChecksum = HUN.METADATA.checksum;
 export const itaRegexp = ITA.METADATA.regexp;
 export const itaParsable = ITA.METADATA.parsable;
 export const itaChecksum = ITA.METADATA.checksum;
-
-export type UsesFunctionBasedMetadata = FunctionBasedMetadata;
 
 export const listFn = listSupportedCountries;
 export const vr = validateNationalId('HUN', '000000000000');
@@ -151,11 +148,6 @@ describe('issue #119: deprecated symbols surface IDE deprecation diagnostics', (
 
   it('flags IdMetadata.aliasOf as deprecated when read', () => {
     const pos = offsetOf('someIdMetadata.aliasOf', 'aliasOf');
-    expect(isDeprecatedAt(diagnostics, pos)).toBe(true);
-  });
-
-  it('flags FunctionBasedMetadata as deprecated when referenced as a type', () => {
-    const pos = offsetOf('= FunctionBasedMetadata;', 'FunctionBasedMetadata');
     expect(isDeprecatedAt(diagnostics, pos)).toBe(true);
   });
 
