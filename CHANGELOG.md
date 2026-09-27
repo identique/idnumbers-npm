@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Optional machine-readable `reason` field on `ValidationResult`, populated whenever `isValid` is `false`, plus the exported `ValidationFailureReason` enum (`unsupported_country`, `invalid_length`, `invalid_format`, `checksum_mismatch`, `validation_failed`); derivation is best-effort and the enum is non-exhaustive — future releases may add more specific codes ([#117](https://github.com/identique/idnumbers-npm/issues/117))
 - Optional `countryName`/`idType` fields on `IdMetadata`, populated on the registered METADATA for all 85 registered countries, making each country's own METADATA the single source of truth for its name and ID type ([#118](https://github.com/identique/idnumbers-npm/issues/118))
 - `MIGRATION.md` skeleton documenting every planned v2.0.0 breaking change and how to prepare for it today ([#119](https://github.com/identique/idnumbers-npm/issues/119))
+- ISO 3166-1 alpha-2 aliases `US`, `AU`, `ZA`, `GB`, `CA`, `AL`, `AR`, `CL`, so all 85 registered countries now accept their alpha-2 code. Previously these 8 returned `unsupported_country`. `UK` remains an alias for GBR ([#174](https://github.com/identique/idnumbers-npm/issues/174))
 
 ### Changed
 
@@ -29,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `getCountryIdFormat('SMR')` now reports the full accepted length range 7–9, covering both the 9-digit SSI and the 7-character COE `SM#####`, and the registry metadata for SMR and LKA now describes every format their validators accept ([#117](https://github.com/identique/idnumbers-npm/issues/117))
 - Hungary (HUN) METADATA now declares the 11-digit personal ID length (was 9), so `getCountryIdFormat('HUN').length` reports 11–11, matching the Python source of truth ([#170](https://github.com/identique/idnumbers-npm/issues/170))
+- `iso3166Alpha2` metadata for Bosnia and Herzegovina (was `'YU'`, inherited from the Yugoslavia base because of a misspelled override; now `'BA'`) and Indonesia (was the alpha-3 `'IDN'`; now `'ID'`) ([#174](https://github.com/identique/idnumbers-npm/issues/174))
 
 ## [1.10.0] - 2026-07-27
 
