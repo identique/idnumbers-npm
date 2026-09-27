@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.0] - 2026-09-27
+
 ### Added
 
 - Optional machine-readable `reason` field on `ValidationResult`, populated whenever `isValid` is `false`, plus the exported `ValidationFailureReason` enum (`unsupported_country`, `invalid_length`, `invalid_format`, `checksum_mismatch`, `validation_failed`); derivation is best-effort and the enum is non-exhaustive — future releases may add more specific codes ([#117](https://github.com/identique/idnumbers-npm/issues/117))
@@ -208,7 +210,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Full TypeScript support with type definitions
 - Comprehensive documentation and examples
 
-[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v1.10.0...HEAD
+[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v1.11.0...HEAD
+[1.11.0]: https://github.com/identique/idnumbers-npm/compare/v1.10.0...v1.11.0
 [1.10.0]: https://github.com/identique/idnumbers-npm/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/identique/idnumbers-npm/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/identique/idnumbers-npm/compare/v1.7.0...v1.8.0
