@@ -25,15 +25,17 @@ A future v2.0.0 release will ship breaking changes ([epic #127](https://github.c
 - Typed `parseIdInfo()` results instead of `any | null`.
 - Removal of APIs already marked `@deprecated` today, such as `SUPPORTED_COUNTRIES` and `IMetadata`.
 
-One breaking change has already landed ahead of the rest: the package now ships a dual ESM/CJS
-build behind a proper `exports` map with a **Node.js >= 22 baseline** (CI runs 22.x/24.x) —
-see [Requirements](#installation) below and [#120](https://github.com/identique/idnumbers-npm/issues/120).
+One breaking change has already landed ahead of the rest: a dual ESM/CJS build behind a proper
+`exports` map with a **Node.js >= 22 baseline** (CI runs 22.x/24.x) is implemented on `main` and
+ships in v2.0.0 — see [Requirements](#installation) below and
+[#120](https://github.com/identique/idnumbers-npm/issues/120).
 
 See [MIGRATION.md](./MIGRATION.md) for the full breakdown and how to prepare today.
 
 ## Installation
 
-**Requirements:** Node.js >= 22.
+**Requirements:** Node.js >= 22 from v2.0.0 (in development on `main`); the current 1.x releases
+support Node.js >= 16.
 
 ```bash
 npm install idnumbers
@@ -47,8 +49,8 @@ yarn add idnumbers
 pnpm add idnumbers
 ```
 
-The package ships both an ESM and a CommonJS build behind a `package.json` `exports` map, so
-either form works without any extra configuration:
+From v2.0.0, the package ships both an ESM and a CommonJS build behind a `package.json` `exports`
+map, so either form works without any extra configuration:
 
 ```typescript
 // ESM
@@ -60,9 +62,9 @@ import { validateNationalId } from 'idnumbers';
 const { validateNationalId } = require('idnumbers');
 ```
 
-Only the documented entry points (`idnumbers` and `idnumbers/package.json`) are public — deep
-imports such as `idnumbers/dist/...` are not part of the API and will not resolve. Avoid mixing
-`require('idnumbers')` and `import 'idnumbers'` for the same package within one process: Node
+From v2.0.0, only the documented entry points (`idnumbers` and `idnumbers/package.json`) are
+public — deep imports such as `idnumbers/dist/...` are not part of the API and will not resolve.
+Avoid mixing `require('idnumbers')` and `import 'idnumbers'` for the same package within one process: Node
 treats them as two separate module instances with two separate registries (the "dual-package
 hazard"), so pick one style per process.
 

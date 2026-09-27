@@ -12,7 +12,7 @@ Install the following tools before setting up the repository:
 - Node.js 22 or newer
 - npm, which is included with Node.js
 
-The published package requires Node.js 22 or newer (`engines.node` in `package.json`; CI tests 22.x and 24.x). Development requires the same Node.js 22+ baseline.
+Developing on `main` requires Node.js 22 or newer (`engines.node` in `package.json`; CI tests 22.x and 24.x). v2.0.0 and later require Node.js 22 or newer; the 1.x releases support Node.js 16 and newer.
 
 ### Fork and Clone
 
