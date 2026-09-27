@@ -26,7 +26,7 @@ a proper `package.json` `exports` map, targets ES2022+, and raises the baseline 
 
 Concretely:
 
-- The `exports` map exposes exactly two entry points: `.` (the package root, `import { validateNationalId } from 'idnumbers'` / `const { validateNationalId } = require('idnumbers')`) and `./package.json`. Every other subpath, including deep imports of compiled output like `idnumbers/dist/countries/twn`, throws `ERR_PACKAGE_PATH_NOT_EXPORTED` instead of silently resolving. Use the root import today, or the per-country subpaths once #122 lands.
+- The `exports` map exposes exactly four entry points: `.` (the package root, `import { validateNationalId } from 'idnumbers'` / `const { validateNationalId } = require('idnumbers')`), `./core` and `./countries/<iso3>` (the tree-shakeable entry points, see [New entry points (#122)](#new-entry-points-122)), and `./package.json`. Every other subpath, including deep imports of compiled output like `idnumbers/dist/countries/twn`, throws `ERR_PACKAGE_PATH_NOT_EXPORTED` instead of silently resolving. Use the root import, or `idnumbers/countries/twn` for one country.
 - `engines.node` is `>=22`, matching the Node.js versions CI actually tests (22.x and 24.x).
 - The `import` condition resolves to the ESM build (`dist/esm/`, compiled with `module: es2022`) with its own `.d.ts` declarations; the `require` condition resolves to the CJS build (`dist/cjs/`) with its own `.d.ts` declarations — each condition gets type declarations matched to its own module format.
 - Both builds target ES2022 output. Neither ships source maps or declaration maps — the previous maps pointed at `src/` files that were never published, so they were never actually usable by consumers.

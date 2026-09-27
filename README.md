@@ -62,8 +62,10 @@ import { validateNationalId } from 'idnumbers';
 const { validateNationalId } = require('idnumbers');
 ```
 
-From v2.0.0, only the documented entry points (`idnumbers` and `idnumbers/package.json`) are
-public — deep imports such as `idnumbers/dist/...` are not part of the API and will not resolve.
+From v2.0.0, only the documented entry points are public — `idnumbers`, `idnumbers/core`,
+`idnumbers/countries/<iso3>` (see [Tree-shakeable imports](#tree-shakeable-imports-v200)), and
+`idnumbers/package.json`. Deep imports such as `idnumbers/dist/...` are not part of the API and will
+not resolve.
 Avoid mixing `require('idnumbers')` and `import 'idnumbers'` for the same package within one process: Node
 treats them as two separate module instances with two separate registries (the "dual-package
 hazard"), so pick one style per process.
@@ -590,7 +592,7 @@ if (!validation.valid) {
 
 ## Testing
 
-The library includes comprehensive test coverage with 3076 tests covering:
+The library includes comprehensive test coverage with 3080 tests covering:
 
 - Format validation
 - Checksum verification
