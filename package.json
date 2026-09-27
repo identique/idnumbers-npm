@@ -26,10 +26,12 @@
     "test:coverage": "jest --coverage",
     "lint": "eslint \"src/**/*.ts\"",
     "lint:fix": "eslint \"src/**/*.ts\" --fix",
+    "lint:package": "publint && attw --pack .",
     "format": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
     "example": "npm run build && tsx examples/basic-usage.ts",
     "example:extended": "npm run build && tsx examples/basic-usage-extended.ts",
+    "test:pack": "node scripts/smoke-pack.mjs",
     "clean": "rm -rf dist",
     "prepublishOnly": "npm run build && npm test",
     "release:patch": "npm version patch && npm publish",
@@ -89,6 +91,7 @@
   },
   "homepage": "https://github.com/identique/idnumbers-npm#readme",
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
     "@types/jest": "^29.5.5",
     "@types/node": "^22.20.4",
     "@typescript-eslint/eslint-plugin": "^6.7.0",
@@ -98,6 +101,7 @@
     "jest": "^29.7.0",
     "lint-staged": "^16.2.6",
     "prettier": "^3.0.3",
+    "publint": "^0.3.24",
     "ts-jest": "^29.1.1",
     "tsx": "^4.23.15",
     "typescript": "^5.2.2"
