@@ -13,8 +13,9 @@
 // Run after both builds complete (wired into the "build" script).
 import { existsSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const DIST_DIR = new URL('../dist/', import.meta.url).pathname;
+const DIST_DIR = fileURLToPath(new URL('../dist/', import.meta.url));
 
 /** Writes `{ "type": <type> }` to `<dir>/package.json`, failing loudly if `dir` is missing. */
 function writeMarker(dirName, type) {
