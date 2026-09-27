@@ -299,10 +299,11 @@ describe('Hungary (HUN) - Personal ID Number', () => {
     });
 
     test('should expose METADATA with correct properties', () => {
-      expect(PersonalID.METADATA.name).toBe('Hungary Personal ID Number');
+      expect(PersonalID.METADATA.countryName).toBe('Hungary');
+      expect(PersonalID.METADATA.idType).toBe('Personal ID Number');
       expect(PersonalID.METADATA.iso3166Alpha2).toBe('HU');
-      expect(PersonalID.METADATA.hasChecksum).toBe(true);
-      expect(PersonalID.METADATA.isParsable).toBe(true);
+      expect(PersonalID.METADATA.checksum).toBe(true);
+      expect(PersonalID.METADATA.parsable).toBe(true);
     });
 
     test('should handle null/undefined inputs via validate', () => {

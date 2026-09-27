@@ -3,7 +3,7 @@
  * رقم الهوية
  */
 
-import { ParsedInfo } from '../../types.js';
+import { IdMetadata, ParsedInfo } from '../../types.js';
 import { luhnDigit } from '../../utils.js';
 
 export interface EmiratesParseResult extends ParsedInfo {
@@ -13,25 +13,23 @@ export interface EmiratesParseResult extends ParsedInfo {
 }
 
 export const METADATA = {
-  name: 'Emirates ID',
   names: ['Emirates ID', 'Resident ID', 'رقم الهوية'],
   iso3166Alpha2: 'AE',
   countryName: 'United Arab Emirates',
   idType: 'Emirates ID',
   minLength: 15,
   maxLength: 15,
-  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
-  pattern: /^784[-]?(?<yyyy>\d{4})[-]?(?<sn>\d{7})[-]?(?<checksum>\d)$/,
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: true,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: true,
+  regexp: /^784[-]?(?<yyyy>\d{4})[-]?(?<sn>\d{7})[-]?(?<checksum>\d)$/,
+  checksum: true,
+  parsable: true,
   displayFormat: '784-YYYY-NNNNNNN-C',
   example: '784198012345678',
   checksumAlgorithm: 'Luhn (mod 10)',
   officialName: 'رقم الهوية (Emirates ID)',
+  aliasOf: null,
+  deprecated: false,
   links: ['https://en.wikipedia.org/wiki/National_identification_number#United_Arab_Emirates'],
-};
+} satisfies IdMetadata;
 
 /**
  * Normalize Emirates ID by removing spaces and dashes
@@ -68,7 +66,7 @@ export function validate(idNumber: string): boolean {
  * Parse UAE Emirates ID Number
  */
 export function parse(idNumber: string): EmiratesParseResult | null {
-  const match = METADATA.pattern.exec(idNumber.trim());
+  const match = METADATA.regexp.exec(idNumber.trim());
   if (!match || !match.groups) {
     return null;
   }

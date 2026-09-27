@@ -21,7 +21,7 @@
  * https://en.wikipedia.org/wiki/Egyptian_National_Identity_Card
  */
 
-import { ParsedInfo } from '../../types.js';
+import { IdMetadata, ParsedInfo } from '../../types.js';
 import { isValidDate, calculateAge } from '../../utils.js';
 import { Gender } from '../../constants.js';
 
@@ -79,30 +79,28 @@ function isGovernorateCode(code: string): code is GovernorateCode {
 }
 
 export const METADATA = {
-  name: 'Egypt National ID',
   names: ['National ID', 'الرقم القومي', 'National Number'],
   iso3166Alpha2: 'EG',
   countryName: 'Egypt',
   idType: 'National ID',
   minLength: 14,
   maxLength: 14,
-  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
-  pattern:
+  regexp:
     /^(?<century>[23])(?<yy>\d{2})(?<mm>0[1-9]|1[012])(?<dd>0[1-9]|[12]\d|3[01])(?<gov>\d{2})(?<sn>\d{4})(?<check>\d)$/,
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: false,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: true,
+  checksum: false,
+  parsable: true,
   displayFormat: 'CYYMMDDGGSSSSV',
   example: '29001010100017',
   checksumAlgorithm:
     'None (check digit algorithm not publicly documented; format + semantic validation, no check-digit validation). See docs/research/egypt-national-id.md.',
   officialName: 'الرقم القومي (National Number)',
+  aliasOf: null,
+  deprecated: false,
   links: [
     'https://en.wikipedia.org/wiki/Egyptian_National_Identity_Card',
     'https://en.wikipedia.org/wiki/National_identification_number#Egypt',
   ],
-};
+} satisfies IdMetadata;
 
 /**
  * Trim the input. Non-string input is rejected rather than coerced, so a numeric
@@ -154,7 +152,7 @@ export function validate(idNumber: string): boolean {
     return false;
   }
 
-  const match = METADATA.pattern.exec(normalized);
+  const match = METADATA.regexp.exec(normalized);
   if (!match || !match.groups) {
     return false;
   }
@@ -190,7 +188,7 @@ export function parse(idNumber: string): EgyptParseResult | null {
     return null;
   }
 
-  const match = METADATA.pattern.exec(normalized);
+  const match = METADATA.regexp.exec(normalized);
   if (!match || !match.groups) {
     return null;
   }

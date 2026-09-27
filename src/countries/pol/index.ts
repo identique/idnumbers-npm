@@ -4,7 +4,7 @@
  * Universal Electronic System for Registration of the Population
  */
 
-import { ParsedInfo } from '../../types.js';
+import { IdMetadata, ParsedInfo } from '../../types.js';
 import { isValidDate, calculateAge } from '../../utils.js';
 
 export interface PolandParseResult extends ParsedInfo {
@@ -16,7 +16,6 @@ export interface PolandParseResult extends ParsedInfo {
 }
 
 export const METADATA = {
-  name: 'Poland PESEL',
   names: [
     'PESEL',
     'Powszechny Elektroniczny System Ewidencji Ludności',
@@ -27,21 +26,20 @@ export const METADATA = {
   idType: 'PESEL',
   minLength: 11,
   maxLength: 11,
-  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
-  pattern: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})(?<sn>\d{4})(?<checksum>\d)$/,
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: true,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: true,
+  regexp: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})(?<sn>\d{4})(?<checksum>\d)$/,
+  checksum: true,
+  parsable: true,
   displayFormat: 'YYMMDDSSSSC',
   example: '80010100000',
   checksumAlgorithm: 'Weighted sum mod 10 (weights 1,3,7,9 repeating)',
   officialName: 'PESEL',
+  aliasOf: null,
+  deprecated: false,
   links: [
     'https://en.wikipedia.org/wiki/PESEL',
     'https://en.wikipedia.org/wiki/National_identification_number#Poland',
   ],
-};
+} satisfies IdMetadata;
 
 const MAGIC_NUMBERS = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3];
 
@@ -92,7 +90,7 @@ export function validate(idNumber: string): boolean {
  * Parse Poland PESEL
  */
 export function parse(idNumber: string): PolandParseResult | null {
-  const match = METADATA.pattern.exec(idNumber.trim());
+  const match = METADATA.regexp.exec(idNumber.trim());
   if (!match || !match.groups) {
     return null;
   }

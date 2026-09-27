@@ -1,5 +1,4 @@
 import { ValidatorRegistry, registry } from '../registry';
-import { adaptMetadata } from '../registry/adapters';
 import type { CountryValidator } from '../registry';
 import type { IdMetadata } from '../types';
 
@@ -395,20 +394,5 @@ describe('ValidatorRegistry', () => {
       const { registry: registry2 } = require('../registry');
       expect(registry2).toBe(registry);
     });
-  });
-});
-
-// ---------------------------------------------------------------------------
-// adaptMetadata() — displayFormat propagation through the function-based branch
-// ---------------------------------------------------------------------------
-describe('adaptMetadata()', () => {
-  it('propagates displayFormat from function-based metadata', () => {
-    const meta = adaptMetadata({ pattern: /^\d+$/, displayFormat: 'DDMMYYPPPPSSSS' });
-    expect(meta.displayFormat).toBe('DDMMYYPPPPSSSS');
-  });
-
-  it('leaves displayFormat undefined when function-based metadata omits it', () => {
-    const meta = adaptMetadata({ pattern: /^\d+$/ });
-    expect(meta.displayFormat).toBeUndefined();
   });
 });

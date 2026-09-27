@@ -3,7 +3,7 @@
  * Identiteitskaart / Carte d'identité / Personalausweis
  */
 
-import { ParsedInfo } from '../../types.js';
+import { IdMetadata, ParsedInfo } from '../../types.js';
 import { isValidDate, calculateAge } from '../../utils.js';
 import { Gender } from '../../constants.js';
 
@@ -16,7 +16,6 @@ export interface BelgiumParseResult extends ParsedInfo {
 }
 
 export const METADATA = {
-  name: 'Belgium National Registration Number',
   names: [
     'National registration number',
     'NN',
@@ -30,21 +29,20 @@ export const METADATA = {
   idType: 'National Registration Number',
   minLength: 11,
   maxLength: 11,
-  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
-  pattern: /^(?<yy>\d{2})\.?(?<mm>\d{2})\.?(?<dd>\d{2})-?(?<sn>\d{3})\.?(?<checksum>\d{2})$/,
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: true,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: true,
+  regexp: /^(?<yy>\d{2})\.?(?<mm>\d{2})\.?(?<dd>\d{2})-?(?<sn>\d{3})\.?(?<checksum>\d{2})$/,
+  checksum: true,
+  parsable: true,
   displayFormat: 'YY.MM.DD-SSS.CC',
   example: '85073003328',
   checksumAlgorithm: 'Mod-97 (97 - base mod 97; +2000000000 for births >= 2000)',
   officialName: 'Rijksregisternummer / Numéro de Registre National',
+  aliasOf: null,
+  deprecated: false,
   links: [
     'https://en.wikipedia.org/wiki/Belgian_identity_card',
     'https://www.checkdoc.be/CheckDoc/homepage.do',
   ],
-};
+} satisfies IdMetadata;
 
 /**
  * Normalize the ID number by removing separators
@@ -86,7 +84,7 @@ export function validate(idNumber: string): boolean {
     return false;
   }
 
-  const match = METADATA.pattern.test(idNumber.trim());
+  const match = METADATA.regexp.test(idNumber.trim());
   if (!match) {
     return false;
   }
@@ -98,7 +96,7 @@ export function validate(idNumber: string): boolean {
  * Parse Belgium National Registration Number
  */
 export function parse(idNumber: string): BelgiumParseResult | null {
-  const match = METADATA.pattern.exec(idNumber.trim());
+  const match = METADATA.regexp.exec(idNumber.trim());
   if (!match || !match.groups) {
     return null;
   }

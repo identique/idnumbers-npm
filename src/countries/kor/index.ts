@@ -3,7 +3,7 @@
  * 주민등록번호 (Jumin Deungnok Beonho)
  */
 
-import { ParsedInfo } from '../../types.js';
+import { IdMetadata, ParsedInfo } from '../../types.js';
 import { validateRegexp, isValidDate, calculateAge } from '../../utils.js';
 
 export interface KoreaParseResult extends ParsedInfo {
@@ -15,7 +15,6 @@ export interface KoreaParseResult extends ParsedInfo {
 }
 
 export const METADATA = {
-  name: 'South Korea Resident Registration Number',
   names: [
     'Resident Registration Number',
     '주민등록번호',
@@ -28,21 +27,20 @@ export const METADATA = {
   idType: 'Resident Registration Number',
   minLength: 13,
   maxLength: 14,
-  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
-  pattern: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})-(?<gender>\d)(?<sn>\d{6})$/,
+  regexp: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})-(?<gender>\d)(?<sn>\d{6})$/,
   displayFormat: 'YYMMDD-GSSSSSS',
   example: '800101-1234567',
   checksumAlgorithm: 'None (not validated; modern RRNs no longer carry a verifiable check digit)',
   officialName: '주민등록번호 (RRN)',
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: false,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: true,
+  checksum: false,
+  parsable: true,
+  aliasOf: null,
+  deprecated: false,
   links: [
     'https://en.wikipedia.org/wiki/Resident_registration_number',
     'https://centers.ibs.re.kr/html/living_en/overview/arc.html',
   ],
-};
+} satisfies IdMetadata;
 
 // Citizenship mapping based on gender digit
 const CITIZENSHIP_MAP: { [key: number]: 'citizen' | 'resident' } = {
@@ -80,7 +78,7 @@ export function validate(idNumber: string): boolean {
     return false;
   }
 
-  if (!validateRegexp(idNumber, METADATA.pattern)) {
+  if (!validateRegexp(idNumber, METADATA.regexp)) {
     return false;
   }
 
@@ -91,7 +89,7 @@ export function validate(idNumber: string): boolean {
  * Parse South Korea Resident Registration Number
  */
 export function parse(idNumber: string): KoreaParseResult | null {
-  const match = METADATA.pattern.exec(idNumber.trim());
+  const match = METADATA.regexp.exec(idNumber.trim());
   if (!match || !match.groups) {
     return null;
   }

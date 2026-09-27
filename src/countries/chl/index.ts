@@ -3,7 +3,7 @@
  * Rol Único Nacional / Rol Único Tributario
  */
 
-import { ParsedInfo } from '../../types.js';
+import { IdMetadata, ParsedInfo } from '../../types.js';
 import { validateRegexp } from '../../utils.js';
 
 export interface ChileParseResult extends ParsedInfo {
@@ -11,25 +11,23 @@ export interface ChileParseResult extends ParsedInfo {
 }
 
 export const METADATA = {
-  name: 'Chile National ID',
   names: ['Rol Único Nacional', 'RUN', 'Rol Único Tributario', 'RUT'],
   iso3166Alpha2: 'CL',
   countryName: 'Chile',
   idType: 'RUN/RUT',
   minLength: 8,
   maxLength: 12,
-  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
-  pattern: /^(\d{1,2}\.?\d{3}\.?\d{3}-?[\dK])$/i,
+  regexp: /^(\d{1,2}\.?\d{3}\.?\d{3}-?[\dK])$/i,
   displayFormat: '##.###.###-C',
   example: '11.111.111-1',
   checksumAlgorithm: 'Weighted sum mod 11 (cyclic weights 2..7; 10 → K, 11 → 0)',
   officialName: 'Rol Único Nacional / Rol Único Tributario (RUN/RUT)',
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: true,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: false,
+  checksum: true,
+  parsable: false,
+  aliasOf: null,
+  deprecated: false,
   links: ['https://en.wikipedia.org/wiki/National_identification_number#Chile'],
-};
+} satisfies IdMetadata;
 
 /**
  * Normalize RUN/RUT by removing dots and dashes
@@ -76,7 +74,7 @@ export function validate(idNumber: string): boolean {
     return false;
   }
 
-  if (!validateRegexp(idNumber, METADATA.pattern)) {
+  if (!validateRegexp(idNumber, METADATA.regexp)) {
     return false;
   }
 

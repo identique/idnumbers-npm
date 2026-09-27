@@ -3,7 +3,7 @@
  * 居民身份证 (Jūmín Shēnfènzhèng)
  */
 
-import { ParsedInfo } from '../../types.js';
+import { IdMetadata, ParsedInfo } from '../../types.js';
 import { validateRegexp, calculateAge } from '../../utils.js';
 import { Gender } from '../../constants.js';
 
@@ -17,29 +17,27 @@ export interface ChinaParseResult extends ParsedInfo {
 }
 
 export const METADATA = {
-  name: 'China Resident Identity Number',
   names: ['Resident Identity Number', '居民身份证', 'Jūmín Shēnfènzhèng'],
   iso3166Alpha2: 'CN',
   countryName: 'China',
   idType: 'Resident Identity Number',
   minLength: 18,
   maxLength: 18,
-  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
-  pattern:
+  regexp:
     /^(?<address_code>\d{6})(?<yyyy>\d{4})(?<mm>0[1-9]|1[012])(?<dd>0[1-9]|[12][0-9]|3[01])(?<sn>\d{3})(?<checksum>(\d|X))$/,
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: true,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: true,
+  checksum: true,
+  parsable: true,
   displayFormat: 'AAAAAAYYYYMMDDSSSC',
   example: '11010219840406970X',
   checksumAlgorithm: 'ISO 7064 MOD 11-2 (weights 2^(18-i) mod 11; 10 → X)',
   officialName: '居民身份证 (Resident Identity Card)',
+  aliasOf: null,
+  deprecated: false,
   links: [
     'https://en.wikipedia.org/wiki/Resident_Identity_Card',
     'https://en.wikipedia.org/wiki/National_identification_number#China',
   ],
-};
+} satisfies IdMetadata;
 
 /**
  * Normalize by converting to uppercase
@@ -53,7 +51,7 @@ function normalize(idNumber: string): string {
  * Formula: 2^(18-i) % 11 where i is the position (1-based)
  */
 function calculateChecksum(idNumber: string): number | 'X' | null {
-  if (!validateRegexp(idNumber, METADATA.pattern)) {
+  if (!validateRegexp(idNumber, METADATA.regexp)) {
     return null;
   }
 
@@ -89,7 +87,7 @@ export function validate(idNumber: string): boolean {
  * Parse China Resident Identity Number
  */
 export function parse(idNumber: string): ChinaParseResult | null {
-  const match = METADATA.pattern.exec(idNumber);
+  const match = METADATA.regexp.exec(idNumber);
   if (!match || !match.groups) {
     return null;
   }

@@ -6,12 +6,12 @@
  * single execution.
  */
 import { registry } from './ValidatorRegistry.js';
-import { createValidator, adaptMetadata, CountryModule } from './adapters.js';
+import { createValidator, CountryModule } from './adapters.js';
+import { createCompositeValidator } from './composite.js';
 import { CountryValidator } from './types.js';
-import { ParsedInfo } from '../types.js';
 
 // ---------------------------------------------------------------------------
-// Class-based imports (IdMetadata shape: parsable, checksum, regexp)
+// Class-based imports (classes with static METADATA/validate/parse; all modules share IdMetadata)
 // ---------------------------------------------------------------------------
 import { SocialSecurityNumber } from '../countries/usa/index.js';
 import { MedicareNumber } from '../countries/aus/index.js';
@@ -95,7 +95,7 @@ import { DPI } from '../countries/gtm/index.js';
 // VEN: FiscalInformationNumber (RIF)
 
 // ---------------------------------------------------------------------------
-// Function-based imports (convenience objects with METADATA, validate, parse)
+// Function-based imports (plain objects bundling module-level METADATA, validate, parse)
 // ---------------------------------------------------------------------------
 import { IdentityNumber } from '../countries/alb/index.js';
 import { TaxIdentificationNumber as AutTaxId } from '../countries/aut/index.js';
@@ -129,30 +129,20 @@ import { NationalID as EgyNationalID } from '../countries/egy/index.js';
 // Composite validators for countries with multiple ID formats
 // ---------------------------------------------------------------------------
 
-/** BGD: validates both old (13-digit) and new (17-digit) national ID formats. */
-const bgdComposite: CountryValidator = {
-  // Surface the full accepted range (13-digit old + 17-digit new formats).
-  METADATA: {
-    ...adaptMetadata(BgdNationalID.METADATA),
-    minLength: BgdOldNationalID.METADATA.minLength,
-  },
-  validate: (id: string) => BgdOldNationalID.validate(id) || BgdNationalID.validate(id),
-  parse: (id: string) =>
-    (BgdNationalID.parse(id) ?? BgdOldNationalID.parse(id)) as ParsedInfo | null,
-};
+/**
+ * BGD: validates both the new (17-digit) and old (13-digit) national ID formats.
+ * The new format comes first, so parse() prefers it (`new ?? old`).
+ */
+const bgdComposite = createCompositeValidator([
+  createValidator(BgdNationalID),
+  createValidator(BgdOldNationalID),
+]);
 
 /** SMR: validates both SSI (9-digit) and COE (SM#####) formats. */
-const smrComposite: CountryValidator = {
-  // Surface the full accepted range and shape (9-digit SSI + 7-char COE).
-  METADATA: {
-    ...SmrSSI.METADATA,
-    countryName: 'San Marino',
-    idType: 'Social Security Number / Tax Registration',
-    minLength: SmrCOE.METADATA.minLength,
-    regexp: /^(?:\d{9}|SM\d{5})$/,
-  },
-  validate: (id: string) => SmrSSI.validate(id) || SmrCOE.validate(id),
-};
+const smrComposite = createCompositeValidator([createValidator(SmrSSI), createValidator(SmrCOE)], {
+  countryName: 'San Marino',
+  idType: 'Social Security Number / Tax Registration',
+});
 
 /** LKA: registry metadata covers both the NEW (12-digit) and OLD (9 digits + V/X) formats that validate()/checksum() accept. */
 const lkaComposite: CountryValidator = {

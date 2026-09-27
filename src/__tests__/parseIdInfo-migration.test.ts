@@ -9,7 +9,7 @@
  */
 import { parseIdInfo } from '../index';
 import { registry } from '../registry/ValidatorRegistry';
-import { adaptMetadata, createValidator } from '../registry/adapters';
+import { createValidator } from '../registry/adapters';
 
 // ---------------------------------------------------------------------------
 // Registry population tests
@@ -212,59 +212,6 @@ describe('Registry population', () => {
 });
 
 // ---------------------------------------------------------------------------
-// adaptMetadata tests
-// ---------------------------------------------------------------------------
-describe('adaptMetadata', () => {
-  it('should pass through class-based IdMetadata unchanged', () => {
-    const classMeta = {
-      iso3166Alpha2: 'US',
-      minLength: 9,
-      maxLength: 9,
-      parsable: false,
-      checksum: false,
-      regexp: /^\d{9}$/,
-      aliasOf: null,
-      names: ['SSN'],
-      links: [],
-      deprecated: false,
-    };
-    const result = adaptMetadata(classMeta);
-    expect(result).toBe(classMeta);
-  });
-
-  it('should normalize function-based METADATA to IdMetadata shape', () => {
-    const funcMeta = {
-      iso3166Alpha2: 'FI',
-      minLength: 11,
-      maxLength: 11,
-      isParsable: true,
-      hasChecksum: true,
-      pattern: /^\d{6}[-+A]\d{3}[0-9A-Z]$/,
-      names: ['HETU'],
-      links: ['https://example.com'],
-    };
-    const result = adaptMetadata(funcMeta);
-    expect(result.parsable).toBe(true);
-    expect(result.checksum).toBe(true);
-    expect(result.regexp).toBe(funcMeta.pattern);
-    expect(result.iso3166Alpha2).toBe('FI');
-    expect(result.names).toEqual(['HETU']);
-    expect(result.aliasOf).toBeNull();
-    expect(result.deprecated).toBe(false);
-  });
-
-  it('should default missing fields in function-based METADATA', () => {
-    const minimalMeta = { isParsable: false, hasChecksum: false, pattern: /.*/ };
-    const result = adaptMetadata(minimalMeta);
-    expect(result.iso3166Alpha2).toBe('');
-    expect(result.minLength).toBe(0);
-    expect(result.maxLength).toBe(0);
-    expect(result.names).toEqual([]);
-    expect(result.links).toEqual([]);
-  });
-});
-
-// ---------------------------------------------------------------------------
 // createValidator tests
 // ---------------------------------------------------------------------------
 describe('createValidator', () => {
@@ -291,24 +238,25 @@ describe('createValidator', () => {
     expect(validator.parse!('123456789')).toEqual({ isValid: true });
   });
 
-  it('should wrap a function-based module correctly', () => {
+  it('should wrap a function-based module and pass its METADATA through unchanged', () => {
     const mockFunc = {
       METADATA: {
         iso3166Alpha2: 'YY',
         minLength: 10,
         maxLength: 10,
-        isParsable: true,
-        hasChecksum: false,
-        pattern: /^\d{10}$/,
+        parsable: true,
+        checksum: false,
+        regexp: /^\d{10}$/,
+        aliasOf: null,
         names: ['TestFunc'],
         links: [],
+        deprecated: false,
       },
       validate: (id: string) => /^\d{10}$/.test(id),
       parse: (id: string) => (/^\d{10}$/.test(id) ? { isValid: true } : null),
     };
     const validator = createValidator(mockFunc);
-    expect(validator.METADATA.parsable).toBe(true);
-    expect(validator.METADATA.checksum).toBe(false);
+    expect(validator.METADATA).toBe(mockFunc.METADATA);
     expect(validator.validate('1234567890')).toBe(true);
     expect(validator.parse!('1234567890')).toEqual({ isValid: true });
   });

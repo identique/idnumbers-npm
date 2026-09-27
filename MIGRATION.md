@@ -8,14 +8,14 @@
 
 ## At a glance
 
-| Area                     | v1.x (today)                                                                                                                  | v2.0.0 (planned)                                                                                                                                                                                                                    | What to do                                                                                           | Issue                                                                                                                                   |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Packaging                | Single CJS build, no `exports` map                                                                                            | **Implemented on `main`, ships in v2.0.0.** Dual ESM/CJS build with an `exports` map; Node.js >= 22 baseline (CI 22.x/24.x); TS target ES2022+                                                                                      | Stop deep-importing `idnumbers/dist/...`; import from `idnumbers` (or the new subpaths below)        | [#120](https://github.com/identique/idnumbers-npm/issues/120)                                                                           |
-| Module contract          | Two METADATA dialects: class-based (`parsable`/`checksum`/`regexp`) and function-based (`isParsable`/`hasChecksum`/`pattern`) | One canonical `IdMetadata` shape everywhere; `FunctionBasedMetadata` and `adaptMetadata`'s fallback defaults (incl. the match-anything `regexp: /./`) are deleted; composite validators use a new `createCompositeValidator` helper | Read `parsable`/`checksum`/`regexp` instead of `isParsable`/`hasChecksum`/`pattern`                  | [#121](https://github.com/identique/idnumbers-npm/issues/121)                                                                           |
-| Entry points             | Only the batteries-included root `idnumbers` import                                                                           | Additive: `idnumbers/countries/<iso3>` per-country subpaths + an `idnumbers/core` entry (registry, no countries preloaded)                                                                                                          | Root import keeps working unchanged; opt into subpaths only if you want tree-shaking                 | [#122](https://github.com/identique/idnumbers-npm/issues/122) (decision: [#115](https://github.com/identique/idnumbers-npm/issues/115)) |
-| Parse results            | `parseIdInfo()` returns `any \| null`                                                                                         | `parseIdInfo()` returns a discriminated `{ ok: true, info } \| { ok: false, reason }`, with a `CountryCode → ParseResult` type map; parse results include the resolved alpha-3 code                                                 | Check `validateNationalId().reason` / `isValid` today; switch to the `ok` discriminant once released | [#123](https://github.com/identique/idnumbers-npm/issues/123)                                                                           |
-| `ValidationResult` types | `extractedInfo?: any`; `ParsedInfo` has a loose `[key: string]: any` index signature; `IdMetadata.aliasOf: any \| null`       | `extractedInfo` gets a real type; `ParsedInfo`'s index signature is tightened; `aliasOf` is narrowed                                                                                                                                | No action until release; avoid depending on the current `any` shapes                                 | [#123](https://github.com/identique/idnumbers-npm/issues/123)                                                                           |
-| Removals                 | `SUPPORTED_COUNTRIES` array; `IMetadata` alias                                                                                | Both removed                                                                                                                                                                                                                        | Use `listSupportedCountries()` and `IdMetadata` today — both already exist in v1.x                   | [#124](https://github.com/identique/idnumbers-npm/issues/124)                                                                           |
+| Area                     | v1.x (today)                                                                                                                  | v2.0.0 (planned)                                                                                                                                                                                                                                                         | What to do                                                                                                                        | Issue                                                                                                                                   |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Packaging                | Single CJS build, no `exports` map                                                                                            | **Implemented on `main`, ships in v2.0.0.** Dual ESM/CJS build with an `exports` map; Node.js >= 22 baseline (CI 22.x/24.x); TS target ES2022+                                                                                                                           | Stop deep-importing `idnumbers/dist/...`; import from `idnumbers` (or the new subpaths below)                                     | [#120](https://github.com/identique/idnumbers-npm/issues/120)                                                                           |
+| Module contract          | Two METADATA dialects: class-based (`parsable`/`checksum`/`regexp`) and function-based (`isParsable`/`hasChecksum`/`pattern`) | **Implemented on `main`, ships in v2.0.0.** One canonical `IdMetadata` shape everywhere; `FunctionBasedMetadata`, `AnyMetadata`, and `adaptMetadata` (incl. the match-anything `regexp: /./`) are deleted; multi-format countries use the new `createCompositeValidator` | Read `parsable`/`checksum`/`regexp` instead of `isParsable`/`hasChecksum`/`pattern`; use `countryName`/`idType` instead of `name` | [#121](https://github.com/identique/idnumbers-npm/issues/121)                                                                           |
+| Entry points             | Only the batteries-included root `idnumbers` import                                                                           | Additive: `idnumbers/countries/<iso3>` per-country subpaths + an `idnumbers/core` entry (registry, no countries preloaded)                                                                                                                                               | Root import keeps working unchanged; opt into subpaths only if you want tree-shaking                                              | [#122](https://github.com/identique/idnumbers-npm/issues/122) (decision: [#115](https://github.com/identique/idnumbers-npm/issues/115)) |
+| Parse results            | `parseIdInfo()` returns `any \| null`                                                                                         | `parseIdInfo()` returns a discriminated `{ ok: true, info } \| { ok: false, reason }`, with a `CountryCode → ParseResult` type map; parse results include the resolved alpha-3 code                                                                                      | Check `validateNationalId().reason` / `isValid` today; switch to the `ok` discriminant once released                              | [#123](https://github.com/identique/idnumbers-npm/issues/123)                                                                           |
+| `ValidationResult` types | `extractedInfo?: any`; `ParsedInfo` has a loose `[key: string]: any` index signature; `IdMetadata.aliasOf: any \| null`       | `extractedInfo` gets a real type; `ParsedInfo`'s index signature is tightened; `aliasOf` is narrowed                                                                                                                                                                     | No action until release; avoid depending on the current `any` shapes                                                              | [#123](https://github.com/identique/idnumbers-npm/issues/123)                                                                           |
+| Removals                 | `SUPPORTED_COUNTRIES` array; `IMetadata` alias                                                                                | Both removed                                                                                                                                                                                                                                                             | Use `listSupportedCountries()` and `IdMetadata` today — both already exist in v1.x                                                | [#124](https://github.com/identique/idnumbers-npm/issues/124)                                                                           |
 
 ## Packaging (#120)
 
@@ -34,40 +34,73 @@ Concretely:
 
 ## One module contract (#121)
 
-**Planned.** Every country module — class-based and function-based alike — moves to
-the single canonical `IdMetadata` field names:
+**Implemented on `main`.** This ships as part of v2.0.0. Every country module now
+carries the single canonical `IdMetadata` shape; the second "function-based"
+METADATA dialect and the adapter that translated it are gone.
+
+**Renamed fields.** The 26 modules that used the function-based dialect (ALB, ARE,
+ARG, AUT, BEL, BGR, CHE, CHL, CHN, COL, CZE, DNK, EGY, ESP, EST, FIN, GRC, HUN, IDN,
+IRL, ISL, ITA, KOR, LVA, MEX, POL), plus BGD's `OLD_METADATA`/`NEW_METADATA`, now use
+the canonical names:
+
+| v1.x (function-based dialect) | v2.0.0      |
+| ----------------------------- | ----------- |
+| `METADATA.isParsable`         | `parsable`  |
+| `METADATA.hasChecksum`        | `checksum`  |
+| `METADATA.pattern`            | `regexp`    |
+| `METADATA.name`               | _(removed)_ |
 
 ```ts
-// v1.x — function-based modules (deprecated today, still works)
+// v1.x — function-based modules
 HUN.METADATA.isParsable;
 HUN.METADATA.hasChecksum;
 HUN.METADATA.pattern;
 
-// v2.0.0 (planned) — canonical names everywhere
+// v2.0.0 — canonical names everywhere
 HUN.METADATA.parsable;
 HUN.METADATA.checksum;
 HUN.METADATA.regexp;
 ```
 
-**You can migrate today** by reading the normalized metadata from
-`getCountryIdFormat()`, which already returns the canonical `IdMetadata` shape
-regardless of which dialect the underlying module uses:
+- `METADATA.name` (e.g. `'Hungary Personal ID Number'`) is removed. It only ever
+  combined the country and ID type, so use `countryName` and `idType` instead.
+- These modules also gain the remaining `IdMetadata` fields they lacked:
+  `aliasOf: null` and `deprecated: false`. (BGD's `OLD_METADATA` keeps
+  `deprecated: true` and gains `countryName`/`idType`.)
+- `getCountryIdFormat()` is unaffected: it already returned the canonical shape
+  for every country. **You can migrate before upgrading** by reading
+  `getCountryIdFormat(code)!.metadata.parsable` / `.checksum` / `.regexp`.
 
-```ts
-const format = getCountryIdFormat('HUN')!;
-format.metadata.parsable; // boolean, works today
-format.metadata.checksum; // boolean, works today
-format.metadata.regexp; // RegExp, works today
-```
+**Removed exports.** `FunctionBasedMetadata`, `AnyMetadata`, and `adaptMetadata`
+are deleted, including `adaptMetadata`'s fallback defaults and its match-anything
+`regexp: /./`. `CountryModule` now requires `METADATA: IdMetadata`, and
+`createValidator()` passes a module's METADATA through unchanged.
 
-`FunctionBasedMetadata` and `adaptMetadata`'s fallback defaults (including the
-match-anything `regexp: /./` used when a function-based module omitted `pattern`)
-are deleted in v2.0.0. Composite validators (multi-format countries) move to a new
-`createCompositeValidator` helper. The adapter surface (`adaptMetadata`,
-`createValidator`, `AnyMetadata`, `CountryModule`) may change shape as part of this
-work — this is internal registry plumbing, not something most consumers import
-directly. **Validation behavior itself does not change**: the same IDs are accepted
-before and after, matching the Python `idnumbers` source of truth.
+**New: `createCompositeValidator(members, overrides?)`** builds one validator for
+a country that accepts several ID formats:
+
+- `validate(id)` is true when any member validates it;
+- `parse(id)` returns the first non-null member result, in member order (omitted
+  when no member can parse);
+- no `checksum` (members use different algorithms);
+- `METADATA` starts from the first member, spans every member's
+  `minLength`/`maxLength`, and has a `regexp` matching any member's shape;
+  `overrides` (e.g. `countryName`/`idType`) are applied last.
+
+Bangladesh (BGD) and San Marino (SMR) are now built with it. Their registered
+metadata describes everything the composite accepts: BGD spans 13–17 digits
+(old + new formats) and SMR spans 7–9 characters (the 9-digit SSI + the
+`SM#####` COE).
+
+**One metadata fix.** In v1.x, BGD's registered `regexp` was the match-anything
+`/./` ([#160](https://github.com/identique/idnumbers-npm/issues/160)): its METADATA
+mixed both dialects, so the adapter discarded the real regexp. It now matches
+both BGD formats. `getCountryIdFormat('BGD').metadata.regexp` changes, and
+invalid BGD input now gets a specific `reason` (`invalid_length` /
+`invalid_format`) instead of the generic `validation_failed`.
+
+**Validation behavior itself does not change**: the same IDs are accepted and
+parsed identically before and after, matching the Python `idnumbers` source of truth.
 
 ## New entry points (#122)
 
@@ -162,7 +195,7 @@ strikethrough ahead of their v2.0.0 removal/change:
 
 - `IMetadata` — use `IdMetadata` instead ([#124](https://github.com/identique/idnumbers-npm/issues/124))
 - `IdMetadata.aliasOf`'s `any` type — the field stays, but its type narrows in v2.0.0; don't depend on its current shape ([#123](https://github.com/identique/idnumbers-npm/issues/123))
-- The function-based METADATA dialect — `isParsable`, `hasChecksum`, `pattern` (renamed to `parsable`, `checksum`, `regexp`), and the `FunctionBasedMetadata` interface itself ([#121](https://github.com/identique/idnumbers-npm/issues/121))
+- The function-based METADATA dialect — `isParsable`, `hasChecksum`, `pattern` (renamed to `parsable`, `checksum`, `regexp`), and the `FunctionBasedMetadata` interface itself ([#121](https://github.com/identique/idnumbers-npm/issues/121); removed on `main` for v2.0.0)
 - `SUPPORTED_COUNTRIES` — use `listSupportedCountries()` instead ([#118](https://github.com/identique/idnumbers-npm/issues/118) deprecation; removed in v2.0.0 by [#124](https://github.com/identique/idnumbers-npm/issues/124))
 
 ## What stays the same

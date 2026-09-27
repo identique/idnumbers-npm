@@ -7,7 +7,7 @@
 
 Research complete — **format & semantics fully specified; check-digit algorithm
 not publicly available** (as of 2026-07-16). Validation is **format + semantic
-only** (`METADATA.hasChecksum = false`), following the
+only** (`METADATA.checksum = false`), following the
 [Bahrain CPR precedent](./bahrain-cpr-checksum.md).
 
 > History: this PR briefly shipped an opt-in (unverified) Luhn check, then
@@ -164,7 +164,7 @@ discriminate between them.
 
 ## Decision
 
-**Do not implement a checksum.** Keep `METADATA.hasChecksum = false` with
+**Do not implement a checksum.** Keep `METADATA.checksum = false` with
 format + date + governorate validation until a citable algorithm specification —
 or an independently reproducible corpus that actually constrains every weight —
 becomes available. Implementing a guessed algorithm would either reject real IDs
@@ -242,7 +242,7 @@ If the Egyptian check-digit algorithm is published or contributed back, **both**
 the Python upstream and this TypeScript port should adopt it in lock-step. When
 that happens:
 
-- Update `METADATA.hasChecksum` to `true` in `src/countries/egy/nationalId.ts`.
+- Update `METADATA.checksum` to `true` in `src/countries/egy/nationalId.ts`.
 - Implement the algorithm and gate `validate()` / `parse()` on it.
 - **Revise the test vectors above** — the synthetic IDs will likely fail a real
   check digit and must be replaced with verified-valid examples.

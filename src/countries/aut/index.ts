@@ -3,30 +3,30 @@
  * Abgabenkontonummer
  */
 
+import { IdMetadata } from '../../types.js';
+
 export const METADATA = {
-  name: 'Austria Tax Identification Number',
   names: ['Tax ID number', 'ATIN', 'Abgabenkontonummer'],
   iso3166Alpha2: 'AT',
   countryName: 'Austria',
   idType: 'Tax Identification Number',
   minLength: 9,
   maxLength: 11, // Allow up to 11 for formats with spaces
-  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
-  pattern: /^(\d{2}-?\d{3}\/?\d{4}|\d{4}\s?\d{6})$/,
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: true,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: false,
+  regexp: /^(\d{2}-?\d{3}\/?\d{4}|\d{4}\s?\d{6})$/,
+  checksum: true,
+  parsable: false,
   displayFormat: 'NN-NNN/NNNN',
   example: '12-345/6782',
   checksumAlgorithm: 'Weighted checksum mod 10 (alternating x1/x2 with digit-sum overflow)',
   officialName: 'Abgabenkontonummer (ATIN)',
+  aliasOf: null,
+  deprecated: false,
   links: [
     'https://www.oecd.org/tax/automatic-exchange/crs-implementation-and-assistance/tax-identification-numbers/Austria-TIN.pdf',
     'https://www.glasbenamatica.org/wp-content/uploads/2017/05/TIN_-_country_sheet_AT_en.pdf',
     'https://taxid.pro/docs/countries/austria',
   ],
-};
+} satisfies IdMetadata;
 
 const MULTIPLIER = [1, 2, 1, 2, 1, 2, 1, 2];
 const OVERFLOW_SUM: { [key: number]: number } = {
@@ -88,7 +88,7 @@ export function validate(idNumber: string): boolean {
     return false;
   }
 
-  const match = METADATA.pattern.test(idNumber.trim());
+  const match = METADATA.regexp.test(idNumber.trim());
   if (!match) {
     return false;
   }

@@ -3,29 +3,29 @@
  * Documento Nacional de Identidad
  */
 
+import { IdMetadata } from '../../types.js';
+
 export const METADATA = {
-  name: 'Spain National ID Number',
   names: ['Documento Nacional de Identidad', 'DNI'],
   iso3166Alpha2: 'ES',
   countryName: 'Spain',
   idType: 'DNI',
   minLength: 9,
   maxLength: 9,
-  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
-  pattern: /^(\d{8})([A-Z])$/,
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: true,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: false,
+  regexp: /^(\d{8})([A-Z])$/,
+  checksum: true,
+  parsable: false,
   displayFormat: '########L',
   example: '12345678Z',
   checksumAlgorithm: 'Mod-23 check letter (TRWAGMYFPDXBNJZSQVHLCKE)',
   officialName: 'Documento Nacional de Identidad (DNI)',
+  aliasOf: null,
+  deprecated: false,
   links: [
     'https://en.wikipedia.org/wiki/National_identification_number#Spain',
     'https://es.wikipedia.org/wiki/C%C3%B3digo_de_identificaci%C3%B3n_fiscal',
   ],
-};
+} satisfies IdMetadata;
 
 const MAGIC_LETTERS = 'TRWAGMYFPDXBNJZSQVHLCKE';
 
@@ -33,7 +33,7 @@ const MAGIC_LETTERS = 'TRWAGMYFPDXBNJZSQVHLCKE';
  * Validate checksum for Spain DNI
  */
 function validateChecksum(idNumber: string): boolean {
-  const match = METADATA.pattern.exec(idNumber);
+  const match = METADATA.regexp.exec(idNumber);
   if (!match) {
     return false;
   }
@@ -54,7 +54,7 @@ export function validate(idNumber: string): boolean {
   }
 
   const upperIdNumber = idNumber.trim().toUpperCase();
-  const match = METADATA.pattern.test(upperIdNumber);
+  const match = METADATA.regexp.test(upperIdNumber);
   if (!match) {
     return false;
   }

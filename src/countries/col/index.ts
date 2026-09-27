@@ -3,7 +3,7 @@
  * Número único de identidad personal
  */
 
-import { ParsedInfo } from '../../types.js';
+import { IdMetadata, ParsedInfo } from '../../types.js';
 import { validateRegexp, weightedModulusDigit } from '../../utils.js';
 import { CheckDigit } from '../../constants.js';
 
@@ -12,29 +12,27 @@ export interface ColombiaParseResult extends ParsedInfo {
 }
 
 export const METADATA = {
-  name: 'Colombia Unique Personal ID',
   names: ['Unique Personal ID', 'NUIP', 'Número único de identidad personal'],
   iso3166Alpha2: 'CO',
   countryName: 'Colombia',
   idType: 'Unique Personal ID',
   minLength: 9,
   maxLength: 10,
-  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
-  pattern: /^(\d{2,3}\.?\d{3}\.?\d{3}-?\d)$/,
+  regexp: /^(\d{2,3}\.?\d{3}\.?\d{3}-?\d)$/,
   displayFormat: '##(#).###.###-C',
   example: '12.345.678-8',
   checksumAlgorithm: 'Weighted sum mod 11 (right-to-left prime weights; 11 → 0, 10 → 1)',
   officialName: 'Número Único de Identificación Personal (NUIP)',
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: true,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: false,
+  checksum: true,
+  parsable: false,
+  aliasOf: null,
+  deprecated: false,
   links: [
     'https://en.wikipedia.org/wiki/Colombian_identity_card',
     'https://en.wikipedia.org/wiki/National_identification_number#Colombia',
     'https://validatetin.com/colombia/#',
   ],
-};
+} satisfies IdMetadata;
 
 const WEIGHTS = [3, 7, 13, 17, 19, 23, 29, 37, 41, 43, 47, 53, 59, 67, 71];
 
@@ -49,7 +47,7 @@ function normalize(idNumber: string): string {
  * Calculate Colombia checksum
  */
 function calculateChecksum(idNumber: string): CheckDigit | null {
-  if (!validateRegexp(idNumber, METADATA.pattern)) {
+  if (!validateRegexp(idNumber, METADATA.regexp)) {
     return null;
   }
 
@@ -76,7 +74,7 @@ export function validate(idNumber: string): boolean {
     return false;
   }
 
-  if (!validateRegexp(idNumber, METADATA.pattern)) {
+  if (!validateRegexp(idNumber, METADATA.regexp)) {
     return false;
   }
 

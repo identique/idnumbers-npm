@@ -3,7 +3,7 @@
  * Henkilötunnus
  */
 
-import { ParsedInfo } from '../../types.js';
+import { IdMetadata, ParsedInfo } from '../../types.js';
 import { isValidDate, calculateAge } from '../../utils.js';
 
 export interface FinlandParseResult extends ParsedInfo {
@@ -15,26 +15,24 @@ export interface FinlandParseResult extends ParsedInfo {
 }
 
 export const METADATA = {
-  name: 'Finland Personal Identity Code',
   names: ['personal identity code', 'HETU', 'Henkilötunnus'],
   iso3166Alpha2: 'FI',
   countryName: 'Finland',
   idType: 'Personal Identity Code',
   minLength: 11,
   maxLength: 11,
-  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
-  pattern:
+  regexp:
     /^(?<dd>\d{2})(?<mm>\d{2})(?<yy>\d{2})(?<century>[-+ABCDEFUVWXY])(?<sn>\d{3})(?<check>[0-9A-Z])$/,
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: true,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: true,
+  checksum: true,
+  parsable: true,
   displayFormat: 'DDMMYYCSSSX',
   example: '131052-308T',
   checksumAlgorithm: 'Mod-31 check character',
   officialName: 'Henkilötunnus (HETU)',
+  aliasOf: null,
+  deprecated: false,
   links: ['https://en.wikipedia.org/wiki/National_identification_number#Finland'],
-};
+} satisfies IdMetadata;
 
 const DOB_BASE_MAP: { [key: string]: number } = {
   '+': 1800,
@@ -90,7 +88,7 @@ const CHECKSUM_LIST = [
  * Validate checksum for Finland HETU
  */
 function validateChecksum(idNumber: string): boolean {
-  const match = METADATA.pattern.exec(idNumber);
+  const match = METADATA.regexp.exec(idNumber);
   if (!match || !match.groups) {
     return false;
   }
@@ -110,7 +108,7 @@ export function validate(idNumber: string): boolean {
     return false;
   }
 
-  const match = METADATA.pattern.test(idNumber.trim().toUpperCase());
+  const match = METADATA.regexp.test(idNumber.trim().toUpperCase());
   if (!match) {
     return false;
   }
@@ -123,7 +121,7 @@ export function validate(idNumber: string): boolean {
  */
 export function parse(idNumber: string): FinlandParseResult | null {
   const upperIdNumber = idNumber.trim().toUpperCase();
-  const match = METADATA.pattern.exec(upperIdNumber);
+  const match = METADATA.regexp.exec(upperIdNumber);
   if (!match || !match.groups) {
     return null;
   }

@@ -3,7 +3,7 @@
  * Numri i Identitetit / Numri i Identitetit të Shtetasit
  */
 
-import { ParsedInfo } from '../../types.js';
+import { IdMetadata, ParsedInfo } from '../../types.js';
 import { isValidDate, calculateAge } from '../../utils.js';
 
 export interface AlbaniaParseResult extends ParsedInfo {
@@ -15,7 +15,6 @@ export interface AlbaniaParseResult extends ParsedInfo {
 }
 
 export const METADATA = {
-  name: 'Albania Identity Number',
   names: [
     'Albania Identity Number',
     'Numri i Identitetit',
@@ -29,18 +28,17 @@ export const METADATA = {
   idType: 'Identity Number',
   minLength: 10,
   maxLength: 10,
-  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
-  pattern: /^(?<yy>[0-9A-T]\d)(?<mm>\d{2})(?<dd>\d{2})(?<sn>\d{3})[-]?(?<checksum>[A-W])$/,
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: false,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: true,
+  regexp: /^(?<yy>[0-9A-T]\d)(?<mm>\d{2})(?<dd>\d{2})(?<sn>\d{3})[-]?(?<checksum>[A-W])$/,
+  checksum: false,
+  parsable: true,
   displayFormat: 'LYMMDDSSSC',
   example: 'J50101001A',
   checksumAlgorithm: 'None (check letter not algorithmically verified)',
   officialName: 'Numri i Identitetit (NID)',
+  aliasOf: null,
+  deprecated: false,
   links: ['https://en.wikipedia.org/wiki/National_identification_number#Albania'],
-};
+} satisfies IdMetadata;
 
 const BASE_YEAR_MAP = '0123456789ABCDEFGHIJKLMNOPQRST';
 
@@ -69,7 +67,7 @@ export function validate(idNumber: string): boolean {
  * Parse Albania Identity Number
  */
 export function parse(idNumber: string): AlbaniaParseResult | null {
-  const match = METADATA.pattern.exec(idNumber.trim());
+  const match = METADATA.regexp.exec(idNumber.trim());
   if (!match || !match.groups) {
     return null;
   }

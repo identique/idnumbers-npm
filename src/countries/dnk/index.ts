@@ -13,7 +13,7 @@
  * https://en.wikipedia.org/wiki/Personal_identification_number_(Denmark)
  */
 
-import { ParsedInfo } from '../../types.js';
+import { IdMetadata, ParsedInfo } from '../../types.js';
 import { isValidDate, calculateAge } from '../../utils.js';
 
 export interface DenmarkParseResult extends ParsedInfo {
@@ -23,25 +23,23 @@ export interface DenmarkParseResult extends ParsedInfo {
 }
 
 export const METADATA = {
-  name: 'Denmark Personal Identity Number',
   names: ['personal identity number', 'CPR', 'Det Centrale Personregister'],
   iso3166Alpha2: 'DK',
   countryName: 'Denmark',
   idType: 'Personal Identity Number',
   minLength: 10,
   maxLength: 10,
-  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
-  pattern: /^(?<dd>\d{2})(?<mm>\d{2})(?<yy>\d{2})-?(?<sn>\d{4})$/,
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: false,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: true,
+  regexp: /^(?<dd>\d{2})(?<mm>\d{2})(?<yy>\d{2})-?(?<sn>\d{4})$/,
+  checksum: false,
+  parsable: true,
   displayFormat: 'DDMMYY-SSSS',
   example: '0101001234',
   checksumAlgorithm: 'None (modern CPR numbers carry no check digit; not validated)',
   officialName: 'CPR-nummer',
+  aliasOf: null,
+  deprecated: false,
   links: ['https://en.wikipedia.org/wiki/National_identification_number#Denmark'],
-};
+} satisfies IdMetadata;
 
 /**
  * Validate Denmark CPR
@@ -52,7 +50,7 @@ export function validate(idNumber: string): boolean {
   }
 
   const trimmed = idNumber.trim();
-  const match = METADATA.pattern.exec(trimmed);
+  const match = METADATA.regexp.exec(trimmed);
   if (!match || !match.groups) {
     return false;
   }
@@ -70,7 +68,7 @@ export function validate(idNumber: string): boolean {
  * Parse Denmark CPR
  */
 export function parse(idNumber: string): DenmarkParseResult | null {
-  const match = METADATA.pattern.exec(idNumber.trim());
+  const match = METADATA.regexp.exec(idNumber.trim());
   if (!match || !match.groups) {
     return null;
   }
