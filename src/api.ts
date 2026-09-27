@@ -6,7 +6,7 @@
  * registers only what is passed to {@link register} (#122).
  */
 import { ValidationResult, CountryInfo } from './types.js';
-import { ValidationFailureReason } from './constants.js';
+import { ValidationFailureReason } from './failureReasons.js';
 import { registry } from './registry/ValidatorRegistry.js';
 import { IdFormat } from './registry/types.js';
 import { CountryDefinition } from './registry/country.js';

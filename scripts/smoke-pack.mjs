@@ -19,7 +19,7 @@
  * consumer project, so it can't accidentally pass by resolving `../src`.
  */
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -33,7 +33,64 @@ const REQUIRED_TARBALL_FILES = [
   'dist/esm/index.js',
   'dist/esm/index.d.ts',
   'dist/esm/package.json',
+  // #122: idnumbers/core and the idnumbers/countries/<iso3> subpaths.
+  'dist/cjs/core.js',
+  'dist/cjs/core.d.ts',
+  'dist/esm/core.js',
+  'dist/esm/core.d.ts',
+  'dist/cjs/countries/twn/index.js',
+  'dist/esm/countries/twn/index.d.ts',
 ];
+
+/**
+ * #122: `idnumbers/core` starts empty; registering every `idnumbers/countries/<iso3>`
+ * subpath must reproduce the root entry. Runs in its own process, so the root
+ * entry's registrations cannot leak in. `kind` is 'cjs' or 'esm'.
+ */
+function buildCoreCheck(kind, countryDirs) {
+  const load =
+    kind === 'cjs'
+      ? `const assert = require('node:assert/strict');
+const core = require('idnumbers/core');
+const loadCountry = async dir => require('idnumbers/countries/' + dir);`
+      : `import assert from 'node:assert/strict';
+import * as core from 'idnumbers/core';
+const loadCountry = dir => import('idnumbers/countries/' + dir);`;
+  return `${load}
+const dirs = ${JSON.stringify(countryDirs)};
+
+(async () => {
+  assert.strictEqual(core.listSupportedCountries().length, 0, 'idnumbers/core must start empty');
+  assert.strictEqual(core.validateNationalId('TWN', 'A123456789').reason, 'unsupported_country');
+
+  for (const dir of dirs) {
+    const { country } = await loadCountry(dir);
+    assert.strictEqual(country.key, dir.toUpperCase(), dir + ': unexpected country.key');
+    core.register(country);
+    const example = core.getCountryIdFormat(country.key).example;
+    assert.strictEqual(
+      core.validateNationalId(country.key, example).isValid,
+      true,
+      dir + ': example "' + example + '" failed after register()'
+    );
+  }
+  assert.strictEqual(core.listSupportedCountries().length, dirs.length);
+
+  let missing = false;
+  try {
+    await loadCountry('xxx');
+  } catch {
+    missing = true;
+  }
+  assert.ok(missing, 'idnumbers/countries/xxx should not resolve');
+
+  console.log('[${kind}-core] OK - core started empty, ' + dirs.length + ' country subpaths registered and validated');
+})().catch(err => {
+  console.error(err);
+  process.exit(1);
+});
+`;
+}
 
 // Nothing under test/spec naming, no source maps, and no raw src/ files
 // should ever reach a published tarball.
@@ -200,6 +257,13 @@ function main() {
     writeFileSync(join(consumerDir, 'check.cjs'), CJS_CHECK);
     writeFileSync(join(consumerDir, 'check.mjs'), buildEsmCheck(expectedVersion));
 
+    const countryDirs = readdirSync(join(REPO_ROOT, 'src/countries'), { withFileTypes: true })
+      .filter(entry => entry.isDirectory())
+      .map(entry => entry.name)
+      .sort();
+    writeFileSync(join(consumerDir, 'check-core.cjs'), buildCoreCheck('cjs', countryDirs));
+    writeFileSync(join(consumerDir, 'check-core.mjs'), buildCoreCheck('esm', countryDirs));
+
     log('running CJS consumer check...');
     const cjsOutput = execFileSync('node', ['check.cjs'], { cwd: consumerDir, encoding: 'utf8' });
     console.log(cjsOutput.trim());
@@ -207,6 +271,12 @@ function main() {
     log('running ESM consumer check...');
     const esmOutput = execFileSync('node', ['check.mjs'], { cwd: consumerDir, encoding: 'utf8' });
     console.log(esmOutput.trim());
+
+    for (const file of ['check-core.cjs', 'check-core.mjs']) {
+      log(`running ${file.endsWith('.cjs') ? 'CJS' : 'ESM'} core + subpath check...`);
+      const output = execFileSync('node', [file], { cwd: consumerDir, encoding: 'utf8' });
+      console.log(output.trim());
+    }
 
     log('all checks passed');
   } finally {
