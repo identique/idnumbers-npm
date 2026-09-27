@@ -18,7 +18,7 @@ export interface IndonesiaParseResult extends ParsedInfo {
 export const METADATA = {
   name: 'Indonesia National ID Number',
   names: ['ID Number', 'NIK', 'Nomor Induk Kependudukan'],
-  iso3166Alpha2: 'IDN',
+  iso3166Alpha2: 'ID',
   countryName: 'Indonesia',
   idType: 'National ID Number',
   minLength: 16,
