@@ -13,7 +13,7 @@ Runs on every push and pull request to the main branch.
 - Prettier format check
 - ESLint check
 - TypeScript compilation
-- Full test suite (797 tests)
+- Full Jest test suite
 - Runs on Node.js 16.x, 18.x, and 20.x
 
 **Build Verification:**
@@ -68,11 +68,10 @@ Automatically publishes the package to npm when you create a new GitHub release.
 - Run Prettier format check
 - Run ESLint (continues on error)
 - Run TypeScript compilation
-- Run all 797 tests
+- Run the full Jest test suite
 - Verify build artifacts
 - Check tag version matches package.json
 - Publish to npm with public access
-- Update GitHub release with npm install instructions
 - Show success message with package URL
 
 **Important Notes:**
