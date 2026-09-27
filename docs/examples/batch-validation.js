@@ -5,7 +5,7 @@
  * at once using the validateMultipleIds function.
  */
 
-import { validateMultipleIds } from '../../dist/index.js';
+import { validateMultipleIds } from 'idnumbers';
 
 console.log('=== Batch Validation Examples ===\n');
 

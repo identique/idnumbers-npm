@@ -5,72 +5,78 @@
  * It is safe to import multiple times -- the JS module cache guarantees
  * single execution.
  */
-import { registry } from './ValidatorRegistry';
-import { createValidator, adaptMetadata, CountryModule } from './adapters';
-import { CountryValidator } from './types';
-import { ParsedInfo } from '../types';
+import { registry } from './ValidatorRegistry.js';
+import { createValidator, adaptMetadata, CountryModule } from './adapters.js';
+import { CountryValidator } from './types.js';
+import { ParsedInfo } from '../types.js';
 
 // ---------------------------------------------------------------------------
 // Class-based imports (IdMetadata shape: parsable, checksum, regexp)
 // ---------------------------------------------------------------------------
-import { SocialSecurityNumber } from '../countries/usa';
-import { MedicareNumber } from '../countries/aus';
-import { NationalID as ZafNationalID } from '../countries/zaf';
-import { NationalInsuranceNumber } from '../countries/gbr';
-import { SocialInsuranceNumber } from '../countries/can';
-import { TaxIdentificationNumber as DeuTaxId } from '../countries/deu';
-import { SocialSecurityNumber as FraSocialSecurityNumber } from '../countries/fra';
-import { BurgerServiceNumber } from '../countries/nld';
-import { NationalID as SvkNationalID } from '../countries/svk';
-import { UniqueMasterCitizenNumber as MkdJMBG } from '../countries/mkd';
-import { UniqueMasterCitizenNumber as MneJMBG } from '../countries/mne';
-import { NationalID as ZweNationalID } from '../countries/zwe';
-import { NationalID as IrnNationalID } from '../countries/irn';
-import { NationalID as IrqNationalID } from '../countries/irq';
-import { NationalID as IsrNationalID } from '../countries/isr';
-import { NationalID as MacNationalID } from '../countries/mac';
-import { PersonalCode as MdaPersonalCode } from '../countries/mda';
-import { NationalID as NplNationalID } from '../countries/npl';
-import { NationalID as PngNationalID } from '../countries/png';
-import { SocialSecurityNumber as SmrSSI, TaxRegistrationNumber as SmrCOE } from '../countries/smr';
-import { NationalID as BgdNationalID, OldNationalID as BgdOldNationalID } from '../countries/bgd';
-import { NationalID as BhrNationalID } from '../countries/bhr';
-import { NationalID as BihNationalID } from '../countries/bih';
-import { NationalID as CypNationalID } from '../countries/cyp';
-import { NationalID as GeoNationalID } from '../countries/geo';
-import { NationalID as HkgNationalID } from '../countries/hkg';
-import { NationalID as HrvNationalID } from '../countries/hrv';
-import { NationalID as IndNationalID } from '../countries/ind';
-import { MyNumber } from '../countries/jpn';
-import { NationalID as IdnNationalID } from '../countries/idn';
-import { ResidentRegistration } from '../countries/kor';
-import { CURP } from '../countries/mex';
-import { NationalID as LkaNationalID } from '../countries/lka';
-import { NationalID as NgaNationalID } from '../countries/nga';
-import { NationalID as MysNationalID } from '../countries/mys';
-import { NationalID as NorNationalID } from '../countries/nor';
-import { NationalID as PakNationalID } from '../countries/pak';
-import { NationalID as ThaNationalID } from '../countries/tha';
-import { NationalID as VnmNationalID } from '../countries/vnm';
-import { DriverLicense as NzlDriverLicense } from '../countries/nzl';
-import { NationalID as PhlNationalID } from '../countries/phl';
-import { NationalID as PrtNationalID } from '../countries/prt';
-import { NationalID as RouNationalID } from '../countries/rou';
-import { NationalID as RusNationalID } from '../countries/rus';
-import { NationalID as SauNationalID } from '../countries/sau';
-import { NationalID as SgpNationalID } from '../countries/sgp';
-import { NationalID as SweNationalID } from '../countries/swe';
-import { NationalID as TurNationalID } from '../countries/tur';
-import { NationalID as UkrNationalID } from '../countries/ukr';
-import { NationalID as SvnNationalID } from '../countries/svn';
-import { NationalID as SrbNationalID } from '../countries/srb';
-import { NationalID as TwnNationalID } from '../countries/twn';
-import { NationalID as VenNationalID } from '../countries/ven';
-import { CPFNumber } from '../countries/bra';
-import { Cedula as CriCedula } from '../countries/cri';
-import { Cedula as DomCedula } from '../countries/dom';
-import { Cedula as EcuCedula } from '../countries/ecu';
-import { DPI } from '../countries/gtm';
+import { SocialSecurityNumber } from '../countries/usa/index.js';
+import { MedicareNumber } from '../countries/aus/index.js';
+import { NationalID as ZafNationalID } from '../countries/zaf/index.js';
+import { NationalInsuranceNumber } from '../countries/gbr/index.js';
+import { SocialInsuranceNumber } from '../countries/can/index.js';
+import { TaxIdentificationNumber as DeuTaxId } from '../countries/deu/index.js';
+import { SocialSecurityNumber as FraSocialSecurityNumber } from '../countries/fra/index.js';
+import { BurgerServiceNumber } from '../countries/nld/index.js';
+import { NationalID as SvkNationalID } from '../countries/svk/index.js';
+import { UniqueMasterCitizenNumber as MkdJMBG } from '../countries/mkd/index.js';
+import { UniqueMasterCitizenNumber as MneJMBG } from '../countries/mne/index.js';
+import { NationalID as ZweNationalID } from '../countries/zwe/index.js';
+import { NationalID as IrnNationalID } from '../countries/irn/index.js';
+import { NationalID as IrqNationalID } from '../countries/irq/index.js';
+import { NationalID as IsrNationalID } from '../countries/isr/index.js';
+import { NationalID as MacNationalID } from '../countries/mac/index.js';
+import { PersonalCode as MdaPersonalCode } from '../countries/mda/index.js';
+import { NationalID as NplNationalID } from '../countries/npl/index.js';
+import { NationalID as PngNationalID } from '../countries/png/index.js';
+import {
+  SocialSecurityNumber as SmrSSI,
+  TaxRegistrationNumber as SmrCOE,
+} from '../countries/smr/index.js';
+import {
+  NationalID as BgdNationalID,
+  OldNationalID as BgdOldNationalID,
+} from '../countries/bgd/index.js';
+import { NationalID as BhrNationalID } from '../countries/bhr/index.js';
+import { NationalID as BihNationalID } from '../countries/bih/index.js';
+import { NationalID as CypNationalID } from '../countries/cyp/index.js';
+import { NationalID as GeoNationalID } from '../countries/geo/index.js';
+import { NationalID as HkgNationalID } from '../countries/hkg/index.js';
+import { NationalID as HrvNationalID } from '../countries/hrv/index.js';
+import { NationalID as IndNationalID } from '../countries/ind/index.js';
+import { MyNumber } from '../countries/jpn/index.js';
+import { NationalID as IdnNationalID } from '../countries/idn/index.js';
+import { ResidentRegistration } from '../countries/kor/index.js';
+import { CURP } from '../countries/mex/index.js';
+import { NationalID as LkaNationalID } from '../countries/lka/index.js';
+import { NationalID as NgaNationalID } from '../countries/nga/index.js';
+import { NationalID as MysNationalID } from '../countries/mys/index.js';
+import { NationalID as NorNationalID } from '../countries/nor/index.js';
+import { NationalID as PakNationalID } from '../countries/pak/index.js';
+import { NationalID as ThaNationalID } from '../countries/tha/index.js';
+import { NationalID as VnmNationalID } from '../countries/vnm/index.js';
+import { DriverLicense as NzlDriverLicense } from '../countries/nzl/index.js';
+import { NationalID as PhlNationalID } from '../countries/phl/index.js';
+import { NationalID as PrtNationalID } from '../countries/prt/index.js';
+import { NationalID as RouNationalID } from '../countries/rou/index.js';
+import { NationalID as RusNationalID } from '../countries/rus/index.js';
+import { NationalID as SauNationalID } from '../countries/sau/index.js';
+import { NationalID as SgpNationalID } from '../countries/sgp/index.js';
+import { NationalID as SweNationalID } from '../countries/swe/index.js';
+import { NationalID as TurNationalID } from '../countries/tur/index.js';
+import { NationalID as UkrNationalID } from '../countries/ukr/index.js';
+import { NationalID as SvnNationalID } from '../countries/svn/index.js';
+import { NationalID as SrbNationalID } from '../countries/srb/index.js';
+import { NationalID as TwnNationalID } from '../countries/twn/index.js';
+import { NationalID as VenNationalID } from '../countries/ven/index.js';
+import { CPFNumber } from '../countries/bra/index.js';
+import { Cedula as CriCedula } from '../countries/cri/index.js';
+import { Cedula as DomCedula } from '../countries/dom/index.js';
+import { Cedula as EcuCedula } from '../countries/ecu/index.js';
+import { DPI } from '../countries/gtm/index.js';
 
 // ---------------------------------------------------------------------------
 // Secondary type imports (entity IDs, old/deprecated formats — not registered
@@ -91,33 +97,33 @@ import { DPI } from '../countries/gtm';
 // ---------------------------------------------------------------------------
 // Function-based imports (convenience objects with METADATA, validate, parse)
 // ---------------------------------------------------------------------------
-import { IdentityNumber } from '../countries/alb';
-import { TaxIdentificationNumber as AutTaxId } from '../countries/aut';
-import { NationalRegistrationNumber } from '../countries/bel';
-import { FiscalCode } from '../countries/ita';
-import { DNI } from '../countries/esp';
-import { PersonalIdentityNumber } from '../countries/dnk';
-import { PESEL } from '../countries/pol';
-import { BirthNumber } from '../countries/cze';
-import { PersonalIdentityCode } from '../countries/fin';
-import { IcelandicID } from '../countries/isl';
-import { PersonalCode as LtuPersonalCode } from '../countries/ltu';
-import { NationalID as LuxNationalID } from '../countries/lux';
-import { EmiratesID } from '../countries/are';
-import { NationalID as ArgNationalID } from '../countries/arg';
-import { UniformCivilNumber } from '../countries/bgr';
-import { SocialSecurityNumber as CheSocialSecurityNumber } from '../countries/che';
-import { NationalID as ChlNationalID } from '../countries/chl';
-import { ResidentID } from '../countries/chn';
-import { UniquePersonalID } from '../countries/col';
-import { PersonalID as EstPersonalID } from '../countries/est';
-import { TaxIdentityNumber } from '../countries/grc';
-import { PersonalID as HunPersonalID } from '../countries/hun';
-import { PersonalPublicServiceNumber } from '../countries/irl';
-import { PersonalCode as LvaPersonalCode } from '../countries/lva';
-import { IndividualIDNumber } from '../countries/kaz';
-import { CivilNumber } from '../countries/kwt';
-import { NationalID as EgyNationalID } from '../countries/egy';
+import { IdentityNumber } from '../countries/alb/index.js';
+import { TaxIdentificationNumber as AutTaxId } from '../countries/aut/index.js';
+import { NationalRegistrationNumber } from '../countries/bel/index.js';
+import { FiscalCode } from '../countries/ita/index.js';
+import { DNI } from '../countries/esp/index.js';
+import { PersonalIdentityNumber } from '../countries/dnk/index.js';
+import { PESEL } from '../countries/pol/index.js';
+import { BirthNumber } from '../countries/cze/index.js';
+import { PersonalIdentityCode } from '../countries/fin/index.js';
+import { IcelandicID } from '../countries/isl/index.js';
+import { PersonalCode as LtuPersonalCode } from '../countries/ltu/index.js';
+import { NationalID as LuxNationalID } from '../countries/lux/index.js';
+import { EmiratesID } from '../countries/are/index.js';
+import { NationalID as ArgNationalID } from '../countries/arg/index.js';
+import { UniformCivilNumber } from '../countries/bgr/index.js';
+import { SocialSecurityNumber as CheSocialSecurityNumber } from '../countries/che/index.js';
+import { NationalID as ChlNationalID } from '../countries/chl/index.js';
+import { ResidentID } from '../countries/chn/index.js';
+import { UniquePersonalID } from '../countries/col/index.js';
+import { PersonalID as EstPersonalID } from '../countries/est/index.js';
+import { TaxIdentityNumber } from '../countries/grc/index.js';
+import { PersonalID as HunPersonalID } from '../countries/hun/index.js';
+import { PersonalPublicServiceNumber } from '../countries/irl/index.js';
+import { PersonalCode as LvaPersonalCode } from '../countries/lva/index.js';
+import { IndividualIDNumber } from '../countries/kaz/index.js';
+import { CivilNumber } from '../countries/kwt/index.js';
+import { NationalID as EgyNationalID } from '../countries/egy/index.js';
 
 // ---------------------------------------------------------------------------
 // Composite validators for countries with multiple ID formats

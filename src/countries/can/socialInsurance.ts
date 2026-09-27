@@ -1,6 +1,6 @@
-import { CheckDigit } from '../../constants';
-import { IdMetadata, IdNumberClass } from '../../types';
-import { validateRegexp } from '../../utils';
+import { CheckDigit } from '../../constants.js';
+import { IdMetadata, IdNumberClass } from '../../types.js';
+import { validateRegexp } from '../../utils.js';
 
 /**
  * Canada Social Insurance Number (SIN) format

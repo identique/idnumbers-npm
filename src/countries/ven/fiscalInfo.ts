@@ -4,7 +4,7 @@
  * https://en.wikipedia.org/wiki/National_identification_number#Venezuela
  */
 
-import { validateRegexp, weightedModulusDigit } from '../../utils';
+import { validateRegexp, weightedModulusDigit } from '../../utils.js';
 
 const REGEXP = /^[VEJPG]-?\d{8}-?\d$/;
 

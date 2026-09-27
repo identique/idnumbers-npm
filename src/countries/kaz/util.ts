@@ -2,8 +2,8 @@
  * Kazakhstan ID utilities
  */
 
-import { CheckDigit } from '../../constants';
-import { weightedModulusDigit } from '../../utils';
+import { CheckDigit } from '../../constants.js';
+import { weightedModulusDigit } from '../../utils.js';
 
 export enum EntityType {
   ResidentEntity = 'resident_entity',

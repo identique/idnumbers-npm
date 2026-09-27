@@ -1,4 +1,4 @@
-import { CountryValidator, ValidatorKey, IdFormat, IValidatorRegistry } from './types';
+import { CountryValidator, ValidatorKey, IdFormat, IValidatorRegistry } from './types.js';
 
 /**
  * Central registry for country ID validators.

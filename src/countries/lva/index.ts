@@ -2,9 +2,9 @@
  * Latvia Personal Code (personas kods)
  */
 
-import { ParsedInfo } from '../../types';
-import { validateRegexp } from '../../utils';
-import { CheckDigit } from '../../constants';
+import { ParsedInfo } from '../../types.js';
+import { validateRegexp } from '../../utils.js';
+import { CheckDigit } from '../../constants.js';
 
 export interface LatviaParseResult extends ParsedInfo {
   // Personal Code doesn't contain parsable information beyond validation
@@ -92,4 +92,4 @@ export const PersonalCode = {
   METADATA,
 };
 
-export { OldPersonalCode } from './oldPersonalCode';
+export { OldPersonalCode } from './oldPersonalCode.js';

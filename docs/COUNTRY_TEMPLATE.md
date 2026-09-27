@@ -71,6 +71,11 @@ Conventions:
 - **`util.ts` is for country-shared helpers only** — create it when two files in the same country need
   the same logic (as in [`kaz/util.ts`](../src/countries/kaz/util.ts)). A helper used by exactly one
   file stays private in that file. Anything useful across countries belongs in `src/utils.ts`.
+- **Relative imports/exports use explicit `.js` specifiers** — `from '../../utils.js'`, `from
+'./util.js'`, `from '../countries/xyz/index.js'` — even though the files are `.ts`. This lets the
+  compiled ESM build resolve its own relative imports the way Node's ESM loader does; the extensionless
+  form silently works with `tsc`/CommonJS but breaks at runtime under `import`. Test files under
+  `src/__tests__/` are exempt and may stay extensionless. See [CONTRIBUTING.md](../CONTRIBUTING.md#file-structure-and-exports).
 - **A per-country `README.md` is optional and rare** (3 of 85 countries have one). Add it only when
   the format needs prose that does not fit in doc comments.
 
@@ -139,8 +144,8 @@ Only needed when 2+ files in the country share logic.
  * Xyz ID utilities
  */
 
-import { CheckDigit } from '../../constants';
-import { weightedModulusDigit } from '../../utils';
+import { CheckDigit } from '../../constants.js';
+import { weightedModulusDigit } from '../../utils.js';
 
 const WEIGHTS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
@@ -164,10 +169,10 @@ export function checksum(idNumber: string): CheckDigit | null {
  * Xyz National ID (identiteitsnommer)
  */
 
-import { IdMetadata, ParsedInfo, Gender } from '../../types';
-import { validateRegexp, isValidDate } from '../../utils';
-import { CheckDigit } from '../../constants';
-import { checksum } from './util';
+import { IdMetadata, ParsedInfo, Gender } from '../../types.js';
+import { validateRegexp, isValidDate } from '../../utils.js';
+import { CheckDigit } from '../../constants.js';
+import { checksum } from './util.js';
 
 export interface XyzParseResult extends ParsedInfo {
   birthDate: Date;
@@ -254,7 +259,7 @@ export const NationalID = {
 };
 
 // Secondary ID types: exported here, never registered (see step 5).
-// export { TaxNumber } from './taxNumber';
+// export { TaxNumber } from './taxNumber.js';
 ```
 
 Rules the template encodes:
@@ -291,7 +296,7 @@ asserts every registered country's `iso3166Alpha2` resolves back to its key. Low
 automatically — the registry uppercases keys:
 
 ```typescript
-import { NationalID as XyzNationalID } from '../countries/xyz';
+import { NationalID as XyzNationalID } from '../countries/xyz/index.js';
 
 // ...in COUNTRY_REGISTRY:
 { key: 'XYZ', module: XyzNationalID, aliases: ['XY'] },
@@ -310,7 +315,7 @@ level as those composites do. Never rewrite the country module's public METADATA
 **2. [`src/index.ts`](../src/index.ts)** — export the country namespace:
 
 ```typescript
-export * as XYZ from './countries/xyz';
+export * as XYZ from './countries/xyz/index.js';
 ```
 
 **3. the primary module's `METADATA`** — set `countryName` and `idType` directly on it (the same
@@ -330,7 +335,7 @@ static readonly METADATA: IdMetadata = {
 ```
 
 **The rule: secondary types stay out of the registry.** Export them from the country module only
-(`export { TaxNumber } from './taxNumber';`). Adding them as registry keys breaks the count invariant
+(`export { TaxNumber } from './taxNumber.js';`). Adding them as registry keys breaks the count invariant
 below and misrepresents them as countries.
 
 ---

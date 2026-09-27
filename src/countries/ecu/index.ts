@@ -1,1 +1,1 @@
-export { Cedula } from './cedula';
+export { Cedula } from './cedula.js';

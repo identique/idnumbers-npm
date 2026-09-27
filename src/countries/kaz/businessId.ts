@@ -4,10 +4,10 @@
  * https://korgan-zan.kz/en/obtaining-iin-and-bin-in-kazakhstan/
  */
 
-import { ParsedInfo } from '../../types';
-import { validateRegexp } from '../../utils';
-import { CheckDigit } from '../../constants';
-import { checksum, EntityType, EntityDivision } from './util';
+import { ParsedInfo } from '../../types.js';
+import { validateRegexp } from '../../utils.js';
+import { CheckDigit } from '../../constants.js';
+import { checksum, EntityType, EntityDivision } from './util.js';
 
 export interface KazakhstanBINParseResult extends ParsedInfo {
   yy: number;

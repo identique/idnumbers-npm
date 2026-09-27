@@ -4,14 +4,14 @@
  * https://en.wikipedia.org/wiki/Resident_registration_number
  */
 
-import { ParsedInfo } from '../../types';
+import { ParsedInfo } from '../../types.js';
 import {
   validateRegexp,
   weightedModulusDigit,
   modulusOverflowMod10,
   isValidDate,
-} from '../../utils';
-import { CheckDigit, Citizenship, Gender } from '../../constants';
+} from '../../utils.js';
+import { CheckDigit, Citizenship, Gender } from '../../constants.js';
 
 export interface OldResidentRegistrationParseResult extends ParsedInfo {
   birthDate: Date;

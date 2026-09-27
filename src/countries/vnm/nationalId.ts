@@ -1,5 +1,5 @@
-import { Gender } from '../../constants';
-import { IdMetadata, IdNumberClass } from '../../types';
+import { Gender } from '../../constants.js';
+import { IdMetadata, IdNumberClass } from '../../types.js';
 
 /**
  * Parse result of Vietnam national ID

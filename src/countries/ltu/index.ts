@@ -2,9 +2,9 @@
  * Lithuania Personal Code (asmens kodas)
  */
 
-import { IdMetadata, ParsedInfo, Gender } from '../../types';
-import { validateRegexp, isValidDate } from '../../utils';
-import { CheckDigit } from '../../constants';
+import { IdMetadata, ParsedInfo, Gender } from '../../types.js';
+import { validateRegexp, isValidDate } from '../../utils.js';
+import { CheckDigit } from '../../constants.js';
 
 export interface LithuaniaParseResult extends ParsedInfo {
   birthDate: Date;

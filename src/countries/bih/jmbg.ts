@@ -1,5 +1,5 @@
-import { Citizenship } from '../../types';
-import { ParseResult, UniqueMasterCitizenNumber as YugoslaviaJMBG } from './yugoslavia';
+import { Citizenship } from '../../types.js';
+import { ParseResult, UniqueMasterCitizenNumber as YugoslaviaJMBG } from './yugoslavia.js';
 
 export class UniqueMasterCitizenNumber extends YugoslaviaJMBG {
   public static METADATA = {

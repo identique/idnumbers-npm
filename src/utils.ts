@@ -1,4 +1,4 @@
-import { CheckDigit } from './constants';
+import { CheckDigit } from './constants.js';
 
 /**
  * Validate string against a regular expression

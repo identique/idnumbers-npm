@@ -1,6 +1,6 @@
-import { CheckDigit } from '../../constants';
-import { IdMetadata, IdNumberClass } from '../../types';
-import { luhnDigit, validateRegexp } from '../../utils';
+import { CheckDigit } from '../../constants.js';
+import { IdMetadata, IdNumberClass } from '../../types.js';
+import { luhnDigit, validateRegexp } from '../../utils.js';
 
 /**
  * Parse result for Ecuador Cédula de Identidad.

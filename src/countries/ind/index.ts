@@ -3,8 +3,8 @@
  * Unique Identification Number
  */
 
-import { IdMetadata } from '../../types';
-import { validateRegexp, verhoeffCheck } from '../../utils';
+import { IdMetadata } from '../../types.js';
+import { validateRegexp, verhoeffCheck } from '../../utils.js';
 
 export const METADATA: IdMetadata = {
   iso3166Alpha2: 'IN',

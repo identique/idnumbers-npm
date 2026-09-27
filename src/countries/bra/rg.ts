@@ -3,8 +3,8 @@
  * https://en.wikipedia.org/wiki/Brazilian_identity_card
  */
 
-import { IdMetadata, IdNumberClass } from '../../types';
-import { validateRegexp } from '../../utils';
+import { IdMetadata, IdNumberClass } from '../../types.js';
+import { validateRegexp } from '../../utils.js';
 
 /**
  * Brazil RG Number (State Identity Card)

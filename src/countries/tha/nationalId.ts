@@ -1,6 +1,6 @@
-import { CheckDigit, ThaiCitizenship } from '../../constants';
-import { IdMetadata, IdNumberClass } from '../../types';
-import { weightedModulusDigit, modulusOverflowMod10 } from '../../utils';
+import { CheckDigit, ThaiCitizenship } from '../../constants.js';
+import { IdMetadata, IdNumberClass } from '../../types.js';
+import { weightedModulusDigit, modulusOverflowMod10 } from '../../utils.js';
 
 /**
  * Parse result of Thailand national ID

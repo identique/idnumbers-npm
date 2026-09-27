@@ -3,9 +3,9 @@
  * 居民身份证 (Jūmín Shēnfènzhèng)
  */
 
-import { ParsedInfo } from '../../types';
-import { validateRegexp, calculateAge } from '../../utils';
-import { Gender } from '../../constants';
+import { ParsedInfo } from '../../types.js';
+import { validateRegexp, calculateAge } from '../../utils.js';
+import { Gender } from '../../constants.js';
 
 export interface ChinaParseResult extends ParsedInfo {
   addressCode: string;

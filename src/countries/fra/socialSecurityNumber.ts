@@ -1,6 +1,6 @@
-import { Gender } from '../../constants';
-import { IdMetadata, IdNumberClass } from '../../types';
-import { validateRegexp } from '../../utils';
+import { Gender } from '../../constants.js';
+import { IdMetadata, IdNumberClass } from '../../types.js';
+import { validateRegexp } from '../../utils.js';
 
 /**
  * Birth department information for France INSEE

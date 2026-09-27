@@ -5,7 +5,7 @@
  * from various countries.
  */
 
-import { validateNationalId } from '../../dist/index.js';
+import { validateNationalId } from 'idnumbers';
 
 console.log('=== Basic Validation Examples ===\n');
 

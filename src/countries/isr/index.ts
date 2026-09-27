@@ -1,1 +1,1 @@
-export * from './nationalId';
+export * from './nationalId.js';

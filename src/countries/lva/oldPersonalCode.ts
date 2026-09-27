@@ -5,9 +5,9 @@
  * https://www.oecd.org/tax/automatic-exchange/crs-implementation-and-assistance/tax-identification-numbers/Latvia-TIN.pdf
  */
 
-import { ParsedInfo } from '../../types';
-import { validateRegexp, isValidDate } from '../../utils';
-import { CheckDigit } from '../../constants';
+import { ParsedInfo } from '../../types.js';
+import { validateRegexp, isValidDate } from '../../utils.js';
+import { CheckDigit } from '../../constants.js';
 
 export interface LatviaOldParseResult extends ParsedInfo {
   birthDate: Date;

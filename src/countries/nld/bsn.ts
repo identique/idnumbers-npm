@@ -1,4 +1,4 @@
-import { IdMetadata, IdNumberClass } from '../../types';
+import { IdMetadata, IdNumberClass } from '../../types.js';
 
 /**
  * Normalize by removing dots

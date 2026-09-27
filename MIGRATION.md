@@ -10,7 +10,7 @@
 
 | Area                     | v1.x (today)                                                                                                                  | v2.0.0 (planned)                                                                                                                                                                                                                    | What to do                                                                                           | Issue                                                                                                                                   |
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Packaging                | Single CJS build, no `exports` map                                                                                            | Dual ESM/CJS build with an `exports` map; Node.js >= 22 baseline (CI 22.x/24.x); TS target ES2022+                                                                                                                                  | Stop deep-importing `idnumbers/dist/...`; import from `idnumbers` (or the new subpaths below)        | [#120](https://github.com/identique/idnumbers-npm/issues/120)                                                                           |
+| Packaging                | Single CJS build, no `exports` map                                                                                            | **Implemented on `main`, ships in v2.0.0.** Dual ESM/CJS build with an `exports` map; Node.js >= 22 baseline (CI 22.x/24.x); TS target ES2022+                                                                                      | Stop deep-importing `idnumbers/dist/...`; import from `idnumbers` (or the new subpaths below)        | [#120](https://github.com/identique/idnumbers-npm/issues/120)                                                                           |
 | Module contract          | Two METADATA dialects: class-based (`parsable`/`checksum`/`regexp`) and function-based (`isParsable`/`hasChecksum`/`pattern`) | One canonical `IdMetadata` shape everywhere; `FunctionBasedMetadata` and `adaptMetadata`'s fallback defaults (incl. the match-anything `regexp: /./`) are deleted; composite validators use a new `createCompositeValidator` helper | Read `parsable`/`checksum`/`regexp` instead of `isParsable`/`hasChecksum`/`pattern`                  | [#121](https://github.com/identique/idnumbers-npm/issues/121)                                                                           |
 | Entry points             | Only the batteries-included root `idnumbers` import                                                                           | Additive: `idnumbers/countries/<iso3>` per-country subpaths + an `idnumbers/core` entry (registry, no countries preloaded)                                                                                                          | Root import keeps working unchanged; opt into subpaths only if you want tree-shaking                 | [#122](https://github.com/identique/idnumbers-npm/issues/122) (decision: [#115](https://github.com/identique/idnumbers-npm/issues/115)) |
 | Parse results            | `parseIdInfo()` returns `any \| null`                                                                                         | `parseIdInfo()` returns a discriminated `{ ok: true, info } \| { ok: false, reason }`, with a `CountryCode → ParseResult` type map; parse results include the resolved alpha-3 code                                                 | Check `validateNationalId().reason` / `isValid` today; switch to the `ok` discriminant once released | [#123](https://github.com/identique/idnumbers-npm/issues/123)                                                                           |
@@ -19,15 +19,18 @@
 
 ## Packaging (#120)
 
-**Planned.** v2.0.0 ships both ESM and CJS builds behind a proper `package.json`
-`exports` map, targets ES2022+, and raises the baseline to Node.js >= 22 (CI runs
-22.x and 24.x).
+**Implemented on `main`.** This ships as part of v2.0.0, but the mechanics are already true
+today for anyone building from `main`. The package now provides both ESM and CJS builds behind
+a proper `package.json` `exports` map, targets ES2022+, and raises the baseline to Node.js >= 22
+(CI runs 22.x and 24.x).
 
-- If you `import`/`require` the package normally (`import { validateNationalId } from 'idnumbers'`),
-  this is transparent.
-- If you deep-import compiled output (e.g. `idnumbers/dist/countries/twn`), that path is
-  **not** part of the public API and will stop resolving once the `exports` map ships.
-  Use the root import today, or the per-country subpaths once #122 lands.
+Concretely:
+
+- The `exports` map exposes exactly two entry points: `.` (the package root, `import { validateNationalId } from 'idnumbers'` / `const { validateNationalId } = require('idnumbers')`) and `./package.json`. Every other subpath, including deep imports of compiled output like `idnumbers/dist/countries/twn`, throws `ERR_PACKAGE_PATH_NOT_EXPORTED` instead of silently resolving. Use the root import today, or the per-country subpaths once #122 lands.
+- `engines.node` is `>=22`, matching the Node.js versions CI actually tests (22.x and 24.x).
+- The `import` condition resolves to the ESM build (`dist/esm/`, compiled with `module: es2022`) with its own `.d.ts` declarations; the `require` condition resolves to the CJS build (`dist/cjs/`) with its own `.d.ts` declarations — each condition gets type declarations matched to its own module format.
+- Both builds target ES2022 output. Neither ships source maps or declaration maps — the previous maps pointed at `src/` files that were never published, so they were never actually usable by consumers.
+- **Dual-package hazard:** if a single process both `require()`s and `import`s `idnumbers`, Node loads two separate module instances — including two separate country registries. Pick one style per process; don't mix `require('idnumbers')` and `import 'idnumbers'` for the same dependency.
 
 ## One module contract (#121)
 

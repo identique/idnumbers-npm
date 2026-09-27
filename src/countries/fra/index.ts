@@ -1,1 +1,1 @@
-export { SocialSecurityNumber } from './socialSecurityNumber';
+export { SocialSecurityNumber } from './socialSecurityNumber.js';

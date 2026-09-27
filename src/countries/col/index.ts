@@ -3,9 +3,9 @@
  * Número único de identidad personal
  */
 
-import { ParsedInfo } from '../../types';
-import { validateRegexp, weightedModulusDigit } from '../../utils';
-import { CheckDigit } from '../../constants';
+import { ParsedInfo } from '../../types.js';
+import { validateRegexp, weightedModulusDigit } from '../../utils.js';
+import { CheckDigit } from '../../constants.js';
 
 export interface ColombiaParseResult extends ParsedInfo {
   // NUIP doesn't contain parsable information beyond validation

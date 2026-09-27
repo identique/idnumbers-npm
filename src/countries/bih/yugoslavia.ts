@@ -1,4 +1,4 @@
-import { IdMetadata, Citizenship, Gender } from '../../types';
+import { IdMetadata, Citizenship, Gender } from '../../types.js';
 
 // Helper functions from util.py
 function validateRegexp(idNumber: string, regexp: RegExp): boolean {

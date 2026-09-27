@@ -3,8 +3,8 @@
  * National ID Number
  */
 
-import { IdMetadata } from '../../types';
-import { validateRegexp } from '../../utils';
+import { IdMetadata } from '../../types.js';
+import { validateRegexp } from '../../utils.js';
 
 export const METADATA: IdMetadata = {
   iso3166Alpha2: 'JP',

@@ -1,5 +1,5 @@
-import { CheckDigit } from '../../constants';
-import { IdMetadata, IdNumberClass } from '../../types';
+import { CheckDigit } from '../../constants.js';
+import { IdMetadata, IdNumberClass } from '../../types.js';
 
 /**
  * Portuguese Tax Identification Number (NIF - Número de Identificação Fiscal) - 9 digits

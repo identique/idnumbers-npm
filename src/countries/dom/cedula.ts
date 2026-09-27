@@ -2,10 +2,10 @@
  * Dominican Republic Cedula de Identidad y Electoral
  */
 
-import { CheckDigit } from '../../constants';
-import { IdMetadata, IdNumberClass } from '../../types';
-import { luhnDigit } from '../../utils';
-import { CEDULA_LUHN_EXCEPTION_SET } from './exceptions';
+import { CheckDigit } from '../../constants.js';
+import { IdMetadata, IdNumberClass } from '../../types.js';
+import { luhnDigit } from '../../utils.js';
+import { CEDULA_LUHN_EXCEPTION_SET } from './exceptions.js';
 
 /**
  * Parse result of a Dominican Republic cedula.

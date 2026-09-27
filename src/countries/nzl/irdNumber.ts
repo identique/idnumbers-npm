@@ -28,8 +28,8 @@
  * https://www.oecd.org/tax/automatic-exchange/crs-implementation-and-assistance/tax-identification-numbers/New%20Zealand-TIN.pdf
  */
 
-import { IdMetadata } from '../../types';
-import { validateRegexp, normalize, weightedModulusDigit } from '../../utils';
+import { IdMetadata } from '../../types.js';
+import { validateRegexp, normalize, weightedModulusDigit } from '../../utils.js';
 
 export const METADATA: IdMetadata = {
   iso3166Alpha2: 'NZ',

@@ -1,2 +1,2 @@
-export { NationalID } from './nationalId';
-export { FiscalInformationNumber } from './fiscalInfo';
+export { NationalID } from './nationalId.js';
+export { FiscalInformationNumber } from './fiscalInfo.js';

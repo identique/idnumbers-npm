@@ -3,8 +3,8 @@
  * رقم الهوية
  */
 
-import { ParsedInfo } from '../../types';
-import { luhnDigit } from '../../utils';
+import { ParsedInfo } from '../../types.js';
+import { luhnDigit } from '../../utils.js';
 
 export interface EmiratesParseResult extends ParsedInfo {
   yearOfBirth: number;

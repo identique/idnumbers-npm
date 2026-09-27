@@ -3,8 +3,8 @@
  * Uimhir Phearsanta Seirbhíse Poiblí
  */
 
-import { ParsedInfo } from '../../types';
-import { validateRegexp, weightedModulusDigit, letterToNumber } from '../../utils';
+import { ParsedInfo } from '../../types.js';
+import { validateRegexp, weightedModulusDigit, letterToNumber } from '../../utils.js';
 
 export interface IrelandParseResult extends ParsedInfo {
   // PPS doesn't contain parsable information beyond validation

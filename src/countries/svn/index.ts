@@ -1,1 +1,1 @@
-export { NationalID, EMSO } from './nationalId';
+export { NationalID, EMSO } from './nationalId.js';

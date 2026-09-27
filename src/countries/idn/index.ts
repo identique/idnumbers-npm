@@ -3,8 +3,8 @@
  * Nomor Induk Kependudukan
  */
 
-import { ParsedInfo } from '../../types';
-import { DISTRICT_CODES } from './districts';
+import { ParsedInfo } from '../../types.js';
+import { DISTRICT_CODES } from './districts.js';
 
 export interface IndonesiaParseResult extends ParsedInfo {
   gender: 'male' | 'female';

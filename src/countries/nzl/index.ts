@@ -1,3 +1,3 @@
-export { NationalID } from './nationalId';
-export { DriverLicense } from './driverLicense';
-export { IRDNumber } from './irdNumber';
+export { NationalID } from './nationalId.js';
+export { DriverLicense } from './driverLicense.js';
+export { IRDNumber } from './irdNumber.js';

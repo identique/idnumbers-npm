@@ -1,4 +1,4 @@
-import { IdMetadata } from '../../types';
+import { IdMetadata } from '../../types.js';
 
 export type ParseResult = {
   yymm: string;

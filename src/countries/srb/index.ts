@@ -1,1 +1,1 @@
-export { NationalID, JMBG } from './nationalId';
+export { NationalID, JMBG } from './nationalId.js';

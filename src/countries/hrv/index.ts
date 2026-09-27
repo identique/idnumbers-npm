@@ -1,4 +1,4 @@
-import { PersonalID } from './personal-id';
+import { PersonalID } from './personal-id.js';
 
 export { PersonalID };
 export const NationalID = PersonalID; // Alias

@@ -23,12 +23,19 @@ A future v2.0.0 release will ship breaking changes ([epic #127](https://github.c
 - The root `idnumbers` import stays batteries-included and unchanged.
 - New tree-shakeable, per-country entry points (`idnumbers/countries/<iso3>`) alongside a registry-only `idnumbers/core`.
 - Typed `parseIdInfo()` results instead of `any | null`.
-- A Node.js >= 22 baseline (CI runs 22.x/24.x).
 - Removal of APIs already marked `@deprecated` today, such as `SUPPORTED_COUNTRIES` and `IMetadata`.
+
+One breaking change has already landed ahead of the rest: a dual ESM/CJS build behind a proper
+`exports` map with a **Node.js >= 22 baseline** (CI runs 22.x/24.x) is implemented on `main` and
+ships in v2.0.0 — see [Requirements](#installation) below and
+[#120](https://github.com/identique/idnumbers-npm/issues/120).
 
 See [MIGRATION.md](./MIGRATION.md) for the full breakdown and how to prepare today.
 
 ## Installation
+
+**Requirements:** Node.js >= 22 from v2.0.0 (in development on `main`); the current 1.x releases
+support Node.js >= 16.
 
 ```bash
 npm install idnumbers
@@ -41,6 +48,25 @@ yarn add idnumbers
 ```bash
 pnpm add idnumbers
 ```
+
+From v2.0.0, the package ships both an ESM and a CommonJS build behind a `package.json` `exports`
+map, so either form works without any extra configuration:
+
+```typescript
+// ESM
+import { validateNationalId } from 'idnumbers';
+```
+
+```javascript
+// CommonJS
+const { validateNationalId } = require('idnumbers');
+```
+
+From v2.0.0, only the documented entry points (`idnumbers` and `idnumbers/package.json`) are
+public — deep imports such as `idnumbers/dist/...` are not part of the API and will not resolve.
+Avoid mixing `require('idnumbers')` and `import 'idnumbers'` for the same package within one process: Node
+treats them as two separate module instances with two separate registries (the "dual-package
+hazard"), so pick one style per process.
 
 ## Quick Start
 
@@ -542,7 +568,7 @@ if (!validation.valid) {
 
 ## Testing
 
-The library includes comprehensive test coverage with 2696 tests covering:
+The library includes comprehensive test coverage with 2698 tests covering:
 
 - Format validation
 - Checksum verification

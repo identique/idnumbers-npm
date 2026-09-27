@@ -3,8 +3,8 @@
  * Cadastro de Pessoas Físicas
  */
 
-import { IdMetadata, IdNumberClass } from '../../types';
-import { validateRegexp } from '../../utils';
+import { IdMetadata, IdNumberClass } from '../../types.js';
+import { validateRegexp } from '../../utils.js';
 
 /**
  * Brazil CPF Number (Tax ID for individuals)

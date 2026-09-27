@@ -2,9 +2,9 @@
  * Kuwait Civil Number (الرقم المدني)
  */
 
-import { IdMetadata, ParsedInfo } from '../../types';
-import { validateRegexp, weightedModulusDigit, isValidDate } from '../../utils';
-import { CheckDigit } from '../../constants';
+import { IdMetadata, ParsedInfo } from '../../types.js';
+import { validateRegexp, weightedModulusDigit, isValidDate } from '../../utils.js';
+import { CheckDigit } from '../../constants.js';
 
 export interface KuwaitParseResult extends ParsedInfo {
   birthDate: Date;

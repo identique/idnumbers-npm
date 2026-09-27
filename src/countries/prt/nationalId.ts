@@ -1,5 +1,5 @@
-import { CheckDigit } from '../../constants';
-import { IdMetadata, IdNumberClass } from '../../types';
+import { CheckDigit } from '../../constants.js';
+import { IdMetadata, IdNumberClass } from '../../types.js';
 
 /**
  * Portuguese Citizen Card Number (Cartão de Cidadão) - 12 digits

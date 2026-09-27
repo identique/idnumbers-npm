@@ -2,10 +2,10 @@
  * Kazakhstan Individual Identification Number (IIN/ИИН/ZhSN/ЖСН)
  */
 
-import { IdMetadata, ParsedInfo, Gender } from '../../types';
-import { validateRegexp, isValidDate } from '../../utils';
-import { CheckDigit } from '../../constants';
-import { checksum } from './util';
+import { IdMetadata, ParsedInfo, Gender } from '../../types.js';
+import { validateRegexp, isValidDate } from '../../utils.js';
+import { CheckDigit } from '../../constants.js';
+import { checksum } from './util.js';
 
 export interface KazakhstanParseResult extends ParsedInfo {
   birthDate: Date;
@@ -121,5 +121,5 @@ export const IndividualIDNumber = {
 // Alias
 export const NationalID = IndividualIDNumber;
 
-export { BusinessIDNumber } from './businessId';
-export { EntityType, EntityDivision } from './util';
+export { BusinessIDNumber } from './businessId.js';
+export { EntityType, EntityDivision } from './util.js';

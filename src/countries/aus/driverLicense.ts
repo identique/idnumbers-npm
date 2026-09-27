@@ -3,8 +3,8 @@
  * https://learn.microsoft.com/en-us/microsoft-365/compliance/sit-defn-australia-drivers-license-number
  */
 
-import { IdMetadata } from '../../types';
-import { validateRegexp, normalize } from '../../utils';
+import { IdMetadata } from '../../types.js';
+import { validateRegexp, normalize } from '../../utils.js';
 
 export const METADATA: IdMetadata = {
   iso3166Alpha2: 'AU',

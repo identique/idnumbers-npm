@@ -5,7 +5,7 @@
  * (birth date, gender, citizenship, etc.) from national ID numbers.
  */
 
-import { parseIdInfo, validateNationalId } from '../../dist/index.js';
+import { parseIdInfo, validateNationalId } from 'idnumbers';
 
 console.log('=== Parsing Information Examples ===\n');
 

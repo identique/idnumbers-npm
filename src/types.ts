@@ -1,4 +1,4 @@
-import { ValidationFailureReason } from './constants';
+import { ValidationFailureReason } from './constants.js';
 
 /**
  * Metadata interface for ID number types
@@ -97,4 +97,4 @@ export interface ParsedInfo {
 }
 
 // Re-export from constants to avoid duplication
-export { Gender, Citizenship, CheckDigit, CheckAlpha, ThaiCitizenship } from './constants';
+export { Gender, Citizenship, CheckDigit, CheckAlpha, ThaiCitizenship } from './constants.js';

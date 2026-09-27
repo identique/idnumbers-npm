@@ -1,4 +1,4 @@
-import { IdMetadata, IdNumberClass } from '../../types';
+import { IdMetadata, IdNumberClass } from '../../types.js';
 
 /**
  * Slovenian EMŠO (Unique Master Citizen Number)

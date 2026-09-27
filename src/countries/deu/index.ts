@@ -1,1 +1,1 @@
-export { TaxIdentificationNumber } from './taxId';
+export { TaxIdentificationNumber } from './taxId.js';
