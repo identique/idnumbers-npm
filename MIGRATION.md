@@ -12,7 +12,7 @@
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | Packaging                | Single CJS build, no `exports` map                                                                                            | **Implemented on `main`, ships in v2.0.0.** Dual ESM/CJS build with an `exports` map; Node.js >= 22 baseline (CI 22.x/24.x); TS target ES2022+                                                                                                                           | Stop deep-importing `idnumbers/dist/...`; import from `idnumbers` (or the new subpaths below)                                     | [#120](https://github.com/identique/idnumbers-npm/issues/120)                                                                           |
 | Module contract          | Two METADATA dialects: class-based (`parsable`/`checksum`/`regexp`) and function-based (`isParsable`/`hasChecksum`/`pattern`) | **Implemented on `main`, ships in v2.0.0.** One canonical `IdMetadata` shape everywhere; `FunctionBasedMetadata`, `AnyMetadata`, and `adaptMetadata` (incl. the match-anything `regexp: /./`) are deleted; multi-format countries use the new `createCompositeValidator` | Read `parsable`/`checksum`/`regexp` instead of `isParsable`/`hasChecksum`/`pattern`; use `countryName`/`idType` instead of `name` | [#121](https://github.com/identique/idnumbers-npm/issues/121)                                                                           |
-| Entry points             | Only the batteries-included root `idnumbers` import                                                                           | Additive: `idnumbers/countries/<iso3>` per-country subpaths + an `idnumbers/core` entry (registry, no countries preloaded)                                                                                                                                               | Root import keeps working unchanged; opt into subpaths only if you want tree-shaking                                              | [#122](https://github.com/identique/idnumbers-npm/issues/122) (decision: [#115](https://github.com/identique/idnumbers-npm/issues/115)) |
+| Entry points             | Only the batteries-included root `idnumbers` import                                                                           | **Implemented on `main`, ships in v2.0.0.** Additive: `idnumbers/countries/<iso3>` per-country subpaths + an `idnumbers/core` entry (registry, no countries registered) and `register()`                                                                                 | Root import keeps working unchanged; opt into subpaths only if you want tree-shaking                                              | [#122](https://github.com/identique/idnumbers-npm/issues/122) (decision: [#115](https://github.com/identique/idnumbers-npm/issues/115)) |
 | Parse results            | `parseIdInfo()` returns `any \| null`                                                                                         | `parseIdInfo()` returns a discriminated `{ ok: true, info } \| { ok: false, reason }`, with a `CountryCode → ParseResult` type map; parse results include the resolved alpha-3 code                                                                                      | Check `validateNationalId().reason` / `isValid` today; switch to the `ok` discriminant once released                              | [#123](https://github.com/identique/idnumbers-npm/issues/123)                                                                           |
 | `ValidationResult` types | `extractedInfo?: any`; `ParsedInfo` has a loose `[key: string]: any` index signature; `IdMetadata.aliasOf: any \| null`       | `extractedInfo` gets a real type; `ParsedInfo`'s index signature is tightened; `aliasOf` is narrowed                                                                                                                                                                     | No action until release; avoid depending on the current `any` shapes                                                              | [#123](https://github.com/identique/idnumbers-npm/issues/123)                                                                           |
 | Removals                 | `SUPPORTED_COUNTRIES` array; `IMetadata` alias                                                                                | Both removed                                                                                                                                                                                                                                                             | Use `listSupportedCountries()` and `IdMetadata` today — both already exist in v1.x                                                | [#124](https://github.com/identique/idnumbers-npm/issues/124)                                                                           |
@@ -104,25 +104,41 @@ parsed identically before and after, matching the Python `idnumbers` source of t
 
 ## New entry points (#122)
 
-**Planned, additive.** Per the approved [#115](https://github.com/identique/idnumbers-npm/issues/115)
-decision, v2.0.0 adds tree-shakeable entry points without touching the existing root
-import:
+**Implemented on `main`, additive.** This ships as part of v2.0.0. Per the approved
+[#115](https://github.com/identique/idnumbers-npm/issues/115) decision
+([ADR 002](docs/adr/002-country-registration-model.md)), v2.0.0 adds tree-shakeable
+entry points without touching the existing root import:
 
 ```ts
-// Still works exactly as before — batteries included, all 85 countries preloaded.
+// Still works exactly as before — batteries included, all 85 countries registered.
 import { validateNationalId } from 'idnumbers';
 
-// New in v2.0.0 (planned) — opt-in, only pulls in what you register.
+// New in v2.0.0 — opt-in: only the countries you register reach your bundle.
 import { register, validateNationalId } from 'idnumbers/core';
-import { TWN } from 'idnumbers/countries/twn';
+import { country as twn } from 'idnumbers/countries/twn';
 
-register(TWN);
+register(twn);
 validateNationalId('TWN', id);
 ```
 
-If you only validate a handful of countries and care about bundle size, this will be
-the way to do it. Nothing about the root `idnumbers` import changes — it keeps its
-current batteries-included behavior for backward compatibility.
+- **`idnumbers/core`** is the full validation API (`validateNationalId`, `parseIdInfo`,
+  `getCountryIdFormat`, `listSupportedCountries`, the registry, types) with **no
+  countries registered**. Until you register a country, its codes report
+  `reason: 'unsupported_country'`.
+- **`idnumbers/countries/<iso3>`** (lowercase alpha-3, e.g. `idnumbers/countries/twn`)
+  exposes one country module: its validator types plus a `country` definition to pass
+  to `register()`. Importing it registers nothing.
+- **`register(...countries)`** is idempotent for the same definition, so it is safe to
+  call from several modules, or alongside the root import. Registering a different
+  validator under a taken key throws.
+- In a single-country bundle, core plus one country is about 1.7–5.1 KB min+gzip,
+  versus about 38 KB for the root import. CI enforces the budgets
+  (`npm run size`).
+- The root `idnumbers` entry and every country namespace (`TWN`, `USA`, …) also gain the
+  `country` definitions, plus `register` and `defineCountry`; nothing is removed.
+- The root import shares its registry with `idnumbers/core`. Importing the root anywhere
+  in an app registers every country for the whole app, so import only `idnumbers/core`
+  and country subpaths to get the size benefit.
 
 ## Typed parse results (#123)
 

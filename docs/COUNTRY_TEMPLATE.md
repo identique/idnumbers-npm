@@ -171,6 +171,7 @@ export function checksum(idNumber: string): CheckDigit | null {
 import { IdMetadata, ParsedInfo, Gender } from '../../types.js';
 import { validateRegexp, isValidDate } from '../../utils.js';
 import { CheckDigit } from '../../constants.js';
+import { defineCountry } from '../../registry/country.js';
 import { checksum } from './util.js';
 
 export interface XyzParseResult extends ParsedInfo {
@@ -257,6 +258,12 @@ export const NationalID = {
   METADATA,
 };
 
+/**
+ * Registry definition: pass it to `register()` from `idnumbers/core`.
+ * The root `idnumbers` entry registers it automatically.
+ */
+export const country = defineCountry('XYZ', ['XY'], NationalID);
+
 // Secondary ID types: exported here, never registered (see step 5).
 // export { TaxNumber } from './taxNumber.js';
 ```
@@ -285,43 +292,53 @@ this is asserted by the format-info tests. Never use a real person's number.
 
 ## 5. Wire it into the library
 
-A new country touches **three** places, plus one rule to respect. Missing any of the three produces a
-country that silently does not work.
+A new country touches **four** places, plus one rule to respect. Missing any of them produces a
+country that silently does not work. The `idnumbers/countries/xyz` subpath itself needs no wiring:
+the `./countries/*` pattern in the `package.json` `exports` map covers every country directory.
 
-**1. [`src/registry/registerAll.ts`](../src/registry/registerAll.ts)** — import the module and add one
-`COUNTRY_REGISTRY` row. The `key` is the alpha-3 code; `aliases` must include the alpha-2 code, the
+**1. the country's `index.ts`** — export its registry definition as `country` (the last block of
+the module template above). `key` is the alpha-3 code; `aliases` must include the alpha-2 code, the
 same value as `METADATA.iso3166Alpha2` — [`src/__tests__/issue-174-alpha2-consistency.test.ts`](../src/__tests__/issue-174-alpha2-consistency.test.ts)
 asserts every registered country's `iso3166Alpha2` resolves back to its key. Lowercase forms resolve
-automatically — the registry uppercases keys:
+automatically — the registry uppercases keys. The definition must stay free of side effects: never
+import `ValidatorRegistry`'s `registry` singleton or `registerAll.ts` from a country module
+([`issue-122-country-definitions.test.ts`](../src/__tests__/issue-122-country-definitions.test.ts)
+walks every country's import graph to enforce it).
+
+**2. [`src/registry/registerAll.ts`](../src/registry/registerAll.ts)** — import the definition and
+add it to `ALL_COUNTRIES`, which the root entry registers:
 
 ```typescript
-import { NationalID as XyzNationalID } from '../countries/xyz/index.js';
+import { country as XYZ } from '../countries/xyz/index.js';
 
-// ...in COUNTRY_REGISTRY:
-{ key: 'XYZ', module: XyzNationalID, aliases: ['XY'] },
+export const ALL_COUNTRIES: readonly CountryDefinition[] = [
+  // ...in alpha-3 order:
+  XYZ,
+];
 ```
 
-For a country with two coexisting valid formats, register one composite instead of adding a second
+For a country with two coexisting valid formats, define one composite instead of adding a second
 key: [`createCompositeValidator([primary, other], overrides?)`](../src/registry/composite.ts) validates
 when any member does, parses with the first member that returns a result, and derives METADATA that
-spans the members' lengths and matches either shape — see `bgdComposite` / `smrComposite` in the same
-file.
+spans the members' lengths and matches either shape — see the `country` definitions in
+[`bgd/index.ts`](../src/countries/bgd/index.ts) and [`smr/index.ts`](../src/countries/smr/index.ts).
 
 ⚠️ **The METADATA registered for a country must describe every shape its `validate()` accepts.**
 `regexp`, `minLength`, and `maxLength` feed both `getCountryIdFormat()` and the
 `ValidationResult.reason` derivation (#117) — an input that doesn't match them is reported as
 `invalid_format`/`invalid_length` instead of `checksum_mismatch`. When a validator accepts a format
-its module METADATA doesn't describe (e.g. an older format), override the metadata at the registry
-level as `lkaComposite` does. Never rewrite the country module's public METADATA.
+its module METADATA doesn't describe (e.g. an older format), override the metadata in the `country`
+definition as [`lka/index.ts`](../src/countries/lka/index.ts) does. Never rewrite the country
+module's public METADATA.
 
-**2. [`src/index.ts`](../src/index.ts)** — export the country namespace:
+**3. [`src/index.ts`](../src/index.ts)** — export the country namespace:
 
 ```typescript
 export * as XYZ from './countries/xyz/index.js';
 ```
 
-**3. the primary module's `METADATA`** — set `countryName` and `idType` directly on it (the same
-object the registry key in step 1 points to). `listSupportedCountries()` — and the deprecated
+**4. the primary module's `METADATA`** — set `countryName` and `idType` directly on it (the same
+object the `country` definition in step 1 registers). `listSupportedCountries()` — and the deprecated
 `SUPPORTED_COUNTRIES` — derive from the registry automatically, so no separate country-list entry
 is needed. Without these fields the registry's own fallbacks apply
 ([`ValidatorRegistry.getFormat()`](../src/registry/ValidatorRegistry.ts)): `countryName` becomes the
@@ -437,7 +454,7 @@ Copy into your PR description:
 - [ ] `METADATA.example` is synthetic and passes `validateNationalId()`
 - [ ] Reused `src/utils.ts` / `src/constants.ts` instead of reimplementing checksums or enums
 - [ ] `parse()` returns `null` on invalid input and never throws
-- [ ] Registered in `registerAll.ts` (alpha-3 key + alpha-2 alias matching `METADATA.iso3166Alpha2`)
+- [ ] `export const country = defineCountry(...)` in `index.ts` (alpha-3 key + alpha-2 alias matching `METADATA.iso3166Alpha2`), added to `ALL_COUNTRIES` in `registerAll.ts`
 - [ ] Registered METADATA covers every format `validate()` accepts (`createCompositeValidator` or a registry-level override if needed)
 - [ ] `export * as <ISO3>` added to `src/index.ts`
 - [ ] `countryName` and `idType` set on the primary METADATA
@@ -456,14 +473,14 @@ Copy into your PR description:
 [`src/countries/kaz/`](../src/countries/kaz/) is the closest thing to a reference implementation and
 exercises every part of this guide:
 
-| Concern                                                                         | Where                                                                                                               |
-| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| Primary type, `IdMetadata`, named capture groups, `validate`→`parse` delegation | [`kaz/index.ts`](../src/countries/kaz/index.ts)                                                                     |
-| Shared checksum + country enums in `util.ts`                                    | [`kaz/util.ts`](../src/countries/kaz/util.ts)                                                                       |
-| Secondary type, exported but not registered                                     | [`kaz/businessId.ts`](../src/countries/kaz/businessId.ts)                                                           |
-| Century/gender decoding from a single digit                                     | `getGenderYearBase()` in [`kaz/index.ts`](../src/countries/kaz/index.ts)                                            |
-| Two-stage checksum with a retry when the modulus is 10                          | [`kaz/util.ts`](../src/countries/kaz/util.ts)                                                                       |
-| Registration + alias                                                            | `{ key: 'KAZ', module: IndividualIDNumber, aliases: ['KZ'] }` in [`registerAll.ts`](../src/registry/registerAll.ts) |
+| Concern                                                                         | Where                                                                                                                        |
+| ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Primary type, `IdMetadata`, named capture groups, `validate`→`parse` delegation | [`kaz/index.ts`](../src/countries/kaz/index.ts)                                                                              |
+| Shared checksum + country enums in `util.ts`                                    | [`kaz/util.ts`](../src/countries/kaz/util.ts)                                                                                |
+| Secondary type, exported but not registered                                     | [`kaz/businessId.ts`](../src/countries/kaz/businessId.ts)                                                                    |
+| Century/gender decoding from a single digit                                     | `getGenderYearBase()` in [`kaz/index.ts`](../src/countries/kaz/index.ts)                                                     |
+| Two-stage checksum with a retry when the modulus is 10                          | [`kaz/util.ts`](../src/countries/kaz/util.ts)                                                                                |
+| Registration + alias                                                            | `export const country = defineCountry('KAZ', ['KZ'], IndividualIDNumber)` in [`kaz/index.ts`](../src/countries/kaz/index.ts) |
 
 [`src/countries/lva/`](../src/countries/lva/) shows a simpler country: a checksum but nothing worth
 parsing (`parsable: false`), plus a superseded format in

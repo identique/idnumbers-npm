@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - A native ES module build alongside the existing CommonJS build. `import` loads the ESM build and `require` loads the CJS build, both resolved through a `package.json` `exports` map with per-condition type declarations ([#120](https://github.com/identique/idnumbers-npm/issues/120))
 - `createCompositeValidator(members, overrides?)` for countries that accept several ID formats: it validates when any member does, parses with the first member that returns a result, and derives METADATA spanning every member's lengths and shapes. Bangladesh (BGD) and San Marino (SMR) are now built with it ([#121](https://github.com/identique/idnumbers-npm/issues/121))
+- Tree-shakeable entry points: `idnumbers/core` (the full validation API and registry with no countries registered) and an `idnumbers/countries/<iso3>` subpath for each of the 85 countries. Each country module exports a side-effect-free `country` definition to pass to the new `register(...countries)`, which is idempotent; core plus one country bundles to about 1.7–5.1 KB min+gzip versus about 38 KB for the root, enforced in CI by `npm run size`. The root `idnumbers` entry is unchanged and still registers every country ([#122](https://github.com/identique/idnumbers-npm/issues/122))
+- `defineCountry(key, aliases, module)`, the `CountryDefinition` type, and `ValidatorRegistry.registerCountry()` ([#122](https://github.com/identique/idnumbers-npm/issues/122))
+- `package.json` `sideEffects` (also declared in the `dist/cjs` and `dist/esm` marker package.json files that bundlers consult), so bundlers can drop unused countries ([#122](https://github.com/identique/idnumbers-npm/issues/122))
 
 ### Changed
 
