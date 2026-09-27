@@ -6,6 +6,7 @@ import { IdMetadata, ParsedInfo, Gender } from '../../types.js';
 import { validateRegexp, isValidDate } from '../../utils.js';
 import { CheckDigit } from '../../constants.js';
 import { checksum } from './util.js';
+import { defineCountry } from '../../registry/country.js';
 
 export interface KazakhstanParseResult extends ParsedInfo {
   birthDate: Date;
@@ -123,3 +124,9 @@ export const NationalID = IndividualIDNumber;
 
 export { BusinessIDNumber } from './businessId.js';
 export { EntityType, EntityDivision } from './util.js';
+
+/**
+ * Registry definition: pass it to `register()` from `idnumbers/core`.
+ * The root `idnumbers` entry registers it automatically.
+ */
+export const country = defineCountry('KAZ', ['KZ'], IndividualIDNumber);

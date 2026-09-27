@@ -5,6 +5,7 @@
 
 import { IdMetadata, ParsedInfo } from '../../types.js';
 import { validateRegexp, isValidDate, calculateAge } from '../../utils.js';
+import { defineCountry } from '../../registry/country.js';
 
 export interface KoreaParseResult extends ParsedInfo {
   birthDate: Date;
@@ -137,3 +138,9 @@ export const ResidentRegistration = {
 };
 
 export { OldResidentRegistration } from './oldResidentRegistration.js';
+
+/**
+ * Registry definition: pass it to `register()` from `idnumbers/core`.
+ * The root `idnumbers` entry registers it automatically.
+ */
+export const country = defineCountry('KOR', ['KR'], ResidentRegistration);

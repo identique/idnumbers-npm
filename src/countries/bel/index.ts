@@ -6,6 +6,7 @@
 import { IdMetadata, ParsedInfo } from '../../types.js';
 import { isValidDate, calculateAge } from '../../utils.js';
 import { Gender } from '../../constants.js';
+import { defineCountry } from '../../registry/country.js';
 
 export interface BelgiumParseResult extends ParsedInfo {
   birthDate: Date;
@@ -146,3 +147,9 @@ export const NationalRegistrationNumber = {
 };
 
 export { EntityVAT } from './entityVat.js';
+
+/**
+ * Registry definition: pass it to `register()` from `idnumbers/core`.
+ * The root `idnumbers` entry registers it automatically.
+ */
+export const country = defineCountry('BEL', ['BE'], NationalRegistrationNumber);

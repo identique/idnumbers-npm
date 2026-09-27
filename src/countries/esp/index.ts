@@ -4,6 +4,7 @@
  */
 
 import { IdMetadata } from '../../types.js';
+import { defineCountry } from '../../registry/country.js';
 
 export const METADATA = {
   names: ['Documento Nacional de Identidad', 'DNI'],
@@ -66,3 +67,9 @@ export const DNI = {
   validate,
   METADATA,
 };
+
+/**
+ * Registry definition: pass it to `register()` from `idnumbers/core`.
+ * The root `idnumbers` entry registers it automatically.
+ */
+export const country = defineCountry('ESP', ['ES'], DNI);

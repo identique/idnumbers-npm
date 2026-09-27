@@ -5,6 +5,7 @@
 import { IdMetadata, ParsedInfo } from '../../types.js';
 import { validateRegexp, weightedModulusDigit, isValidDate } from '../../utils.js';
 import { CheckDigit } from '../../constants.js';
+import { defineCountry } from '../../registry/country.js';
 
 export interface KuwaitParseResult extends ParsedInfo {
   birthDate: Date;
@@ -117,3 +118,9 @@ export const CivilNumber = {
 
 // Alias
 export const NationalID = CivilNumber;
+
+/**
+ * Registry definition: pass it to `register()` from `idnumbers/core`.
+ * The root `idnumbers` entry registers it automatically.
+ */
+export const country = defineCountry('KWT', ['KW'], CivilNumber);

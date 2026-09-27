@@ -6,6 +6,7 @@
 import { IdMetadata, ParsedInfo } from '../../types.js';
 import { isValidDate } from '../../utils.js';
 import { Gender } from '../../constants.js';
+import { defineCountry } from '../../registry/country.js';
 
 export interface MexicoParseResult extends ParsedInfo {
   nameInitialChars: string;
@@ -176,3 +177,9 @@ export const CURP = {
 };
 
 export const NationalID = CURP;
+
+/**
+ * Registry definition: pass it to `register()` from `idnumbers/core`.
+ * The root `idnumbers` entry registers it automatically.
+ */
+export const country = defineCountry('MEX', ['MX'], CURP);

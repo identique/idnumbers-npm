@@ -5,6 +5,7 @@
 
 import { IdMetadata, ParsedInfo } from '../../types.js';
 import { validateRegexp, weightedModulusDigit, letterToNumber } from '../../utils.js';
+import { defineCountry } from '../../registry/country.js';
 
 export interface IrelandParseResult extends ParsedInfo {
   // PPS doesn't contain parsable information beyond validation
@@ -98,3 +99,9 @@ export const PersonalPublicServiceNumber = {
   parse,
   METADATA,
 };
+
+/**
+ * Registry definition: pass it to `register()` from `idnumbers/core`.
+ * The root `idnumbers` entry registers it automatically.
+ */
+export const country = defineCountry('IRL', ['IE'], PersonalPublicServiceNumber);

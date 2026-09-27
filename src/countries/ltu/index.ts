@@ -5,6 +5,7 @@
 import { IdMetadata, ParsedInfo, Gender } from '../../types.js';
 import { validateRegexp, isValidDate } from '../../utils.js';
 import { CheckDigit } from '../../constants.js';
+import { defineCountry } from '../../registry/country.js';
 
 export interface LithuaniaParseResult extends ParsedInfo {
   birthDate: Date;
@@ -155,3 +156,9 @@ export const PersonalCode = {
 
 // Alias
 export const NationalID = PersonalCode;
+
+/**
+ * Registry definition: pass it to `register()` from `idnumbers/core`.
+ * The root `idnumbers` entry registers it automatically.
+ */
+export const country = defineCountry('LTU', ['LT'], PersonalCode);

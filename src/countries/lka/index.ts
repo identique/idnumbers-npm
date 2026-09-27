@@ -10,6 +10,8 @@
 import { IdMetadata, ParsedInfo, Gender } from '../../types.js';
 import { weightedModulusDigit, modulusOverflowMod10 } from '../../utils.js';
 import { CheckDigit, Citizenship } from '../../constants.js';
+import { defineCountry } from '../../registry/country.js';
+import { createValidator } from '../../registry/adapters.js';
 
 export interface SriLankaParseResult extends ParsedInfo {
   birthDate: Date;
@@ -216,3 +218,16 @@ export const NationalID = {
   checksum,
   METADATA,
 };
+
+/**
+ * Registry definition: pass it to `register()` from `idnumbers/core`.
+ * The root `idnumbers` entry registers it automatically.
+ *
+ * The registered metadata covers both the NEW (12-digit) and OLD (9 digits + V/X)
+ * formats that validate()/checksum() accept; the module's own METADATA describes
+ * the new format only.
+ */
+export const country = defineCountry('LKA', ['LK'], {
+  ...createValidator(NationalID),
+  METADATA: { ...NationalID.METADATA, regexp: /^(?:\d{12}|\d{9}[VvXx])$/ },
+});

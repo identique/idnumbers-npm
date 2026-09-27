@@ -1,4 +1,5 @@
 import { CountryValidator, ValidatorKey, IdFormat, IValidatorRegistry } from './types.js';
+import type { CountryDefinition } from './country.js';
 
 /**
  * Central registry for country ID validators.
@@ -23,6 +24,23 @@ export class ValidatorRegistry implements IValidatorRegistry {
       throw new Error(`Validator already registered for key: ${normalized}`);
     }
     this.validators.set(normalized, validator);
+  }
+
+  /**
+   * Register a country definition: its validator under `country.key`, plus its aliases.
+   *
+   * Idempotent for the same definition, so registering a country that is already
+   * registered (e.g. by the root `idnumbers` entry) is a no-op.
+   * @throws Error if the key or an alias is already taken by a different validator.
+   */
+  registerCountry(country: CountryDefinition): void {
+    if (this.validators.get(country.key.toUpperCase()) === country.validator) {
+      return;
+    }
+    this.register(country.key, country.validator);
+    for (const alias of country.aliases) {
+      this.registerAlias(alias, country.key);
+    }
   }
 
   /**

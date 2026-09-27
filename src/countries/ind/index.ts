@@ -5,6 +5,7 @@
 
 import { IdMetadata } from '../../types.js';
 import { validateRegexp, verhoeffCheck } from '../../utils.js';
+import { defineCountry } from '../../registry/country.js';
 
 export const METADATA: IdMetadata = {
   iso3166Alpha2: 'IN',
@@ -68,3 +69,9 @@ export const NationalID = {
 
 // Alias
 export const UID = NationalID;
+
+/**
+ * Registry definition: pass it to `register()` from `idnumbers/core`.
+ * The root `idnumbers` entry registers it automatically.
+ */
+export const country = defineCountry('IND', ['IN'], NationalID);
