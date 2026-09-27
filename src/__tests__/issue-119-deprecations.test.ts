@@ -41,13 +41,13 @@ export const deprecatedMetaVar: IMetadata = HUN.METADATA as unknown as IMetadata
 declare const someIdMetadata: IdMetadata;
 export const aliasOfValue = someIdMetadata.aliasOf;
 
-export const hunPattern = HUN.METADATA.pattern;
-export const hunIsParsable = HUN.METADATA.isParsable;
-export const hunHasChecksum = HUN.METADATA.hasChecksum;
+export const hunRegexp = HUN.METADATA.regexp;
+export const hunParsable = HUN.METADATA.parsable;
+export const hunChecksum = HUN.METADATA.checksum;
 
-export const itaPattern = ITA.METADATA.pattern;
-export const itaIsParsable = ITA.METADATA.isParsable;
-export const itaHasChecksum = ITA.METADATA.hasChecksum;
+export const itaRegexp = ITA.METADATA.regexp;
+export const itaParsable = ITA.METADATA.parsable;
+export const itaChecksum = ITA.METADATA.checksum;
 
 export type UsesFunctionBasedMetadata = FunctionBasedMetadata;
 
@@ -154,32 +154,25 @@ describe('issue #119: deprecated symbols surface IDE deprecation diagnostics', (
     expect(isDeprecatedAt(diagnostics, pos)).toBe(true);
   });
 
-  it('flags HUN.METADATA.pattern/isParsable/hasChecksum as deprecated', () => {
-    expect(isDeprecatedAt(diagnostics, offsetOf('HUN.METADATA.pattern', 'pattern'))).toBe(true);
-    expect(isDeprecatedAt(diagnostics, offsetOf('HUN.METADATA.isParsable', 'isParsable'))).toBe(
-      true
-    );
-    expect(isDeprecatedAt(diagnostics, offsetOf('HUN.METADATA.hasChecksum', 'hasChecksum'))).toBe(
-      true
-    );
-  });
-
-  it('flags ITA.METADATA.pattern/isParsable/hasChecksum as deprecated (second function-based country)', () => {
-    expect(isDeprecatedAt(diagnostics, offsetOf('ITA.METADATA.pattern', 'pattern'))).toBe(true);
-    expect(isDeprecatedAt(diagnostics, offsetOf('ITA.METADATA.isParsable', 'isParsable'))).toBe(
-      true
-    );
-    expect(isDeprecatedAt(diagnostics, offsetOf('ITA.METADATA.hasChecksum', 'hasChecksum'))).toBe(
-      true
-    );
-  });
-
   it('flags FunctionBasedMetadata as deprecated when referenced as a type', () => {
     const pos = offsetOf('= FunctionBasedMetadata;', 'FunctionBasedMetadata');
     expect(isDeprecatedAt(diagnostics, pos)).toBe(true);
   });
 
   // -- Negative controls: none of these are deprecated ----------------------
+
+  it('does NOT flag the canonical METADATA fields that replaced the #121 renames', () => {
+    // #121 removed isParsable/hasChecksum/pattern; the canonical names they were
+    // renamed to must read cleanly on both previously function-dialect modules.
+    for (const country of ['hun', 'ita']) {
+      for (const field of ['Regexp', 'Parsable', 'Checksum']) {
+        const upper = country.toUpperCase();
+        const anchorText = `${country}${field} = ${upper}.METADATA.${field.toLowerCase()};`;
+        const pos = offsetOf(anchorText, `.${field.toLowerCase()};`) + 1;
+        expect(isDeprecatedAt(diagnostics, pos)).toBe(false);
+      }
+    }
+  });
 
   it('does NOT flag listSupportedCountries()', () => {
     const pos = offsetOf(

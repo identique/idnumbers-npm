@@ -3,7 +3,7 @@
  * Unique Population Registry Code
  */
 
-import { ParsedInfo } from '../../types.js';
+import { IdMetadata, ParsedInfo } from '../../types.js';
 import { isValidDate } from '../../utils.js';
 import { Gender } from '../../constants.js';
 
@@ -18,7 +18,6 @@ export interface MexicoParseResult extends ParsedInfo {
 }
 
 export const METADATA = {
-  name: 'Mexico CURP',
   names: [
     'CURP',
     'Clave Única de Registro de Población',
@@ -30,23 +29,22 @@ export const METADATA = {
   idType: 'CURP',
   minLength: 18,
   maxLength: 18,
-  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
-  pattern:
+  regexp:
     /^(?<initial>[A-Z]{4})(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})(?<gender>[HMX])(?<location>[A-Z]{2})(?<consonant>[A-Z]{3})(?<sn>[0-9A-Z])(?<checksum>\d)$/,
   displayFormat: 'AAAANNNNNNAAAAAANN',
   example: 'HEGG560427MVZRRL04',
   checksumAlgorithm:
     'Weighted alphanumeric sum mod 10 (positions weighted 18..2; check = (10 - remainder) mod 10)',
   officialName: 'Clave Única de Registro de Población (CURP)',
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: true,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: true,
+  checksum: true,
+  parsable: true,
+  aliasOf: null,
+  deprecated: false,
   links: [
     'https://en.wikipedia.org/wiki/Unique_Population_Registry_Code',
     'http://sistemas.uaeh.edu.mx/dce/admisiones/docs/guia_CURP.pdf',
   ],
-};
+} satisfies IdMetadata;
 
 const ID_CHARS = '0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
 
@@ -96,7 +94,7 @@ const ALLOWED_LOCATIONS = [
  * Calculate checksum for Mexico CURP
  */
 function calculateChecksum(idNumber: string): boolean {
-  const match = METADATA.pattern.exec(idNumber);
+  const match = METADATA.regexp.exec(idNumber);
   if (!match) {
     return false;
   }
@@ -118,7 +116,7 @@ function calculateChecksum(idNumber: string): boolean {
  * Parse Mexico CURP
  */
 export function parse(idNumber: string): MexicoParseResult | null {
-  const match = METADATA.pattern.exec(idNumber);
+  const match = METADATA.regexp.exec(idNumber);
   if (!match || !match.groups) {
     return null;
   }

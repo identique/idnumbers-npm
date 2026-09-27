@@ -2,7 +2,7 @@
  * Iceland Icelandic Identification Number (kennitala)
  */
 
-import { ParsedInfo } from '../../types.js';
+import { IdMetadata, ParsedInfo } from '../../types.js';
 import { validateRegexp, weightedModulusDigit, isValidDate, calculateAge } from '../../utils.js';
 import { CheckDigit } from '../../constants.js';
 
@@ -14,25 +14,23 @@ export interface IcelandParseResult extends ParsedInfo {
 }
 
 export const METADATA = {
-  name: 'Iceland Icelandic Identification Number',
   names: ['Icelandic identification number', 'kennitala', 'kt.'],
   iso3166Alpha2: 'IS',
   countryName: 'Iceland',
   idType: 'Icelandic Identification Number (kennitala)',
   minLength: 10,
   maxLength: 10,
-  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
-  pattern: /^(?<dd>\d{2})(?<mm>\d{2})(?<yy>\d{2})-?(?<sn>\d{2})(?<checksum>\d)(?<century>\d)$/,
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: true,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: true,
+  regexp: /^(?<dd>\d{2})(?<mm>\d{2})(?<yy>\d{2})-?(?<sn>\d{2})(?<checksum>\d)(?<century>\d)$/,
+  checksum: true,
+  parsable: true,
   displayFormat: 'DDMMYY-SSKC',
   example: '120174-3399',
   checksumAlgorithm: 'Weighted sum mod 11 (weights 3,2,7,6,5,4,3,2)',
   officialName: 'kennitala',
+  aliasOf: null,
+  deprecated: false,
   links: ['https://en.wikipedia.org/wiki/Icelandic_identification_number'],
-};
+} satisfies IdMetadata;
 
 const WEIGHTS = [3, 2, 7, 6, 5, 4, 3, 2];
 
@@ -47,7 +45,7 @@ function normalize(idNumber: string): string {
  * Validate checksum for Iceland ID
  */
 function validateChecksum(idNumber: string): boolean {
-  if (!validateRegexp(idNumber, METADATA.pattern)) {
+  if (!validateRegexp(idNumber, METADATA.regexp)) {
     return false;
   }
 
@@ -79,7 +77,7 @@ export function validate(idNumber: string): boolean {
  * Parse Iceland Icelandic Identification Number
  */
 export function parse(idNumber: string): IcelandParseResult | null {
-  const match = METADATA.pattern.exec(idNumber.trim());
+  const match = METADATA.regexp.exec(idNumber.trim());
   if (!match || !match.groups) {
     return null;
   }

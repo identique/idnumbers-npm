@@ -5,7 +5,7 @@
  *
  * Checksum: a trailing check digit exists, but no official or independently
  * reproducible algorithm is available, so validation is format + semantic only
- * (`METADATA.hasChecksum === false`). See docs/research/egypt-national-id.md.
+ * (`METADATA.checksum === false`). See docs/research/egypt-national-id.md.
  *
  * Synthetic-data notice: every ID below is synthetic — constructed only to
  * exercise validation. None is a knowingly-real personal identifier.
@@ -32,10 +32,10 @@ describe('Egypt (EGY) — National ID', () => {
       expect(METADATA.iso3166Alpha2).toBe('EG');
       expect(METADATA.minLength).toBe(14);
       expect(METADATA.maxLength).toBe(14);
-      expect(METADATA.isParsable).toBe(true);
+      expect(METADATA.parsable).toBe(true);
       // No official check-digit algorithm is available; validation is format +
       // semantic (real date, known governorate) with no check-digit validation.
-      expect(METADATA.hasChecksum).toBe(false);
+      expect(METADATA.checksum).toBe(false);
       expect(METADATA.displayFormat).toBe('CYYMMDDGGSSSSV');
     });
 
@@ -212,8 +212,8 @@ describe('Egypt (EGY) — National ID', () => {
       expect(checksum('')).toBeNull();
     });
 
-    it('agrees with METADATA.hasChecksum', () => {
-      expect(METADATA.hasChecksum).toBe(false);
+    it('agrees with METADATA.checksum', () => {
+      expect(METADATA.checksum).toBe(false);
       expect(NationalID.checksum(METADATA.example)).toBeNull();
     });
   });

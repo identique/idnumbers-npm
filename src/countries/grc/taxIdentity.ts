@@ -3,7 +3,7 @@
  * ΑΦΜ - Αριθμός Φορολογικού Μητρώου - Tax Registry Number
  */
 
-import { ParsedInfo } from '../../types.js';
+import { IdMetadata, ParsedInfo } from '../../types.js';
 import { validateRegexp, weightedModulusDigit, modulusOverflowMod10 } from '../../utils.js';
 import { CheckDigit } from '../../constants.js';
 
@@ -12,25 +12,23 @@ export interface GreeceParseResult extends ParsedInfo {
 }
 
 export const METADATA = {
-  name: 'Greece Tax Identity Number',
   names: ['Tax Identity Number', 'AFM', 'ΑΦΜ', 'Αριθμός Φορολογικού Μητρώου'],
   iso3166Alpha2: 'GR',
   countryName: 'Greece',
   idType: 'Tax Identity Number',
   minLength: 9,
   maxLength: 9,
-  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
-  pattern: /^\d{9}$/,
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: true,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: false,
+  regexp: /^\d{9}$/,
+  checksum: true,
+  parsable: false,
   displayFormat: '#########',
   example: '094014250',
   checksumAlgorithm: 'Weighted sum mod 11 (powers of two: 256..2)',
   officialName: 'ΑΦΜ (Αριθμός Φορολογικού Μητρώου)',
+  aliasOf: null,
+  deprecated: false,
   links: ['https://en.wikipedia.org/wiki/National_identification_number#Greece'],
-};
+} satisfies IdMetadata;
 
 const MULTIPLIER = [256, 128, 64, 32, 16, 8, 4, 2];
 
@@ -38,7 +36,7 @@ const MULTIPLIER = [256, 128, 64, 32, 16, 8, 4, 2];
  * Calculate checksum for Greece Tax Identity Number
  */
 function calculateChecksum(idNumber: string): CheckDigit | null {
-  if (!validateRegexp(idNumber, METADATA.pattern)) {
+  if (!validateRegexp(idNumber, METADATA.regexp)) {
     return null;
   }
 

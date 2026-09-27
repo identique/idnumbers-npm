@@ -4,7 +4,7 @@
  * https://en.wikipedia.org/wiki/National_identification_number#Czech_Republic_and_Slovakia
  */
 
-import { ParsedInfo } from '../../types.js';
+import { IdMetadata, ParsedInfo } from '../../types.js';
 import { isValidDate, calculateAge } from '../../utils.js';
 
 export interface CzechParseResult extends ParsedInfo {
@@ -16,27 +16,25 @@ export interface CzechParseResult extends ParsedInfo {
 }
 
 export const METADATA = {
-  name: 'Czech Republic Birth Number',
   names: ['Birth Number', 'rodné číslo', 'RČ'],
   iso3166Alpha2: 'CZ',
   countryName: 'Czech Republic',
   idType: 'Birth Number',
   minLength: 10,
   maxLength: 10,
-  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
-  pattern: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})\/?(?<sn>\d{3})(?<checksum>\d)$/,
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: true,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: true,
+  regexp: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})\/?(?<sn>\d{3})(?<checksum>\d)$/,
+  checksum: true,
+  parsable: true,
   displayFormat: 'YYMMDD/SSSC',
   example: '0001010009',
   checksumAlgorithm: 'Whole 10-digit number divisible by 11',
   officialName: 'Rodné číslo (RČ)',
+  aliasOf: null,
+  deprecated: false,
   links: [
     'https://en.wikipedia.org/wiki/National_identification_number#Czech_Republic_and_Slovakia',
   ],
-};
+} satisfies IdMetadata;
 
 /**
  * Normalize the ID number by removing slash separator
@@ -71,7 +69,7 @@ export function validate(idNumber: string): boolean {
  * Parse Czech Birth Number
  */
 export function parse(idNumber: string): CzechParseResult | null {
-  const match = METADATA.pattern.exec(idNumber.trim());
+  const match = METADATA.regexp.exec(idNumber.trim());
   if (!match || !match.groups) {
     return null;
   }

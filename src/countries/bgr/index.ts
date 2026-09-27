@@ -3,7 +3,7 @@
  * Единен граждански номер / Edinen grazhdanski nomer
  */
 
-import { ParsedInfo } from '../../types.js';
+import { IdMetadata, ParsedInfo } from '../../types.js';
 import { validateRegexp, weightedModulusDigit, isValidDate, calculateAge } from '../../utils.js';
 import { CheckDigit } from '../../constants.js';
 
@@ -15,7 +15,6 @@ export interface BulgariaParseResult extends ParsedInfo {
 }
 
 export const METADATA = {
-  name: 'Bulgaria Uniform Civil Number',
   names: [
     'Uniform civil number',
     'Единен граждански номер',
@@ -28,18 +27,17 @@ export const METADATA = {
   idType: 'Uniform Civil Number',
   minLength: 10,
   maxLength: 10,
-  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
-  pattern: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})\d{2}(?<gender>\d)(?<checksum>\d)$/,
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: true,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: true,
+  regexp: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})\d{2}(?<gender>\d)(?<checksum>\d)$/,
+  checksum: true,
+  parsable: true,
   displayFormat: 'YYMMDDRRGC',
   example: '7501020018',
   checksumAlgorithm: 'Weighted sum mod 11 (weights 2,4,8,5,10,9,7,3,6)',
   officialName: 'Единен граждански номер (ЕГН)',
+  aliasOf: null,
+  deprecated: false,
   links: ['https://en.wikipedia.org/wiki/National_identification_number#Bulgaria'],
-};
+} satisfies IdMetadata;
 
 const MULTIPLIER = [2, 4, 8, 5, 10, 9, 7, 3, 6];
 
@@ -64,7 +62,7 @@ export function validate(idNumber: string): boolean {
     return false;
   }
 
-  if (!validateRegexp(idNumber, METADATA.pattern)) {
+  if (!validateRegexp(idNumber, METADATA.regexp)) {
     return false;
   }
 
@@ -75,7 +73,7 @@ export function validate(idNumber: string): boolean {
  * Parse Bulgaria Uniform Civil Number
  */
 export function parse(idNumber: string): BulgariaParseResult | null {
-  const match = METADATA.pattern.exec(idNumber.trim());
+  const match = METADATA.regexp.exec(idNumber.trim());
   if (!match || !match.groups) {
     return null;
   }

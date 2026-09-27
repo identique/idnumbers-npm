@@ -2,7 +2,7 @@
  * Hungary Personal ID Number
  */
 
-import { ParsedInfo } from '../../types.js';
+import { IdMetadata, ParsedInfo } from '../../types.js';
 import { validateRegexp, weightedModulusDigit, isValidDate, calculateAge } from '../../utils.js';
 import { CheckDigit } from '../../constants.js';
 
@@ -16,26 +16,24 @@ export interface HungaryParseResult extends ParsedInfo {
 }
 
 export const METADATA = {
-  name: 'Hungary Personal ID Number',
   names: ['Personal ID Number'],
   iso3166Alpha2: 'HU',
   countryName: 'Hungary',
   idType: 'Personal ID Number',
   minLength: 11,
   maxLength: 11,
-  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
-  pattern:
+  regexp:
     /^(?<gender>\d)[ -]?(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})[ -]?(?<sn>\d{3})(?<checksum>\d)$/,
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: true,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: true,
+  checksum: true,
+  parsable: true,
   displayFormat: 'GYYMMDDSSSC',
   example: '18001010016',
   checksumAlgorithm: 'Weighted sum mod 11 (weights 1-10)',
   officialName: 'Személyi azonosító',
+  aliasOf: null,
+  deprecated: false,
   links: ['https://en.wikipedia.org/wiki/National_identification_number#Hungary'],
-};
+} satisfies IdMetadata;
 
 const MAGIC_MULTIPLIER = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
@@ -77,7 +75,7 @@ function getGenderCitizenshipYearBase(genderCitizenship: number): {
  * Validate checksum using weighted modulus algorithm
  */
 function validateChecksum(idNumber: string): boolean {
-  if (!validateRegexp(idNumber, METADATA.pattern)) {
+  if (!validateRegexp(idNumber, METADATA.regexp)) {
     return false;
   }
 
@@ -104,7 +102,7 @@ export function validate(idNumber: string): boolean {
  * Parse Hungary Personal ID Number
  */
 export function parse(idNumber: string): HungaryParseResult | null {
-  const match = METADATA.pattern.exec(idNumber.trim());
+  const match = METADATA.regexp.exec(idNumber.trim());
   if (!match || !match.groups) {
     return null;
   }

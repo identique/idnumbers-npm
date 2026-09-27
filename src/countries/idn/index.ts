@@ -3,7 +3,7 @@
  * Nomor Induk Kependudukan
  */
 
-import { ParsedInfo } from '../../types.js';
+import { IdMetadata, ParsedInfo } from '../../types.js';
 import { DISTRICT_CODES } from './districts.js';
 
 export interface IndonesiaParseResult extends ParsedInfo {
@@ -16,25 +16,23 @@ export interface IndonesiaParseResult extends ParsedInfo {
 }
 
 export const METADATA = {
-  name: 'Indonesia National ID Number',
   names: ['ID Number', 'NIK', 'Nomor Induk Kependudukan'],
   iso3166Alpha2: 'ID',
   countryName: 'Indonesia',
   idType: 'National ID Number',
   minLength: 16,
   maxLength: 16,
-  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
-  pattern: /^(?<district>\d{6})(?<dd>[0-7]\d)(?<mm>(0[1-9]|1[012]))(?<yy>\d{2})(?!0000)\d{4}$/,
+  regexp: /^(?<district>\d{6})(?<dd>[0-7]\d)(?<mm>(0[1-9]|1[012]))(?<yy>\d{2})(?!0000)\d{4}$/,
   displayFormat: 'PPPPPPDDMMYYSSSS',
   example: '1101010101900001',
   checksumAlgorithm: 'None (district/date structure only)',
   officialName: 'Nomor Induk Kependudukan (NIK)',
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: false,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: true,
+  checksum: false,
+  parsable: true,
+  aliasOf: null,
+  deprecated: false,
   links: ['https://en.wikipedia.org/wiki/National_identification_number#Indonesia'],
-};
+} satisfies IdMetadata;
 
 /**
  * Validate Indonesia National ID Number (NIK)
@@ -44,7 +42,7 @@ export function validate(idNumber: string): boolean {
     return false;
   }
 
-  const match = METADATA.pattern.exec(idNumber.trim());
+  const match = METADATA.regexp.exec(idNumber.trim());
   if (!match) {
     return false;
   }
@@ -56,7 +54,7 @@ export function validate(idNumber: string): boolean {
  * Parse Indonesia National ID Number (NIK)
  */
 export function parse(idNumber: string): IndonesiaParseResult | null {
-  const match = METADATA.pattern.exec(idNumber.trim());
+  const match = METADATA.regexp.exec(idNumber.trim());
   if (!match || !match.groups) {
     return null;
   }

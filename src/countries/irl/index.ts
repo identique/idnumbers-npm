@@ -3,7 +3,7 @@
  * Uimhir Phearsanta Seirbhíse Poiblí
  */
 
-import { ParsedInfo } from '../../types.js';
+import { IdMetadata, ParsedInfo } from '../../types.js';
 import { validateRegexp, weightedModulusDigit, letterToNumber } from '../../utils.js';
 
 export interface IrelandParseResult extends ParsedInfo {
@@ -11,7 +11,6 @@ export interface IrelandParseResult extends ParsedInfo {
 }
 
 export const METADATA = {
-  name: 'Ireland Personal Public Service Number',
   names: [
     'Personal Public Service Number',
     'PPS',
@@ -25,18 +24,17 @@ export const METADATA = {
   idType: 'Personal Public Service Number',
   minLength: 8,
   maxLength: 10,
-  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
-  pattern: /^\d{7}[A-W][A-W\s]?$|^\d{7}[A-W]\/[A-W\s]?$/,
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: true,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: false,
+  regexp: /^\d{7}[A-W][A-W\s]?$|^\d{7}[A-W]\/[A-W\s]?$/,
+  checksum: true,
+  parsable: false,
   displayFormat: '#######L(L)',
   example: '1234567T',
   checksumAlgorithm: 'Weighted sum mod 23 -> check letter (A-W)',
   officialName: 'Uimhir Phearsanta Seirbhíse Poiblí (PPS)',
+  aliasOf: null,
+  deprecated: false,
   links: ['https://en.wikipedia.org/wiki/Personal_Public_Service_Number'],
-};
+} satisfies IdMetadata;
 
 const MAGIC_MULTIPLIER = [8, 7, 6, 5, 4, 3, 2, 9];
 
@@ -75,7 +73,7 @@ export function validate(idNumber: string): boolean {
     return false;
   }
 
-  if (!validateRegexp(idNumber, METADATA.pattern)) {
+  if (!validateRegexp(idNumber, METADATA.regexp)) {
     return false;
   }
 

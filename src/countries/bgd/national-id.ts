@@ -3,6 +3,8 @@
  * Old format (13 digits) and New format (17 digits)
  */
 
+import { IdMetadata } from '../../types.js';
+
 export enum ResidentialType {
   RURAL = 1,
   MUNICIPALITY = 2,
@@ -25,25 +27,24 @@ export interface NewParseResult extends OldParseResult {
 }
 
 export const OLD_METADATA = {
-  name: 'Bangladesh Old National ID',
   names: ['Bangladesh national ID number', 'জাতীয় পরিচয়পত্র', 'NID', 'BD'],
   iso3166Alpha2: 'BD',
+  countryName: 'Bangladesh',
+  idType: 'Old National ID',
   minLength: 13,
   maxLength: 13,
   regexp: /^(?<distinct>\d{2})(?<rmo>\d)(?<police>\d{2})(?<union>\d{2})(?<sn>\d{6})$/,
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: false,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: true,
+  checksum: false,
+  parsable: true,
   deprecated: true,
+  aliasOf: null,
   links: [
     'https://en.wikipedia.org/wiki/National_identity_card_(Bangladesh)',
     'http://nationalidcardbangladesh.blogspot.com/2016/04/voter-id-national-id-card-number.html',
   ],
-};
+} satisfies IdMetadata;
 
 export const NEW_METADATA = {
-  name: 'Bangladesh National ID',
   names: ['Bangladesh national ID number', 'জাতীয় পরিচয়পত্র', 'NID', 'BD'],
   iso3166Alpha2: 'BD',
   countryName: 'Bangladesh',
@@ -51,20 +52,19 @@ export const NEW_METADATA = {
   minLength: 17,
   maxLength: 17,
   regexp: /^(?<yyyy>\d{4})(?<distinct>\d{2})(?<rmo>\d)(?<police>\d{2})(?<union>\d{2})(?<sn>\d{6})$/,
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: false,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: true,
+  checksum: false,
+  parsable: true,
   displayFormat: 'YYYYDDRPPUUSSSSSS',
   example: '19841592824588424',
   checksumAlgorithm: 'None (structural validation only)',
   officialName: 'জাতীয় পরিচয়পত্র (NID)',
   deprecated: false,
+  aliasOf: null,
   links: [
     'https://en.wikipedia.org/wiki/National_identity_card_(Bangladesh)',
     'http://nationalidcardbangladesh.blogspot.com/2016/04/voter-id-national-id-card-number.html',
   ],
-};
+} satisfies IdMetadata;
 
 export class OldNationalID {
   static readonly METADATA = OLD_METADATA;

@@ -2,7 +2,7 @@
  * Switzerland Social Security Number (AHV-Nr. / No AVS)
  */
 
-import { ParsedInfo } from '../../types.js';
+import { IdMetadata, ParsedInfo } from '../../types.js';
 import { ean13Digit } from '../../utils.js';
 
 export interface SwitzerlandParseResult extends ParsedInfo {
@@ -10,25 +10,23 @@ export interface SwitzerlandParseResult extends ParsedInfo {
 }
 
 export const METADATA = {
-  name: 'Switzerland Social Security Number',
   names: ['Social Security Number', 'AHV-Nr.', 'No AVS'],
   iso3166Alpha2: 'CH',
   countryName: 'Switzerland',
   idType: 'Social Security Number',
   minLength: 13,
   maxLength: 16,
-  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
-  pattern: /^756\.?\d{4}\.?\d{4}\.?\d{2}$/,
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: true,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: false,
+  regexp: /^756\.?\d{4}\.?\d{4}\.?\d{2}$/,
+  checksum: true,
+  parsable: false,
   displayFormat: '756.XXXX.XXXX.XX',
   example: '756.1234.5678.97',
   checksumAlgorithm: 'EAN-13 check digit',
   officialName: 'AHV-Nr. / No AVS',
+  aliasOf: null,
+  deprecated: false,
   links: ['https://en.wikipedia.org/wiki/National_identification_number#Switzerland'],
-};
+} satisfies IdMetadata;
 
 /**
  * Normalize SSN by removing dots

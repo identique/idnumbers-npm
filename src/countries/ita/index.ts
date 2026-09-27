@@ -2,7 +2,7 @@
  * Italy Fiscal Code (Codice fiscale)
  */
 
-import { ParsedInfo } from '../../types.js';
+import { IdMetadata, ParsedInfo } from '../../types.js';
 import { isValidDate, calculateAge } from '../../utils.js';
 
 export interface ItalyParseResult extends ParsedInfo {
@@ -16,29 +16,27 @@ export interface ItalyParseResult extends ParsedInfo {
 }
 
 export const METADATA = {
-  name: 'Italy Fiscal Code',
   names: ['Fiscal Code', 'Codice fiscale'],
   iso3166Alpha2: 'IT',
   countryName: 'Italy',
   idType: 'Fiscal Code',
   minLength: 16,
   maxLength: 16,
-  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
-  pattern:
+  regexp:
     /^(?<surname>[A-Z]{3})(?<firstname>[A-Z]{3})(?<yy>[0-9A-Z]{2})(?<m>[A-EHLMPR-T])(?<dd>[0-9A-Z]{2})(?<area_code>[A-Z][0-9A-Z]{3})(?<checksum>[A-Z])$/,
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: true,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: true,
+  checksum: true,
+  parsable: true,
   displayFormat: 'LLLLLLYYMDDXXXXC',
   example: 'RSSMRA85M01H501Q',
   checksumAlgorithm: 'Weighted alphanumeric mod 26 -> check letter',
   officialName: 'Codice fiscale',
+  aliasOf: null,
+  deprecated: false,
   links: [
     'https://en.wikipedia.org/wiki/Italian_fiscal_code',
     'https://en.wikipedia.org/wiki/National_identification_number#Italy',
   ],
-};
+} satisfies IdMetadata;
 
 const MONTH_MAP: { [key: string]: number } = {
   A: 1,
@@ -237,7 +235,7 @@ export function validate(idNumber: string): boolean {
     return false;
   }
 
-  const match = METADATA.pattern.test(idNumber.trim().toUpperCase());
+  const match = METADATA.regexp.test(idNumber.trim().toUpperCase());
   if (!match) {
     return false;
   }
@@ -250,7 +248,7 @@ export function validate(idNumber: string): boolean {
  */
 export function parse(idNumber: string): ItalyParseResult | null {
   const upperIdNumber = idNumber.trim().toUpperCase();
-  const match = METADATA.pattern.exec(upperIdNumber);
+  const match = METADATA.regexp.exec(upperIdNumber);
   if (!match || !match.groups) {
     return null;
   }

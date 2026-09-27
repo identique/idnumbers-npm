@@ -2,7 +2,7 @@
  * Latvia Personal Code (personas kods)
  */
 
-import { ParsedInfo } from '../../types.js';
+import { IdMetadata, ParsedInfo } from '../../types.js';
 import { validateRegexp } from '../../utils.js';
 import { CheckDigit } from '../../constants.js';
 
@@ -11,28 +11,26 @@ export interface LatviaParseResult extends ParsedInfo {
 }
 
 export const METADATA = {
-  name: 'Latvia Personal Code',
   names: ['Personal Code', 'personas kods'],
   iso3166Alpha2: 'LV',
   countryName: 'Latvia',
   idType: 'Personal Code',
   minLength: 11,
   maxLength: 11,
-  /** @deprecated Renamed to `regexp` in v2.0.0 (#121). */
-  pattern: /^(\d{6}-?\d{5})$/,
-  /** @deprecated Renamed to `checksum` in v2.0.0 (#121). */
-  hasChecksum: true,
-  /** @deprecated Renamed to `parsable` in v2.0.0 (#121). */
-  isParsable: false,
+  regexp: /^(\d{6}-?\d{5})$/,
+  checksum: true,
+  parsable: false,
   displayFormat: 'DDMMYY-SSSSS',
   example: '161175-19997',
   checksumAlgorithm: 'Weighted sum mod 11, then mod 10',
   officialName: 'personas kods',
+  aliasOf: null,
+  deprecated: false,
   links: [
     'https://en.wikipedia.org/wiki/National_identification_number#Latvia',
     'https://www.oecd.org/tax/automatic-exchange/crs-implementation-and-assistance/tax-identification-numbers/Latvia-TIN.pdf',
   ],
-};
+} satisfies IdMetadata;
 
 const MULTIPLIER = [1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
 
@@ -47,7 +45,7 @@ function normalize(idNumber: string): string {
  * Calculate checksum for Latvia Personal Code
  */
 function calculateChecksum(idNumber: string): CheckDigit | null {
-  if (!validateRegexp(idNumber, METADATA.pattern)) {
+  if (!validateRegexp(idNumber, METADATA.regexp)) {
     return null;
   }
 
