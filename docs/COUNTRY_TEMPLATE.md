@@ -62,8 +62,8 @@ Conventions:
   `oldPersonalCode.ts`. Seven files use hyphenated names (`national-id.ts`), all of them from the
   initial release; every module added since is camelCase. Use camelCase.
 - **Two `index.ts` layouts are both valid.** The primary type may be defined directly in `index.ts`
-  (31 of 80 countries — [`kaz/`](../src/countries/kaz/index.ts), [`lva/`](../src/countries/lva/index.ts)),
-  or in a named file that `index.ts` re-exports (49 of 80 — [`aus/`](../src/countries/aus/index.ts),
+  (36 of 85 countries — [`kaz/`](../src/countries/kaz/index.ts), [`lva/`](../src/countries/lva/index.ts)),
+  or in a named file that `index.ts` re-exports (49 of 85 — [`aus/`](../src/countries/aus/index.ts),
   [`nzl/`](../src/countries/nzl/index.ts), [`zwe/`](../src/countries/zwe/index.ts)). Neither is
   deprecated. Prefer defining it directly in `index.ts` for a country with a single ID type, and a
   named file (`nationalId.ts`) once the country has several — the re-export layout keeps each type in
@@ -71,7 +71,7 @@ Conventions:
 - **`util.ts` is for country-shared helpers only** — create it when two files in the same country need
   the same logic (as in [`kaz/util.ts`](../src/countries/kaz/util.ts)). A helper used by exactly one
   file stays private in that file. Anything useful across countries belongs in `src/utils.ts`.
-- **A per-country `README.md` is optional and rare** (3 of 80 countries have one). Add it only when
+- **A per-country `README.md` is optional and rare** (3 of 85 countries have one). Add it only when
   the format needs prose that does not fit in doc comments.
 
 ---
@@ -272,7 +272,7 @@ Rules the template encodes:
 `minLength`/`maxLength` count characters **excluding** insignificant separators. `displayFormat`,
 `example`, `checksumAlgorithm`, and `officialName` are optional in the type but **expected for new
 countries** — [`getFormat()`](../src/registry/ValidatorRegistry.ts) surfaces them through the public
-`getCountryIdFormat()` API, and all 80 current countries populate them.
+`getCountryIdFormat()` API, and all 85 current countries populate them.
 
 ⚠️ **`METADATA.example` must be a synthetic, checksum-valid ID that passes `validateNationalId()`** —
 this is asserted by the format-info tests. Never use a real person's number.
@@ -285,8 +285,10 @@ A new country touches **three** places, plus one rule to respect. Missing any of
 country that silently does not work.
 
 **1. [`src/registry/registerAll.ts`](../src/registry/registerAll.ts)** — import the module and add one
-`COUNTRY_REGISTRY` row. The `key` is the alpha-3 code; `aliases` is normally the alpha-2 code
-(lowercase forms resolve automatically — the registry uppercases keys):
+`COUNTRY_REGISTRY` row. The `key` is the alpha-3 code; `aliases` must include the alpha-2 code, the
+same value as `METADATA.iso3166Alpha2` — [`src/__tests__/issue-174-alpha2-consistency.test.ts`](../src/__tests__/issue-174-alpha2-consistency.test.ts)
+asserts every registered country's `iso3166Alpha2` resolves back to its key. Lowercase forms resolve
+automatically — the registry uppercases keys:
 
 ```typescript
 import { NationalID as XyzNationalID } from '../countries/xyz';
@@ -296,7 +298,14 @@ import { NationalID as XyzNationalID } from '../countries/xyz';
 ```
 
 For a country with two coexisting valid formats, build a composite `CountryValidator` instead of
-adding a second key — see `bgdComposite` / `smrComposite` in the same file.
+adding a second key — see `bgdComposite` / `smrComposite` / `lkaComposite` in the same file.
+
+⚠️ **The METADATA registered for a country must describe every shape its `validate()` accepts.**
+`regexp`, `minLength`, and `maxLength` feed both `getCountryIdFormat()` and the
+`ValidationResult.reason` derivation (#117) — an input that doesn't match them is reported as
+`invalid_format`/`invalid_length` instead of `checksum_mismatch`. When a validator accepts a format
+its module METADATA doesn't describe (e.g. an older format), override the metadata at the registry
+level as those composites do. Never rewrite the country module's public METADATA.
 
 **2. [`src/index.ts`](../src/index.ts)** — export the country namespace:
 
@@ -330,13 +339,13 @@ below and misrepresents them as countries.
 
 ### Update the invariants
 
-The registry count is hard-asserted, so adding country #81 fails the suite until you update it:
+The registry count is hard-asserted, so adding country #86 fails the suite until you update it:
 
 | File                                                                                                          | What to change                                                                                                                                                                                       |
 | ------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`src/__tests__/parseIdInfo-migration.test.ts`](../src/__tests__/parseIdInfo-migration.test.ts)               | **Breaks the build:** `expect(registry.list().length).toBe(80)` → `81`. Also extend the `expectedKeys` list, the `expectedAliases` map, and — if the ID is parsable — the `parseableCountries` table |
+| [`src/__tests__/parseIdInfo-migration.test.ts`](../src/__tests__/parseIdInfo-migration.test.ts)               | **Breaks the build:** `expect(registry.list().length).toBe(85)` → `86`. Also extend the `expectedKeys` list, the `expectedAliases` map, and — if the ID is parsable — the `parseableCountries` table |
 | [`src/__tests__/getCountryIdFormat-migration.test.ts`](../src/__tests__/getCountryIdFormat-migration.test.ts) | add the country to the `registeredCountries` fixture — this fixture is an independent copy of each country's `countryName`/`idType` and must move in lockstep with METADATA/format changes           |
-| [`README.md`](../README.md)                                                                                   | the "80 countries" claims and the "comprehensive test coverage with N tests" count                                                                                                                   |
+| [`README.md`](../README.md)                                                                                   | the country-count claims (intro sentence and feature list) and the "comprehensive test coverage with N tests" count                                                                                  |
 
 ### Add a country test file
 
@@ -421,7 +430,8 @@ Copy into your PR description:
 - [ ] `METADATA.example` is synthetic and passes `validateNationalId()`
 - [ ] Reused `src/utils.ts` / `src/constants.ts` instead of reimplementing checksums or enums
 - [ ] `parse()` returns `null` on invalid input and never throws
-- [ ] Registered in `registerAll.ts` (alpha-3 key + alpha-2 alias)
+- [ ] Registered in `registerAll.ts` (alpha-3 key + alpha-2 alias matching `METADATA.iso3166Alpha2`)
+- [ ] Registered METADATA covers every format `validate()` accepts (composite/registry-level override if needed)
 - [ ] `export * as <ISO3>` added to `src/index.ts`
 - [ ] `countryName` and `idType` set on the primary METADATA
 - [ ] Secondary ID types exported from the country module only — NOT registered
