@@ -54,7 +54,9 @@ export function createCompositeValidator(
     ...members[0].METADATA,
     minLength: Math.min(...members.map(member => member.METADATA.minLength)),
     maxLength: Math.max(...members.map(member => member.METADATA.maxLength)),
-    regexp: unionRegExp(members.map(member => member.METADATA.regexp)),
+    // An explicit override skips the derived union, so it also works for members
+    // whose regexps cannot be unioned (e.g. different flags).
+    regexp: overrides.regexp ?? unionRegExp(members.map(member => member.METADATA.regexp)),
     ...overrides,
   };
 

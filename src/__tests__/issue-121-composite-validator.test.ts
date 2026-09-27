@@ -168,6 +168,18 @@ describe('createCompositeValidator', () => {
       expect(() => createCompositeValidator([digits, caseless])).toThrow(/different flags/);
     });
 
+    it('accepts an explicit regexp override for members with different flags', () => {
+      const caseless: CountryValidator = {
+        ...prefixed,
+        METADATA: meta({ minLength: 7, maxLength: 7, regexp: /^sm\d{5}$/i }),
+      };
+      const regexp = /^(?:\d{9}|sm\d{5})$/i;
+      const composite = createCompositeValidator([digits, caseless], { regexp });
+      expect(composite.METADATA.regexp).toBe(regexp);
+      expect(composite.METADATA.minLength).toBe(7);
+      expect(composite.METADATA.maxLength).toBe(9);
+    });
+
     it('applies overrides last', () => {
       const regexp = /^(?:\d{9}|SM\d{5})$/;
       const overridden = createCompositeValidator([digits, prefixed], {
