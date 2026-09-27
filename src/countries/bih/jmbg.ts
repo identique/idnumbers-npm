@@ -4,7 +4,7 @@ import { ParseResult, UniqueMasterCitizenNumber as YugoslaviaJMBG } from './yugo
 export class UniqueMasterCitizenNumber extends YugoslaviaJMBG {
   public static METADATA = {
     ...YugoslaviaJMBG.METADATA,
-    iso3166_alpha2: 'BA',
+    iso3166Alpha2: 'BA',
     countryName: 'Bosnia and Herzegovina',
     idType: 'Unique Master Citizen Number',
     displayFormat: 'DDMMYYYRRSSSC',

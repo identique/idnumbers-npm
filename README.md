@@ -70,7 +70,7 @@ Validates a national ID number for a specific country.
 
 **Parameters:**
 
-- `countryCode` (string): ISO 3166-1 alpha-3 country code (e.g., 'USA', 'GBR', 'FRA')
+- `countryCode` (string): ISO 3166-1 alpha-3 country code (e.g., 'USA', 'GBR', 'FRA'); the alpha-2 code (e.g. 'US', 'GB') is also accepted, case-insensitively
 - `idNumber` (string): The ID number to validate
 
 **Returns:** `ValidationResult`
@@ -150,7 +150,7 @@ Extracts information from a national ID number (if supported by the country).
 
 **Parameters:**
 
-- `countryCode` (string): ISO 3166-1 alpha-3 country code
+- `countryCode` (string): ISO 3166-1 alpha-3 country code; the alpha-2 code (e.g. 'US', 'GB') is also accepted, case-insensitively
 - `idNumber` (string): The ID number to parse
 
 **Returns:** `ParsedInfo | null`
@@ -233,7 +233,7 @@ Gets format information for a country's ID number.
 
 **Parameters:**
 
-- `countryCode` (string): ISO 3166-1 alpha-3 country code
+- `countryCode` (string): ISO 3166-1 alpha-3 country code; the alpha-2 code (e.g. 'US', 'GB') is also accepted, case-insensitively
 
 **Returns:** Format information, or `null` for unsupported codes. Always includes `countryCode`, `countryName`, `idType`, `length`, `hasChecksum`, `isParsable`, and `metadata`. Documented countries also include the optional fields `format` (a human-readable display mask), `example` (a valid sample ID), `checksumAlgorithm` (a description of the check-digit algorithm), and `officialName` (the local/official name of the ID).
 
@@ -542,7 +542,7 @@ if (!validation.valid) {
 
 ## Testing
 
-The library includes comprehensive test coverage with 2581 tests covering:
+The library includes comprehensive test coverage with 2696 tests covering:
 
 - Format validation
 - Checksum verification
