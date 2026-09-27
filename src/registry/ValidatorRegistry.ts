@@ -29,17 +29,45 @@ export class ValidatorRegistry implements IValidatorRegistry {
   /**
    * Register a country definition: its validator under `country.key`, plus its aliases.
    *
-   * Idempotent for the same definition, so registering a country that is already
-   * registered (e.g. by the root `idnumbers` entry) is a no-op.
-   * @throws Error if the key or an alias is already taken by a different validator.
+   * Atomic: every conflict is checked before anything is registered, so a failed
+   * call leaves the registry unchanged. Idempotent for a definition that is already
+   * fully registered (e.g. by the root `idnumbers` entry), which makes it a no-op.
+   * @throws Error if the key or an alias is already taken, an alias names a primary
+   * key, or the definition repeats an alias.
    */
   registerCountry(country: CountryDefinition): void {
-    if (this.validators.get(country.key.toUpperCase()) === country.validator) {
+    const key = country.key.toUpperCase();
+    const aliases = country.aliases.map(alias => alias.toUpperCase());
+
+    if (
+      this.validators.get(key) === country.validator &&
+      aliases.every(alias => this.aliases.get(alias) === key)
+    ) {
       return;
     }
-    this.register(country.key, country.validator);
-    for (const alias of country.aliases) {
-      this.registerAlias(alias, country.key);
+
+    if (this.validators.has(key)) {
+      throw new Error(`Validator already registered for key: ${key}`);
+    }
+    if (this.aliases.has(key)) {
+      throw new Error(`Cannot register key "${key}": it is already registered as an alias`);
+    }
+    const seen = new Set<string>();
+    for (const alias of aliases) {
+      if (alias === key || this.validators.has(alias)) {
+        throw new Error(
+          `Cannot create alias "${alias}": it conflicts with an existing primary key`
+        );
+      }
+      if (this.aliases.has(alias) || seen.has(alias)) {
+        throw new Error(`Alias "${alias}" is already registered`);
+      }
+      seen.add(alias);
+    }
+
+    this.validators.set(key, country.validator);
+    for (const alias of aliases) {
+      this.aliases.set(alias, key);
     }
   }
 
