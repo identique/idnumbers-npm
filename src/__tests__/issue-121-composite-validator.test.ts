@@ -114,9 +114,8 @@ describe('createCompositeValidator', () => {
     const composite = createCompositeValidator([digits, prefixed]);
 
     it('starts from the first member', () => {
-      expect(composite.METADATA.parsable).toBe(true);
-      expect(composite.METADATA.checksum).toBe(true);
       expect(composite.METADATA.countryName).toBe('Testland');
+      expect(composite.METADATA.iso3166Alpha2).toBe('XX');
     });
 
     it('spans the length bounds of every member', () => {
