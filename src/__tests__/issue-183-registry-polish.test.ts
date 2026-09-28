@@ -91,6 +91,32 @@ describe('registerCountry alias mismatch (#183)', () => {
     expect(fresh.listAll()).toEqual(['TW', 'TWN']);
   });
 
+  it.each([
+    ['taken by another country', ['TW', 'US'], 'Alias "US" is already registered'],
+    [
+      "another country's key",
+      ['TW', 'USA'],
+      'Cannot create alias "USA": it conflicts with an existing primary key',
+    ],
+    [
+      'its own key',
+      ['TW', 'TWN'],
+      'Cannot create alias "TWN": it conflicts with an existing primary key',
+    ],
+    ['repeated', ['RC', 'rc'], 'Alias "RC" is already registered'],
+  ])(
+    'reports a conflict, not a missing alias, for an alias that is %s',
+    (_label, aliases, message) => {
+      const fresh = new ValidatorRegistry();
+      fresh.registerCountry(definitionOf('TWN'));
+      fresh.registerCountry(definitionOf('USA'));
+      const before = fresh.listAll();
+      const again = defineCountry('TWN', aliases, definitionOf('TWN').validator);
+      expect(() => fresh.registerCountry(again)).toThrow(message);
+      expect(fresh.listAll()).toEqual(before);
+    }
+  );
+
   it('still reports a different validator under a taken key as a key conflict', () => {
     const twn = definitionOf('TWN');
     const fresh = new ValidatorRegistry();
