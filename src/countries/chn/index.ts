@@ -128,4 +128,4 @@ export const ResidentID = {
  * Registry definition: pass it to `register()` from `idnumbers/core`.
  * The root `idnumbers` entry registers it automatically.
  */
-export const country = defineCountry('CHN', ['CN'], ResidentID);
+export const country = /* @__PURE__ */ defineCountry('CHN', ['CN'], ResidentID);

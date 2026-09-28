@@ -162,4 +162,4 @@ export const NationalID = PersonalCode;
  * Registry definition: pass it to `register()` from `idnumbers/core`.
  * The root `idnumbers` entry registers it automatically.
  */
-export const country = defineCountry('LTU', ['LT'], PersonalCode);
+export const country = /* @__PURE__ */ defineCountry('LTU', ['LT'], PersonalCode);

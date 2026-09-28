@@ -8,4 +8,4 @@ export type { BirthDepartment, FranceParseResult } from './socialSecurityNumber.
  * Registry definition: pass it to `register()` from `idnumbers/core`.
  * The root `idnumbers` entry registers it automatically.
  */
-export const country = defineCountry('FRA', ['FR'], SocialSecurityNumber);
+export const country = /* @__PURE__ */ defineCountry('FRA', ['FR'], SocialSecurityNumber);

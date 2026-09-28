@@ -7,4 +7,4 @@ export { NationalInsuranceNumber } from './nationalInsurance.js';
  * Registry definition: pass it to `register()` from `idnumbers/core`.
  * The root `idnumbers` entry registers it automatically.
  */
-export const country = defineCountry('GBR', ['UK', 'GB'], NationalInsuranceNumber);
+export const country = /* @__PURE__ */ defineCountry('GBR', ['UK', 'GB'], NationalInsuranceNumber);

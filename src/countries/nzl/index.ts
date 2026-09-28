@@ -9,4 +9,4 @@ export { IRDNumber } from './irdNumber.js';
  * Registry definition: pass it to `register()` from `idnumbers/core`.
  * The root `idnumbers` entry registers it automatically.
  */
-export const country = defineCountry('NZL', ['NZ'], DriverLicense);
+export const country = /* @__PURE__ */ defineCountry('NZL', ['NZ'], DriverLicense);

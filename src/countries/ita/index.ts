@@ -303,4 +303,4 @@ export const FiscalCode = {
  * Registry definition: pass it to `register()` from `idnumbers/core`.
  * The root `idnumbers` entry registers it automatically.
  */
-export const country = defineCountry('ITA', ['IT'], FiscalCode);
+export const country = /* @__PURE__ */ defineCountry('ITA', ['IT'], FiscalCode);

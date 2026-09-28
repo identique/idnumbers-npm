@@ -7,4 +7,4 @@ export { BurgerServiceNumber } from './bsn.js';
  * Registry definition: pass it to `register()` from `idnumbers/core`.
  * The root `idnumbers` entry registers it automatically.
  */
-export const country = defineCountry('NLD', ['NL'], BurgerServiceNumber);
+export const country = /* @__PURE__ */ defineCountry('NLD', ['NL'], BurgerServiceNumber);

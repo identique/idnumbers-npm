@@ -7,4 +7,4 @@ export * from './jmbg.js';
  * Registry definition: pass it to `register()` from `idnumbers/core`.
  * The root `idnumbers` entry registers it automatically.
  */
-export const country = defineCountry('MKD', ['MK'], UniqueMasterCitizenNumber);
+export const country = /* @__PURE__ */ defineCountry('MKD', ['MK'], UniqueMasterCitizenNumber);

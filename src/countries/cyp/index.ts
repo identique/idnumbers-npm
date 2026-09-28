@@ -13,4 +13,4 @@ export const TIN = {
  * Registry definition: pass it to `register()` from `idnumbers/core`.
  * The root `idnumbers` entry registers it automatically.
  */
-export const country = defineCountry('CYP', ['CY'], NationalID);
+export const country = /* @__PURE__ */ defineCountry('CYP', ['CY'], NationalID);

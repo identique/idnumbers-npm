@@ -11,7 +11,6 @@ import { IdMetadata, ParsedInfo, Gender } from '../../types.js';
 import { weightedModulusDigit, modulusOverflowMod10 } from '../../utils.js';
 import { CheckDigit, Citizenship } from '../../constants.js';
 import { defineCountry } from '../../registry/country.js';
-import { createValidator } from '../../registry/adapters.js';
 
 export interface SriLankaParseResult extends ParsedInfo {
   isValid: boolean;
@@ -226,9 +225,12 @@ export const NationalID = {
  *
  * The registered metadata covers both the NEW (12-digit) and OLD (9 digits + V/X)
  * formats that validate()/checksum() accept; the module's own METADATA describes
- * the new format only.
+ * the new format only. The override avoids object spread, which bundlers keep as a
+ * possible side effect, so importing only the functions drops this definition.
  */
-export const country = defineCountry('LKA', ['LK'], {
-  ...createValidator(NationalID),
-  METADATA: { ...NationalID.METADATA, regexp: /^(?:\d{12}|\d{9}[VvXx])$/ },
+export const country = /* @__PURE__ */ defineCountry('LKA', ['LK'], {
+  validate,
+  parse,
+  checksum,
+  METADATA: /* @__PURE__ */ Object.assign({}, METADATA, { regexp: /^(?:\d{12}|\d{9}[VvXx])$/ }),
 });
