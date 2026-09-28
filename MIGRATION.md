@@ -262,7 +262,7 @@ The following are marked `@deprecated` starting in v1.11.0 so IDEs show a
 strikethrough ahead of their v2.0.0 removal/change:
 
 - `IMetadata` — use `IdMetadata` instead ([#124](https://github.com/identique/idnumbers-npm/issues/124); removed on `main` for v2.0.0)
-- `IdMetadata.aliasOf`'s `any` type — the field stays, but its type narrows in v2.0.0; don't depend on its current shape ([#123](https://github.com/identique/idnumbers-npm/issues/123); narrowed on `main` to `IdNumberClass<object> | null`, which drops this deprecation notice)
+- `IdMetadata.aliasOf`'s `any` type — the field stays ([#123](https://github.com/identique/idnumbers-npm/issues/123); narrowed on `main` for v2.0.0 to `IdNumberClass<object> | null`, see [Typed parse results](#typed-parse-results-123))
 - The function-based METADATA dialect — `isParsable`, `hasChecksum`, `pattern` (renamed to `parsable`, `checksum`, `regexp`), and the `FunctionBasedMetadata` interface itself ([#121](https://github.com/identique/idnumbers-npm/issues/121); removed on `main` for v2.0.0)
 - `SUPPORTED_COUNTRIES` — use `listSupportedCountries()` instead ([#118](https://github.com/identique/idnumbers-npm/issues/118) deprecation; removed on `main` for v2.0.0 by [#124](https://github.com/identique/idnumbers-npm/issues/124))
 

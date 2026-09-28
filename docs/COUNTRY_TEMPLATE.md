@@ -312,6 +312,11 @@ A new country touches **five** places, plus one rule to respect. Missing any of 
 country that silently does not work. The `idnumbers/countries/xyz` subpath itself needs no wiring:
 the `./countries/*` pattern in the `package.json` `exports` map covers every country directory.
 
+Insert each new entry at its alpha-3 position, not at the end of the list: `ALL_COUNTRIES` in
+touchpoint 2 must stay in alpha-3 order, or `issue-122-country-definitions.test.ts` fails. Keep the
+`src/index.ts` exports (touchpoint 3) and the `ParseResultMap` entries (touchpoint 5) in the same
+order so the three lists stay easy to compare.
+
 **1. the country's `index.ts`** — export its registry definition as `country` (the last block of
 the module template above). `key` is the alpha-3 code; `aliases` must include the alpha-2 code, the
 same value as `METADATA.iso3166Alpha2` — [`src/__tests__/issue-174-alpha2-consistency.test.ts`](../src/__tests__/issue-174-alpha2-consistency.test.ts)
@@ -358,7 +363,7 @@ object the `country` definition in step 1 registers; the module template above a
 `listSupportedCountries()` derives from the registry automatically, so no separate country-list
 entry is needed. Without these fields the registry's own fallbacks apply
 ([`ValidatorRegistry.getFormat()`](../src/registry/ValidatorRegistry.ts)): `countryName` becomes the
-raw country code, and `idType` becomes `METADATA.names[0]` (or the country code if `names` is empty):
+raw country code, and `idType` becomes `METADATA.names[0]` (the country code if `names` is empty):
 
 ```typescript
 export const METADATA = {
