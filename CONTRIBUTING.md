@@ -61,6 +61,7 @@ All four commands should complete successfully before you begin development.
 | `npm run lint:fix`         | Apply supported ESLint fixes                                  |
 | `npm run format`           | Format TypeScript source files with Prettier                  |
 | `npm run lint:package`     | Validate the packed package's `exports`/types (publint, attw) |
+| `npm run lint:types`       | Reject `any` in the built `.d.ts` files (build first)         |
 | `npm run test:pack`        | Pack, install, and smoke-test the tarball in a temp consumer  |
 
 The fix and format commands modify files. Review their changes before committing them.
@@ -298,7 +299,7 @@ Stricter opt-in flags outside that family are **not** enabled, notably `noUnchec
 
 Annotate the shapes that form the public API — `METADATA` as `IdMetadata`, parse results as interfaces extending `ParsedInfo`, and exported function parameters. Return types may be omitted where inference is clear: `@typescript-eslint/explicit-function-return-type` and `explicit-module-boundary-types` are both `off`, and `no-inferrable-types` is `off`, so an explicit `: string` on an initialized local is accepted rather than reported.
 
-Avoid `any`. Note that `@typescript-eslint/no-explicit-any` is set to `warn`, not `error`, so `any` will not fail lint — prefer `unknown` with narrowing, or a precise type.
+Avoid `any`: use `unknown` with narrowing, or a precise type. `@typescript-eslint/no-explicit-any` is an `error`, and CI's `npm run lint:types` also fails on any `any` in the published declarations, including one the compiler inferred (#123).
 
 ### ESLint
 
@@ -307,7 +308,7 @@ Avoid `any`. Note that `@typescript-eslint/no-explicit-any` is set to `warn`, no
 | Rule                                                | Level   |
 | --------------------------------------------------- | ------- |
 | `@typescript-eslint/no-unused-vars`                 | `error` |
-| `@typescript-eslint/no-explicit-any`                | `warn`  |
+| `@typescript-eslint/no-explicit-any`                | `error` |
 | `prefer-const`                                      | `error` |
 | `no-var`                                            | `error` |
 | `@typescript-eslint/explicit-function-return-type`  | `off`   |
@@ -317,7 +318,7 @@ Avoid `any`. Note that `@typescript-eslint/no-explicit-any` is set to `warn`, no
 
 `@typescript-eslint/no-unused-vars` is configured with `argsIgnorePattern: '^_'`. When a method must accept a parameter to satisfy an interface but deliberately ignores it, prefix the name with an underscore — for example `checksum(_idNumber: string): null` on an ID type that has no checksum.
 
-Run `npm run lint`, or `npm run lint:fix` to apply supported fixes. The ESLint step in CI is blocking: any lint error fails the build. Warnings do not, but keep your changes warning-free — where an `any` is genuinely unavoidable, suppress it on that line with a reason, e.g. `// eslint-disable-next-line @typescript-eslint/no-explicit-any -- <reason and tracking issue>`.
+Run `npm run lint`, or `npm run lint:fix` to apply supported fixes. The ESLint step in CI is blocking: any lint error fails the build. Warnings do not, but keep your changes warning-free.
 
 ### Prettier
 

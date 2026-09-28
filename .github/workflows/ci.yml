@@ -178,6 +178,9 @@ jobs:
       - name: Lint packed package (publint + attw)
         run: npm run lint:package
 
+      - name: Check published declarations for any
+        run: npm run lint:types
+
       - name: Smoke-test packed package
         run: npm run test:pack
 

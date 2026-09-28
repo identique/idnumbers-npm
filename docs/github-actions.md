@@ -33,8 +33,9 @@ Runs on every push and pull request to the main branch.
 
 **Package Verification (`package-check`):**
 
-- Builds the package, then runs `npm run lint:package` (publint + Are the Types Wrong)
-  and `npm run test:pack` (packs the tarball, installs it into a throwaway consumer
+- Builds the package, then runs `npm run lint:package` (publint + Are the Types Wrong),
+  `npm run lint:types` (no `any` in the published `.d.ts` files), and
+  `npm run test:pack` (packs the tarball, installs it into a throwaway consumer
   project, and smoke-tests both the CJS and ESM entry points) — see
   [Packaging (#120)](../MIGRATION.md#packaging-120) in `MIGRATION.md` for what these
   validate and why.
