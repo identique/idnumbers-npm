@@ -4,6 +4,7 @@
  * - createValidator() returns a validator it or createCompositeValidator() already
  *   built as-is, so composites are not wrapped a second time.
  * - Every country definition's validator is frozen.
+ * - Re-registering a validator with an alias it lacks names that alias.
  */
 import * as lib from '../index';
 import {
@@ -75,5 +76,28 @@ describe('frozen country validators (#183)', () => {
     }).toThrow(TypeError);
     expect(validator.validate).toBe(original);
     expect(lib.validateNationalId('TWN', 'A123456780').isValid).toBe(false);
+  });
+});
+
+describe('registerCountry alias mismatch (#183)', () => {
+  it('names the alias a re-registered validator lacks, and registers nothing', () => {
+    const twn = definitionOf('TWN');
+    const fresh = new ValidatorRegistry();
+    fresh.registerCountry(twn);
+    const wider = defineCountry('TWN', ['TW', 'RC'], twn.validator);
+    expect(() => fresh.registerCountry(wider)).toThrow(
+      'Country "TWN" is already registered with this validator, but without alias "RC"'
+    );
+    expect(fresh.listAll()).toEqual(['TW', 'TWN']);
+  });
+
+  it('still reports a different validator under a taken key as a key conflict', () => {
+    const twn = definitionOf('TWN');
+    const fresh = new ValidatorRegistry();
+    fresh.registerCountry(twn);
+    const impostor = defineCountry('TWN', ['TW'], { ...twn.validator });
+    expect(() => fresh.registerCountry(impostor)).toThrow(
+      'Validator already registered for key: TWN'
+    );
   });
 });

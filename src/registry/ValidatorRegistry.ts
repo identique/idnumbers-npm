@@ -36,17 +36,21 @@ export class ValidatorRegistry implements IValidatorRegistry {
    * call leaves the registry unchanged. Idempotent for a definition that is already
    * fully registered (e.g. by the root `idnumbers` entry), which makes it a no-op.
    * @throws Error if the key or an alias is already taken, an alias names a primary
-   * key, or the definition repeats an alias.
+   * key, the definition repeats an alias, or the same validator is already registered
+   * without one of the aliases.
    */
   registerCountry(country: CountryDefinition<string, readonly string[], object>): void {
     const key = country.key.toUpperCase();
     const aliases = country.aliases.map(alias => alias.toUpperCase());
 
-    if (
-      this.validators.get(key) === country.validator &&
-      aliases.every(alias => this.aliases.get(alias) === key)
-    ) {
-      return;
+    if (this.validators.get(key) === country.validator) {
+      const missing = aliases.find(alias => this.aliases.get(alias) !== key);
+      if (missing === undefined) {
+        return;
+      }
+      throw new Error(
+        `Country "${key}" is already registered with this validator, but without alias "${missing}"`
+      );
     }
 
     if (this.validators.has(key)) {
