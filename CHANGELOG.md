@@ -27,6 +27,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **BREAKING:** `parseIdInfo()` returns `{ ok: true, countryCode, idNumber, info }` or `{ ok: false, countryCode, idNumber, reason, errorMessage? }` instead of `any | null`, so an unsupported country, an invalid ID, and a valid ID that cannot be parsed are told apart; `countryCode` is the resolved alpha-3 code. `ok: true` implies the ID is valid: the FRA and NOR parsers skip the check digits, so `parseIdInfo()` used to return info for some IDs `validateNationalId()` rejects ([#123](https://github.com/identique/idnumbers-npm/issues/123))
 - **BREAKING:** `ParsedInfo` is `{ [key: string]: unknown }` instead of `isValid: boolean` plus an `any` index signature, and every country's parse result type extends it; `ValidationResult.extractedInfo` is typed per country; `IdMetadata.aliasOf` is `IdNumberClass<object> | null` instead of `any`; `IdNumberClass`, `CountryModule`, `CountryValidator`, and `CountryDefinition` are generic over the parse result type. The published type declarations no longer contain `any`, which CI now enforces ([#123](https://github.com/identique/idnumbers-npm/issues/123))
 
+### Removed
+
+- **BREAKING:** `SUPPORTED_COUNTRIES` — use `listSupportedCountries()`, which returns a fresh array on every call ([#124](https://github.com/identique/idnumbers-npm/issues/124))
+- **BREAKING:** the `IMetadata` type alias — use `IdMetadata` ([#124](https://github.com/identique/idnumbers-npm/issues/124))
+
 ### Fixed
 
 - Bangladesh (BGD) registered metadata reported the match-anything `regexp: /./`, because its METADATA mixed both dialects and the adapter discarded the real regexp. It now matches both the 13-digit old and 17-digit new formats, so `getCountryIdFormat('BGD').metadata.regexp` is accurate and invalid BGD input gets a specific `reason` (`invalid_length`/`invalid_format`) instead of `validation_failed`; which IDs validate is unchanged ([#160](https://github.com/identique/idnumbers-npm/issues/160), [#121](https://github.com/identique/idnumbers-npm/issues/121))

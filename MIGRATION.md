@@ -15,7 +15,7 @@
 | Entry points             | Only the batteries-included root `idnumbers` import                                                                           | **Implemented on `main`, ships in v2.0.0.** Additive: `idnumbers/countries/<iso3>` per-country subpaths + an `idnumbers/core` entry (registry, no countries registered) and `register()`                                                                                 | Root import keeps working unchanged; opt into subpaths only if you want tree-shaking                                              | [#122](https://github.com/identique/idnumbers-npm/issues/122) (decision: [#115](https://github.com/identique/idnumbers-npm/issues/115)) |
 | Parse results            | `parseIdInfo()` returns `any \| null`                                                                                         | **Implemented on `main`, ships in v2.0.0.** `parseIdInfo()` returns a discriminated `{ ok: true, info } \| { ok: false, reason }`, typed per country through a `ParseResultMap`; results include the resolved alpha-3 code                                               | Check `ok`, then read `info` or `reason`, instead of checking for `null`                                                          | [#123](https://github.com/identique/idnumbers-npm/issues/123)                                                                           |
 | `ValidationResult` types | `extractedInfo?: any`; `ParsedInfo` has a loose `[key: string]: any` index signature; `IdMetadata.aliasOf: any \| null`       | **Implemented on `main`, ships in v2.0.0.** `extractedInfo` is typed per country; `ParsedInfo`'s index signature is `unknown`; `aliasOf` is `IdNumberClass<object> \| null`                                                                                              | Narrow `ParsedInfo` fields before use; no action for a literal country code                                                       | [#123](https://github.com/identique/idnumbers-npm/issues/123)                                                                           |
-| Removals                 | `SUPPORTED_COUNTRIES` array; `IMetadata` alias                                                                                | Both removed                                                                                                                                                                                                                                                             | Use `listSupportedCountries()` and `IdMetadata` today — both already exist in v1.x                                                | [#124](https://github.com/identique/idnumbers-npm/issues/124)                                                                           |
+| Removals                 | `SUPPORTED_COUNTRIES` array; `IMetadata` alias                                                                                | **Implemented on `main`, ships in v2.0.0.** Both removed                                                                                                                                                                                                                 | Use `listSupportedCountries()` and `IdMetadata` today — both already exist in v1.x                                                | [#124](https://github.com/identique/idnumbers-npm/issues/124)                                                                           |
 
 ## Packaging (#120)
 
@@ -209,24 +209,28 @@ if (result.ok) show(result.info);
 
 ## Removals (#124)
 
-**Planned.** The two symbols deprecated in v1.11.0 are removed:
+**Implemented on `main`.** This ships as part of v2.0.0. The two symbols deprecated in
+v1.11.0 are removed:
 
 | Removed               | Replacement                | Available today? |
 | --------------------- | -------------------------- | ---------------- |
 | `SUPPORTED_COUNTRIES` | `listSupportedCountries()` | Yes              |
 | `IMetadata`           | `IdMetadata`               | Yes              |
 
-Both replacements already exist in v1.x, so you can switch over now with zero
-functional change:
+Both replacements already exist in v1.x, so you can switch over before upgrading with
+zero functional change:
 
 ```ts
-// v1.x (deprecated, still works)
+// v1.x only (deprecated; removed in v2.0.0)
 import { SUPPORTED_COUNTRIES, IMetadata } from 'idnumbers';
 
-// Do this today instead
+// v1.x and v2.0.0
 import { listSupportedCountries, IdMetadata } from 'idnumbers';
 const countries = listSupportedCountries();
 ```
+
+`listSupportedCountries()` returns a fresh array on every call, where
+`SUPPORTED_COUNTRIES` was a snapshot taken when the module loaded.
 
 As part of [#124](https://github.com/identique/idnumbers-npm/issues/124), each
 country's accepted input formats (case, whitespace, separators) will be documented.
@@ -238,10 +242,10 @@ before and after.
 The following are marked `@deprecated` starting in v1.11.0 so IDEs show a
 strikethrough ahead of their v2.0.0 removal/change:
 
-- `IMetadata` — use `IdMetadata` instead ([#124](https://github.com/identique/idnumbers-npm/issues/124))
+- `IMetadata` — use `IdMetadata` instead ([#124](https://github.com/identique/idnumbers-npm/issues/124); removed on `main` for v2.0.0)
 - `IdMetadata.aliasOf`'s `any` type — the field stays, but its type narrows in v2.0.0; don't depend on its current shape ([#123](https://github.com/identique/idnumbers-npm/issues/123); narrowed on `main` to `IdNumberClass<object> | null`, which drops this deprecation notice)
 - The function-based METADATA dialect — `isParsable`, `hasChecksum`, `pattern` (renamed to `parsable`, `checksum`, `regexp`), and the `FunctionBasedMetadata` interface itself ([#121](https://github.com/identique/idnumbers-npm/issues/121); removed on `main` for v2.0.0)
-- `SUPPORTED_COUNTRIES` — use `listSupportedCountries()` instead ([#118](https://github.com/identique/idnumbers-npm/issues/118) deprecation; removed in v2.0.0 by [#124](https://github.com/identique/idnumbers-npm/issues/124))
+- `SUPPORTED_COUNTRIES` — use `listSupportedCountries()` instead ([#118](https://github.com/identique/idnumbers-npm/issues/118) deprecation; removed on `main` for v2.0.0 by [#124](https://github.com/identique/idnumbers-npm/issues/124))
 
 ## What stays the same
 
@@ -249,6 +253,7 @@ strikethrough ahead of their v2.0.0 removal/change:
   needed unless you opt into `idnumbers/core`.
 - Which IDs are accepted does not change — v2.0.0 maintains parity with the Python
   `idnumbers` source of truth.
-- `validateNationalId()`'s signature and result shape are unchanged (plus the
-  optional `reason` field already added in [#117](https://github.com/identique/idnumbers-npm/issues/117)).
+- `validateNationalId()`'s arguments and result fields are unchanged (plus the
+  optional `reason` field already added in [#117](https://github.com/identique/idnumbers-npm/issues/117));
+  only the type of `extractedInfo` is narrowed ([#123](https://github.com/identique/idnumbers-npm/issues/123)).
 - `getCountryIdFormat()`'s return shape is unchanged.

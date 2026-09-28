@@ -341,9 +341,8 @@ export * as XYZ from './countries/xyz/index.js';
 ```
 
 **4. the primary module's `METADATA`** — set `countryName` and `idType` directly on it (the same
-object the `country` definition in step 1 registers). `listSupportedCountries()` — and the deprecated
-`SUPPORTED_COUNTRIES` — derive from the registry automatically, so no separate country-list entry
-is needed. Without these fields the registry's own fallbacks apply
+object the `country` definition in step 1 registers). `listSupportedCountries()` derives from the
+registry automatically, so no separate country-list entry is needed. Without these fields the registry's own fallbacks apply
 ([`ValidatorRegistry.getFormat()`](../src/registry/ValidatorRegistry.ts)): `countryName` becomes the
 raw country code, and `idType` becomes `METADATA.names[0]` (or the country code if `names` is empty):
 

@@ -7,9 +7,6 @@
 // Side-effect import: registers every country into the shared registry.
 import './registry/registerAll.js';
 
-import { CountryInfo } from './types.js';
-import { listSupportedCountries } from './api.js';
-
 export * from './core.js';
 export * from './utils.js';
 
@@ -99,10 +96,3 @@ export * as SMR from './countries/smr/index.js';
 export * as CRI from './countries/cri/index.js';
 export * as ECU from './countries/ecu/index.js';
 export * as GTM from './countries/gtm/index.js';
-
-/**
- * Snapshot of {@link listSupportedCountries}, taken once at module load.
- *
- * @deprecated Use listSupportedCountries() instead; SUPPORTED_COUNTRIES will be removed in v2.0.0 (#124).
- */
-export const SUPPORTED_COUNTRIES: CountryInfo[] = listSupportedCountries();

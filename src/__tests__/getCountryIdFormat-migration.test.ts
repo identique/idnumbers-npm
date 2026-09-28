@@ -5,7 +5,7 @@
  * IdFormat info for all 81 registered countries, preserves format strings,
  * resolves aliases, and returns null for unregistered codes.
  */
-import { getCountryIdFormat, SUPPORTED_COUNTRIES } from '../index';
+import { getCountryIdFormat, listSupportedCountries } from '../index';
 
 // ---------------------------------------------------------------------------
 // All 81 registered countries should return non-null IdFormat
@@ -165,7 +165,7 @@ describe('Format display strings', () => {
   });
 
   it('should have format strings for every registered country after format-info completion', () => {
-    for (const code of SUPPORTED_COUNTRIES.map(country => country.code)) {
+    for (const code of listSupportedCountries().map(country => country.code)) {
       const result = getCountryIdFormat(code);
       expect(result).not.toBeNull();
       expect(result!.format).toBeDefined();
