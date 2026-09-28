@@ -306,7 +306,7 @@ Gets format information for a country's ID number.
 
 - `countryCode` (string): ISO 3166-1 alpha-3 country code; the alpha-2 code (e.g. 'US', 'GB') is also accepted, case-insensitively
 
-**Returns:** Format information, or `null` for unsupported codes. Always includes `countryCode`, `countryName`, `idType`, `length`, `hasChecksum`, `isParsable`, and `metadata`. Documented countries also include the optional fields `format` (a human-readable display mask), `example` (a valid sample ID), `checksumAlgorithm` (a description of the check-digit algorithm), and `officialName` (the local/official name of the ID).
+**Returns:** Format information, or `null` for unsupported codes. Always includes `countryCode`, `countryName`, `idType`, `length`, `hasChecksum`, `isParsable`, and `metadata` (a copy of the registered METADATA, so changing it doesn't affect validation). Documented countries also include the optional fields `format` (a human-readable display mask), `example` (a valid sample ID), `checksumAlgorithm` (a description of the check-digit algorithm), and `officialName` (the local/official name of the ID).
 
 **Example:**
 
@@ -624,7 +624,7 @@ Accepted letter case, surrounding whitespace, and separators for every country a
 
 ## Testing
 
-The library includes comprehensive test coverage with 3359 tests covering:
+The library includes comprehensive test coverage with 3376 tests covering:
 
 - Format validation
 - Checksum verification
