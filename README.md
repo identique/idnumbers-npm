@@ -124,7 +124,8 @@ Validates a national ID number for a specific country.
 **Parameters:**
 
 - `countryCode` (string): ISO 3166-1 alpha-3 country code (e.g., 'USA', 'GBR', 'FRA'); the alpha-2 code (e.g. 'US', 'GB') is also accepted, case-insensitively
-- `idNumber` (string): The ID number to validate
+- `idNumber` (string): The ID number to validate. Which letter case, surrounding whitespace, and
+  separators are accepted varies by country: see [docs/INPUT_FORMATS.md](docs/INPUT_FORMATS.md).
 
 **Returns:** `ValidationResult`
 
@@ -133,7 +134,7 @@ Validates a national ID number for a specific country.
   isValid: boolean;
   countryCode: string;
   idNumber: string;
-  extractedInfo?: any;
+  extractedInfo?: ParsedInfo | null; // typed per country for a literal code (v2.0.0, #123)
   errorMessage?: string;
   reason?: ValidationFailureReason;
 }
@@ -581,9 +582,12 @@ if (!validation.valid) {
 
 ## Country-Specific Notes
 
+Accepted letter case, surrounding whitespace, and separators for every country are listed in
+[docs/INPUT_FORMATS.md](docs/INPUT_FORMATS.md).
+
 ### United States (USA)
 
-- Format: `XXX-XX-XXXX` (with or without dashes)
+- Format: `XXX-XX-XXXX`, with the dashes (`123456789` without them is rejected)
 - Forbidden prefixes: `000`, `666`, `900-999`
 - Example: `123-45-6789`
 
@@ -597,7 +601,7 @@ if (!validation.valid) {
 
 - Format: 18 digits (17 digits + checksum)
 - Contains: Region code, birth date, sequence number, checksum
-- Checksum can be `X` (representing 10)
+- Checksum can be `X` (representing 10), uppercase only
 - Example: `11010219840406970X`
 
 ### South Africa (ZAF)
@@ -620,7 +624,7 @@ if (!validation.valid) {
 
 ## Testing
 
-The library includes comprehensive test coverage with 3356 tests covering:
+The library includes comprehensive test coverage with 3359 tests covering:
 
 - Format validation
 - Checksum verification

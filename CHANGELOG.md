@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `package.json` `sideEffects` (also declared in the `dist/cjs` and `dist/esm` marker package.json files that bundlers consult), so bundlers can drop unused countries ([#122](https://github.com/identique/idnumbers-npm/issues/122))
 - Per-country parse result types: `ParseResultMap` maps each of the 85 countries to its parse result type (`never` for a country without a parser), and `ParsedInfoFor<C>` resolves a country code to it case-insensitively and through aliases (`CountryAliasMap`, `CountryCode`). `parseIdInfo()` and `validateNationalId()` use it, so a literal country code gets that country's result type ([#123](https://github.com/identique/idnumbers-npm/issues/123))
 - `ValidationFailureReason.NOT_PARSABLE` (`not_parsable`), reported by `parseIdInfo()` for a valid ID the country cannot parse ([#123](https://github.com/identique/idnumbers-npm/issues/123))
+- `docs/INPUT_FORMATS.md`: which letter case, surrounding whitespace, and separators each country's validator accepts, checked against the validators by a test. Documentation only: no country accepts different input ([#124](https://github.com/identique/idnumbers-npm/issues/124))
 
 ### Changed
 

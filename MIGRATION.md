@@ -232,10 +232,11 @@ const countries = listSupportedCountries();
 `listSupportedCountries()` returns a fresh array on every call, where
 `SUPPORTED_COUNTRIES` was a snapshot taken when the module loaded.
 
-As part of [#124](https://github.com/identique/idnumbers-npm/issues/124), each
-country's accepted input formats (case, whitespace, separators) will be documented.
-This is documentation only, with **zero acceptance changes** — the same IDs validate
-before and after.
+Each country's accepted input formats — letter case, surrounding whitespace, and
+separators — are now documented in [docs/INPUT_FORMATS.md](docs/INPUT_FORMATS.md)
+([#124](https://github.com/identique/idnumbers-npm/issues/124)). This is documentation
+only, with **zero acceptance changes**: the same IDs validate before and after, and a test
+keeps the table in step with the validators.
 
 ## Deprecated in v1.11.0
 
