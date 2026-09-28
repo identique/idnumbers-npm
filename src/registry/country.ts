@@ -30,9 +30,13 @@ export interface CountryDefinition<
  * Build the frozen `CountryDefinition` for a country module.
  *
  * `source` is a class with static methods, a plain object bundling module-level
- * functions, or an already-built `CountryValidator` (e.g. from
- * `createCompositeValidator`); its methods are wrapped so they can be called
- * detached from their class.
+ * functions, or a `CountryValidator` built by `createValidator` or
+ * `createCompositeValidator`. A module's methods are wrapped so they can be called
+ * detached from their class; a built validator is used as-is (#183).
+ *
+ * The definition, its aliases, and its validator are frozen, so a definition cannot
+ * swap the functions the registry calls. The validator's `METADATA` is the module's
+ * own object and stays mutable; `getCountryIdFormat()` returns a copy of it.
  */
 export function defineCountry<
   K extends string,
@@ -42,6 +46,6 @@ export function defineCountry<
   return Object.freeze({
     key,
     aliases: Object.freeze([...aliases]) as readonly string[] as A,
-    validator: createValidator(source),
+    validator: Object.freeze(createValidator(source)),
   });
 }

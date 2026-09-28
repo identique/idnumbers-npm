@@ -129,7 +129,8 @@ describe('issue #122: ValidatorRegistry.registerCountry', () => {
   it('rejects a different validator under a taken key', () => {
     const fresh = new ValidatorRegistry();
     fresh.registerCountry(twn);
-    const impostor = defineCountry('TWN', [], twn.validator);
+    // A copy is a different validator; the built validator itself would be passed through (#183).
+    const impostor = defineCountry('TWN', [], { ...twn.validator });
     expect(() => fresh.registerCountry(impostor)).toThrow(/already registered/);
   });
 
