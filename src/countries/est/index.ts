@@ -8,6 +8,7 @@ import { CheckDigit } from '../../constants.js';
 import { defineCountry } from '../../registry/country.js';
 
 export interface EstoniaParseResult extends ParsedInfo {
+  isValid: boolean;
   birthDate: Date;
   serialNumber: string;
   gender: 'Male' | 'Female';

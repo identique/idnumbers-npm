@@ -93,7 +93,8 @@ class UserRegistration {
     }
 
     // Extract and store additional info
-    const parsedInfo = parseIdInfo(this.userData.country, this.userData.idNumber);
+    const parsed = parseIdInfo(this.userData.country, this.userData.idNumber);
+    const parsedInfo = parsed.ok ? parsed.info : null;
     if (parsedInfo) {
       this.userData.extractedInfo = parsedInfo;
 
@@ -202,7 +203,8 @@ class IDVerificationAPI {
     }
 
     // Parse additional information
-    const parsedInfo = parseIdInfo(country, idNumber);
+    const parsed = parseIdInfo(country, idNumber);
+    const parsedInfo = parsed.ok ? parsed.info : null;
 
     // Log verification (in production, save to database)
     console.log(`[AUDIT] User ${userId} verified ID from ${country}`);
@@ -271,7 +273,8 @@ class UserModel {
     }
 
     // Extract additional info
-    const parsedInfo = parseIdInfo(userData.country, userData.nationalId);
+    const parsed = parseIdInfo(userData.country, userData.nationalId);
+    const parsedInfo = parsed.ok ? parsed.info : null;
 
     // Create user object for database
     const userRecord = {

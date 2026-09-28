@@ -8,7 +8,8 @@
  * - C: checksum digit (whole 10-digit number divisible by 11)
  */
 
-import { validateNationalId, parseIdInfo } from '../index';
+import { validateNationalId } from '../index';
+import { parsedInfo } from './helpers/parsedInfo';
 import { NationalID } from '../countries/svk';
 import { Gender } from '../constants';
 
@@ -272,12 +273,12 @@ describe('Slovakia (SVK) - Birth Number (Rodné číslo)', () => {
     });
 
     test('should parse via parseIdInfo', () => {
-      const result = parseIdInfo('SVK', '0001010009');
+      const result = parsedInfo('SVK', '0001010009');
       expect(result).not.toBeNull();
     });
 
     test('should return null from parseIdInfo for invalid ID', () => {
-      const result = parseIdInfo('SVK', 'INVALID');
+      const result = parsedInfo('SVK', 'INVALID');
       expect(result).toBeNull();
     });
   });

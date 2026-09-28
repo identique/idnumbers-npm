@@ -11,7 +11,8 @@ import {
   validateMultipleIds,
   listSupportedCountries,
   getCountryIdFormat,
-  ValidationResult
+  ValidationResult,
+  ParsedInfo
 } from 'idnumbers';
 
 console.log('=== TypeScript Usage Examples ===\n');
@@ -42,15 +43,16 @@ console.log();
 // Example 2: Type-safe parsing
 console.log('Example 2: Type-safe parsing\n');
 
-const parsedInfo = parseIdInfo('ZAF', '8001015009087');
+const parsed = parseIdInfo('ZAF', '8001015009087');
 
-if (parsedInfo) {
-  // TypeScript knows the possible fields
-  console.log('Birth Date:', parsedInfo.yyyymmdd?.toDateString());
-  console.log('Gender:', parsedInfo.gender);
-  console.log('Citizenship:', parsedInfo.citizenship);
+if (parsed.ok) {
+  // `parsed.info` is typed as South Africa's parse result
+  console.log('Birth Date:', parsed.info.yyyymmdd.toDateString());
+  console.log('Gender:', parsed.info.gender);
+  console.log('Citizenship:', parsed.info.citizenship);
 } else {
-  console.log('No information could be parsed');
+  // `parsed.reason` says why: unsupported country, invalid ID, or not parsable
+  console.log('No information could be parsed:', parsed.reason);
 }
 console.log();
 
@@ -143,23 +145,21 @@ const validation2 = validateUserID('USA', '000-45-6789');
 console.log('Validation 2:', validation2);
 console.log();
 
-// Example 7: Type guard for parsed info
+// Example 7: Type guard for a country code known only at runtime
 console.log('Example 7: Type guard for parsed info\n');
 
-interface ParsedIdWithBirthDate {
-  yyyymmdd?: Date;
-  birthDate?: Date;
-  gender?: string;
+// With a `string` country code, `info` is a ParsedInfo: every field is `unknown`
+// until narrowed.
+function birthDateOf(info: ParsedInfo): Date | undefined {
+  const date = info.yyyymmdd ?? info.birthDate;
+  return date instanceof Date ? date : undefined;
 }
 
-function hasBirthDate(info: any): info is ParsedIdWithBirthDate {
-  return info !== null && (info.yyyymmdd !== undefined || info.birthDate !== undefined);
-}
-
-const parsed1 = parseIdInfo('ZAF', '8001015009087');
-if (hasBirthDate(parsed1)) {
-  const birthDate = parsed1.yyyymmdd || parsed1.birthDate;
-  console.log('Has birth date:', birthDate?.toDateString());
+const runtimeCountry: string = 'ZAF';
+const parsed1 = parseIdInfo(runtimeCountry, '8001015009087');
+const birthDate = parsed1.ok ? birthDateOf(parsed1.info) : undefined;
+if (birthDate) {
+  console.log('Has birth date:', birthDate.toDateString());
 } else {
   console.log('No birth date available');
 }

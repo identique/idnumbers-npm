@@ -14,7 +14,7 @@
  *     stays `false`.
  *   - The Node port keeps a minimal parse() that returns `{ isValid: true }`
  *     for valid NINs (null otherwise). This is a deliberate, documented
- *     compatibility shim: it preserves the public `parseIdInfo()` /
+ *     compatibility shim: it preserves the public `parsedInfo()` /
  *     `extractedInfo` contract asserted by the migration suites WITHOUT
  *     fabricating fields the NIN does not contain.
  *
@@ -22,7 +22,8 @@
  */
 
 import { NationalID, NationalIdParseResult } from '../countries/nga/nationalId';
-import { validateNationalId, parseIdInfo, getCountryIdFormat } from '../index';
+import { validateNationalId, getCountryIdFormat } from '../index';
+import { parsedInfo } from './helpers/parsedInfo';
 
 const VALID_NIN = '12345678901';
 
@@ -130,14 +131,14 @@ describe('Nigeria (NGA) — National Identification Number (NIN)', () => {
     });
 
     it('parseIdInfo returns { isValid: true } and is alias/case stable', () => {
-      const viaAlpha3 = parseIdInfo('NGA', VALID_NIN);
+      const viaAlpha3 = parsedInfo('NGA', VALID_NIN);
       expect(viaAlpha3).toStrictEqual({ isValid: true });
-      expect(parseIdInfo('NG', VALID_NIN)).toStrictEqual(viaAlpha3);
-      expect(parseIdInfo('ng', VALID_NIN)).toStrictEqual(viaAlpha3);
+      expect(parsedInfo('NG', VALID_NIN)).toStrictEqual(viaAlpha3);
+      expect(parsedInfo('ng', VALID_NIN)).toStrictEqual(viaAlpha3);
     });
 
     it('parseIdInfo returns null for an invalid NIN', () => {
-      expect(parseIdInfo('NGA', 'INVALID')).toBeNull();
+      expect(parsedInfo('NGA', 'INVALID')).toBeNull();
     });
 
     it('reports a non-parsable, non-checksum format via getCountryIdFormat', () => {

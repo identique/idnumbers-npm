@@ -1,5 +1,5 @@
 import { Gender } from '../../constants.js';
-import { IdMetadata, IdNumberClass } from '../../types.js';
+import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
 import { validateRegexp } from '../../utils.js';
 
 /**
@@ -9,6 +9,23 @@ export interface BirthDepartment {
   department: string;
   city: string;
   country: string;
+}
+
+/**
+ * Information parsed from a French Social Security Number
+ */
+export interface FranceParseResult extends ParsedInfo {
+  sex: Gender;
+  /** Same value as `sex`, kept for compatibility */
+  gender: Gender;
+  /** First day of the birth month (the day is not encoded) */
+  birthDate: Date;
+  yy: string;
+  mm: string;
+  birth_department: BirthDepartment;
+  placeOfBirthCode: string;
+  /** The two-digit control key */
+  checksum: string;
 }
 
 /**
@@ -72,8 +89,7 @@ export class SocialSecurityNumber implements IdNumberClass {
   /**
    * Parse French Social Security Number
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- untyped parse result; typed results tracked in #123
-  static parse(idNumber: string): any | null {
+  static parse(idNumber: string): FranceParseResult | null {
     const match = SocialSecurityNumber.METADATA.regexp.exec(idNumber);
     if (!match || !match.groups) {
       return null;
@@ -120,8 +136,7 @@ export class SocialSecurityNumber implements IdNumberClass {
   /**
    * Validate birth department according to French rules
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- untyped parse result; typed results tracked in #123
-  static validateBirthDepartment(birthDepartment: string): any | null {
+  static validateBirthDepartment(birthDepartment: string): BirthDepartment | null {
     const departmentCode = birthDepartment.substring(0, 2).toUpperCase();
 
     if (
@@ -157,8 +172,7 @@ export class SocialSecurityNumber implements IdNumberClass {
     return null;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- untyped parse result; typed results tracked in #123
-  parse(idNumber: string): any | null {
+  parse(idNumber: string): FranceParseResult | null {
     return SocialSecurityNumber.parse(idNumber);
   }
 

@@ -29,7 +29,10 @@ describe('issue #122: idnumbers/core starts empty', () => {
     const { core } = loadIsolated();
     expect(core.listSupportedCountries()).toEqual([]);
     expect(core.getCountryIdFormat('TWN')).toBeNull();
-    expect(core.parseIdInfo('TWN', 'A123456789')).toBeNull();
+    expect(core.parseIdInfo('TWN', 'A123456789')).toMatchObject({
+      ok: false,
+      reason: core.ValidationFailureReason.UNSUPPORTED_COUNTRY,
+    });
   });
 
   it('reports unregistered countries as unsupported', () => {
@@ -128,6 +131,10 @@ describe('issue #122: core.ts purity', () => {
   const SRC = path.resolve(__dirname, '..');
   const SPEC_RE =
     /(\bfrom\s*|\bimport\s*\(\s*|\bimport\s+|\brequire\s*\(\s*)(['"])(\.{1,2}\/[^'"]*)\2/g;
+  // `import type` / `export type` statements are erased from the emitted JavaScript,
+  // so they reach nothing at runtime. #123's ParseResultMap names every country's
+  // parse result type this way.
+  const TYPE_ONLY_RE = /^\s*(?:import|export)\s+type\b[^;]*?\bfrom\s*(['"])[^'"]*\1;?/gm;
 
   it('reaches no country module and no registration side effect', () => {
     const seen = new Set<string>();
@@ -136,7 +143,8 @@ describe('issue #122: core.ts purity', () => {
       const file = queue.pop()!;
       if (seen.has(file)) continue;
       seen.add(file);
-      for (const match of fs.readFileSync(file, 'utf8').matchAll(SPEC_RE)) {
+      const runtimeSource = fs.readFileSync(file, 'utf8').replace(TYPE_ONLY_RE, '');
+      for (const match of runtimeSource.matchAll(SPEC_RE)) {
         queue.push(path.resolve(path.dirname(file), match[3].replace(/\.js$/, '.ts')));
       }
     }

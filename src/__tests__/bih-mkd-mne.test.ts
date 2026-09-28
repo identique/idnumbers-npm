@@ -10,7 +10,8 @@
  * - K: Checksum digit
  */
 
-import { validateNationalId, parseIdInfo } from '../index';
+import { validateNationalId } from '../index';
+import { parsedInfo } from './helpers/parsedInfo';
 
 describe('Bosnia and Herzegovina (BIH) - JMBG Validation', () => {
   describe('Valid BIH JMBG', () => {
@@ -96,7 +97,7 @@ describe('Bosnia and Herzegovina (BIH) - JMBG Validation', () => {
   describe('Parse BIH JMBG', () => {
     test('should parse valid BIH citizen JMBG and extract information', () => {
       // 0101990150002: 01.01.1990, location 15, serial 000 (male)
-      const parsed = parseIdInfo('BIH', '0101990150002');
+      const parsed = parsedInfo('BIH', '0101990150002');
       expect(parsed).toBeTruthy();
       if (parsed) {
         expect(parsed.yyyymmdd).toBeInstanceOf(Date);
@@ -111,7 +112,7 @@ describe('Bosnia and Herzegovina (BIH) - JMBG Validation', () => {
 
     test('should parse BIH JMBG with female serial number', () => {
       // 0101990155004: 01.01.1990, location 15, serial 550 (female)
-      const parsed = parseIdInfo('BIH', '0101990155004');
+      const parsed = parsedInfo('BIH', '0101990155004');
       expect(parsed).toBeTruthy();
       if (parsed) {
         expect(parsed.gender).toBe('female');
@@ -121,7 +122,7 @@ describe('Bosnia and Herzegovina (BIH) - JMBG Validation', () => {
 
     test('should parse BIH resident JMBG', () => {
       // 0101990300004: location 30 (resident)
-      const parsed = parseIdInfo('BIH', '0101990300004');
+      const parsed = parsedInfo('BIH', '0101990300004');
       expect(parsed).toBeTruthy();
       if (parsed) {
         expect(parsed.citizenship).toBe('resident');
@@ -130,8 +131,8 @@ describe('Bosnia and Herzegovina (BIH) - JMBG Validation', () => {
     });
 
     test('should return null for invalid JMBG', () => {
-      expect(parseIdInfo('BIH', '0101990150003')).toBeNull(); // Invalid checksum
-      expect(parseIdInfo('BIH', '0101990200005')).toBeNull(); // Blacklisted location
+      expect(parsedInfo('BIH', '0101990150003')).toBeNull(); // Invalid checksum
+      expect(parsedInfo('BIH', '0101990200005')).toBeNull(); // Blacklisted location
     });
   });
 });
@@ -213,7 +214,7 @@ describe('North Macedonia (MKD) - JMBG Validation', () => {
   describe('Parse MKD JMBG', () => {
     test('should parse valid MKD citizen JMBG and extract information', () => {
       // 0101990410004: 01.01.1990, location 41, serial 000 (male)
-      const parsed = parseIdInfo('MKD', '0101990410004');
+      const parsed = parsedInfo('MKD', '0101990410004');
       expect(parsed).toBeTruthy();
       if (parsed) {
         expect(parsed.yyyymmdd).toBeInstanceOf(Date);
@@ -225,7 +226,7 @@ describe('North Macedonia (MKD) - JMBG Validation', () => {
     });
 
     test('should parse MKD JMBG with female serial number', () => {
-      const parsed = parseIdInfo('MKD', '0101990415006');
+      const parsed = parsedInfo('MKD', '0101990415006');
       expect(parsed).toBeTruthy();
       if (parsed) {
         expect(parsed.gender).toBe('female');
@@ -234,7 +235,7 @@ describe('North Macedonia (MKD) - JMBG Validation', () => {
 
     test('should parse MKD resident JMBG', () => {
       // Location 30 is outside citizen range (41-49)
-      const parsed = parseIdInfo('MKD', '0101990300004');
+      const parsed = parsedInfo('MKD', '0101990300004');
       expect(parsed).toBeTruthy();
       if (parsed) {
         expect(parsed.citizenship).toBe('resident');
@@ -320,7 +321,7 @@ describe('Montenegro (MNE) - JMBG Validation', () => {
   describe('Parse MNE JMBG', () => {
     test('should parse valid MNE citizen JMBG and extract information', () => {
       // 0101990210005: 01.01.1990, location 21, serial 000 (male)
-      const parsed = parseIdInfo('MNE', '0101990210005');
+      const parsed = parsedInfo('MNE', '0101990210005');
       expect(parsed).toBeTruthy();
       if (parsed) {
         expect(parsed.yyyymmdd).toBeInstanceOf(Date);
@@ -332,7 +333,7 @@ describe('Montenegro (MNE) - JMBG Validation', () => {
     });
 
     test('should parse MNE JMBG with female serial number', () => {
-      const parsed = parseIdInfo('MNE', '0101990215007');
+      const parsed = parsedInfo('MNE', '0101990215007');
       expect(parsed).toBeTruthy();
       if (parsed) {
         expect(parsed.gender).toBe('female');
@@ -341,7 +342,7 @@ describe('Montenegro (MNE) - JMBG Validation', () => {
 
     test('should parse MNE resident JMBG', () => {
       // Location 30 is outside citizen range (21-29)
-      const parsed = parseIdInfo('MNE', '0101990300004');
+      const parsed = parsedInfo('MNE', '0101990300004');
       expect(parsed).toBeTruthy();
       if (parsed) {
         expect(parsed.citizenship).toBe('resident');
@@ -361,9 +362,9 @@ describe('JMBG Cross-Country Validation', () => {
     expect(mkdCitizen.isValid).toBe(true);
     expect(mneCitizen.isValid).toBe(true);
 
-    const bihParsed = parseIdInfo('BIH', '0101990150002');
-    const mkdParsed = parseIdInfo('MKD', '0101990410004');
-    const mneParsed = parseIdInfo('MNE', '0101990210005');
+    const bihParsed = parsedInfo('BIH', '0101990150002');
+    const mkdParsed = parsedInfo('MKD', '0101990410004');
+    const mneParsed = parsedInfo('MNE', '0101990210005');
 
     expect(bihParsed?.citizenship).toBe('citizen');
     expect(mkdParsed?.citizenship).toBe('citizen');
@@ -372,9 +373,9 @@ describe('JMBG Cross-Country Validation', () => {
 
   test('should handle shared location codes as residents', () => {
     // Location 30 is not a citizen location for any of the three countries
-    const bihResident = parseIdInfo('BIH', '0101990300004');
-    const mkdResident = parseIdInfo('MKD', '0101990300004');
-    const mneResident = parseIdInfo('MNE', '0101990300004');
+    const bihResident = parsedInfo('BIH', '0101990300004');
+    const mkdResident = parsedInfo('MKD', '0101990300004');
+    const mneResident = parsedInfo('MNE', '0101990300004');
 
     expect(bihResident?.citizenship).toBe('resident');
     expect(mkdResident?.citizenship).toBe('resident');

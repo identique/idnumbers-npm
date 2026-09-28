@@ -31,7 +31,8 @@
  */
 
 import { NationalID, NationalIdParseResult } from '../countries/zwe/nationalId';
-import { validateNationalId, parseIdInfo, getCountryIdFormat } from '../index';
+import { validateNationalId, getCountryIdFormat } from '../index';
+import { parsedInfo } from './helpers/parsedInfo';
 
 // Hardcoded reference table (deliberately independent of production source).
 const CHECKSUM_LETTERS = [
@@ -478,9 +479,9 @@ describe('ZWE — top-level validateNationalId() integration', () => {
   );
 });
 
-describe('ZWE — top-level parseIdInfo() integration', () => {
+describe('ZWE — top-level parsedInfo() integration', () => {
   test('returns parsed object for a valid ZWE ID', () => {
-    const info = parseIdInfo('ZWE', '63123456G02');
+    const info = parsedInfo('ZWE', '63123456G02');
     expect(info).toEqual({
       registerOfficeCode: '63',
       checksum: 'G',
@@ -489,7 +490,7 @@ describe('ZWE — top-level parseIdInfo() integration', () => {
   });
 
   test('resolves alpha-2 alias ZW', () => {
-    const info = parseIdInfo('ZW', '63123456G02');
+    const info = parsedInfo('ZW', '63123456G02');
     expect(info).toEqual({
       registerOfficeCode: '63',
       checksum: 'G',
@@ -498,17 +499,17 @@ describe('ZWE — top-level parseIdInfo() integration', () => {
   });
 
   test('resolves lowercase zw alias', () => {
-    expect(parseIdInfo('zw', '63123456G02')).not.toBeNull();
+    expect(parsedInfo('zw', '63123456G02')).not.toBeNull();
   });
 
   test('returns null for invalid input without throwing', () => {
-    expect(() => parseIdInfo('ZWE', 'INVALID')).not.toThrow();
-    expect(parseIdInfo('ZWE', 'INVALID')).toBeNull();
+    expect(() => parsedInfo('ZWE', 'INVALID')).not.toThrow();
+    expect(parsedInfo('ZWE', 'INVALID')).toBeNull();
   });
 
   test('returns null for non-string input without throwing', () => {
-    expect(() => parseIdInfo('ZWE', null as unknown as string)).not.toThrow();
-    expect(parseIdInfo('ZWE', null as unknown as string)).toBeNull();
+    expect(() => parsedInfo('ZWE', null as unknown as string)).not.toThrow();
+    expect(parsedInfo('ZWE', null as unknown as string)).toBeNull();
   });
 });
 

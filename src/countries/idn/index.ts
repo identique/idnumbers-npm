@@ -8,6 +8,7 @@ import { DISTRICT_CODES } from './districts.js';
 import { defineCountry } from '../../registry/country.js';
 
 export interface IndonesiaParseResult extends ParsedInfo {
+  isValid: boolean;
   gender: 'male' | 'female';
   year: string;
   month: string;

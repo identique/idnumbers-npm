@@ -8,4 +8,9 @@ export enum ValidationFailureReason {
   INVALID_FORMAT = 'invalid_format',
   CHECKSUM_MISMATCH = 'checksum_mismatch',
   VALIDATION_FAILED = 'validation_failed',
+  /**
+   * The ID is valid, but no information can be parsed from it: the country has no
+   * parser, or its parser returned nothing. Only `parseIdInfo()` reports it (#123).
+   */
+  NOT_PARSABLE = 'not_parsable',
 }

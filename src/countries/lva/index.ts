@@ -8,6 +8,7 @@ import { CheckDigit } from '../../constants.js';
 import { defineCountry } from '../../registry/country.js';
 
 export interface LatviaParseResult extends ParsedInfo {
+  isValid: boolean;
   // Personal Code doesn't contain parsable information beyond validation
 }
 

@@ -9,6 +9,7 @@ import { Gender } from '../../constants.js';
 import { defineCountry } from '../../registry/country.js';
 
 export interface MexicoParseResult extends ParsedInfo {
+  isValid: boolean;
   nameInitialChars: string;
   nameConsonants: string;
   birthDate: Date;

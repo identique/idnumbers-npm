@@ -15,13 +15,14 @@
  * - C: Checksum (weighted sum mod 11, must be < 10)
  */
 
-import { validateNationalId, parseIdInfo } from '../index';
+import { validateNationalId } from '../index';
+import { parsedInfo } from './helpers/parsedInfo';
 import { PersonalID } from '../countries/hun';
 
 describe('Hungary (HUN) - Personal ID Number', () => {
   describe('Gender and Century Combinations', () => {
     test('should parse male citizen born in 1900s (digit 1)', () => {
-      const result = parseIdInfo('HUN', '18001010016');
+      const result = parsedInfo('HUN', '18001010016');
       expect(result).not.toBeNull();
       expect(result?.gender).toBe('male');
       expect(result?.citizenship).toBe('citizen');
@@ -29,7 +30,7 @@ describe('Hungary (HUN) - Personal ID Number', () => {
     });
 
     test('should parse female citizen born in 1900s (digit 2)', () => {
-      const result = parseIdInfo('HUN', '28001010017');
+      const result = parsedInfo('HUN', '28001010017');
       expect(result).not.toBeNull();
       expect(result?.gender).toBe('female');
       expect(result?.citizenship).toBe('citizen');
@@ -37,7 +38,7 @@ describe('Hungary (HUN) - Personal ID Number', () => {
     });
 
     test('should parse male citizen born in 2000s (digit 3)', () => {
-      const result = parseIdInfo('HUN', '30501010017');
+      const result = parsedInfo('HUN', '30501010017');
       expect(result).not.toBeNull();
       expect(result?.gender).toBe('male');
       expect(result?.citizenship).toBe('citizen');
@@ -45,7 +46,7 @@ describe('Hungary (HUN) - Personal ID Number', () => {
     });
 
     test('should parse female citizen born in 2000s (digit 4)', () => {
-      const result = parseIdInfo('HUN', '40501010018');
+      const result = parsedInfo('HUN', '40501010018');
       expect(result).not.toBeNull();
       expect(result?.gender).toBe('female');
       expect(result?.citizenship).toBe('citizen');
@@ -53,7 +54,7 @@ describe('Hungary (HUN) - Personal ID Number', () => {
     });
 
     test('should parse male foreign resident born in 1900s (digit 5)', () => {
-      const result = parseIdInfo('HUN', '58001010029');
+      const result = parsedInfo('HUN', '58001010029');
       expect(result).not.toBeNull();
       expect(result?.gender).toBe('male');
       expect(result?.citizenship).toBe('foreign');
@@ -61,7 +62,7 @@ describe('Hungary (HUN) - Personal ID Number', () => {
     });
 
     test('should parse female foreign resident born in 1900s (digit 6)', () => {
-      const result = parseIdInfo('HUN', '68001010010');
+      const result = parsedInfo('HUN', '68001010010');
       expect(result).not.toBeNull();
       expect(result?.gender).toBe('female');
       expect(result?.citizenship).toBe('foreign');
@@ -69,7 +70,7 @@ describe('Hungary (HUN) - Personal ID Number', () => {
     });
 
     test('should parse male foreign resident born in 1800s (digit 7)', () => {
-      const result = parseIdInfo('HUN', '78001010011');
+      const result = parsedInfo('HUN', '78001010011');
       expect(result).not.toBeNull();
       expect(result?.gender).toBe('male');
       expect(result?.citizenship).toBe('foreign');
@@ -77,7 +78,7 @@ describe('Hungary (HUN) - Personal ID Number', () => {
     });
 
     test('should parse female foreign resident born in 1800s (digit 8)', () => {
-      const result = parseIdInfo('HUN', '88001010012');
+      const result = parsedInfo('HUN', '88001010012');
       expect(result).not.toBeNull();
       expect(result?.gender).toBe('female');
       expect(result?.citizenship).toBe('foreign');
@@ -87,24 +88,24 @@ describe('Hungary (HUN) - Personal ID Number', () => {
 
   describe('Parse Output Fields', () => {
     test('should extract serial number correctly', () => {
-      const result = parseIdInfo('HUN', '18001010016');
+      const result = parsedInfo('HUN', '18001010016');
       expect(result?.serialNumber).toBe('001');
     });
 
     test('should extract checksum correctly', () => {
-      const result = parseIdInfo('HUN', '18001010016');
+      const result = parsedInfo('HUN', '18001010016');
       expect(result?.checksum).toBe(6);
     });
 
     test('should calculate age from birth date', () => {
-      const result = parseIdInfo('HUN', '18001010016');
+      const result = parsedInfo('HUN', '18001010016');
       expect(result?.age).toBeDefined();
       expect(typeof result?.age).toBe('number');
       expect(result?.age).toBeGreaterThan(0);
     });
 
     test('should include isValid flag in parse result', () => {
-      const result = parseIdInfo('HUN', '18001010016');
+      const result = parsedInfo('HUN', '18001010016');
       expect(result?.isValid).toBe(true);
     });
   });
@@ -122,7 +123,7 @@ describe('Hungary (HUN) - Personal ID Number', () => {
     });
 
     test('all format variations should parse to same data', () => {
-      const results = validFormats.map(id => parseIdInfo('HUN', id));
+      const results = validFormats.map(id => parsedInfo('HUN', id));
 
       results.forEach(result => {
         expect(result?.birthDate).toEqual(new Date(1980, 0, 1));
@@ -191,7 +192,7 @@ describe('Hungary (HUN) - Personal ID Number', () => {
     });
 
     test('should return null when parsing invalid checksum', () => {
-      const result = parseIdInfo('HUN', '18001010017');
+      const result = parsedInfo('HUN', '18001010017');
       expect(result).toBeNull();
     });
   });
@@ -231,7 +232,7 @@ describe('Hungary (HUN) - Personal ID Number', () => {
       const result = validateNationalId('HUN', '18002290012');
       expect(result.isValid).toBe(true);
 
-      const parsed = parseIdInfo('HUN', '18002290012');
+      const parsed = parsedInfo('HUN', '18002290012');
       expect(parsed?.birthDate).toEqual(new Date(1980, 1, 29));
     });
 
@@ -249,7 +250,7 @@ describe('Hungary (HUN) - Personal ID Number', () => {
       const result = validateNationalId('HUN', '18012310010');
       expect(result.isValid).toBe(true);
 
-      const parsed = parseIdInfo('HUN', '18012310010');
+      const parsed = parsedInfo('HUN', '18012310010');
       expect(parsed?.birthDate).toEqual(new Date(1980, 11, 31));
     });
 
@@ -257,7 +258,7 @@ describe('Hungary (HUN) - Personal ID Number', () => {
       const result = validateNationalId('HUN', '18001010016');
       expect(result.isValid).toBe(true);
 
-      const parsed = parseIdInfo('HUN', '18001010016');
+      const parsed = parsedInfo('HUN', '18001010016');
       expect(parsed?.birthDate).toEqual(new Date(1980, 0, 1));
     });
   });
@@ -267,7 +268,7 @@ describe('Hungary (HUN) - Personal ID Number', () => {
       // 1 85 07 15 001 ? - calculate checksum
       // Digits: 1,8,5,0,7,1,5,0,0,1 weights: 1,2,3,4,5,6,7,8,9,10
       // Sum: 1+16+15+0+35+6+35+0+0+10 = 118, 118 % 11 = 8
-      const result = parseIdInfo('HUN', '18507150018');
+      const result = parsedInfo('HUN', '18507150018');
       expect(result).not.toBeNull();
       expect(result?.birthDate).toEqual(new Date(1985, 6, 15));
     });
@@ -276,7 +277,7 @@ describe('Hungary (HUN) - Personal ID Number', () => {
       // 3 00 06 15 001 ? - calculate checksum
       // Digits: 3,0,0,0,6,1,5,0,0,1 weights: 1,2,3,4,5,6,7,8,9,10
       // Sum: 3+0+0+0+30+6+35+0+0+10 = 84, 84 % 11 = 7
-      const result = parseIdInfo('HUN', '30006150017');
+      const result = parsedInfo('HUN', '30006150017');
       expect(result).not.toBeNull();
       expect(result?.birthDate).toEqual(new Date(2000, 5, 15));
       expect(result?.gender).toBe('male');

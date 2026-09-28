@@ -5,12 +5,13 @@
  * the entry point — the root registers every country, `idnumbers/core`
  * registers only what is passed to {@link register} (#122).
  */
-import { ValidationResult, CountryInfo } from './types.js';
+import { ValidationResult, CountryInfo, ParseIdInfoResult } from './types.js';
 import { ValidationFailureReason } from './failureReasons.js';
 import { registry } from './registry/ValidatorRegistry.js';
 import { IdFormat } from './registry/types.js';
 import { CountryDefinition } from './registry/country.js';
 import { deriveFailureReason } from './registry/failureReason.js';
+import type { ParsedInfoFor } from './parseResultMap.js';
 
 /**
  * Register countries so the validation API can use them.
@@ -21,7 +22,9 @@ import { deriveFailureReason } from './registry/failureReason.js';
  *
  * @throws Error if a key or alias is already registered for a different validator.
  */
-export function register(...countries: CountryDefinition[]): void {
+export function register(
+  ...countries: CountryDefinition<string, readonly string[], object>[]
+): void {
   for (const country of countries) {
     registry.registerCountry(country);
   }
@@ -45,8 +48,13 @@ export function listSupportedCountries(): CountryInfo[] {
  *
  * Delegates to the registry-based validator lookup. Aliases (e.g. "FR", "fr")
  * are resolved to their primary alpha-3 key (e.g. "FRA") which is returned
- * as the countryCode in the result.
+ * as the countryCode in the result. For a built-in country code, `extractedInfo`
+ * has that country's parse result type (#123).
  */
+export function validateNationalId<C extends string>(
+  countryCode: C,
+  idNumber: string
+): ValidationResult<ParsedInfoFor<C>>;
 export function validateNationalId(countryCode: string, idNumber: string): ValidationResult {
   try {
     const resolvedKey = registry.resolveKey(countryCode);
@@ -89,20 +97,65 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
 /**
  * Parse information from a valid national ID number.
  *
- * Uses the registry to look up the country validator and delegates to its
- * parse() method. Returns null when the country is unknown or the validator
- * has no parse method.
+ * Returns `{ ok: true, info }` with what the country's parser extracted, or
+ * `{ ok: false, reason }` saying why nothing was parsed (#123):
+ *
+ * - `UNSUPPORTED_COUNTRY`: the country code is not registered;
+ * - `INVALID_LENGTH` / `INVALID_FORMAT` / `CHECKSUM_MISMATCH` / `VALIDATION_FAILED`:
+ *   the ID is invalid, with the same reason `validateNationalId()` reports;
+ * - `NOT_PARSABLE`: the ID is valid, but the country has no parser or its parser
+ *   extracted nothing.
+ *
+ * Aliases resolve like `validateNationalId()`, and `countryCode` in the result is
+ * the resolved alpha-3 code. For a built-in country code, `info` has that
+ * country's parse result type; see `ParseResultMap`.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- untyped parse result; typed results tracked in #123
-export function parseIdInfo(countryCode: string, idNumber: string): any | null {
+export function parseIdInfo<C extends string>(
+  countryCode: C,
+  idNumber: string
+): ParseIdInfoResult<ParsedInfoFor<C>>;
+export function parseIdInfo(countryCode: string, idNumber: string): ParseIdInfoResult {
   try {
-    const validator = registry.get(countryCode);
-    if (!validator?.parse) {
-      return null;
+    const resolvedKey = registry.resolveKey(countryCode);
+    if (!resolvedKey) {
+      return {
+        ok: false,
+        countryCode,
+        idNumber,
+        reason: ValidationFailureReason.UNSUPPORTED_COUNTRY,
+        errorMessage: `Unsupported country code: ${countryCode}`,
+      };
     }
-    return validator.parse(idNumber);
-  } catch {
-    return null;
+
+    const validator = registry.get(resolvedKey)!;
+    if (!validator.validate(idNumber)) {
+      return {
+        ok: false,
+        countryCode: resolvedKey,
+        idNumber,
+        reason: deriveFailureReason(validator, idNumber),
+      };
+    }
+
+    const info = validator.parse ? validator.parse(idNumber) : null;
+    if (info === null || info === undefined) {
+      return {
+        ok: false,
+        countryCode: resolvedKey,
+        idNumber,
+        reason: ValidationFailureReason.NOT_PARSABLE,
+      };
+    }
+
+    return { ok: true, countryCode: resolvedKey, idNumber, info };
+  } catch (error) {
+    return {
+      ok: false,
+      countryCode,
+      idNumber,
+      reason: ValidationFailureReason.VALIDATION_FAILED,
+      errorMessage: error instanceof Error ? error.message : 'Unknown error occurred',
+    };
   }
 }
 

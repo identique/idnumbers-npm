@@ -10,6 +10,7 @@ import { validateRegexp, isValidDate } from '../../utils.js';
 import { CheckDigit } from '../../constants.js';
 
 export interface LatviaOldParseResult extends ParsedInfo {
+  isValid: boolean;
   birthDate: Date;
   serialNumber: string;
   checksum: CheckDigit;

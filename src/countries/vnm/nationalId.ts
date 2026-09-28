@@ -1,10 +1,10 @@
 import { Gender } from '../../constants.js';
-import { IdMetadata, IdNumberClass } from '../../types.js';
+import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
 
 /**
  * Parse result of Vietnam national ID
  */
-export interface NationalIdParseResult {
+export interface NationalIdParseResult extends ParsedInfo {
   /** Province/country code (3 digits) */
   province_country_code: string;
   /** Birth year (full year) */

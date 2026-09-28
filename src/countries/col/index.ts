@@ -9,6 +9,7 @@ import { CheckDigit } from '../../constants.js';
 import { defineCountry } from '../../registry/country.js';
 
 export interface ColombiaParseResult extends ParsedInfo {
+  isValid: boolean;
   // NUIP doesn't contain parsable information beyond validation
 }
 

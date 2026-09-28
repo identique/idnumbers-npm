@@ -1,4 +1,15 @@
-import { IdMetadata, IdNumberClass } from '../../types.js';
+import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
+
+/**
+ * Information parsed from a Serbian JMBG
+ */
+export interface NationalIdParseResult extends ParsedInfo {
+  isValid: boolean;
+  dateOfBirth: Date;
+  gender: 'male' | 'female';
+  /** Region name, or 'Unknown' for an unlisted region code */
+  region: string;
+}
 
 /**
  * Serbian JMBG (Unique Master Citizen Number)
@@ -97,8 +108,7 @@ export class NationalID implements IdNumberClass {
   /**
    * Parse Serbian JMBG to extract information
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- untyped parse result; typed results tracked in #123
-  static parse(idNumber: string): any | null {
+  static parse(idNumber: string): NationalIdParseResult | null {
     if (!NationalID.validate(idNumber)) {
       return null;
     }
@@ -170,8 +180,7 @@ export class NationalID implements IdNumberClass {
     return NationalID.validate(idNumber);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- untyped parse result; typed results tracked in #123
-  parse(idNumber: string): any | null {
+  parse(idNumber: string): NationalIdParseResult | null {
     return NationalID.parse(idNumber);
   }
 }

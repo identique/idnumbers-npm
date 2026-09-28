@@ -3,12 +3,16 @@ import type { CountryDefinition } from './country.js';
 
 /**
  * Interface that all country validators must implement.
- * Stricter successor to IdNumberClass -- parse() returns ParsedInfo | null instead of any | null.
+ *
+ * `I` is the type `parse()` returns for a valid ID. Validators built from a
+ * country module keep that module's parse result type (#123); the registry
+ * hands them out as `CountryValidator` (i.e. {@link ParsedInfo}), whose fields
+ * read as `unknown`.
  */
-export interface CountryValidator {
+export interface CountryValidator<I extends object = ParsedInfo> {
   readonly METADATA: IdMetadata;
   validate(idNumber: string): boolean;
-  parse?(idNumber: string): ParsedInfo | null;
+  parse?(idNumber: string): I | null;
   checksum?(idNumber: string): number | boolean | null;
 }
 
@@ -39,8 +43,8 @@ export interface IdFormat {
  * Registry interface for managing validators.
  */
 export interface IValidatorRegistry {
-  register(key: ValidatorKey, validator: CountryValidator): void;
-  registerCountry(country: CountryDefinition): void;
+  register(key: ValidatorKey, validator: CountryValidator<object>): void;
+  registerCountry(country: CountryDefinition<string, readonly string[], object>): void;
   registerAlias(alias: string, key: ValidatorKey): void;
   resolveKey(key: ValidatorKey): string | undefined;
   get(key: ValidatorKey): CountryValidator | undefined;

@@ -8,6 +8,7 @@ import { luhnDigit } from '../../utils.js';
 import { defineCountry } from '../../registry/country.js';
 
 export interface EmiratesParseResult extends ParsedInfo {
+  isValid: boolean;
   yearOfBirth: number;
   serialNumber: string;
   checksum: number;

@@ -8,6 +8,7 @@ import { validateRegexp, weightedModulusDigit, letterToNumber } from '../../util
 import { defineCountry } from '../../registry/country.js';
 
 export interface IrelandParseResult extends ParsedInfo {
+  isValid: boolean;
   // PPS doesn't contain parsable information beyond validation
 }
 

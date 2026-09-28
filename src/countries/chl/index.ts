@@ -8,6 +8,7 @@ import { validateRegexp } from '../../utils.js';
 import { defineCountry } from '../../registry/country.js';
 
 export interface ChileParseResult extends ParsedInfo {
+  isValid: boolean;
   // RUN/RUT doesn't contain parsable information beyond validation
 }
 

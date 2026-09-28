@@ -3,7 +3,7 @@
  */
 
 import { CheckDigit } from '../../constants.js';
-import { IdMetadata, IdNumberClass } from '../../types.js';
+import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
 import { luhnDigit } from '../../utils.js';
 import { CEDULA_LUHN_EXCEPTION_SET } from './exceptions.js';
 
@@ -16,7 +16,7 @@ import { CEDULA_LUHN_EXCEPTION_SET } from './exceptions.js';
  * which is not itself a municipality -- so it is surfaced only as a raw
  * series string, not decoded into a place name.
  */
-export interface CedulaParseResult {
+export interface CedulaParseResult extends ParsedInfo {
   /** First 3 digits of the number (historical series, no current meaning) */
   series: string;
   /** Middle 7 digits of the number (document sequence number) */

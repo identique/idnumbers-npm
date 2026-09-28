@@ -8,6 +8,7 @@ import { validateRegexp } from '../../utils.js';
 import { defineCountry } from '../../registry/country.js';
 
 export interface ArgentinaParseResult extends ParsedInfo {
+  isValid: boolean;
   // No specific parsing for Argentina DNI - just validation
 }
 

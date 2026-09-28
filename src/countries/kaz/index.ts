@@ -9,6 +9,7 @@ import { checksum } from './util.js';
 import { defineCountry } from '../../registry/country.js';
 
 export interface KazakhstanParseResult extends ParsedInfo {
+  isValid: boolean;
   birthDate: Date;
   gender: Gender;
   serialNumber: string;

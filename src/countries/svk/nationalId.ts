@@ -1,10 +1,10 @@
 import { CheckDigit, Gender } from '../../constants.js';
-import { IdMetadata, IdNumberClass } from '../../types.js';
+import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
 
 /**
  * Parse result for Slovakia Birth Number
  */
-export interface NationalIdParseResult {
+export interface NationalIdParseResult extends ParsedInfo {
   /** Birthday */
   yyyymmdd: Date;
   /** Gender */

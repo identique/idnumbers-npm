@@ -22,7 +22,8 @@
  */
 
 import { NationalID, DriverLicense } from '../countries/nzl';
-import { validateNationalId, parseIdInfo } from '../index';
+import { validateNationalId } from '../index';
+import { parsedInfo } from './helpers/parsedInfo';
 
 const LONG_STRING = 'A'.repeat(1000);
 
@@ -127,6 +128,6 @@ describe('NZL — top-level integration', () => {
   });
 
   test('parseIdInfo returns null for alias NZ with invalid input', () => {
-    expect(parseIdInfo('NZ', '')).toBeNull();
+    expect(parsedInfo('NZ', '')).toBeNull();
   });
 });

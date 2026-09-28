@@ -1,4 +1,5 @@
-import { validateNationalId, parseIdInfo } from '../index';
+import { validateNationalId } from '../index';
+import { parsedInfo } from './helpers/parsedInfo';
 
 describe('Python idnumbers test cases validation', () => {
   describe('USA - Social Security Number', () => {
@@ -56,7 +57,7 @@ describe('Python idnumbers test cases validation', () => {
     });
 
     test('should parse French SSN correctly', () => {
-      const parsed = parseIdInfo('FRA', '255081416802538');
+      const parsed = parsedInfo('FRA', '255081416802538');
       expect(parsed).not.toBeNull();
       if (parsed) {
         expect(parsed.gender).toBe('female');
@@ -98,7 +99,7 @@ describe('Python idnumbers test cases validation', () => {
     });
 
     test('should parse Chinese ID correctly', () => {
-      const parsed = parseIdInfo('CHN', '11010219840406970X');
+      const parsed = parsedInfo('CHN', '11010219840406970X');
       expect(parsed).not.toBeNull();
       if (parsed) {
         expect(parsed.birthDate).toEqual(new Date(1984, 3, 6));
@@ -210,7 +211,7 @@ describe('Python idnumbers test cases validation', () => {
     });
 
     test('should parse South African ID correctly', () => {
-      const parsed = parseIdInfo('ZAF', '7605300675088');
+      const parsed = parsedInfo('ZAF', '7605300675088');
       expect(parsed).not.toBeNull();
       if (parsed) {
         expect(parsed.yyyymmdd).toEqual(new Date(1976, 4, 30));
@@ -529,7 +530,7 @@ describe('Additional country validations', () => {
 
 describe('Parse functionality tests', () => {
   test('should parse Italian Fiscal Code', () => {
-    const parsed = parseIdInfo('ITA', 'RSSMRA85M01H501Q');
+    const parsed = parsedInfo('ITA', 'RSSMRA85M01H501Q');
     expect(parsed).not.toBeNull();
     if (parsed) {
       expect(parsed.surname).toBe('RSS');
@@ -542,7 +543,7 @@ describe('Parse functionality tests', () => {
   });
 
   test('should parse Polish PESEL', () => {
-    const parsed = parseIdInfo('POL', '44051401458');
+    const parsed = parsedInfo('POL', '44051401458');
     expect(parsed).not.toBeNull();
     if (parsed) {
       expect(parsed.birthDate.getFullYear()).toBe(1944);
@@ -553,7 +554,7 @@ describe('Parse functionality tests', () => {
   });
 
   test('should parse Belgian National Registration Number', () => {
-    const parsed = parseIdInfo('BEL', '93051822361');
+    const parsed = parsedInfo('BEL', '93051822361');
     expect(parsed).not.toBeNull();
     if (parsed) {
       expect(parsed.birthDate.getFullYear()).toBe(1993);
@@ -564,7 +565,7 @@ describe('Parse functionality tests', () => {
   });
 
   test('should parse Estonian Personal ID', () => {
-    const parsed = parseIdInfo('EST', '37605030299');
+    const parsed = parsedInfo('EST', '37605030299');
     expect(parsed).not.toBeNull();
     if (parsed) {
       expect(parsed.birthDate.getFullYear()).toBe(1976);
@@ -575,7 +576,7 @@ describe('Parse functionality tests', () => {
   });
 
   test('should parse Bulgarian Uniform Civil Number', () => {
-    const parsed = parseIdInfo('BGR', '7501020018');
+    const parsed = parsedInfo('BGR', '7501020018');
     expect(parsed).not.toBeNull();
     if (parsed) {
       expect(parsed.birthDate.getFullYear()).toBe(1975);
@@ -586,7 +587,7 @@ describe('Parse functionality tests', () => {
   });
 
   test('should parse Bulgarian UCN with month > 40 (2000s)', () => {
-    const parsed = parseIdInfo('BGR', '7552010005');
+    const parsed = parsedInfo('BGR', '7552010005');
     expect(parsed).not.toBeNull();
     if (parsed) {
       expect(parsed.birthDate.getFullYear()).toBe(2075);
@@ -597,7 +598,7 @@ describe('Parse functionality tests', () => {
   });
 
   test('should parse Romanian Personal Numeric Code', () => {
-    const parsed = parseIdInfo('ROU', '1800101123450');
+    const parsed = parsedInfo('ROU', '1800101123450');
     expect(parsed).not.toBeNull();
     if (parsed) {
       expect(parsed.yyyymmdd.getFullYear()).toBe(1980);
@@ -608,7 +609,7 @@ describe('Parse functionality tests', () => {
   });
 
   test('should parse Slovenian EMŠO', () => {
-    const parsed = parseIdInfo('SVN', '0101006500006');
+    const parsed = parsedInfo('SVN', '0101006500006');
     expect(parsed).not.toBeNull();
     if (parsed) {
       expect(parsed.dateOfBirth.getFullYear()).toBe(2006);
@@ -619,7 +620,7 @@ describe('Parse functionality tests', () => {
   });
 
   test('should parse Serbian JMBG', () => {
-    const parsed = parseIdInfo('SRB', '0101990710008');
+    const parsed = parsedInfo('SRB', '0101990710008');
     expect(parsed).not.toBeNull();
     if (parsed) {
       expect(parsed.dateOfBirth.getFullYear()).toBe(1990);
@@ -630,7 +631,7 @@ describe('Parse functionality tests', () => {
   });
 
   test('should parse Mexican CURP', () => {
-    const parsed = parseIdInfo('MEX', 'HEGG560427MVZRRL04');
+    const parsed = parsedInfo('MEX', 'HEGG560427MVZRRL04');
     expect(parsed).not.toBeNull();
     if (parsed) {
       expect(parsed.birthDate.getFullYear()).toBe(1956);
@@ -641,7 +642,7 @@ describe('Parse functionality tests', () => {
   });
 
   test('should parse Singapore NRIC/FIN', () => {
-    const parsed = parseIdInfo('SGP', 'S1234567D');
+    const parsed = parsedInfo('SGP', 'S1234567D');
     expect(parsed).not.toBeNull();
     if (parsed) {
       expect(parsed.sequentialNumber).toBe('1234567');
@@ -650,7 +651,7 @@ describe('Parse functionality tests', () => {
   });
 
   test('should parse Swedish Personal Identity Number', () => {
-    const parsed = parseIdInfo('SWE', '640823-3234');
+    const parsed = parsedInfo('SWE', '640823-3234');
     expect(parsed).not.toBeNull();
     if (parsed) {
       expect(parsed.yyyymmdd.getFullYear()).toBe(1964);
@@ -661,7 +662,7 @@ describe('Parse functionality tests', () => {
   });
 
   test('should parse Taiwan National ID', () => {
-    const parsed = parseIdInfo('TWN', 'A123456789');
+    const parsed = parsedInfo('TWN', 'A123456789');
     expect(parsed).not.toBeNull();
     if (parsed) {
       expect(parsed.gender).toBe('male');

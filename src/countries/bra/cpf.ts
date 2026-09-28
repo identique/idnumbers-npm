@@ -3,8 +3,15 @@
  * Cadastro de Pessoas Físicas
  */
 
-import { IdMetadata, IdNumberClass } from '../../types.js';
+import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
 import { validateRegexp } from '../../utils.js';
+
+/**
+ * What `CPF.parse()` returns for a valid CPF: a CPF encodes no personal data.
+ */
+export interface CPFParseResult extends ParsedInfo {
+  isValid: true;
+}
 
 /**
  * Brazil CPF Number (Tax ID for individuals)
@@ -107,14 +114,14 @@ export class CPF implements IdNumberClass {
   /**
    * Parse CPF (returns basic validation info)
    */
-  static parse(idNumber: string): { isValid: true } | null {
+  static parse(idNumber: string): CPFParseResult | null {
     if (!CPF.validate(idNumber)) {
       return null;
     }
     return { isValid: true };
   }
 
-  parse(idNumber: string): { isValid: true } | null {
+  parse(idNumber: string): CPFParseResult | null {
     return CPF.parse(idNumber);
   }
 

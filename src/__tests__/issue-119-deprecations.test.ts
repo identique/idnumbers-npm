@@ -146,9 +146,9 @@ describe('issue #119: deprecated symbols surface IDE deprecation diagnostics', (
     expect(isDeprecatedAt(diagnostics, pos)).toBe(true);
   });
 
-  it('flags IdMetadata.aliasOf as deprecated when read', () => {
+  it('no longer flags IdMetadata.aliasOf: #123 narrowed its `any` type', () => {
     const pos = offsetOf('someIdMetadata.aliasOf', 'aliasOf');
-    expect(isDeprecatedAt(diagnostics, pos)).toBe(true);
+    expect(isDeprecatedAt(diagnostics, pos)).toBe(false);
   });
 
   // -- Negative controls: none of these are deprecated ----------------------

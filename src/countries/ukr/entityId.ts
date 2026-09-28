@@ -1,4 +1,4 @@
-import { IdMetadata, IdNumberClass } from '../../types.js';
+import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
 import { validateRegexp } from '../../utils.js';
 
 /**
@@ -15,7 +15,7 @@ export enum EntityType {
 /**
  * Parse result of Ukrainian Entity ID (EDRPOU)
  */
-export interface EntityIdParseResult {
+export interface EntityIdParseResult extends ParsedInfo {
   /** The checksum digit (last digit of the EDRPOU) */
   checksum: number;
   /** Entity type based on the first digit range */

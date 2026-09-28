@@ -91,19 +91,25 @@ describe('Validation Edge Cases and Error Handling', () => {
   });
 
   describe('Parse functionality edge cases', () => {
-    test('should return null for non-parsable country IDs', () => {
+    test('should fail with NOT_PARSABLE for non-parsable country IDs', () => {
       const result = IDNumbers.parseIdInfo('USA', '123-45-6789');
-      expect(result).toBeNull(); // USA SSN is not parsable
+      // USA SSN is valid but not parsable
+      expect(result).toEqual({
+        ok: false,
+        countryCode: 'USA',
+        idNumber: '123-45-6789',
+        reason: IDNumbers.ValidationFailureReason.NOT_PARSABLE,
+      });
     });
 
     test('should handle invalid input for parsable countries', () => {
       const result = IDNumbers.parseIdInfo('CHN', 'invalid-input');
-      expect(result).toBeNull();
+      expect(result.ok).toBe(false);
     });
 
     test('should handle null/undefined for parse', () => {
-      expect(IDNumbers.parseIdInfo('CHN', null as unknown as string)).toBeNull();
-      expect(IDNumbers.parseIdInfo('CHN', undefined as unknown as string)).toBeNull();
+      expect(IDNumbers.parseIdInfo('CHN', null as unknown as string).ok).toBe(false);
+      expect(IDNumbers.parseIdInfo('CHN', undefined as unknown as string).ok).toBe(false);
     });
   });
 

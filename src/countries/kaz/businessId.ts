@@ -10,6 +10,7 @@ import { CheckDigit } from '../../constants.js';
 import { checksum, EntityType, EntityDivision } from './util.js';
 
 export interface KazakhstanBINParseResult extends ParsedInfo {
+  isValid: boolean;
   yy: number;
   mm: number;
   entityType: EntityType;

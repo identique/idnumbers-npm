@@ -9,6 +9,7 @@ import { CheckDigit } from '../../constants.js';
 import { defineCountry } from '../../registry/country.js';
 
 export interface BulgariaParseResult extends ParsedInfo {
+  isValid: boolean;
   birthDate: Date;
   gender: 'Male' | 'Female';
   checksum: CheckDigit;

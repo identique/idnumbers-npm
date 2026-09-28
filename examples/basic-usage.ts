@@ -28,15 +28,16 @@ console.log(`ZAF.NationalID.validate('7605300675088'): ${ZAF.NationalID.validate
 
 // Example 3: Parsing information
 console.log('\n3. Parsing Information:');
-const parsedInfo = parseIdInfo('ZAF', '7605300675088');
-if (parsedInfo) {
-  console.log('South African ID parsed:');
-  console.log(`  Date of birth: ${parsedInfo.yyyymmdd.toDateString()}`);
-  console.log(`  Gender: ${parsedInfo.gender}`);
-  console.log(`  Citizenship: ${parsedInfo.citizenship}`);
-  console.log(`  Serial number: ${parsedInfo.sn}`);
+const parsed = parseIdInfo('ZAF', '7605300675088');
+if (parsed.ok) {
+  // `parsed.info` is typed as South Africa's parse result
+  console.log(`South African ID parsed (${parsed.countryCode}):`);
+  console.log(`  Date of birth: ${parsed.info.yyyymmdd.toDateString()}`);
+  console.log(`  Gender: ${parsed.info.gender}`);
+  console.log(`  Citizenship: ${parsed.info.citizenship}`);
+  console.log(`  Serial number: ${parsed.info.sn}`);
 } else {
-  console.log('Could not parse South African ID');
+  console.log(`Could not parse South African ID: ${parsed.reason}`);
 }
 
 // Example 4: Validate multiple IDs

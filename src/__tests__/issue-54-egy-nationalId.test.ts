@@ -16,7 +16,8 @@
 import { validate, parse, checksum, METADATA, GOVERNORATES } from '../countries/egy/nationalId';
 import { NationalID } from '../countries/egy';
 import { Gender } from '../constants';
-import { validateNationalId, parseIdInfo, getCountryIdFormat, EGY } from '../index';
+import { validateNationalId, getCountryIdFormat, EGY } from '../index';
+import { parsedInfo } from './helpers/parsedInfo';
 
 // Valid synthetic IDs: CYYMMDDGGSSSSV
 const VALID = [
@@ -162,10 +163,10 @@ describe('Egypt (EGY) — National ID', () => {
     });
 
     it('parses via parseIdInfo', () => {
-      const info = parseIdInfo('EGY', METADATA.example);
+      const info = parsedInfo('EGY', METADATA.example);
       expect(info).toBeTruthy();
-      expect(info.gender).toBe(Gender.MALE);
-      expect(info.governorate).toBe('Cairo');
+      expect(info?.gender).toBe(Gender.MALE);
+      expect(info?.governorate).toBe('Cairo');
     });
 
     it('exposes format info via getCountryIdFormat', () => {

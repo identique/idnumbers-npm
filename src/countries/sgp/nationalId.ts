@@ -1,10 +1,10 @@
 import { CheckDigit, Citizenship } from '../../constants.js';
-import { IdMetadata, IdNumberClass } from '../../types.js';
+import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
 
 /**
  * Parse result of Singapore NRIC/FIN
  */
-export interface NationalIdParseResult {
+export interface NationalIdParseResult extends ParsedInfo {
   /** Type of ID holder */
   type: Citizenship;
   /** Sequential number */

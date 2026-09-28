@@ -9,7 +9,8 @@
 
 import { NationalID, NationalIdParseResult } from '../countries/nor/nationalId';
 import { Gender } from '../constants';
-import { validateNationalId, parseIdInfo } from '../index';
+import { validateNationalId } from '../index';
+import { parsedInfo } from './helpers/parsedInfo';
 
 // ---------------------------------------------------------------------------
 // Block A: Fødselsnummer Validation (Issue #28)
@@ -241,14 +242,14 @@ describe('NOR NationalID — Integration via public API', () => {
     expect(result.countryCode).toBe('NOR');
   });
 
-  test('parseIdInfo("NOR", validFodselsnummer) should return non-null with correct yyyymmdd', () => {
-    const result = parseIdInfo('NOR', VALID_FODSEL);
+  test('parsedInfo("NOR", validFodselsnummer) should return non-null with correct yyyymmdd', () => {
+    const result = parsedInfo('NOR', VALID_FODSEL);
     expect(result).not.toBeNull();
     expect(result!.yyyymmdd).toEqual(new Date(1996, 1, 29));
   });
 
-  test('parseIdInfo("NOR", validDNummer) should return non-null with idType d-nummer', () => {
-    const result = parseIdInfo('NOR', VALID_DNUMMER) as NationalIdParseResult | null;
+  test('parsedInfo("NOR", validDNummer) should return non-null with idType d-nummer', () => {
+    const result = parsedInfo('NOR', VALID_DNUMMER) as NationalIdParseResult | null;
     expect(result).not.toBeNull();
     expect(result!.idType).toBe('d-nummer');
   });
