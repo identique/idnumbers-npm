@@ -266,10 +266,13 @@ export const NationalID = {
  * The root `idnumbers` entry registers it automatically.
  */
 export const country = defineCountry('XYZ', ['XY'], NationalID);
-
-// Secondary ID types: exported here, never registered (see step 5).
-// export { TaxNumber } from './taxNumber.js';
 ```
+
+If the country has secondary ID types, re-export each from `index.ts` below the definition — e.g.
+`export { TaxNumber } from './taxNumber.js';` — and never register them (see step 5). Don't paste
+that line, even commented out, for a country without one: the import-graph checks in
+`issue-120-esm-specifiers.test.ts` and `issue-122-country-definitions.test.ts` read comments too, and
+fail on a specifier that points at a missing file.
 
 Rules the template encodes:
 
