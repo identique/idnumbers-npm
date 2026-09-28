@@ -151,7 +151,7 @@ const result = validateNationalId('GBR', 'AB123456C');
 if (result.isValid) {
   console.log('Valid UK National Insurance Number');
 } else {
-  console.log('Invalid:', result.errorMessage);
+  console.log('Invalid:', result.reason);
 }
 ```
 
@@ -512,7 +512,7 @@ const results = validateMultipleIds(ids);
 results.forEach((result, index) => {
   console.log(`ID ${index + 1}: ${result.isValid ? 'Valid' : 'Invalid'}`);
   if (!result.isValid) {
-    console.log(`  Error: ${result.errorMessage}`);
+    console.log(`  Reason: ${result.reason}`);
   }
 });
 ```
@@ -524,14 +524,14 @@ import { validateNationalId } from 'idnumbers';
 
 const result = validateNationalId('USA', '000-45-6789');
 if (!result.isValid) {
-  console.log('Validation failed:', result.errorMessage);
-  // "Validation failed: Invalid SSN - forbidden prefix 000"
+  console.log('Validation failed:', result.reason);
+  // "Validation failed: invalid_format" (the 000 area number is not allowed)
 }
 
-// Unsupported country
+// Unsupported country: also sets a human-readable errorMessage
 const invalid = validateNationalId('XXX', '123456789');
-console.log(invalid.errorMessage);
-// "Unsupported country code: XXX"
+console.log(invalid.reason, invalid.errorMessage);
+// "unsupported_country Unsupported country code: XXX"
 ```
 
 ### TypeScript Usage
@@ -628,7 +628,7 @@ Accepted letter case, surrounding whitespace, and separators for every country a
 
 ## Testing
 
-The library includes comprehensive test coverage with 3560 tests covering:
+The library includes comprehensive test coverage with 3596 tests covering:
 
 - Format validation
 - Checksum verification

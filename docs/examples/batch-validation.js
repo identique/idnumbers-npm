@@ -27,8 +27,8 @@ results1.forEach((result, index) => {
   const status = result.isValid ? '✓ VALID' : '✗ INVALID';
   console.log(`${index + 1}. [${result.countryCode}] ${result.idNumber}`);
   console.log(`   Status: ${status}`);
-  if (!result.isValid && result.errorMessage) {
-    console.log(`   Error: ${result.errorMessage}`);
+  if (!result.isValid) {
+    console.log(`   Reason: ${result.reason}`);
   }
   console.log();
 });
@@ -54,9 +54,7 @@ results2.forEach((result) => {
   } else {
     invalidCount++;
     console.log(`✗ [${result.countryCode}] ${result.idNumber} - INVALID`);
-    if (result.errorMessage) {
-      console.log(`  Reason: ${result.errorMessage}`);
-    }
+    console.log(`  Reason: ${result.reason}`);
   }
 });
 
@@ -88,7 +86,7 @@ registrationResults.forEach((result, index) => {
   console.log(`ID: ${user.id}`);
   console.log(`Status: ${result.isValid ? 'APPROVED ✓' : 'REJECTED ✗'}`);
   if (!result.isValid) {
-    console.log(`Reason: ${result.errorMessage}`);
+    console.log(`Reason: ${result.reason}`);
   }
   console.log();
 });
