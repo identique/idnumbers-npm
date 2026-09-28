@@ -14,9 +14,10 @@
 // for every compiled file is this marker, not the root one. So each marker also
 // declares the only modules with import-time side effects: the batteries-included
 // root entry and the registration it imports. Everything else (idnumbers/core and
-// the idnumbers/countries/<iso3> subpaths) is pure, so unused countries can be
-// dropped from a bundle. Keep this list in sync with `sideEffects` in the root
-// package.json.
+// the idnumbers/countries/<iso3> subpaths) is pure, so bundlers can drop imported
+// modules whose exports go unused, such as unused enums and secondary ID types.
+// (Unused countries stay out regardless: idnumbers/core never imports them.)
+// Keep this list in sync with `sideEffects` in the root package.json.
 //
 // Run after both builds complete (wired into the "build" script).
 import { existsSync, writeFileSync } from 'node:fs';
