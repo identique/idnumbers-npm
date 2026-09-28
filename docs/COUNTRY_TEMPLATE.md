@@ -175,6 +175,7 @@ import { defineCountry } from '../../registry/country.js';
 import { checksum } from './util.js';
 
 export interface XyzParseResult extends ParsedInfo {
+  isValid: boolean;
   birthDate: Date;
   gender: Gender;
   serialNumber: string;
@@ -273,7 +274,9 @@ Rules the template encodes:
 - `validate` guards against non-string input, checks the pattern, then delegates to `parse` so the two
   can never disagree.
 - `parse` returns `null` for every invalid input — never throws, never returns a partial object.
-- `parse` results always carry `isValid: true` (required by `ParsedInfo`).
+- `parse`'s result type is an interface extending `ParsedInfo` (#123): an interface that does not
+  extend it fails to compile in `ALL_COUNTRIES` (step 5). Function-based modules also return
+  `isValid: true`.
 - Omit `parse` entirely if the ID encodes nothing (set `parsable: false`); omit `checksum` if the
   format has none (set `checksum: false` and describe why in `checksumAlgorithm`, e.g.
   `'None (check letter not algorithmically verified)'`).
@@ -292,7 +295,7 @@ this is asserted by the format-info tests. Never use a real person's number.
 
 ## 5. Wire it into the library
 
-A new country touches **four** places, plus one rule to respect. Missing any of them produces a
+A new country touches **five** places, plus one rule to respect. Missing any of them produces a
 country that silently does not work. The `idnumbers/countries/xyz` subpath itself needs no wiring:
 the `./countries/*` pattern in the `package.json` `exports` map covers every country directory.
 
@@ -311,10 +314,10 @@ add it to `ALL_COUNTRIES`, which the root entry registers:
 ```typescript
 import { country as XYZ } from '../countries/xyz/index.js';
 
-export const ALL_COUNTRIES: readonly CountryDefinition[] = [
+export const ALL_COUNTRIES = [
   // ...in alpha-3 order:
   XYZ,
-];
+] as const satisfies readonly CountryDefinition[];
 ```
 
 For a country with two coexisting valid formats, define one composite instead of adding a second
@@ -353,6 +356,21 @@ static readonly METADATA: IdMetadata = {
 };
 ```
 
+**5. [`src/parseResultMap.ts`](../src/parseResultMap.ts)** — add the country to `ParseResultMap`,
+which types `parseIdInfo()` and `validateNationalId()` per country: its parse result type, or
+`never` if it has no parser. The type test in
+[`issue-123-parse-results.test.ts`](../src/__tests__/issue-123-parse-results.test.ts) does not
+compile until the map has exactly one entry per `ALL_COUNTRIES` definition, matching its `parse()`:
+
+```typescript
+import type { XyzParseResult } from './countries/xyz/index.js';
+
+export interface ParseResultMap {
+  // ...in alpha-3 order:
+  XYZ: XyzParseResult;
+}
+```
+
 **The rule: secondary types stay out of the registry.** Export them from the country module only
 (`export { TaxNumber } from './taxNumber.js';`). Adding them as registry keys breaks the count invariant
 below and misrepresents them as countries.
@@ -369,6 +387,7 @@ The registry count is hard-asserted, so adding country #86 fails the suite until
 | ------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`src/__tests__/parseIdInfo-migration.test.ts`](../src/__tests__/parseIdInfo-migration.test.ts)               | **Breaks the build:** `expect(registry.list().length).toBe(85)` → `86`. Also extend the `expectedKeys` list, the `expectedAliases` map, and — if the ID is parsable — the `parseableCountries` table |
 | [`src/__tests__/getCountryIdFormat-migration.test.ts`](../src/__tests__/getCountryIdFormat-migration.test.ts) | add the country to the `registeredCountries` fixture — this fixture is an independent copy of each country's `countryName`/`idType` and must move in lockstep with METADATA/format changes           |
+| [`src/__tests__/issue-123-parse-results.test.ts`](../src/__tests__/issue-123-parse-results.test.ts)           | `expect(ALL_COUNTRIES).toHaveLength(85)` → `86`; if the country has no parser, add it to `UNPARSABLE`, which is checked against `ParseResultMap` at compile time                                     |
 | [`README.md`](../README.md)                                                                                   | the country-count claims (intro sentence and feature list) and the "comprehensive test coverage with N tests" count                                                                                  |
 
 ### Add a country test file
@@ -457,6 +476,7 @@ Copy into your PR description:
 - [ ] `export const country = defineCountry(...)` in `index.ts` (alpha-3 key + alpha-2 alias matching `METADATA.iso3166Alpha2`), added to `ALL_COUNTRIES` in `registerAll.ts`
 - [ ] Registered METADATA covers every format `validate()` accepts (`createCompositeValidator` or a registry-level override if needed)
 - [ ] `export * as <ISO3>` added to `src/index.ts`
+- [ ] `ParseResultMap` entry in `src/parseResultMap.ts` (the parse result type, or `never`)
 - [ ] `countryName` and `idType` set on the primary METADATA
 - [ ] Secondary ID types exported from the country module only — NOT registered
 - [ ] Registry count bumped in `parseIdInfo-migration.test.ts`

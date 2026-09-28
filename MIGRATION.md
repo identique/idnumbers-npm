@@ -13,8 +13,8 @@
 | Packaging                | Single CJS build, no `exports` map                                                                                            | **Implemented on `main`, ships in v2.0.0.** Dual ESM/CJS build with an `exports` map; Node.js >= 22 baseline (CI 22.x/24.x); TS target ES2022+                                                                                                                           | Stop deep-importing `idnumbers/dist/...`; import from `idnumbers` (or the new subpaths below)                                     | [#120](https://github.com/identique/idnumbers-npm/issues/120)                                                                           |
 | Module contract          | Two METADATA dialects: class-based (`parsable`/`checksum`/`regexp`) and function-based (`isParsable`/`hasChecksum`/`pattern`) | **Implemented on `main`, ships in v2.0.0.** One canonical `IdMetadata` shape everywhere; `FunctionBasedMetadata`, `AnyMetadata`, and `adaptMetadata` (incl. the match-anything `regexp: /./`) are deleted; multi-format countries use the new `createCompositeValidator` | Read `parsable`/`checksum`/`regexp` instead of `isParsable`/`hasChecksum`/`pattern`; use `countryName`/`idType` instead of `name` | [#121](https://github.com/identique/idnumbers-npm/issues/121)                                                                           |
 | Entry points             | Only the batteries-included root `idnumbers` import                                                                           | **Implemented on `main`, ships in v2.0.0.** Additive: `idnumbers/countries/<iso3>` per-country subpaths + an `idnumbers/core` entry (registry, no countries registered) and `register()`                                                                                 | Root import keeps working unchanged; opt into subpaths only if you want tree-shaking                                              | [#122](https://github.com/identique/idnumbers-npm/issues/122) (decision: [#115](https://github.com/identique/idnumbers-npm/issues/115)) |
-| Parse results            | `parseIdInfo()` returns `any \| null`                                                                                         | `parseIdInfo()` returns a discriminated `{ ok: true, info } \| { ok: false, reason }`, with a `CountryCode → ParseResult` type map; parse results include the resolved alpha-3 code                                                                                      | Check `validateNationalId().reason` / `isValid` today; switch to the `ok` discriminant once released                              | [#123](https://github.com/identique/idnumbers-npm/issues/123)                                                                           |
-| `ValidationResult` types | `extractedInfo?: any`; `ParsedInfo` has a loose `[key: string]: any` index signature; `IdMetadata.aliasOf: any \| null`       | `extractedInfo` gets a real type; `ParsedInfo`'s index signature is tightened; `aliasOf` is narrowed                                                                                                                                                                     | No action until release; avoid depending on the current `any` shapes                                                              | [#123](https://github.com/identique/idnumbers-npm/issues/123)                                                                           |
+| Parse results            | `parseIdInfo()` returns `any \| null`                                                                                         | **Implemented on `main`, ships in v2.0.0.** `parseIdInfo()` returns a discriminated `{ ok: true, info } \| { ok: false, reason }`, typed per country through a `ParseResultMap`; results include the resolved alpha-3 code                                               | Check `ok`, then read `info` or `reason`, instead of checking for `null`                                                          | [#123](https://github.com/identique/idnumbers-npm/issues/123)                                                                           |
+| `ValidationResult` types | `extractedInfo?: any`; `ParsedInfo` has a loose `[key: string]: any` index signature; `IdMetadata.aliasOf: any \| null`       | **Implemented on `main`, ships in v2.0.0.** `extractedInfo` is typed per country; `ParsedInfo`'s index signature is `unknown`; `aliasOf` is `IdNumberClass<object> \| null`                                                                                              | Narrow `ParsedInfo` fields before use; no action for a literal country code                                                       | [#123](https://github.com/identique/idnumbers-npm/issues/123)                                                                           |
 | Removals                 | `SUPPORTED_COUNTRIES` array; `IMetadata` alias                                                                                | Both removed                                                                                                                                                                                                                                                             | Use `listSupportedCountries()` and `IdMetadata` today — both already exist in v1.x                                                | [#124](https://github.com/identique/idnumbers-npm/issues/124)                                                                           |
 
 ## Packaging (#120)
@@ -142,41 +142,70 @@ validateNationalId('TWN', id);
 
 ## Typed parse results (#123)
 
-**Planned.** `parseIdInfo()` moves from an untyped `any | null` to a discriminated
-result, reusing the `ValidationFailureReason` enum introduced in
-[#117](https://github.com/identique/idnumbers-npm/issues/117) so invalid, unsupported,
-and not-parsable inputs become distinguishable instead of all collapsing to `null`:
+**Implemented on `main`.** This ships as part of v2.0.0. `parseIdInfo()` no longer
+returns `any | null`: it returns a discriminated result that reuses the
+`ValidationFailureReason` enum from
+[#117](https://github.com/identique/idnumbers-npm/issues/117), so an unsupported country,
+an invalid ID, and a valid ID that cannot be parsed are told apart:
 
 ```ts
-// v1.x (today)
+// v1.x
 const info = parseIdInfo('HUN', idNumber); // any | null — can't tell why it's null
 
-// v2.0.0 (planned)
+// v2.0.0
 const result = parseIdInfo('HUN', idNumber);
 if (result.ok) {
-  result.info; // typed, per-country, via a CountryCode -> ParseResult map
+  result.info.birthDate; // Date: typed as Hungary's parse result
+  result.countryCode; // 'HUN', the resolved alpha-3 code
 } else {
-  result.reason; // ValidationFailureReason — why it couldn't be parsed
+  result.reason; // why nothing was parsed
 }
 ```
 
-A `CountryCode → ParseResult` type map ships alongside this, and parse results
-include the resolved alpha-3 code. `ValidationResult.extractedInfo` also gets a real
-type (today it is `any`), `ParsedInfo`'s `[key: string]: any` index signature is
-tightened, and `IdMetadata.aliasOf`'s `any` type is fixed.
+`reason` is one of:
 
-**You can migrate partially today**: `validateNationalId()` already returns a typed
-`reason` ([#117](https://github.com/identique/idnumbers-npm/issues/117)) you can check
-before deciding whether to call `parseIdInfo()` at all:
+| Reason                                                                       | When                                                               |
+| ---------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `unsupported_country`                                                        | The country code is not registered (`errorMessage` is also set)    |
+| `invalid_length`, `invalid_format`, `checksum_mismatch`, `validation_failed` | The ID is invalid: the same reason `validateNationalId()` reports  |
+| `not_parsable` (new)                                                         | The ID is valid, but the country has no parser or it found nothing |
+
+- **`ok: true` implies the ID is valid.** The France (FRA) and Norway (NOR) parsers skip
+  the check digits, so v1.x `parseIdInfo()` returned info for some IDs
+  `validateNationalId()` rejects; v2.0.0 fails them with `checksum_mismatch`. The parsed
+  data for valid IDs is unchanged.
+- **Types per country.** `ParseResultMap` maps each alpha-3 code to its parse result type
+  (`never` for a country without a parser). `parseIdInfo()` and `validateNationalId()`
+  resolve a literal country code through it, case-insensitively and through aliases:
+  `parseIdInfo('tw', id)` is typed with Taiwan's result, and
+  `validateNationalId('CHN', id).extractedInfo` with China's. For a `string` variable the
+  type is `ParsedInfo`. `CountryCode`, `CountryAliasMap`, and `ParsedInfoFor<C>` are
+  exported too.
+- **`ParsedInfo`** is now `{ [key: string]: unknown }` instead of `isValid: boolean` plus
+  an `any` index signature: narrow a field before using it. Every country's parse result
+  type extends it.
+- **`IdMetadata.aliasOf`** is `IdNumberClass<object> | null` instead of `any`. Every
+  built-in ID type sets `null`.
+- **Generic registry types.** `IdNumberClass`, `CountryModule`, `CountryValidator`, and
+  `CountryDefinition` take the parse result type as a type parameter, defaulting to
+  `ParsedInfo`; `createValidator`, `createCompositeValidator`, and `defineCountry` infer
+  it. A custom country's parse result type must extend `ParsedInfo`.
+
+To migrate, replace null checks with the `ok` discriminant:
 
 ```ts
-const result = validateNationalId('HUN', idNumber);
-if (result.isValid) {
-  const info = parseIdInfo('HUN', idNumber); // still any | null until v2.0.0
-} else {
-  console.log(result.reason); // e.g. 'invalid_format', typed today
-}
+// v1.x
+const info = parseIdInfo(code, id);
+if (info) show(info);
+
+// v2.0.0
+const result = parseIdInfo(code, id);
+if (result.ok) show(result.info);
 ```
+
+**Preparing on v1.x**: `validateNationalId()` already returns a typed `reason`
+([#117](https://github.com/identique/idnumbers-npm/issues/117)); check it before calling
+`parseIdInfo()`, whose v1.x result stays `any | null`.
 
 ## Removals (#124)
 
@@ -210,7 +239,7 @@ The following are marked `@deprecated` starting in v1.11.0 so IDEs show a
 strikethrough ahead of their v2.0.0 removal/change:
 
 - `IMetadata` — use `IdMetadata` instead ([#124](https://github.com/identique/idnumbers-npm/issues/124))
-- `IdMetadata.aliasOf`'s `any` type — the field stays, but its type narrows in v2.0.0; don't depend on its current shape ([#123](https://github.com/identique/idnumbers-npm/issues/123))
+- `IdMetadata.aliasOf`'s `any` type — the field stays, but its type narrows in v2.0.0; don't depend on its current shape ([#123](https://github.com/identique/idnumbers-npm/issues/123); narrowed on `main` to `IdNumberClass<object> | null`, which drops this deprecation notice)
 - The function-based METADATA dialect — `isParsable`, `hasChecksum`, `pattern` (renamed to `parsable`, `checksum`, `regexp`), and the `FunctionBasedMetadata` interface itself ([#121](https://github.com/identique/idnumbers-npm/issues/121); removed on `main` for v2.0.0)
 - `SUPPORTED_COUNTRIES` — use `listSupportedCountries()` instead ([#118](https://github.com/identique/idnumbers-npm/issues/118) deprecation; removed in v2.0.0 by [#124](https://github.com/identique/idnumbers-npm/issues/124))
 

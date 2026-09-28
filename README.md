@@ -22,7 +22,7 @@ A future v2.0.0 release will ship breaking changes ([epic #127](https://github.c
 
 - The root `idnumbers` import stays batteries-included and unchanged.
 - New tree-shakeable, per-country entry points (`idnumbers/countries/<iso3>`) alongside a registry-only `idnumbers/core` — implemented on `main` ([#122](https://github.com/identique/idnumbers-npm/issues/122)); see [Tree-shakeable imports](#tree-shakeable-imports-v200).
-- Typed `parseIdInfo()` results instead of `any | null`.
+- Typed, ok-shaped `parseIdInfo()` results instead of `any | null` — implemented on `main` ([#123](https://github.com/identique/idnumbers-npm/issues/123)); see [`parseIdInfo`](#parseidinfocountrycode-idnumber).
 - Removal of APIs already marked `@deprecated` today, such as `SUPPORTED_COUNTRIES` and `IMetadata`.
 
 One breaking change has already landed ahead of the rest: a dual ESM/CJS build behind a proper
@@ -102,14 +102,17 @@ const result = validateNationalId('USA', '123-45-6789');
 console.log(result.isValid); // true or false
 
 // Parse information from a South African ID
-const info = parseIdInfo('ZAF', '8001015009087');
-console.log(info);
-// {
-//   yyyymmdd: Date(1980-01-01),
-//   gender: 'male',
-//   citizenship: 'citizen',
-//   ...
-// }
+// (v2.0.0 shape, #123; 1.x returns the info itself, or null)
+const parsed = parseIdInfo('ZAF', '8001015009087');
+if (parsed.ok) {
+  console.log(parsed.info);
+  // {
+  //   yyyymmdd: Date(1980-01-01),
+  //   gender: 'male',
+  //   citizenship: 'citizen',
+  //   ...
+  // }
+}
 ```
 
 ## API Reference
@@ -159,6 +162,7 @@ When `isValid` is `false`, `ValidationResult` may carry a machine-readable `reas
 | `invalid_format`      | The ID's length is plausible but it doesn't match the expected pattern. |
 | `checksum_mismatch`   | The ID matches the expected shape but fails a checksum digit.           |
 | `validation_failed`   | A generic fallback for any other failure (including thrown errors).     |
+| `not_parsable`        | Only from `parseIdInfo()`: the ID is valid, but nothing can be parsed.  |
 
 `reason` is **non-exhaustive**: future minor releases may add new, more specific
 codes, so always handle unknown values with a `default` branch:
@@ -203,9 +207,25 @@ Extracts information from a national ID number (if supported by the country).
 - `countryCode` (string): ISO 3166-1 alpha-3 country code; the alpha-2 code (e.g. 'US', 'GB') is also accepted, case-insensitively
 - `idNumber` (string): The ID number to parse
 
-**Returns:** `ParsedInfo | null`
+**Returns:** `ParseIdInfoResult`. Check `ok`, then read `info` or `reason`:
 
-The returned object varies by country but commonly includes:
+- `{ ok: true, countryCode, idNumber, info }`: `info` holds the parsed fields, and
+  `countryCode` is the resolved alpha-3 code (e.g. `'SWE'` for `'se'`).
+- `{ ok: false, countryCode, idNumber, reason, errorMessage? }`: `reason` is a
+  [`ValidationFailureReason`](#failure-reasons): `unsupported_country`, the reason
+  `validateNationalId()` reports for an invalid ID, or `not_parsable` for a valid ID the
+  country cannot parse.
+
+> **Changed in v2.0.0** ([#123](https://github.com/identique/idnumbers-npm/issues/123)):
+> 1.x returns the parsed info or `null`, typed `any`. See
+> [MIGRATION.md](./MIGRATION.md#typed-parse-results-123).
+
+`info` is typed per country. For a country code written as a literal (`'SWE'`, `'se'`),
+TypeScript infers that country's parse result type from `ParseResultMap`; a country
+without a parser is typed as always failing. For a `string` variable, `info` is a
+`ParsedInfo`, whose fields read as `unknown` until narrowed.
+
+The info varies by country but commonly includes:
 
 - `yyyymmdd` or `birthDate`: Date of birth
 - `gender`: 'male' or 'female'
@@ -216,13 +236,12 @@ The returned object varies by country but commonly includes:
 **Example:**
 
 ```typescript
-const info = parseIdInfo('SWE', '811218-9876');
-console.log(info);
-// {
-//   yyyymmdd: Date(1981-12-18),
-//   gender: 'male',
-//   ...
-// }
+const result = parseIdInfo('SWE', '811218-9876');
+if (result.ok) {
+  console.log(result.info.gender); // 'male', typed as Sweden's parse result
+} else {
+  console.log(result.reason); // e.g. 'invalid_format'
+}
 ```
 
 ### `validateMultipleIds(ids)`
@@ -439,29 +458,36 @@ import { parseIdInfo } from 'idnumbers';
 
 // South Africa - Extract birth date, gender, citizenship
 const zaf = parseIdInfo('ZAF', '8001015009087');
-console.log(zaf);
+if (zaf.ok) console.log(zaf.info);
 // {
 //   yyyymmdd: Date(1980-01-01),
 //   gender: 'male',
-//   citizenship: 'citizen'
+//   citizenship: 'citizen',
+//   ...
 // }
 
 // Sweden - Extract birth date and gender
 const swe = parseIdInfo('SWE', '811218-9876');
-console.log(swe);
+if (swe.ok) console.log(swe.info);
 // {
 //   yyyymmdd: Date(1981-12-18),
-//   gender: 'male'
+//   gender: 'male',
+//   ...
 // }
 
-// China - Extract birth date, province, and gender
+// China - Extract address code, birth date, and gender
 const chn = parseIdInfo('CHN', '11010219840406970X');
-console.log(chn);
+if (chn.ok) console.log(chn.info);
 // {
+//   addressCode: '110102',
 //   birthDate: Date(1984-04-06),
-//   province: 'Beijing',
-//   gender: 'male'
+//   gender: 'female',
+//   ...
 // }
+
+// A country without a parser fails with a reason instead of returning null
+const usa = parseIdInfo('USA', '123-45-6789');
+console.log(usa.ok, usa.ok ? undefined : usa.reason); // false 'not_parsable'
 ```
 
 ### Batch Validation
@@ -511,16 +537,17 @@ import { validateNationalId, parseIdInfo, ValidationResult } from 'idnumbers';
 const result: ValidationResult = validateNationalId('USA', '123-45-6789');
 
 if (result.isValid && result.extractedInfo) {
-  // extractedInfo is typed based on the country
+  // Annotated as ValidationResult, extractedInfo is a ParsedInfo; without the
+  // annotation, it has the country's own parse result type
   console.log('Valid ID with extracted info:', result.extractedInfo);
 }
 
 // Type-safe parsing
-const info = parseIdInfo('ZAF', '8001015009087');
-if (info) {
-  // TypeScript knows the possible fields
-  console.log('Birth date:', info.yyyymmdd);
-  console.log('Gender:', info.gender);
+const parsed = parseIdInfo('ZAF', '8001015009087');
+if (parsed.ok) {
+  // `parsed.info` is typed as South Africa's parse result
+  console.log('Birth date:', parsed.info.yyyymmdd);
+  console.log('Gender:', parsed.info.gender);
 }
 ```
 
@@ -592,7 +619,7 @@ if (!validation.valid) {
 
 ## Testing
 
-The library includes comprehensive test coverage with 3080 tests covering:
+The library includes comprehensive test coverage with 3101 tests covering:
 
 - Format validation
 - Checksum verification

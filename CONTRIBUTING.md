@@ -164,6 +164,7 @@ Respond to actionable feedback with focused follow-up commits. Re-run the releva
 │   ├── constants.ts            # Shared enums and constants
 │   ├── core.ts                 # idnumbers/core: the API with no countries registered
 │   ├── index.ts                # idnumbers: core plus every country registered
+│   ├── parseResultMap.ts       # ParseResultMap: each country's parse result type (type-only)
 │   ├── types.ts                # Shared public types and metadata definitions
 │   └── utils.ts                # Shared validation and checksum utilities
 ├── package.json                # npm scripts, metadata, dependencies, and the exports map
