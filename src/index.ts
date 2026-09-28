@@ -1,9 +1,16 @@
-// Side-effect import: populates the registry with all country validators
+/**
+ * The batteries-included root entry: every country is registered on import.
+ *
+ * For tree-shakeable, per-country imports use `idnumbers/core` with
+ * `idnumbers/countries/<iso3>` instead (#122).
+ */
+// Side-effect import: registers every country into the shared registry.
 import './registry/registerAll.js';
 
-// Export types and constants
-export * from './constants.js';
-export * from './types.js';
+import { CountryInfo } from './types.js';
+import { listSupportedCountries } from './api.js';
+
+export * from './core.js';
 export * from './utils.js';
 
 // Export country modules
@@ -93,117 +100,9 @@ export * as CRI from './countries/cri/index.js';
 export * as ECU from './countries/ecu/index.js';
 export * as GTM from './countries/gtm/index.js';
 
-// Export registry
-export * from './registry/index.js';
-
-// Imports for exported functions
-import { ValidationResult, CountryInfo } from './types.js';
-import { ValidationFailureReason } from './constants.js';
-import { registry } from './registry/ValidatorRegistry.js';
-import { IdFormat } from './registry/types.js';
-import { deriveFailureReason } from './registry/failureReason.js';
-
-/**
- * Return the list of supported countries, derived from the registry.
- *
- * Sorted by ISO 3166-1 alpha-3 code. Returns a fresh array on every call, so
- * mutating the result of one call never affects another.
- */
-export function listSupportedCountries(): CountryInfo[] {
-  return registry.list().map(code => {
-    const format = registry.getFormat(code)!;
-    return { code: format.countryCode, name: format.countryName, idType: format.idType };
-  });
-}
-
 /**
  * Snapshot of {@link listSupportedCountries}, taken once at module load.
  *
  * @deprecated Use listSupportedCountries() instead; SUPPORTED_COUNTRIES will be removed in v2.0.0 (#124).
  */
 export const SUPPORTED_COUNTRIES: CountryInfo[] = listSupportedCountries();
-
-/**
- * Validate a national ID number for a specific country.
- *
- * Delegates to the registry-based validator lookup. Aliases (e.g. "FR", "fr")
- * are resolved to their primary alpha-3 key (e.g. "FRA") which is returned
- * as the countryCode in the result.
- */
-export function validateNationalId(countryCode: string, idNumber: string): ValidationResult {
-  try {
-    const resolvedKey = registry.resolveKey(countryCode);
-    if (!resolvedKey) {
-      return {
-        isValid: false,
-        countryCode,
-        idNumber,
-        errorMessage: `Unsupported country code: ${countryCode}`,
-        reason: ValidationFailureReason.UNSUPPORTED_COUNTRY,
-      };
-    }
-
-    const validator = registry.get(resolvedKey)!;
-    const isValid = validator.validate(idNumber);
-    const extractedInfo = isValid && validator.parse ? validator.parse(idNumber) : null;
-
-    if (!isValid) {
-      return {
-        isValid,
-        countryCode: resolvedKey,
-        idNumber,
-        extractedInfo,
-        reason: deriveFailureReason(validator, idNumber),
-      };
-    }
-
-    return { isValid, countryCode: resolvedKey, idNumber, extractedInfo };
-  } catch (error) {
-    return {
-      isValid: false,
-      countryCode,
-      idNumber,
-      errorMessage: error instanceof Error ? error.message : 'Unknown error occurred',
-      reason: ValidationFailureReason.VALIDATION_FAILED,
-    };
-  }
-}
-
-/**
- * Parse information from a valid national ID number.
- *
- * Uses the registry to look up the country validator and delegates to its
- * parse() method. Returns null when the country is unknown or the validator
- * has no parse method.
- */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- untyped parse result; typed results tracked in #123
-export function parseIdInfo(countryCode: string, idNumber: string): any | null {
-  try {
-    const validator = registry.get(countryCode);
-    if (!validator?.parse) {
-      return null;
-    }
-    return validator.parse(idNumber);
-  } catch {
-    return null;
-  }
-}
-
-/**
- * Validate multiple national ID numbers at once
- */
-export function validateMultipleIds(
-  idData: Array<{ countryCode: string; idNumber: string }>
-): ValidationResult[] {
-  return idData.map(({ countryCode, idNumber }) => validateNationalId(countryCode, idNumber));
-}
-
-/**
- * Get information about the ID number format for a specific country.
- *
- * Delegates to the registry. Aliases (e.g. "IN", "jp") are resolved to their
- * primary alpha-3 key. Returns null for unregistered country codes.
- */
-export function getCountryIdFormat(countryCode: string): IdFormat | null {
-  return registry.getFormat(countryCode) ?? null;
-}

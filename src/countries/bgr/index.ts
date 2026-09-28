@@ -6,6 +6,7 @@
 import { IdMetadata, ParsedInfo } from '../../types.js';
 import { validateRegexp, weightedModulusDigit, isValidDate, calculateAge } from '../../utils.js';
 import { CheckDigit } from '../../constants.js';
+import { defineCountry } from '../../registry/country.js';
 
 export interface BulgariaParseResult extends ParsedInfo {
   birthDate: Date;
@@ -133,3 +134,9 @@ export const UniformCivilNumber = {
 };
 
 export { UnifiedIdCode } from './unifiedId.js';
+
+/**
+ * Registry definition: pass it to `register()` from `idnumbers/core`.
+ * The root `idnumbers` entry registers it automatically.
+ */
+export const country = defineCountry('BGR', ['BG'], UniformCivilNumber);

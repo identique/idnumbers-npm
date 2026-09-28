@@ -5,6 +5,7 @@
 
 import { IdMetadata, ParsedInfo } from '../../types.js';
 import { DISTRICT_CODES } from './districts.js';
+import { defineCountry } from '../../registry/country.js';
 
 export interface IndonesiaParseResult extends ParsedInfo {
   gender: 'male' | 'female';
@@ -155,3 +156,9 @@ export const NIK = {
 };
 
 export const NationalID = NIK;
+
+/**
+ * Registry definition: pass it to `register()` from `idnumbers/core`.
+ * The root `idnumbers` entry registers it automatically.
+ */
+export const country = defineCountry('IDN', ['ID'], NationalID);

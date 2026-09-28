@@ -154,11 +154,15 @@ Respond to actionable feedback with focused follow-up commits. Re-run the releva
 │   ├── __tests__/              # Jest test suites, including issue-scoped tests
 │   ├── countries/<iso3>/       # Country validators grouped by ISO alpha-3 code
 │   ├── registry/
-│   │   ├── adapters.ts         # Validator style adapters and the CountryModule contract
-│   │   ├── registerAll.ts      # Primary validator and alias registration
+│   │   ├── adapters.ts         # createValidator and the CountryModule contract
+│   │   ├── composite.ts        # createCompositeValidator for multi-format countries
+│   │   ├── country.ts          # defineCountry and the CountryDefinition type
+│   │   ├── registerAll.ts      # Registers ALL_COUNTRIES (the root entry's side effect)
 │   │   └── ValidatorRegistry.ts # Registry singleton implementation
+│   ├── api.ts                  # validateNationalId, parseIdInfo, register, ... (no side effects)
 │   ├── constants.ts            # Shared enums and constants
-│   ├── index.ts                # Public API and registry side-effect import
+│   ├── core.ts                 # idnumbers/core: the API with no countries registered
+│   ├── index.ts                # idnumbers: core plus every country registered
 │   ├── types.ts                # Shared public types and metadata definitions
 │   └── utils.ts                # Shared validation and checksum utilities
 ├── package.json                # npm scripts, metadata, dependencies, and the exports map
@@ -183,7 +187,7 @@ Adding a country? [docs/COUNTRY_TEMPLATE.md](docs/COUNTRY_TEMPLATE.md) provides 
 
 ### Registry Flow
 
-Importing `src/index.ts` loads `src/registry/registerAll.ts` as a side effect. `registerAll.ts` adapts the supported validator styles, registers one primary validator per country in the `ValidatorRegistry` singleton, and registers supported aliases.
+Every country module exports a side-effect-free `country` definition (`defineCountry(key, aliases, PrimaryType)`) naming its primary validator and aliases. Importing `src/index.ts` (the root `idnumbers` entry) loads `src/registry/registerAll.ts` as a side effect, which registers every definition in `ALL_COUNTRIES` into the `ValidatorRegistry` singleton. `src/core.ts` (`idnumbers/core`) exposes the same API without that import, so consumers register only the countries they import from `idnumbers/countries/<iso3>` ([#122](https://github.com/identique/idnumbers-npm/issues/122)).
 
 Only primary country validators belong in this registry. Secondary ID types remain available through their country-module exports and must not be registered as additional primary countries.
 

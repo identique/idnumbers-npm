@@ -1,4 +1,5 @@
 import { IdMetadata, ParsedInfo } from '../types.js';
+import type { CountryDefinition } from './country.js';
 
 /**
  * Interface that all country validators must implement.
@@ -39,6 +40,7 @@ export interface IdFormat {
  */
 export interface IValidatorRegistry {
   register(key: ValidatorKey, validator: CountryValidator): void;
+  registerCountry(country: CountryDefinition): void;
   registerAlias(alias: string, key: ValidatorKey): void;
   resolveKey(key: ValidatorKey): string | undefined;
   get(key: ValidatorKey): CountryValidator | undefined;

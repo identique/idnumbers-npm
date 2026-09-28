@@ -6,6 +6,7 @@
 import { IdMetadata, ParsedInfo } from '../../types.js';
 import { validateRegexp, calculateAge } from '../../utils.js';
 import { Gender } from '../../constants.js';
+import { defineCountry } from '../../registry/country.js';
 
 export interface ChinaParseResult extends ParsedInfo {
   addressCode: string;
@@ -121,3 +122,9 @@ export const ResidentID = {
   parse,
   METADATA,
 };
+
+/**
+ * Registry definition: pass it to `register()` from `idnumbers/core`.
+ * The root `idnumbers` entry registers it automatically.
+ */
+export const country = defineCountry('CHN', ['CN'], ResidentID);

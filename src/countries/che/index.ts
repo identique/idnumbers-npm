@@ -4,6 +4,7 @@
 
 import { IdMetadata, ParsedInfo } from '../../types.js';
 import { ean13Digit } from '../../utils.js';
+import { defineCountry } from '../../registry/country.js';
 
 export interface SwitzerlandParseResult extends ParsedInfo {
   // Social Security Number doesn't contain parsable information beyond validation
@@ -84,3 +85,9 @@ export const SocialSecurityNumber = {
 };
 
 export { BusinessID } from './businessId.js';
+
+/**
+ * Registry definition: pass it to `register()` from `idnumbers/core`.
+ * The root `idnumbers` entry registers it automatically.
+ */
+export const country = defineCountry('CHE', ['CH'], SocialSecurityNumber);

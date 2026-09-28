@@ -5,6 +5,7 @@
 import { IdMetadata, ParsedInfo } from '../../types.js';
 import { validateRegexp } from '../../utils.js';
 import { CheckDigit } from '../../constants.js';
+import { defineCountry } from '../../registry/country.js';
 
 export interface LatviaParseResult extends ParsedInfo {
   // Personal Code doesn't contain parsable information beyond validation
@@ -91,3 +92,9 @@ export const PersonalCode = {
 };
 
 export { OldPersonalCode } from './oldPersonalCode.js';
+
+/**
+ * Registry definition: pass it to `register()` from `idnumbers/core`.
+ * The root `idnumbers` entry registers it automatically.
+ */
+export const country = defineCountry('LVA', ['LV'], PersonalCode);

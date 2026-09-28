@@ -5,6 +5,7 @@
 
 import { IdMetadata, ParsedInfo } from '../../types.js';
 import { validateRegexp } from '../../utils.js';
+import { defineCountry } from '../../registry/country.js';
 
 export interface ChileParseResult extends ParsedInfo {
   // RUN/RUT doesn't contain parsable information beyond validation
@@ -103,3 +104,9 @@ export const NationalID = {
   parse,
   METADATA,
 };
+
+/**
+ * Registry definition: pass it to `register()` from `idnumbers/core`.
+ * The root `idnumbers` entry registers it automatically.
+ */
+export const country = defineCountry('CHL', ['CL'], NationalID);

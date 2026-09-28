@@ -5,6 +5,7 @@
 
 import { IdMetadata, ParsedInfo } from '../../types.js';
 import { luhnDigit } from '../../utils.js';
+import { defineCountry } from '../../registry/country.js';
 
 export interface EmiratesParseResult extends ParsedInfo {
   yearOfBirth: number;
@@ -96,3 +97,9 @@ export const EmiratesID = {
   parse,
   METADATA,
 };
+
+/**
+ * Registry definition: pass it to `register()` from `idnumbers/core`.
+ * The root `idnumbers` entry registers it automatically.
+ */
+export const country = defineCountry('ARE', ['AE'], EmiratesID);

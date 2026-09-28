@@ -21,7 +21,7 @@ A comprehensive TypeScript/JavaScript library for validating and parsing nationa
 A future v2.0.0 release will ship breaking changes ([epic #127](https://github.com/identique/idnumbers-npm/issues/127)). Highlights of the planned direction:
 
 - The root `idnumbers` import stays batteries-included and unchanged.
-- New tree-shakeable, per-country entry points (`idnumbers/countries/<iso3>`) alongside a registry-only `idnumbers/core`.
+- New tree-shakeable, per-country entry points (`idnumbers/countries/<iso3>`) alongside a registry-only `idnumbers/core` — implemented on `main` ([#122](https://github.com/identique/idnumbers-npm/issues/122)); see [Tree-shakeable imports](#tree-shakeable-imports-v200).
 - Typed `parseIdInfo()` results instead of `any | null`.
 - Removal of APIs already marked `@deprecated` today, such as `SUPPORTED_COUNTRIES` and `IMetadata`.
 
@@ -62,11 +62,35 @@ import { validateNationalId } from 'idnumbers';
 const { validateNationalId } = require('idnumbers');
 ```
 
-From v2.0.0, only the documented entry points (`idnumbers` and `idnumbers/package.json`) are
-public — deep imports such as `idnumbers/dist/...` are not part of the API and will not resolve.
+From v2.0.0, only the documented entry points are public — `idnumbers`, `idnumbers/core`,
+`idnumbers/countries/<iso3>` (see [Tree-shakeable imports](#tree-shakeable-imports-v200)), and
+`idnumbers/package.json`. Deep imports such as `idnumbers/dist/...` are not part of the API and will
+not resolve.
 Avoid mixing `require('idnumbers')` and `import 'idnumbers'` for the same package within one process: Node
 treats them as two separate module instances with two separate registries (the "dual-package
 hazard"), so pick one style per process.
+
+### Tree-shakeable imports (v2.0.0)
+
+From v2.0.0 (in development on `main`), bundle only the countries you use: import the
+validation API from `idnumbers/core`, which registers no countries, and register the ones
+you need from `idnumbers/countries/<iso3>` (lowercase alpha-3 code):
+
+```typescript
+import { register, validateNationalId } from 'idnumbers/core';
+import { country as twn } from 'idnumbers/countries/twn';
+import { country as usa } from 'idnumbers/countries/usa';
+
+register(twn, usa);
+
+validateNationalId('TWN', 'A123456789'); // registered: validated as usual
+validateNationalId('JPN', '123456789012'); // not registered: reason 'unsupported_country'
+```
+
+Core plus one country is about 1.8–5.2 KB minified and gzipped, versus about 38 KB for
+the batteries-included `idnumbers` root, which stays unchanged and registers all 85
+countries. Importing the root anywhere in an app registers every country for the whole
+app, because both entries share one registry.
 
 ## Quick Start
 
@@ -568,7 +592,7 @@ if (!validation.valid) {
 
 ## Testing
 
-The library includes comprehensive test coverage with 2800 tests covering:
+The library includes comprehensive test coverage with 3080 tests covering:
 
 - Format validation
 - Checksum verification

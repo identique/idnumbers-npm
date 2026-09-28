@@ -1,4 +1,4 @@
-import { ValidationFailureReason } from './constants.js';
+import { ValidationFailureReason } from './failureReasons.js';
 
 /**
  * Metadata interface for ID number types

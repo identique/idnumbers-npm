@@ -5,6 +5,7 @@
 
 import { IdMetadata, ParsedInfo } from '../../types.js';
 import { isValidDate, calculateAge } from '../../utils.js';
+import { defineCountry } from '../../registry/country.js';
 
 export interface AlbaniaParseResult extends ParsedInfo {
   birthDate: Date;
@@ -116,3 +117,9 @@ export const IdentityNumber = {
   parse,
   METADATA,
 };
+
+/**
+ * Registry definition: pass it to `register()` from `idnumbers/core`.
+ * The root `idnumbers` entry registers it automatically.
+ */
+export const country = defineCountry('ALB', ['AL'], IdentityNumber);

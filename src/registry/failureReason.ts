@@ -1,4 +1,4 @@
-import { ValidationFailureReason } from '../constants.js';
+import { ValidationFailureReason } from '../failureReasons.js';
 import { CountryValidator } from './types.js';
 
 /** Separators stripped when producing the normalized candidate form. */

@@ -4,6 +4,7 @@
  */
 
 import { IdMetadata } from '../../types.js';
+import { defineCountry } from '../../registry/country.js';
 
 export const METADATA = {
   names: ['Tax ID number', 'ATIN', 'Abgabenkontonummer'],
@@ -102,3 +103,9 @@ export const TaxIdentificationNumber = {
 };
 
 export { EntityTaxIDNumber } from './entityTaxId.js';
+
+/**
+ * Registry definition: pass it to `register()` from `idnumbers/core`.
+ * The root `idnumbers` entry registers it automatically.
+ */
+export const country = defineCountry('AUT', ['AT'], TaxIdentificationNumber);

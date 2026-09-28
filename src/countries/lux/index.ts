@@ -5,6 +5,7 @@
 import { IdMetadata, ParsedInfo } from '../../types.js';
 import { validateRegexp, luhnDigit, verhoeffCheck, isValidDate } from '../../utils.js';
 import { CheckDigit } from '../../constants.js';
+import { defineCountry } from '../../registry/country.js';
 
 export interface LuxembourgParseResult extends ParsedInfo {
   birthDate: Date;
@@ -110,3 +111,9 @@ export const NationalID = {
   checksum,
   METADATA,
 };
+
+/**
+ * Registry definition: pass it to `register()` from `idnumbers/core`.
+ * The root `idnumbers` entry registers it automatically.
+ */
+export const country = defineCountry('LUX', ['LU'], NationalID);
