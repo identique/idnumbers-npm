@@ -131,7 +131,7 @@ validateNationalId('TWN', id);
 - **`register(...countries)`** is idempotent for the same definition, so it is safe to
   call from several modules, or alongside the root import. Registering a different
   validator under a taken key throws.
-- In a single-country bundle, core plus one country is about 1.7–5.1 KB min+gzip,
+- In a single-country bundle, core plus one country is about 1.8–5.2 KB min+gzip,
   versus about 38 KB for the root import. CI enforces the budgets
   (`npm run size`).
 - The root `idnumbers` entry and every country namespace (`TWN`, `USA`, …) also gain the

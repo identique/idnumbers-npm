@@ -30,13 +30,14 @@ const REPO_ROOT = fileURLToPath(new URL('..', import.meta.url));
  * Budgets in bytes, minified + gzipped, derived as in #115: measured size plus
  * headroom (25% for core and subpaths, 10% for the root).
  *
- * `core` was re-derived for #122 from the real entry (1,320 B measured): the
- * spike's prototype core (821 B, budget 1,100 B) predates #117, whose failure
- * `reason` derivation is part of validateNationalId() and adds ~600 B minified.
+ * `core` was re-derived for #122 with the spike's rule (measured + 25%, rounded
+ * up to 100 B) from the real entry, 1,405 B: the spike's prototype core (821 B,
+ * budget 1,100 B) predates two parts of the core contract -- #117's failure
+ * `reason` derivation (~600 B minified) and #122's atomic registerCountry.
  * See docs/adr/002-country-registration-model.md.
  */
 export const BUDGETS = {
-  core: 1_650,
+  core: 1_800,
   country: 6_000,
   root: 40_300,
 };

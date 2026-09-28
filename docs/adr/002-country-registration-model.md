@@ -78,19 +78,23 @@ with esbuild. The prototype lives on the never-merged `idnumbers-node-issue-115`
   - It uses the spike's settings: esbuild, ESM, `platform=browser`, `target=es2020`, minified,
     gzip level 9.
 
-| Entry                               | Budget (min+gzip) | Measured at #122 | Derivation                             |
-| ----------------------------------- | ----------------- | ---------------- | -------------------------------------- |
-| `idnumbers/core`                    | 1,650 B           | 1,320 B          | measured + 25% (re-derived, see below) |
-| `idnumbers/countries/<iso3>` + core | 6,000 B each      | 1,712–5,118 B    | spike max 4,766 B + 25% (#115)         |
-| `idnumbers` (root, all countries)   | 40,300 B          | 38,362 B         | spike 36,632 B + 10% (#115)            |
+| Entry                               | Budget (min+gzip) | Measured at #122 | Derivation                                         |
+| ----------------------------------- | ----------------- | ---------------- | -------------------------------------------------- |
+| `idnumbers/core`                    | 1,800 B           | 1,405 B          | measured + 25%, rounded up (re-derived, see below) |
+| `idnumbers/countries/<iso3>` + core | 6,000 B each      | 1,801–5,209 B    | spike max 4,766 B + 25% (#115)                     |
+| `idnumbers` (root, all countries)   | 40,300 B          | 38,449 B         | spike 36,632 B + 10% (#115)                        |
 
 **The core budget was re-derived.** The spike's 1,100 B budget came from its prototype core
-(821 B). That prototype predates [#117](https://github.com/identique/idnumbers-npm/issues/117),
-whose failure `reason` derivation is part of `validateNationalId()`'s contract and adds about
-600 B minified. #122 had already trimmed the real core from 1,574 B to 1,320 B, by moving
-`ValidationFailureReason` into its own module: compiled TypeScript enums are IIFEs that bundlers
-cannot drop, so core had been pulling in every enum in `constants.ts`. The budget then applies the
-spike's own rule (measured + 25%) to the real entry.
+(821 B + 25%, rounded up to 100 B). That prototype predates two parts of the real core's contract:
+[#117](https://github.com/identique/idnumbers-npm/issues/117)'s failure `reason` derivation, which
+is part of `validateNationalId()` and adds about 600 B minified, and #122's atomic
+`registerCountry()`, which checks every conflict before registering anything. Both live in code
+bundlers cannot drop: `reason` runs on every failed validation, and `registerCountry()` is a method
+of the public `ValidatorRegistry` class, whose methods cannot be tree-shaken while the shared
+singleton is an instance of it. #122 also trimmed the real core, moving `ValidationFailureReason`
+into its own module: compiled TypeScript enums are IIFEs that bundlers cannot drop, so core had
+been pulling in every enum in `constants.ts`. The budget applies the spike's own rule to the
+measured 1,405 B: + 25%, rounded up to 100 B, for 1,800 B.
 
 ## Consequences
 
