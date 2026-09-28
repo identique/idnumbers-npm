@@ -123,7 +123,7 @@ function resolveYear(century: string, yy: string): number | null {
 /**
  * Egypt publishes no official check-digit algorithm and no independently
  * reproducible specification could be located, so no checksum is computed.
- * Always returns null, mirroring `hasChecksum: false` in METADATA.
+ * Always returns null, mirroring `checksum: false` in METADATA.
  *
  * The `idNumber` parameter is unused but retained for signature parity with
  * other country modules.

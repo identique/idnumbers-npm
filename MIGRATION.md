@@ -1,10 +1,11 @@
 # Migrating to idnumbers v2.0.0
 
-> **Status:** v2.0.0 has not been released yet. This guide is a **skeleton** — it is
-> filled in as each [epic #127](https://github.com/identique/idnumbers-npm/issues/127)
-> item lands, and the exact API details below may still change before release. v1.11.0
-> adds `@deprecated` JSDoc for everything listed here, so your editor flags affected
-> call sites before you upgrade.
+> **Status:** v2.0.0 has not been released yet. Every change in
+> [epic #127](https://github.com/identique/idnumbers-npm/issues/127) has landed on
+> `main`, and the release itself is [#126](https://github.com/identique/idnumbers-npm/issues/126);
+> details below may still change before then. v1.11.0 adds `@deprecated` JSDoc for most
+> of what is listed here, so your editor flags affected call sites before you upgrade.
+> `METADATA.name`, `AnyMetadata`, and `adaptMetadata` were not tagged.
 
 ## At a glance
 
@@ -76,6 +77,12 @@ are deleted, including `adaptMetadata`'s fallback defaults and its match-anythin
 `regexp: /./`. `CountryModule` now requires `METADATA: IdMetadata`, and
 `createValidator()` passes a module's METADATA through unchanged.
 
+**`getCountryIdFormat().metadata` is a copy.** In v1.x, class-based countries
+returned their registered METADATA object itself, so editing the result changed how
+that country's input was checked. v2.0.0 returns a copy each time
+([#181](https://github.com/identique/idnumbers-npm/issues/181)); read the module's
+own `METADATA` export if you need the registered object.
+
 **New: `createCompositeValidator(members, overrides?)`** builds one validator for
 a country that accepts several ID formats:
 
@@ -84,8 +91,12 @@ a country that accepts several ID formats:
   when no member can parse);
 - no `checksum` (members use different algorithms);
 - `METADATA` starts from the first member, spans every member's
-  `minLength`/`maxLength`, and has a `regexp` matching any member's shape;
-  `overrides` (e.g. `countryName`/`idType`) are applied last.
+  `minLength`/`maxLength`, and has a `regexp` matching any member's shape.
+  `parsable` is true when the composite has `parse`, and `checksum` only when every
+  member's format carries one. `overrides` (e.g. `countryName`/`idType`) are applied
+  last; an override set to `undefined` is ignored;
+- it throws when member regexps cannot be combined into one (different flags, or a
+  backreference such as `\1`); pass a `regexp` override for those members.
 
 Bangladesh (BGD) and San Marino (SMR) are now built with it. Their registered
 metadata describes everything the composite accepts: BGD spans 13–17 digits
@@ -96,8 +107,10 @@ metadata describes everything the composite accepts: BGD spans 13–17 digits
 `/./` ([#160](https://github.com/identique/idnumbers-npm/issues/160)): its METADATA
 mixed both dialects, so the adapter discarded the real regexp. It now matches
 both BGD formats. `getCountryIdFormat('BGD').metadata.regexp` changes, and
-invalid BGD input now gets a specific `reason` (`invalid_length` /
-`invalid_format`) instead of the generic `validation_failed`.
+malformed BGD input (the wrong length or shape) now gets a specific `reason`
+(`invalid_length` / `invalid_format`) instead of the generic `validation_failed`.
+Input with the right shape but invalid content, such as `0163990150001`, still gets
+`validation_failed`.
 
 **Validation behavior itself does not change**: the same IDs are accepted and
 parsed identically before and after, matching the Python `idnumbers` source of truth.

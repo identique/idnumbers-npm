@@ -211,7 +211,8 @@ describe('ValidatorRegistry', () => {
       expect(format!.length).toEqual({ min: 9, max: 9 });
       expect(format!.hasChecksum).toBe(true);
       expect(format!.isParsable).toBe(true);
-      expect(format!.metadata).toBe(v.METADATA);
+      expect(format!.metadata).toEqual(v.METADATA);
+      expect(format!.metadata).not.toBe(v.METADATA);
     });
 
     it('should extract country code from qualified key', () => {

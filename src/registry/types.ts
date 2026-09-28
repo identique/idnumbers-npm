@@ -36,6 +36,7 @@ export interface IdFormat {
   length: { min: number; max: number };
   hasChecksum: boolean;
   isParsable: boolean;
+  /** A copy of the registered METADATA: changing it does not affect validation. */
   metadata: IdMetadata;
 }
 
