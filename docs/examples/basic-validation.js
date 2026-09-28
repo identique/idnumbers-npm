@@ -86,14 +86,15 @@ console.log('1. Invalid US SSN (forbidden prefix 000):');
 const usaInvalid = validateNationalId('USA', '000-45-6789');
 console.log(`   ID: 000-45-6789`);
 console.log(`   Valid: ${usaInvalid.isValid}`);
-console.log(`   Error: ${usaInvalid.errorMessage}`);
+console.log(`   Reason: ${usaInvalid.reason}`);
 console.log();
 
-// Invalid UK NINO (wrong format)
-console.log('2. Invalid UK NINO (wrong checksum):');
+// Invalid UK NINO (suffix letter not allowed)
+console.log('2. Invalid UK NINO (suffix letter not allowed):');
 const gbrInvalid = validateNationalId('GBR', 'AB123456E');
 console.log(`   ID: AB123456E`);
 console.log(`   Valid: ${gbrInvalid.isValid}`);
+console.log(`   Reason: ${gbrInvalid.reason}`);
 console.log();
 
 // Unsupported country
@@ -101,5 +102,6 @@ console.log('3. Unsupported country code:');
 const unsupported = validateNationalId('XXX', '123456789');
 console.log(`   Country: XXX`);
 console.log(`   Valid: ${unsupported.isValid}`);
+console.log(`   Reason: ${unsupported.reason}`);
 console.log(`   Error: ${unsupported.errorMessage}`);
 console.log();

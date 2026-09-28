@@ -39,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Bangladesh (BGD) registered metadata reported the match-anything `regexp: /./`, because its METADATA mixed both dialects and the adapter discarded the real regexp. It now matches both the 13-digit old and 17-digit new formats, so `getCountryIdFormat('BGD').metadata.regexp` is accurate and malformed BGD input (the wrong length or shape) gets a specific `reason` (`invalid_length`/`invalid_format`) instead of `validation_failed`. Well-formed IDs that fail validation still get `validation_failed`, and which IDs validate is unchanged ([#160](https://github.com/identique/idnumbers-npm/issues/160), [#121](https://github.com/identique/idnumbers-npm/issues/121))
+- The examples no longer print `undefined`: `docs/examples/parsing-information.js` read parse fields that Poland, South Korea, and Mexico don't return (`yyyymmdd`, `dateOfBirth`, `state`), and the validation examples, including three in the README, printed `errorMessage`, which only an unsupported country sets; they now read `birthDate`, `location`, and `reason`. A test checks every result property the example files read ([#185](https://github.com/identique/idnumbers-npm/issues/185))
 
 ## [1.11.0] - 2026-09-27
 

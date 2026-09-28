@@ -35,7 +35,7 @@ console.log('3. Poland - PESEL:');
 const pol = parseIdInfo('POL', '80010100000');
 if (pol.ok) {
   console.log(`   ID: 80010100000`);
-  console.log(`   Birth Date: ${pol.info.yyyymmdd?.toDateString()}`);
+  console.log(`   Birth Date: ${pol.info.birthDate?.toDateString()}`);
   console.log(`   Gender: ${pol.info.gender}`);
 }
 console.log();
@@ -45,7 +45,7 @@ console.log('4. South Korea - RRN:');
 const kor = parseIdInfo('KOR', '800101-1234567');
 if (kor.ok) {
   console.log(`   ID: 800101-1234567`);
-  console.log(`   Birth Date: ${kor.info.dateOfBirth?.toDateString()}`);
+  console.log(`   Birth Date: ${kor.info.birthDate?.toDateString()}`);
   console.log(`   Gender: ${kor.info.gender}`);
 }
 console.log();
@@ -59,14 +59,14 @@ if (arg.ok) {
 }
 console.log();
 
-// Mexico - Extract birth date, gender, state
+// Mexico - Extract birth date, gender, state of birth
 console.log('6. Mexico - CURP:');
 const mex = parseIdInfo('MEX', 'HEGG560427MVZRRL04');
 if (mex.ok) {
   console.log(`   ID: HEGG560427MVZRRL04`);
   console.log(`   Birth Date: ${mex.info.birthDate?.toDateString()}`);
   console.log(`   Gender: ${mex.info.gender}`);
-  console.log(`   State: ${mex.info.state}`);
+  console.log(`   State Code: ${mex.info.location}`);
 }
 console.log();
 

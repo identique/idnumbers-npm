@@ -269,7 +269,7 @@ class UserModel {
     );
 
     if (!idValidation.isValid) {
-      throw new Error(`Invalid ID: ${idValidation.errorMessage}`);
+      throw new Error(`Invalid ID: ${idValidation.errorMessage ?? idValidation.reason}`);
     }
 
     // Extract additional info
@@ -298,7 +298,7 @@ class UserModel {
     const result = validateNationalId(country, newIdNumber);
 
     if (!result.isValid) {
-      throw new Error(`Invalid ID: ${result.errorMessage}`);
+      throw new Error(`Invalid ID: ${result.errorMessage ?? result.reason}`);
     }
 
     // Update database

@@ -14,7 +14,7 @@ import {
   Citizenship
 } from '../src/index';
 
-console.log('=== IDNumbers Library Examples (Updated with 103 Countries) ===\n');
+console.log('=== IDNumbers Library Examples (Updated with 85 Countries) ===\n');
 
 // Example 1: Basic validation for all supported countries
 console.log('1. Basic Validation for All Countries:');
@@ -127,5 +127,5 @@ if (invalidCountry.errorMessage) {
   console.log(`Error: ${invalidCountry.errorMessage}`);
 }
 
-console.log('\n=== Examples Complete - 103 Countries Supported! ===');
+console.log('\n=== Examples Complete - 85 Countries Supported! ===');
 console.log('Countries: USA 🇺🇸, Australia 🇦🇺, South Africa 🇿🇦, United Kingdom 🇬🇧, Canada 🇨🇦, Germany 🇩🇪');
