@@ -149,7 +149,7 @@ validateNationalId('TWN', id);
   validator under a taken key or alias throws.
 - **Custom registries:** `IValidatorRegistry` gains a required `registerCountry(country)`
   method, so a class that implements the interface itself must add one.
-- In a single-country bundle, core plus one country is about 1.9–5.3 KB min+gzip,
+- In a single-country bundle, core plus one country is about 1.9–5.4 KB min+gzip,
   versus about 38 KB for the root import. CI enforces the budgets
   (`npm run size`).
 - The root `idnumbers` entry and every country namespace (`TWN`, `USA`, …) also gain the

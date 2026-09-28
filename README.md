@@ -87,7 +87,7 @@ validateNationalId('TWN', 'A123456789'); // registered: validated as usual
 validateNationalId('JPN', '123456789012'); // not registered: reason 'unsupported_country'
 ```
 
-Core plus one country is about 1.9–5.3 KB minified and gzipped, versus about 38 KB for
+Core plus one country is about 1.9–5.4 KB minified and gzipped, versus about 38 KB for
 the batteries-included `idnumbers` root, which stays unchanged and registers all 85
 countries. Importing the root anywhere in an app registers every country for the whole
 app, because both entries share one registry.
@@ -628,7 +628,7 @@ Accepted letter case, surrounding whitespace, and separators for every country a
 
 ## Testing
 
-The library includes comprehensive test coverage with 3556 tests covering:
+The library includes comprehensive test coverage with 3560 tests covering:
 
 - Format validation
 - Checksum verification
