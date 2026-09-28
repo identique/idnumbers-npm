@@ -4,9 +4,11 @@
  * - createCompositeValidator derives `parsable`/`checksum` from every member,
  *   ignores `undefined` overrides, keeps escaped `\(?<` intact, and rejects
  *   member regexps with backreferences instead of building a wrong union.
+ * - getCountryIdFormat() returns a copy of the registered METADATA, so editing
+ *   the result cannot change validation.
  */
 import { createCompositeValidator, CountryValidator } from '../registry';
-import { getCountryIdFormat } from '../index';
+import { getCountryIdFormat, validateNationalId, ValidationFailureReason } from '../index';
 import { IdMetadata, ParsedInfo } from '../types';
 
 function meta(overrides: Partial<IdMetadata>): IdMetadata {
@@ -167,3 +169,31 @@ describe('createCompositeValidator union regexp (#181)', () => {
   });
 });
 
+describe('getCountryIdFormat() metadata (#181)', () => {
+  it('is a copy of the registered METADATA', () => {
+    const first = getCountryIdFormat('TWN')!;
+    const second = getCountryIdFormat('TWN')!;
+    expect(first.metadata).toEqual(second.metadata);
+    expect(first.metadata).not.toBe(second.metadata);
+    expect(first.metadata.names).not.toBe(second.metadata.names);
+    expect(first.metadata.links).not.toBe(second.metadata.links);
+  });
+
+  it('does not let edits to the result change validation or later results', () => {
+    const tooShort = '1';
+    expect(validateNationalId('TWN', tooShort).reason).toBe(ValidationFailureReason.INVALID_LENGTH);
+
+    const format = getCountryIdFormat('TWN')!;
+    const { minLength, maxLength } = format.metadata;
+    format.metadata.minLength = 0;
+    format.metadata.maxLength = 100;
+    format.metadata.regexp = /^.*$/;
+    format.metadata.names.push('Edited');
+
+    expect(validateNationalId('TWN', tooShort).reason).toBe(ValidationFailureReason.INVALID_LENGTH);
+    const again = getCountryIdFormat('TWN')!;
+    expect(again.length).toEqual({ min: minLength, max: maxLength });
+    expect(again.metadata.names).not.toContain('Edited');
+    expect(again.metadata.regexp.test('anything')).toBe(false);
+  });
+});

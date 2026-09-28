@@ -187,7 +187,9 @@ export class ValidatorRegistry implements IValidatorRegistry {
       length: { min: METADATA.minLength, max: METADATA.maxLength },
       hasChecksum: METADATA.checksum,
       isParsable: METADATA.parsable,
-      metadata: METADATA,
+      // A copy: validation and the failure-reason derivation read the registered
+      // METADATA, so a caller editing the result must not change them.
+      metadata: { ...METADATA, names: [...METADATA.names], links: [...METADATA.links] },
     };
   }
 }
