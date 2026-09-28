@@ -8,6 +8,7 @@ import { CheckDigit } from '../../constants.js';
 import { defineCountry } from '../../registry/country.js';
 
 export interface KuwaitParseResult extends ParsedInfo {
+  isValid: boolean;
   birthDate: Date;
   serialNumber: string;
   checksum: CheckDigit;

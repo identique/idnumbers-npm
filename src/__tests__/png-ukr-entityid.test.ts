@@ -4,7 +4,8 @@
  * to ensure we don't break existing functionality when adding parse()
  */
 
-import { validateNationalId, parseIdInfo } from '../index';
+import { validateNationalId } from '../index';
+import { parsedInfo } from './helpers/parsedInfo';
 import { NationalID as PngNationalID } from '../countries/png';
 import { EntityID as UkrEntityID, EntityType } from '../countries/ukr';
 
@@ -94,13 +95,13 @@ describe('PNG - Papua New Guinea National ID', () => {
     test('should return null for invalid IDs', () => {
       // Since PNG has no known parsable structure, parse() should return null
       // or a minimal result for valid IDs
-      const result = parseIdInfo('PNG', 'invalid');
+      const result = parsedInfo('PNG', 'invalid');
       expect(result).toBeNull();
     });
 
     test('parseIdInfo should return null for PNG (not parsable)', () => {
       // PNG IDs don't encode personal information
-      const result = parseIdInfo('PNG', '1234567890');
+      const result = parsedInfo('PNG', '1234567890');
       expect(result).toBeNull();
     });
   });

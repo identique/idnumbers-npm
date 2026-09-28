@@ -1,6 +1,6 @@
-import { IdNumberClass, IdMetadata } from '../../types.js';
+import { IdNumberClass, IdMetadata, ParsedInfo } from '../../types.js';
 
-export interface NationalIdParseResult {
+export interface NationalIdParseResult extends ParsedInfo {
   type: string;
   number: string;
 }

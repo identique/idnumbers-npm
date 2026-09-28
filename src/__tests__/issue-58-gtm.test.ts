@@ -24,7 +24,8 @@
  */
 
 import { DPI, DPIParseResult } from '../countries/gtm/dpi';
-import { validateNationalId, parseIdInfo, getCountryIdFormat } from '../index';
+import { validateNationalId, getCountryIdFormat } from '../index';
+import { parsedInfo } from './helpers/parsedInfo';
 
 const VALID_DPI = '1912345670101';
 
@@ -225,14 +226,14 @@ describe('Guatemala (GTM) — DPI / CUI', () => {
     });
 
     it('parseIdInfo is alias/case stable', () => {
-      const viaAlpha3 = parseIdInfo('GTM', VALID_DPI);
+      const viaAlpha3 = parsedInfo('GTM', VALID_DPI);
       expect(viaAlpha3).not.toBeNull();
-      expect(parseIdInfo('GT', VALID_DPI)).toEqual(viaAlpha3);
-      expect(parseIdInfo('gt', VALID_DPI)).toEqual(viaAlpha3);
+      expect(parsedInfo('GT', VALID_DPI)).toEqual(viaAlpha3);
+      expect(parsedInfo('gt', VALID_DPI)).toEqual(viaAlpha3);
     });
 
     it('parseIdInfo returns null for an invalid CUI', () => {
-      expect(parseIdInfo('GTM', 'INVALID')).toBeNull();
+      expect(parsedInfo('GTM', 'INVALID')).toBeNull();
     });
 
     it('reports a parsable, checksummed format via getCountryIdFormat', () => {

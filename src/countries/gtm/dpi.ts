@@ -3,11 +3,11 @@
  * Documento Personal de Identificación / Código Único de Identificación
  */
 
-import { IdMetadata, IdNumberClass } from '../../types.js';
+import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
 import { validateRegexp, weightedModulusDigit } from '../../utils.js';
 import { isValidDepartmentMunicipality } from './util.js';
 
-export interface DPIParseResult {
+export interface DPIParseResult extends ParsedInfo {
   correlative: string;
   checkDigit: number;
   department: number;

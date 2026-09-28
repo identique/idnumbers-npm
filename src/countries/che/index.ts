@@ -7,6 +7,7 @@ import { ean13Digit } from '../../utils.js';
 import { defineCountry } from '../../registry/country.js';
 
 export interface SwitzerlandParseResult extends ParsedInfo {
+  isValid: boolean;
   // Social Security Number doesn't contain parsable information beyond validation
 }
 

@@ -3,7 +3,7 @@
  * Old format (13 digits) and New format (17 digits)
  */
 
-import { IdMetadata } from '../../types.js';
+import { IdMetadata, ParsedInfo } from '../../types.js';
 
 export enum ResidentialType {
   RURAL = 1,
@@ -14,7 +14,7 @@ export enum ResidentialType {
   CITY_CORPORATION = 9,
 }
 
-export interface OldParseResult {
+export interface OldParseResult extends ParsedInfo {
   distinct: string;
   residentialType: ResidentialType;
   policyStationNo: string;

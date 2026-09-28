@@ -1,10 +1,10 @@
 import { CheckDigit, Gender, Citizenship } from '../../constants.js';
-import { IdMetadata, IdNumberClass } from '../../types.js';
+import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
 
 /**
  * Parse result of Romanian national ID
  */
-export interface NationalIdParseResult {
+export interface NationalIdParseResult extends ParsedInfo {
   /** Birthday */
   yyyymmdd: Date;
   /** Registration location code */

@@ -7,6 +7,7 @@ import { isValidDate, calculateAge } from '../../utils.js';
 import { defineCountry } from '../../registry/country.js';
 
 export interface ItalyParseResult extends ParsedInfo {
+  isValid: boolean;
   surname: string;
   name: string;
   birthDate: Date;

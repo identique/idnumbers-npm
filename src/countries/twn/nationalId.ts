@@ -1,10 +1,10 @@
 import { CheckDigit, Gender } from '../../constants.js';
-import { IdMetadata, IdNumberClass } from '../../types.js';
+import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
 
 /**
  * Parse result of Taiwan national ID
  */
-export interface NationalIdParseResult {
+export interface NationalIdParseResult extends ParsedInfo {
   /** Location code (A-Z) */
   location: string;
   /** Gender */

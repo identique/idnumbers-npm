@@ -14,6 +14,7 @@ import { defineCountry } from '../../registry/country.js';
 import { createValidator } from '../../registry/adapters.js';
 
 export interface SriLankaParseResult extends ParsedInfo {
+  isValid: boolean;
   birthDate: Date;
   gender: Gender;
   serialNumber: string;

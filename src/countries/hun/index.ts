@@ -8,6 +8,7 @@ import { CheckDigit } from '../../constants.js';
 import { defineCountry } from '../../registry/country.js';
 
 export interface HungaryParseResult extends ParsedInfo {
+  isValid: boolean;
   birthDate: Date;
   gender: 'male' | 'female';
   citizenship: 'citizen' | 'foreign';

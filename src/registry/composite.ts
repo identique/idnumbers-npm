@@ -1,5 +1,8 @@
-import { IdMetadata, ParsedInfo } from '../types.js';
+import { IdMetadata } from '../types.js';
 import { CountryValidator } from './types.js';
+
+/** The parse result type of a validator, or of each validator in a union. */
+export type ParseResultOf<V> = V extends CountryValidator<infer I> ? I : never;
 
 /**
  * Rewrite named capture groups `(?<name>...)` as non-capturing groups `(?:...)`.
@@ -43,11 +46,13 @@ function unionRegExp(regexps: readonly RegExp[]): RegExp {
  *
  * The registry METADATA must describe every shape `validate()` accepts (#117):
  * `getCountryIdFormat()` and the failure-reason derivation both read it.
+ *
+ * The composite's parse result type is the union of its members' (#123).
  */
-export function createCompositeValidator(
-  members: readonly [CountryValidator, ...CountryValidator[]],
-  overrides: Partial<IdMetadata> = {}
-): CountryValidator {
+export function createCompositeValidator<
+  M extends readonly [CountryValidator<object>, ...CountryValidator<object>[]],
+>(members: M, overrides: Partial<IdMetadata> = {}): CountryValidator<ParseResultOf<M[number]>> {
+  type Result = ParseResultOf<M[number]>;
   const parsers = members.filter(member => member.parse);
 
   const METADATA: IdMetadata = {
@@ -65,10 +70,11 @@ export function createCompositeValidator(
     validate: (id: string) => members.some(member => member.validate(id)),
     parse:
       parsers.length > 0
-        ? (id: string): ParsedInfo | null => {
+        ? (id: string): Result | null => {
             for (const member of parsers) {
               const result = member.parse!(id);
-              if (result !== null && result !== undefined) return result;
+              // A member's result is its own parse result type, one arm of the union.
+              if (result !== null && result !== undefined) return result as Result;
             }
             return null;
           }

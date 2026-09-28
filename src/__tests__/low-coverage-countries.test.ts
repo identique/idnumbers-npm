@@ -1,4 +1,5 @@
-import { validateNationalId, parseIdInfo } from '../index';
+import { validateNationalId } from '../index';
+import { parsedInfo } from './helpers/parsedInfo';
 
 describe('Low Coverage Countries - Comprehensive Tests', () => {
   // HUN tests moved to dedicated hun.test.ts
@@ -31,7 +32,7 @@ describe('Low Coverage Countries - Comprehensive Tests', () => {
     });
 
     test('should parse Icelandic ID and extract birth date', () => {
-      const result = parseIdInfo('ISL', '120174-3399');
+      const result = parsedInfo('ISL', '120174-3399');
       expect(result).not.toBeNull();
       if (result) {
         // Month is indexed from 0 in JavaScript Date
@@ -72,7 +73,7 @@ describe('Low Coverage Countries - Comprehensive Tests', () => {
     });
 
     test('should parse Lithuanian ID and extract information', () => {
-      const result = parseIdInfo('LTU', '39001010077');
+      const result = parsedInfo('LTU', '39001010077');
       expect(result).not.toBeNull();
       if (result) {
         expect(result.birthDate.getFullYear()).toBe(1990);
@@ -83,7 +84,7 @@ describe('Low Coverage Countries - Comprehensive Tests', () => {
     });
 
     test('should correctly identify female gender', () => {
-      const result = parseIdInfo('LTU', '49001010001');
+      const result = parsedInfo('LTU', '49001010001');
       expect(result).not.toBeNull();
       if (result) {
         expect(result.gender).toBe('female');
@@ -92,22 +93,22 @@ describe('Low Coverage Countries - Comprehensive Tests', () => {
 
     test('should correctly parse different century digits', () => {
       // Test digit 3 (1900s male) - already tested above
-      const id1990s = parseIdInfo('LTU', '39001010077');
+      const id1990s = parsedInfo('LTU', '39001010077');
       expect(id1990s?.birthDate.getFullYear()).toBe(1990);
       expect(id1990s?.gender).toBe('male');
 
       // Test digit 4 (1900s female)
-      const id1990sFemale = parseIdInfo('LTU', '49001010001');
+      const id1990sFemale = parsedInfo('LTU', '49001010001');
       expect(id1990sFemale?.birthDate.getFullYear()).toBe(1990);
       expect(id1990sFemale?.gender).toBe('female');
 
       // Test digit 5 (2000s male)
-      const id2000s = parseIdInfo('LTU', '50001012937');
+      const id2000s = parsedInfo('LTU', '50001012937');
       expect(id2000s?.birthDate.getFullYear()).toBe(2000);
       expect(id2000s?.gender).toBe('male');
 
       // Test digit 3 for 1980s
-      const id1980s = parseIdInfo('LTU', '38001011812');
+      const id1980s = parsedInfo('LTU', '38001011812');
       expect(id1980s?.birthDate.getFullYear()).toBe(1980);
       expect(id1980s?.gender).toBe('male');
     });
@@ -139,7 +140,7 @@ describe('Low Coverage Countries - Comprehensive Tests', () => {
     });
 
     test('should parse Luxembourg ID and extract birth date', () => {
-      const result = parseIdInfo('LUX', '1893120105732');
+      const result = parsedInfo('LUX', '1893120105732');
       expect(result).not.toBeNull();
       if (result) {
         expect(result.birthDate).toEqual(new Date(1893, 11, 1));
@@ -177,7 +178,7 @@ describe('Low Coverage Countries - Comprehensive Tests', () => {
     });
 
     test('should parse Albanian ID and extract information', () => {
-      const result = parseIdInfo('ALB', 'J50101001A');
+      const result = parsedInfo('ALB', 'J50101001A');
       expect(result).not.toBeNull();
       if (result) {
         expect(result.gender).toBe('male');
@@ -185,7 +186,7 @@ describe('Low Coverage Countries - Comprehensive Tests', () => {
     });
 
     test('should correctly identify female gender from month encoding', () => {
-      const result = parseIdInfo('ALB', 'K55201002B');
+      const result = parsedInfo('ALB', 'K55201002B');
       expect(result).not.toBeNull();
       if (result) {
         expect(result.gender).toBe('female');
@@ -193,7 +194,7 @@ describe('Low Coverage Countries - Comprehensive Tests', () => {
     });
 
     test('should parse year without clamping (year < 1900)', () => {
-      const result = parseIdInfo('ALB', '050308094A');
+      const result = parsedInfo('ALB', '050308094A');
       expect(result).not.toBeNull();
       if (result) {
         expect(result.birthDate.getFullYear()).toBe(1805);
@@ -233,7 +234,7 @@ describe('Low Coverage Countries - Comprehensive Tests', () => {
     });
 
     test('should parse Colombian ID', () => {
-      const result = parseIdInfo('COL', '12.345.678-8');
+      const result = parsedInfo('COL', '12.345.678-8');
       expect(result).not.toBeNull();
       if (result) {
         expect(result.isValid).toBe(true);
@@ -268,7 +269,7 @@ describe('Low Coverage Countries - Comprehensive Tests', () => {
     });
 
     test('should return null when parsing (not parsable)', () => {
-      const result = parseIdInfo('HKG', 'A123456(3)');
+      const result = parsedInfo('HKG', 'A123456(3)');
       // HKG IDs are not parsable - they contain no extractable information
       expect(result).toBeNull();
     });
@@ -300,7 +301,7 @@ describe('Low Coverage Countries - Comprehensive Tests', () => {
     });
 
     test('should return null when parsing (not parsable)', () => {
-      const result = parseIdInfo('IRN', '0012345679');
+      const result = parsedInfo('IRN', '0012345679');
       // IRN IDs are not parsable - they contain no extractable information
       expect(result).toBeNull();
     });
@@ -332,7 +333,7 @@ describe('Low Coverage Countries - Comprehensive Tests', () => {
     });
 
     test('should return null when parsing (not parsable)', () => {
-      const result = parseIdInfo('ISR', '000000018');
+      const result = parsedInfo('ISR', '000000018');
       // ISR IDs are not parsable - they contain no extractable information
       expect(result).toBeNull();
     });
@@ -357,12 +358,12 @@ describe('Low Coverage Countries - Comprehensive Tests', () => {
     });
 
     test('should return null for invalid IDs when parsing', () => {
-      expect(parseIdInfo('HUN', 'invalid')).toBeNull();
-      expect(parseIdInfo('ISL', 'invalid')).toBeNull();
-      expect(parseIdInfo('LTU', 'invalid')).toBeNull();
-      expect(parseIdInfo('LUX', 'invalid')).toBeNull();
-      expect(parseIdInfo('ALB', 'invalid')).toBeNull();
-      expect(parseIdInfo('COL', 'invalid')).toBeNull();
+      expect(parsedInfo('HUN', 'invalid')).toBeNull();
+      expect(parsedInfo('ISL', 'invalid')).toBeNull();
+      expect(parsedInfo('LTU', 'invalid')).toBeNull();
+      expect(parsedInfo('LUX', 'invalid')).toBeNull();
+      expect(parsedInfo('ALB', 'invalid')).toBeNull();
+      expect(parsedInfo('COL', 'invalid')).toBeNull();
     });
   });
 });

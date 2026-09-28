@@ -63,6 +63,7 @@
     "lint": "eslint \"src/**/*.ts\"",
     "lint:fix": "eslint \"src/**/*.ts\" --fix",
     "lint:package": "publint && attw --pack . --include-entrypoints ./countries/twn ./countries/bgd ./countries/smr ./countries/lka",
+    "lint:types": "node scripts/check-declarations.mjs",
     "format": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
     "example": "npm run build && tsx examples/basic-usage.ts",

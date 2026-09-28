@@ -7,7 +7,7 @@
  * had a switch entry, e.g. EGY) are also included here to carry post-migration
  * registry parse coverage.
  */
-import { parseIdInfo } from '../index';
+import { parseIdInfo, validateNationalId, ValidationFailureReason } from '../index';
 import { registry } from '../registry/ValidatorRegistry';
 import { createValidator } from '../registry/adapters';
 
@@ -341,7 +341,9 @@ describe('parseIdInfo parity (registry vs old switch)', () => {
     { code: 'MEX', alias: 'MX', validId: 'HEGG560427MVZRRL04', description: 'Mexico CURP' },
     { code: 'NGA', alias: 'NG', validId: '12345678901', description: 'Nigeria NIN' },
     { code: 'MYS', alias: 'MY', validId: '800101011234', description: 'Malaysia MyKad' },
-    { code: 'NOR', alias: 'NO', validId: '01017012345', description: 'Norway NIN' },
+    // #123: parseIdInfo now fails for an ID validation rejects; 01017012345 has a
+    // bad check digit, which the NOR parser alone never checked.
+    { code: 'NOR', alias: 'NO', validId: '17054026641', description: 'Norway NIN' },
     { code: 'PAK', alias: 'PK', validId: '1234567890123', description: 'Pakistan CNIC' },
     { code: 'THA', alias: 'TH', validId: '3101012345673', description: 'Thailand NID' },
     { code: 'VNM', alias: 'VN', validId: '001089000123', description: 'Vietnam CCCD' },
@@ -365,9 +367,10 @@ describe('parseIdInfo parity (registry vs old switch)', () => {
   ];
 
   describe.each(parseableCountries)('$description ($code)', ({ code, alias, validId }) => {
-    it(`should return non-null for valid ID via ${code}`, () => {
+    it(`should parse a valid ID via ${code}`, () => {
       const result = parseIdInfo(code, validId);
-      expect(result).not.toBeNull();
+      expect(result.ok).toBe(true);
+      expect(result.countryCode).toBe(code);
     });
 
     if (alias) {
@@ -378,12 +381,17 @@ describe('parseIdInfo parity (registry vs old switch)', () => {
       });
     }
 
-    it('should return null for clearly invalid input', () => {
-      expect(parseIdInfo(code, 'INVALID_ID_NUMBER')).toBeNull();
+    it('should fail with the validation reason for clearly invalid input', () => {
+      expect(parseIdInfo(code, 'INVALID_ID_NUMBER')).toEqual({
+        ok: false,
+        countryCode: code,
+        idNumber: 'INVALID_ID_NUMBER',
+        reason: validateNationalId(code, 'INVALID_ID_NUMBER').reason,
+      });
     });
   });
 
-  // Countries that should always return null from parseIdInfo
+  // Countries whose parseIdInfo always fails: NOT_PARSABLE for a valid ID
   describe('Non-parseable countries', () => {
     const nonParseableCountries = [
       { code: 'USA', validId: '123-45-6789', description: 'USA SSN (no parse)' },
@@ -439,23 +447,28 @@ describe('parseIdInfo parity (registry vs old switch)', () => {
       { code: 'TUR', alias: 'TR', validId: '11111111110', description: 'Turkey TCKN (no parse)' },
     ];
 
-    test.each(nonParseableCountries)('$description returns null', ({ code, validId }) => {
-      expect(parseIdInfo(code, validId)).toBeNull();
+    test.each(nonParseableCountries)('$description fails', ({ code, validId }) => {
+      const validation = validateNationalId(code, validId);
+      const result = parseIdInfo(code, validId);
+      expect(result).toEqual({
+        ok: false,
+        countryCode: code,
+        idNumber: validId,
+        reason: validation.isValid ? ValidationFailureReason.NOT_PARSABLE : validation.reason,
+      });
     });
   });
 
   // Unknown/unsupported country codes
   describe('Unknown country codes', () => {
-    it('should return null for unknown alpha-3 code', () => {
-      expect(parseIdInfo('XXX', '123456789')).toBeNull();
-    });
-
-    it('should return null for unknown alpha-2 code', () => {
-      expect(parseIdInfo('ZZ', '123456789')).toBeNull();
-    });
-
-    it('should return null for empty country code', () => {
-      expect(parseIdInfo('', '123456789')).toBeNull();
+    it.each(['XXX', 'ZZ', ''])('should fail with UNSUPPORTED_COUNTRY for %j', code => {
+      expect(parseIdInfo(code, '123456789')).toEqual({
+        ok: false,
+        countryCode: code,
+        idNumber: '123456789',
+        reason: ValidationFailureReason.UNSUPPORTED_COUNTRY,
+        errorMessage: `Unsupported country code: ${code}`,
+      });
     });
   });
 
@@ -465,19 +478,24 @@ describe('parseIdInfo parity (registry vs old switch)', () => {
       const upper = parseIdInfo('FRA', '255081416802538');
       const lower = parseIdInfo('fra', '255081416802538');
       const mixed = parseIdInfo('Fra', '255081416802538');
-      expect(upper).not.toBeNull();
+      expect(upper.ok).toBe(true);
       expect(lower).toEqual(upper);
       expect(mixed).toEqual(upper);
     });
 
-    it('should return null for empty ID number with valid country', () => {
-      expect(parseIdInfo('FRA', '')).toBeNull();
+    it('should fail for empty ID number with valid country', () => {
+      expect(parseIdInfo('FRA', '').ok).toBe(false);
     });
 
     it('should not throw for any input combination', () => {
       expect(() => parseIdInfo('ZAF', null as unknown as string)).not.toThrow();
       expect(() => parseIdInfo('ZAF', undefined as unknown as string)).not.toThrow();
       expect(() => parseIdInfo(null as unknown as string, '123')).not.toThrow();
+      expect(parseIdInfo('ZAF', null as unknown as string).ok).toBe(false);
+      expect(parseIdInfo(null as unknown as string, '123')).toMatchObject({
+        ok: false,
+        reason: ValidationFailureReason.VALIDATION_FAILED,
+      });
     });
   });
 });

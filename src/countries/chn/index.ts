@@ -9,6 +9,7 @@ import { Gender } from '../../constants.js';
 import { defineCountry } from '../../registry/country.js';
 
 export interface ChinaParseResult extends ParsedInfo {
+  isValid: boolean;
   addressCode: string;
   birthDate: Date;
   serialNumber: string;

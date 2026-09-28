@@ -11,7 +11,8 @@
  */
 
 import { Cedula, CedulaParseResult } from '../countries/ecu/cedula';
-import { validateNationalId, parseIdInfo, getCountryIdFormat } from '../index';
+import { validateNationalId, getCountryIdFormat } from '../index';
+import { parsedInfo } from './helpers/parsedInfo';
 
 const VALID_CEDULAS = [
   '1710000009',
@@ -195,14 +196,14 @@ describe('Ecuador (ECU) — Cédula de Identidad', () => {
     });
 
     it('parseIdInfo is alias/case stable', () => {
-      const viaAlpha3 = parseIdInfo('ECU', '1710000009');
+      const viaAlpha3 = parsedInfo('ECU', '1710000009');
       expect(viaAlpha3).not.toBeNull();
-      expect(parseIdInfo('EC', '1710000009')).toStrictEqual(viaAlpha3);
-      expect(parseIdInfo('ec', '1710000009')).toStrictEqual(viaAlpha3);
+      expect(parsedInfo('EC', '1710000009')).toStrictEqual(viaAlpha3);
+      expect(parsedInfo('ec', '1710000009')).toStrictEqual(viaAlpha3);
     });
 
     it('parseIdInfo returns null for an invalid cédula', () => {
-      expect(parseIdInfo('ECU', 'INVALID')).toBeNull();
+      expect(parsedInfo('ECU', 'INVALID')).toBeNull();
     });
 
     it('reports a parsable, checksummed format via getCountryIdFormat', () => {

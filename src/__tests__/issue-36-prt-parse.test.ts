@@ -37,7 +37,8 @@
 import { NationalID as CC } from '../countries/prt/nationalId';
 import { NIF } from '../countries/prt/nif';
 import * as PRT from '../countries/prt';
-import { validateNationalId, parseIdInfo, getCountryIdFormat } from '../index';
+import { validateNationalId, getCountryIdFormat } from '../index';
+import { parsedInfo } from './helpers/parsedInfo';
 
 const KNOWN_VALID_NIF = '123456789';
 const KNOWN_VALID_CC_LETTERS = '1234ABCDE990';
@@ -75,7 +76,7 @@ describe('PRT NIF — parse() not implemented', () => {
   });
 });
 
-describe('parseIdInfo() — PRT/PT non-parsable registry path returns null', () => {
+describe('parsedInfo() — PRT/PT non-parsable registry path returns null', () => {
   const cases: Array<[string, string, string]> = [
     ['valid NIF via PRT', 'PRT', KNOWN_VALID_NIF],
     ['valid NIF via PT alpha-2', 'PT', KNOWN_VALID_NIF],
@@ -91,8 +92,8 @@ describe('parseIdInfo() — PRT/PT non-parsable registry path returns null', () 
   ];
 
   test.each(cases)('returns null for %s', (_label, country, id) => {
-    expect(() => parseIdInfo(country, id)).not.toThrow();
-    expect(parseIdInfo(country, id)).toBeNull();
+    expect(() => parsedInfo(country, id)).not.toThrow();
+    expect(parsedInfo(country, id)).toBeNull();
   });
 });
 

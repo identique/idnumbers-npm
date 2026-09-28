@@ -1,10 +1,10 @@
 import { Gender } from '../../constants.js';
-import { IdMetadata, IdNumberClass } from '../../types.js';
+import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
 
 /**
  * Parse result of Ukrainian tax number
  */
-export interface NationalIdParseResult {
+export interface NationalIdParseResult extends ParsedInfo {
   /** Birthday (calculated from days since 1900-01-01) */
   yyyymmdd: Date;
   /** Gender */

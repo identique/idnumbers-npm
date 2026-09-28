@@ -1,11 +1,11 @@
 import { CheckDigit } from '../../constants.js';
-import { IdMetadata, IdNumberClass } from '../../types.js';
+import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
 import { luhnDigit, validateRegexp } from '../../utils.js';
 
 /**
  * Parse result for Ecuador Cédula de Identidad.
  */
-export interface CedulaParseResult {
+export interface CedulaParseResult extends ParsedInfo {
   /** Province code: '01'-'24' (the 24 provinces) or '30' (registered abroad) */
   province: string;
   /** Sequential registration number (digits 4-9) */

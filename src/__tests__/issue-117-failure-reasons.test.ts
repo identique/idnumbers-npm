@@ -17,7 +17,7 @@ import { registry } from '../registry/ValidatorRegistry';
 import { deriveFailureReason } from '../registry/failureReason';
 
 describe('Issue #117: ValidationFailureReason', () => {
-  it('exposes exactly the five documented codes', () => {
+  it('exposes exactly the documented codes', () => {
     expect(Object.values(ValidationFailureReason).sort()).toEqual(
       [
         'unsupported_country',
@@ -25,6 +25,8 @@ describe('Issue #117: ValidationFailureReason', () => {
         'invalid_format',
         'checksum_mismatch',
         'validation_failed',
+        // #123: reported only by parseIdInfo(), for a valid ID it cannot parse.
+        'not_parsable',
       ].sort()
     );
   });
@@ -253,7 +255,7 @@ describe('Issue #117: ValidationFailureReason', () => {
       const oldFormat = validateNationalId('LKA', '961203996V');
       expect(oldFormat.isValid).toBe(true);
       expect(oldFormat).not.toHaveProperty('reason');
-      expect(parseIdInfo('LKA', '961203996V')).not.toBeNull();
+      expect(parseIdInfo('LKA', '961203996V').ok).toBe(true);
 
       const newFormat = validateNationalId('LKA', '199001200001');
       expect(newFormat.isValid).toBe(true);

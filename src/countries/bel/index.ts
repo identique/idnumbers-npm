@@ -9,6 +9,7 @@ import { Gender } from '../../constants.js';
 import { defineCountry } from '../../registry/country.js';
 
 export interface BelgiumParseResult extends ParsedInfo {
+  isValid: boolean;
   birthDate: Date;
   gender: Gender;
   serialNumber: string;

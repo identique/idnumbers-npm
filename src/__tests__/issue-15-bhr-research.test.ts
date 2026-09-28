@@ -22,7 +22,8 @@
  * format `YYMMSSSSC` does not encode gender.
  */
 import { PersonalNumber } from '../countries/bhr/personal-number';
-import { validateNationalId, parseIdInfo } from '../index';
+import { validateNationalId } from '../index';
+import { parsedInfo } from './helpers/parsedInfo';
 
 const CANONICAL_ID = '800101001';
 const CANONICAL_PARSED = { yymm: '8001', sn: '0100', checksum: 1 };
@@ -72,16 +73,16 @@ describe('BHR Personal Number (CPR) — issue #15 research vectors', () => {
   });
 
   describe('registry-path parseIdInfo (BHR + BH alias)', () => {
-    it('parseIdInfo("BHR", ...) returns parsed fields', () => {
-      expect(parseIdInfo('BHR', CANONICAL_ID)).toEqual(CANONICAL_PARSED);
+    it('parsedInfo("BHR", ...) returns parsed fields', () => {
+      expect(parsedInfo('BHR', CANONICAL_ID)).toEqual(CANONICAL_PARSED);
     });
 
-    it('parseIdInfo("BH", ...) resolves via alias to the same result', () => {
-      expect(parseIdInfo('BH', CANONICAL_ID)).toEqual(CANONICAL_PARSED);
+    it('parsedInfo("BH", ...) resolves via alias to the same result', () => {
+      expect(parsedInfo('BH', CANONICAL_ID)).toEqual(CANONICAL_PARSED);
     });
 
     it('parseIdInfo returns null for format-invalid input', () => {
-      expect(parseIdInfo('BHR', '80010100')).toBeNull();
+      expect(parsedInfo('BHR', '80010100')).toBeNull();
     });
   });
 });

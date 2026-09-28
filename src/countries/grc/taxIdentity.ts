@@ -8,6 +8,7 @@ import { validateRegexp, weightedModulusDigit, modulusOverflowMod10 } from '../.
 import { CheckDigit } from '../../constants.js';
 
 export interface GreeceParseResult extends ParsedInfo {
+  isValid: boolean;
   // Tax Identity Number doesn't contain parsable information beyond validation
 }
 

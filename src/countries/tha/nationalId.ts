@@ -1,11 +1,11 @@
 import { CheckDigit, ThaiCitizenship } from '../../constants.js';
-import { IdMetadata, IdNumberClass } from '../../types.js';
+import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
 import { weightedModulusDigit, modulusOverflowMod10 } from '../../utils.js';
 
 /**
  * Parse result of Thailand national ID
  */
-export interface NationalIdParseResult {
+export interface NationalIdParseResult extends ParsedInfo {
   /** Thailand specialized citizenship type */
   citizenship: ThaiCitizenship;
   /** Registration province code */

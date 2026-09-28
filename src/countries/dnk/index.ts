@@ -18,6 +18,7 @@ import { isValidDate, calculateAge } from '../../utils.js';
 import { defineCountry } from '../../registry/country.js';
 
 export interface DenmarkParseResult extends ParsedInfo {
+  isValid: boolean;
   birthDate: Date;
   serialNumber: string;
   age?: number;

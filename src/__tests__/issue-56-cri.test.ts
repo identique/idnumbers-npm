@@ -8,7 +8,8 @@
  * conflates Hacienda's "naturaleza" prefix with the province digit.
  */
 import { Cedula } from '../countries/cri';
-import { validateNationalId, parseIdInfo, getCountryIdFormat } from '../index';
+import { validateNationalId, getCountryIdFormat } from '../index';
+import { parsedInfo } from './helpers/parsedInfo';
 
 describe('Costa Rica Cédula de Identidad', () => {
   describe('valid IDs', () => {
@@ -140,13 +141,13 @@ describe('Costa Rica Cédula de Identidad', () => {
     });
 
     it('parses via parseIdInfo', () => {
-      const info = parseIdInfo('CRI', '1-0913-0259');
+      const info = parsedInfo('CRI', '1-0913-0259');
       expect(info).not.toBeNull();
       expect(info).toMatchObject({ province: 1, tomo: '0913', asiento: '0259' });
     });
 
     it('returns null via parseIdInfo for invalid input', () => {
-      expect(parseIdInfo('CRI', '3101123456')).toBeNull();
+      expect(parsedInfo('CRI', '3101123456')).toBeNull();
     });
 
     it('exposes format info via getCountryIdFormat', () => {

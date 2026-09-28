@@ -14,6 +14,7 @@ import {
 import { CheckDigit, Citizenship, Gender } from '../../constants.js';
 
 export interface OldResidentRegistrationParseResult extends ParsedInfo {
+  isValid: boolean;
   birthDate: Date;
   gender: string;
   citizenship: string;

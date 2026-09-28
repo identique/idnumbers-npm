@@ -3,7 +3,8 @@
  */
 import { Cedula } from '../countries/dom';
 import { CEDULA_LUHN_EXCEPTION_SET } from '../countries/dom/exceptions';
-import { validateNationalId, parseIdInfo } from '../index';
+import { validateNationalId } from '../index';
+import { parsedInfo } from './helpers/parsedInfo';
 
 describe('Dominican Republic Cedula (DOM)', () => {
   describe('METADATA', () => {
@@ -157,7 +158,7 @@ describe('Dominican Republic Cedula (DOM)', () => {
     });
 
     it('parses via the registry for a valid number', () => {
-      expect(parseIdInfo('DOM', '40200000012')).toEqual({
+      expect(parsedInfo('DOM', '40200000012')).toEqual({
         series: '402',
         sequence: '0000001',
         checkDigit: 2,
@@ -165,7 +166,7 @@ describe('Dominican Republic Cedula (DOM)', () => {
     });
 
     it('returns null via the registry for an invalid number', () => {
-      expect(parseIdInfo('DOM', '40200000013')).toBeNull();
+      expect(parsedInfo('DOM', '40200000013')).toBeNull();
     });
   });
 });

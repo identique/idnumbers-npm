@@ -1,10 +1,10 @@
-import { IdMetadata, IdNumberClass } from '../../types.js';
+import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
 import { validateRegexp } from '../../utils.js';
 
 /**
  * Parse result of Zimbabwe national identity code
  */
-export interface NationalIdParseResult {
+export interface NationalIdParseResult extends ParsedInfo {
   /** Register office code */
   registerOfficeCode: string;
   /** Checksum code */

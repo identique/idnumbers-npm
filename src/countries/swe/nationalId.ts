@@ -1,10 +1,10 @@
 import { Gender } from '../../constants.js';
-import { IdMetadata, IdNumberClass } from '../../types.js';
+import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
 
 /**
  * Parse result of Swedish personal identity number
  */
-export interface NationalIdParseResult {
+export interface NationalIdParseResult extends ParsedInfo {
   /** Gender */
   gender: Gender;
   /** Birthday */

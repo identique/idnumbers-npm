@@ -8,6 +8,7 @@ import { isValidDate, calculateAge } from '../../utils.js';
 import { defineCountry } from '../../registry/country.js';
 
 export interface FinlandParseResult extends ParsedInfo {
+  isValid: boolean;
   birthDate: Date;
   gender: 'male' | 'female';
   serialNumber: string;

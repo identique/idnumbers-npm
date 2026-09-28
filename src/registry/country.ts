@@ -1,5 +1,6 @@
-import { createValidator, CountryModule } from './adapters.js';
+import { createValidator, CountryModule, ModuleParseResult } from './adapters.js';
 import { CountryValidator } from './types.js';
+import { ParsedInfo } from '../types.js';
 
 /**
  * Everything the registry needs to know about one country: its primary key,
@@ -8,14 +9,21 @@ import { CountryValidator } from './types.js';
  * Every country module exports one as `country` (#122). Defining it is free of
  * side effects; nothing is registered until it is passed to `register()` from
  * `idnumbers/core`. The root `idnumbers` entry registers all of them.
+ *
+ * The type parameters keep the literal key, the literal aliases, and the parse
+ * result type (#123), from which the `ParseResultMap` type test checks the map.
  */
-export interface CountryDefinition {
+export interface CountryDefinition<
+  K extends string = string,
+  A extends readonly string[] = readonly string[],
+  I extends object = ParsedInfo,
+> {
   /** Primary registry key: the ISO 3166-1 alpha-3 code, uppercase. */
-  readonly key: string;
+  readonly key: K;
   /** Keys that resolve to `key`, e.g. the alpha-2 code and legacy codes such as `'UK'`. */
-  readonly aliases: readonly string[];
+  readonly aliases: A;
   /** The validator registered under `key`. */
-  readonly validator: CountryValidator;
+  readonly validator: CountryValidator<I>;
 }
 
 /**
@@ -26,14 +34,14 @@ export interface CountryDefinition {
  * `createCompositeValidator`); its methods are wrapped so they can be called
  * detached from their class.
  */
-export function defineCountry(
-  key: string,
-  aliases: readonly string[],
-  source: CountryModule
-): CountryDefinition {
+export function defineCountry<
+  K extends string,
+  const A extends readonly string[],
+  M extends CountryModule<object>,
+>(key: K, aliases: A, source: M): CountryDefinition<K, A, ModuleParseResult<M>> {
   return Object.freeze({
     key,
-    aliases: Object.freeze([...aliases]),
+    aliases: Object.freeze([...aliases]) as readonly string[] as A,
     validator: createValidator(source),
   });
 }

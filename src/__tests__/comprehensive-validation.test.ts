@@ -1,10 +1,10 @@
 import {
   validateNationalId,
-  parseIdInfo,
   validateMultipleIds,
   listSupportedCountries,
   getCountryIdFormat,
 } from '../index';
+import { parsedInfo } from './helpers/parsedInfo';
 
 describe('Comprehensive National ID Validation Tests', () => {
   describe('European Countries', () => {
@@ -193,9 +193,9 @@ describe('Comprehensive National ID Validation Tests', () => {
         const result = validateNationalId('ZAF', validID);
         expect(result.isValid).toBe(true);
         expect(result.extractedInfo).toBeTruthy();
-        expect(result.extractedInfo.yyyymmdd).toBeDefined();
-        expect(result.extractedInfo.gender).toBeDefined();
-        expect(result.extractedInfo.citizenship).toBeDefined();
+        expect(result.extractedInfo?.yyyymmdd).toBeDefined();
+        expect(result.extractedInfo?.gender).toBeDefined();
+        expect(result.extractedInfo?.citizenship).toBeDefined();
 
         // Invalid - wrong checksum
         expect(validateNationalId('ZAF', '8001015009088').isValid).toBe(false);
@@ -214,9 +214,9 @@ describe('Comprehensive National ID Validation Tests', () => {
         const result = validateNationalId('EGY', '29001010100017');
         expect(result.isValid).toBe(true);
         expect(result.extractedInfo).toBeTruthy();
-        expect(result.extractedInfo.birthDate).toBeDefined();
-        expect(result.extractedInfo.gender).toBeDefined();
-        expect(result.extractedInfo.governorate).toBe('Cairo');
+        expect(result.extractedInfo?.birthDate).toBeDefined();
+        expect(result.extractedInfo?.gender).toBeDefined();
+        expect(result.extractedInfo?.governorate).toBe('Cairo');
 
         // Invalid - unknown governorate code (99)
         expect(validateNationalId('EGY', '29001019901238').isValid).toBe(false);
@@ -288,12 +288,12 @@ describe('Comprehensive National ID Validation Tests', () => {
           const result = validateNationalId('VEN', 'V-12345678');
           expect(result.isValid).toBe(true);
           expect(result.extractedInfo).toBeTruthy();
-          expect(result.extractedInfo.type).toBe('Venezuelan');
+          expect(result.extractedInfo?.type).toBe('Venezuelan');
 
           // Foreign resident
           const foreignResult = validateNationalId('VEN', 'E-12345678');
           expect(foreignResult.isValid).toBe(true);
-          expect(foreignResult.extractedInfo.type).toBe('Foreign');
+          expect(foreignResult.extractedInfo?.type).toBe('Foreign');
         });
 
         describe('Oceanian Countries', () => {
@@ -327,7 +327,7 @@ describe('Comprehensive National ID Validation Tests', () => {
               const result = validateNationalId('SWE', '811218-9876');
               expect(result.isValid).toBe(true);
               expect(result.extractedInfo).toBeTruthy();
-              expect(result.extractedInfo.gender).toBe('male'); // Odd 3rd digit (7) = male
+              expect(result.extractedInfo?.gender).toBe('male'); // Odd 3rd digit (7) = male
 
               // Long format is NOT supported by Python library
               // Python: SWE.PersonalIdentityNumber.validate('19811218-9876') returns False
@@ -504,46 +504,46 @@ describe('Comprehensive National ID Validation Tests', () => {
             describe('Parse ID Information', () => {
               test('should parse IDs with extractable information', () => {
                 // South Africa - using working ID from test results
-                const zafInfo = parseIdInfo('ZAF', '8001015009087');
+                const zafInfo = parsedInfo('ZAF', '8001015009087');
                 expect(zafInfo).toBeTruthy();
-                expect(zafInfo.yyyymmdd).toBeDefined();
-                expect(zafInfo.gender).toBeDefined();
-                expect(zafInfo.citizenship).toBeDefined();
+                expect(zafInfo?.yyyymmdd).toBeDefined();
+                expect(zafInfo?.gender).toBeDefined();
+                expect(zafInfo?.citizenship).toBeDefined();
 
                 // Skip China - it's in failingCountries list
                 // Skip Romania - it's in failingCountries list
 
                 // Egypt - now parsable: extracts birth date, gender, governorate
-                const egyInfo = parseIdInfo('EGY', '29001010100017');
+                const egyInfo = parsedInfo('EGY', '29001010100017');
                 expect(egyInfo).toBeTruthy();
-                expect(egyInfo.birthDate).toBeDefined();
-                expect(egyInfo.gender).toBeDefined();
-                expect(egyInfo.governorate).toBe('Cairo');
+                expect(egyInfo?.birthDate).toBeDefined();
+                expect(egyInfo?.gender).toBeDefined();
+                expect(egyInfo?.governorate).toBe('Cairo');
 
                 // Test other working countries with extractable info
                 // South Korea
-                const korInfo = parseIdInfo('KOR', '800101-1234567');
+                const korInfo = parsedInfo('KOR', '800101-1234567');
                 if (korInfo) {
                   expect(korInfo).toBeTruthy();
                 }
 
                 // Argentina
-                const argInfo = parseIdInfo('ARG', '12345678');
+                const argInfo = parsedInfo('ARG', '12345678');
                 if (argInfo) {
                   expect(argInfo).toBeTruthy();
                 }
               });
 
               test('should return null for IDs without parsing capability', () => {
-                expect(parseIdInfo('USA', '123-45-6789')).toBeNull();
-                expect(parseIdInfo('GBR', 'AB123456C')).toBeNull();
-                expect(parseIdInfo('NLD', '123456789')).toBeNull();
+                expect(parsedInfo('USA', '123-45-6789')).toBeNull();
+                expect(parsedInfo('GBR', 'AB123456C')).toBeNull();
+                expect(parsedInfo('NLD', '123456789')).toBeNull();
               });
 
               test('should return null for invalid IDs', () => {
-                expect(parseIdInfo('ZAF', '1234567890123')).toBeNull();
+                expect(parsedInfo('ZAF', '1234567890123')).toBeNull();
                 // Korean ID 800101-1234568 is actually valid in Python, so testing with a truly invalid format
-                expect(parseIdInfo('KOR', '800101-1234')).toBeNull(); // Invalid format - too short
+                expect(parsedInfo('KOR', '800101-1234')).toBeNull(); // Invalid format - too short
               });
             });
 

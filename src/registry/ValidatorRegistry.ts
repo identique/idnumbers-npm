@@ -8,7 +8,10 @@ import type { CountryDefinition } from './country.js';
  * Qualified keys use colon separator, e.g. "USA:SSN".
  */
 export class ValidatorRegistry implements IValidatorRegistry {
-  /** Primary key -> validator */
+  /**
+   * Primary key -> validator. Stored as the `ParsedInfo` view: whatever a
+   * validator's own parse result type, its fields read safely as `unknown`.
+   */
   private readonly validators = new Map<string, CountryValidator>();
 
   /** Alias -> primary key */
@@ -18,12 +21,12 @@ export class ValidatorRegistry implements IValidatorRegistry {
    * Register a validator under a primary key.
    * @throws Error if the key is already registered as a primary key.
    */
-  register(key: ValidatorKey, validator: CountryValidator): void {
+  register(key: ValidatorKey, validator: CountryValidator<object>): void {
     const normalized = key.toUpperCase();
     if (this.validators.has(normalized)) {
       throw new Error(`Validator already registered for key: ${normalized}`);
     }
-    this.validators.set(normalized, validator);
+    this.validators.set(normalized, validator as CountryValidator);
   }
 
   /**
@@ -35,7 +38,7 @@ export class ValidatorRegistry implements IValidatorRegistry {
    * @throws Error if the key or an alias is already taken, an alias names a primary
    * key, or the definition repeats an alias.
    */
-  registerCountry(country: CountryDefinition): void {
+  registerCountry(country: CountryDefinition<string, readonly string[], object>): void {
     const key = country.key.toUpperCase();
     const aliases = country.aliases.map(alias => alias.toUpperCase());
 
@@ -65,7 +68,7 @@ export class ValidatorRegistry implements IValidatorRegistry {
       seen.add(alias);
     }
 
-    this.validators.set(key, country.validator);
+    this.validators.set(key, country.validator as CountryValidator);
     for (const alias of aliases) {
       this.aliases.set(alias, key);
     }

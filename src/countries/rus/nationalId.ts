@@ -1,9 +1,9 @@
-import { IdMetadata, IdNumberClass } from '../../types.js';
+import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
 
 /**
  * Parse result of Russian passport
  */
-export interface NationalIdParseResult {
+export interface NationalIdParseResult extends ParsedInfo {
   /** Series */
   series: string;
   /** Number */

@@ -8,6 +8,7 @@ import { validateRegexp, isValidDate, calculateAge } from '../../utils.js';
 import { defineCountry } from '../../registry/country.js';
 
 export interface KoreaParseResult extends ParsedInfo {
+  isValid: boolean;
   birthDate: Date;
   gender: 'male' | 'female';
   citizenship: 'citizen' | 'resident';

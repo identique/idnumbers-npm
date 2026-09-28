@@ -1,4 +1,4 @@
-import { IdMetadata, IdNumberClass } from '../../types.js';
+import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
 import { validateRegexp } from '../../utils.js';
 
 /**
@@ -20,7 +20,7 @@ export enum DocType {
 /**
  * Parse result for Macau National ID
  */
-export interface NationalIdParseResult {
+export interface NationalIdParseResult extends ParsedInfo {
   /** Document type/issuer */
   docType: DocType;
   /** Serial number (7 digits) */

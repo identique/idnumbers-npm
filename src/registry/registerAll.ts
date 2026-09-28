@@ -94,8 +94,13 @@ import { country as VNM } from '../countries/vnm/index.js';
 import { country as ZAF } from '../countries/zaf/index.js';
 import { country as ZWE } from '../countries/zwe/index.js';
 
-/** Every country the root entry registers, sorted by ISO 3166-1 alpha-3 code. */
-export const ALL_COUNTRIES: readonly CountryDefinition[] = [
+/**
+ * Every country the root entry registers, sorted by ISO 3166-1 alpha-3 code.
+ *
+ * A const tuple, so each definition keeps its literal key, aliases, and parse
+ * result type (#123); `satisfies` checks every result extends `ParsedInfo`.
+ */
+export const ALL_COUNTRIES = [
   ALB,
   ARE,
   ARG,
@@ -181,7 +186,7 @@ export const ALL_COUNTRIES: readonly CountryDefinition[] = [
   VNM,
   ZAF,
   ZWE,
-];
+] as const satisfies readonly CountryDefinition[];
 
 for (const country of ALL_COUNTRIES) {
   registry.registerCountry(country);

@@ -26,6 +26,7 @@ import { isValidDate, calculateAge } from '../../utils.js';
 import { Gender } from '../../constants.js';
 
 export interface EgyptParseResult extends ParsedInfo {
+  isValid: boolean;
   birthDate: Date;
   gender: Gender;
   governorateCode: string;
