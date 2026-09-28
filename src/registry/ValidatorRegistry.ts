@@ -36,20 +36,20 @@ export class ValidatorRegistry implements IValidatorRegistry {
    * call leaves the registry unchanged. Idempotent for a definition that is already
    * fully registered (e.g. by the root `idnumbers` entry), which makes it a no-op.
    * @throws Error if the key or an alias is already taken, an alias names a primary
-   * key, or the definition repeats an alias.
+   * key, the definition repeats an alias, or the same validator is already registered
+   * without one of the (otherwise free) aliases.
    */
   registerCountry(country: CountryDefinition<string, readonly string[], object>): void {
     const key = country.key.toUpperCase();
     const aliases = country.aliases.map(alias => alias.toUpperCase());
+    // The same validator is already registered under `key`, possibly with fewer aliases.
+    const sameValidator = this.validators.get(key) === country.validator;
 
-    if (
-      this.validators.get(key) === country.validator &&
-      aliases.every(alias => this.aliases.get(alias) === key)
-    ) {
+    if (sameValidator && aliases.every(alias => this.aliases.get(alias) === key)) {
       return;
     }
 
-    if (this.validators.has(key)) {
+    if (this.validators.has(key) && !sameValidator) {
       throw new Error(`Validator already registered for key: ${key}`);
     }
     if (this.aliases.has(key)) {
@@ -62,10 +62,20 @@ export class ValidatorRegistry implements IValidatorRegistry {
           `Cannot create alias "${alias}": it conflicts with an existing primary key`
         );
       }
-      if (this.aliases.has(alias) || seen.has(alias)) {
+      const ownAlias = sameValidator && this.aliases.get(alias) === key;
+      if ((this.aliases.has(alias) && !ownAlias) || seen.has(alias)) {
         throw new Error(`Alias "${alias}" is already registered`);
       }
       seen.add(alias);
+    }
+
+    if (sameValidator) {
+      // Every alias is free or already this key's; registering the free ones here
+      // would silently widen an existing registration, so name the first instead.
+      const missing = aliases.find(alias => this.aliases.get(alias) !== key)!;
+      throw new Error(
+        `Country "${key}" is already registered with this validator, but without alias "${missing}"`
+      );
     }
 
     this.validators.set(key, country.validator as CountryValidator);

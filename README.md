@@ -87,10 +87,14 @@ validateNationalId('TWN', 'A123456789'); // registered: validated as usual
 validateNationalId('JPN', '123456789012'); // not registered: reason 'unsupported_country'
 ```
 
-Core plus one country is about 1.8–5.2 KB minified and gzipped, versus about 38 KB for
+Core plus one country is about 1.9–5.4 KB minified and gzipped, versus about 38 KB for
 the batteries-included `idnumbers` root, which stays unchanged and registers all 85
 countries. Importing the root anywhere in an app registers every country for the whole
 app, because both entries share one registry.
+
+Use the lowercase path exactly: on a case-insensitive file system (macOS, Windows),
+`idnumbers/countries/TWN` loads a second copy of the module whose `country` definition
+conflicts with the lowercase one, so registering both throws; on Linux it does not resolve.
 
 ## Quick Start
 
@@ -624,7 +628,7 @@ Accepted letter case, surrounding whitespace, and separators for every country a
 
 ## Testing
 
-The library includes comprehensive test coverage with 3376 tests covering:
+The library includes comprehensive test coverage with 3560 tests covering:
 
 - Format validation
 - Checksum verification

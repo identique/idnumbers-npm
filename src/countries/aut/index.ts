@@ -108,4 +108,4 @@ export { EntityTaxIDNumber } from './entityTaxId.js';
  * Registry definition: pass it to `register()` from `idnumbers/core`.
  * The root `idnumbers` entry registers it automatically.
  */
-export const country = defineCountry('AUT', ['AT'], TaxIdentificationNumber);
+export const country = /* @__PURE__ */ defineCountry('AUT', ['AT'], TaxIdentificationNumber);

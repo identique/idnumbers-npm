@@ -8,4 +8,4 @@ export const NationalID = PersonalNumber; // Alias
  * Registry definition: pass it to `register()` from `idnumbers/core`.
  * The root `idnumbers` entry registers it automatically.
  */
-export const country = defineCountry('BHR', ['BH'], NationalID);
+export const country = /* @__PURE__ */ defineCountry('BHR', ['BH'], NationalID);

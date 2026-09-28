@@ -26,6 +26,15 @@ export type ModuleParseResult<M> = M extends { parse?: infer P }
     : never
   : never;
 
+/** Validators built by createValidator() or createCompositeValidator(). */
+const builtValidators = new WeakSet<object>();
+
+/** Record a validator as built, so createValidator() returns it as-is. */
+export function markBuilt<V extends CountryValidator<object>>(validator: V): V {
+  builtValidators.add(validator);
+  return validator;
+}
+
 /**
  * Create a CountryValidator from a country module (a class with static methods, or a
  * plain object bundling module-level functions).
@@ -33,11 +42,19 @@ export type ModuleParseResult<M> = M extends { parse?: infer P }
  * Wraps methods in arrow functions to avoid `this` binding issues
  * that occur when static methods are detached from their class. The module's
  * parse result type carries over to the validator (#123).
+ *
+ * A validator that this function or `createCompositeValidator()` built is returned
+ * as-is instead of being wrapped again (#183).
  */
 export function createValidator<M extends CountryModule<object>>(
   mod: M
 ): CountryValidator<ModuleParseResult<M>> {
-  return {
+  if (builtValidators.has(mod)) {
+    // Built by this function or createCompositeValidator, so M is already a
+    // CountryValidator whose parse result type is ModuleParseResult<M>.
+    return mod as unknown as CountryValidator<ModuleParseResult<M>>;
+  }
+  return markBuilt({
     METADATA: mod.METADATA,
     validate: (id: string) => mod.validate(id),
     // `M` only constrains `parse()` to `object | null`; its own return type is ModuleParseResult<M>.
@@ -45,5 +62,5 @@ export function createValidator<M extends CountryModule<object>>(
     checksum: mod.checksum
       ? (id: string) => mod.checksum!(id) as number | boolean | null
       : undefined,
-  };
+  });
 }

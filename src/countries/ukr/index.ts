@@ -8,4 +8,4 @@ export { EntityID, EntityType, EntityIdParseResult } from './entityId.js';
  * Registry definition: pass it to `register()` from `idnumbers/core`.
  * The root `idnumbers` entry registers it automatically.
  */
-export const country = defineCountry('UKR', ['UA'], NationalID);
+export const country = /* @__PURE__ */ defineCountry('UKR', ['UA'], NationalID);

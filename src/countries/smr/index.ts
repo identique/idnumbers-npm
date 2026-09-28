@@ -13,11 +13,14 @@ export * from './taxRegistration.js';
  *
  * Validates both the 9-digit SSI and the 7-character COE (`SM#####`).
  */
-export const country = defineCountry(
+export const country = /* @__PURE__ */ defineCountry(
   'SMR',
   ['SM'],
-  createCompositeValidator(
-    [createValidator(SocialSecurityNumber), createValidator(TaxRegistrationNumber)],
+  /* @__PURE__ */ createCompositeValidator(
+    [
+      /* @__PURE__ */ createValidator(SocialSecurityNumber),
+      /* @__PURE__ */ createValidator(TaxRegistrationNumber),
+    ],
     { countryName: 'San Marino', idType: 'Social Security Number / Tax Registration' }
   )
 );

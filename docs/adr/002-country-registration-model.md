@@ -41,7 +41,11 @@ with esbuild. The prototype lives on the never-merged `idnumbers-node-issue-115`
 
 - **Country definitions.** Every country module (`src/countries/<iso3>/index.ts`) exports a frozen
   `country` value, `defineCountry(key, aliases, PrimaryType)`. It carries the primary alpha-3 key,
-  its aliases (including the alpha-2 code, #174), and the registered validator.
+  its aliases (including the alpha-2 code, #174), and the registered validator, which is frozen too
+  (#183).
+  - Each definition is annotated `/* @__PURE__ */` (#183). esbuild otherwise keeps the
+    `defineCountry(...)` call, and the registry adapters with it, in a bundle that imports only a
+    country's ID types.
   - Multi-format countries build their composite there with `createCompositeValidator` (#121), so a
     subpath exports exactly the validator the root registers.
   - Country modules never import the registry singleton or `registerAll.ts`. A test walks each
@@ -60,7 +64,12 @@ with esbuild. The prototype lives on the never-merged `idnumbers-node-issue-115`
   legacy `moduleResolution: node10` also finds their types.
 - **`sideEffects`** names only the root entry and `registerAll.js`. The declaration is repeated in
   the `dist/cjs` and `dist/esm` marker `package.json` files, because bundlers read the field from
-  the nearest `package.json`. Without it there, no country could be tree-shaken.
+  the nearest `package.json`.
+  - It is not what keeps unused countries out: `idnumbers/core` never imports a country, so a
+    bundle contains only the countries its code imports, with or without the field.
+  - What it does is let bundlers drop imported modules whose exports go unused, such as the enums
+    in `constants.ts` and a country's secondary ID types. Without it, `idnumbers/core` grows by
+    about 250 B, and a core-plus-country bundle by up to about 280 B (#183).
 - **Shared registry.** The root and `idnumbers/core` share one registry per module format.
   Importing the root anywhere in an app registers every country for the whole app. As with any
   dual ESM/CJS package, a process that mixes `require` and `import` gets two registries (#120).
@@ -77,12 +86,17 @@ with esbuild. The prototype lives on the never-merged `idnumbers-node-issue-115`
   - It goes through the real `exports` map and `sideEffects` fields.
   - It uses the spike's settings: esbuild, ESM, `platform=browser`, `target=es2020`, minified,
     gzip level 9.
+  - It bundles the compiled `dist/esm` files that consumers get, while the spike bundled the
+    TypeScript source. The compiled output is larger (about 10% for core during the #122 review),
+    so the subpath budget leaves less headroom than the 25% the spike intended: 6,000 B is 15%
+    above the largest subpath measured at #122 (5,209 B). Measuring what ships is the right choice;
+    the budgets were not re-derived for it.
 
 | Entry                               | Budget (min+gzip) | Measured at #122 | Derivation                                         |
 | ----------------------------------- | ----------------- | ---------------- | -------------------------------------------------- |
 | `idnumbers/core`                    | 1,800 B           | 1,405 B          | measured + 25%, rounded up (re-derived, see below) |
-| `idnumbers/countries/<iso3>` + core | 6,000 B each      | 1,801–5,209 B    | spike max 4,766 B + 25% (#115)                     |
-| `idnumbers` (root, all countries)   | 40,300 B          | 38,449 B         | spike 36,632 B + 10% (#115)                        |
+| `idnumbers/countries/<iso3>` + core | 6,000 B each      | 1,801–5,209 B    | spike max 4,766 B + 25%, rounded up (#115)         |
+| `idnumbers` (root, all countries)   | 40,300 B          | 38,449 B         | spike 36,632 B + 10%, rounded up (#115)            |
 
 **The core budget was re-derived.** The spike's 1,100 B budget came from its prototype core
 (821 B + 25%, rounded up to 100 B). That prototype predates two parts of the real core's contract:

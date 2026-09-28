@@ -110,4 +110,4 @@ export const UniquePersonalID = {
  * Registry definition: pass it to `register()` from `idnumbers/core`.
  * The root `idnumbers` entry registers it automatically.
  */
-export const country = defineCountry('COL', ['CO'], UniquePersonalID);
+export const country = /* @__PURE__ */ defineCountry('COL', ['CO'], UniquePersonalID);

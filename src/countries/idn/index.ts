@@ -162,4 +162,4 @@ export const NationalID = NIK;
  * Registry definition: pass it to `register()` from `idnumbers/core`.
  * The root `idnumbers` entry registers it automatically.
  */
-export const country = defineCountry('IDN', ['ID'], NationalID);
+export const country = /* @__PURE__ */ defineCountry('IDN', ['ID'], NationalID);

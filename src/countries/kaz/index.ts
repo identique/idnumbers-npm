@@ -130,4 +130,4 @@ export { EntityType, EntityDivision } from './util.js';
  * Registry definition: pass it to `register()` from `idnumbers/core`.
  * The root `idnumbers` entry registers it automatically.
  */
-export const country = defineCountry('KAZ', ['KZ'], IndividualIDNumber);
+export const country = /* @__PURE__ */ defineCountry('KAZ', ['KZ'], IndividualIDNumber);

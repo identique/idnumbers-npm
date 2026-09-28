@@ -124,4 +124,4 @@ export const NationalID = CivilNumber;
  * Registry definition: pass it to `register()` from `idnumbers/core`.
  * The root `idnumbers` entry registers it automatically.
  */
-export const country = defineCountry('KWT', ['KW'], CivilNumber);
+export const country = /* @__PURE__ */ defineCountry('KWT', ['KW'], CivilNumber);

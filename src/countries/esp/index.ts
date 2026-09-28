@@ -72,4 +72,4 @@ export const DNI = {
  * Registry definition: pass it to `register()` from `idnumbers/core`.
  * The root `idnumbers` entry registers it automatically.
  */
-export const country = defineCountry('ESP', ['ES'], DNI);
+export const country = /* @__PURE__ */ defineCountry('ESP', ['ES'], DNI);

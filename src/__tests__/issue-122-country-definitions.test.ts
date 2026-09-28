@@ -129,7 +129,8 @@ describe('issue #122: ValidatorRegistry.registerCountry', () => {
   it('rejects a different validator under a taken key', () => {
     const fresh = new ValidatorRegistry();
     fresh.registerCountry(twn);
-    const impostor = defineCountry('TWN', [], twn.validator);
+    // A copy is a different validator; the built validator itself would be passed through (#183).
+    const impostor = defineCountry('TWN', [], { ...twn.validator });
     expect(() => fresh.registerCountry(impostor)).toThrow(/already registered/);
   });
 
@@ -177,7 +178,9 @@ describe('issue #122: ValidatorRegistry.registerCountry', () => {
   it('does not treat a registration missing its aliases as already done', () => {
     const fresh = new ValidatorRegistry();
     fresh.register('TWN', twn.validator);
-    expect(() => fresh.registerCountry(twn)).toThrow(/already registered for key/);
+    expect(() => fresh.registerCountry(twn)).toThrow(
+      'Country "TWN" is already registered with this validator, but without alias "TW"'
+    );
     expect(fresh.resolveKey('TW')).toBeUndefined();
   });
 });

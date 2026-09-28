@@ -10,10 +10,13 @@
  *   - every `idnumbers/countries/<iso3>` subpath, registered through core
  *   - the batteries-included root `idnumbers` entry
  *
- * The measurement mirrors the spike (esm, platform=browser, target=es2020,
- * gzip level 9) so the numbers stay comparable with its budgets. Snippets
- * import the package by name through a temporary node_modules symlink, so
- * resolution goes through the real `exports` map and `sideEffects` fields.
+ * The bundler settings mirror the spike (esm, platform=browser, target=es2020,
+ * gzip level 9), but the input differs: the spike bundled the TypeScript source,
+ * and this script bundles the compiled `dist` that consumers get, which is
+ * larger (about 10% for core during the #122 review). So a subpath has less real
+ * headroom under its spike-derived budget than the 25% the spike intended. Snippets import the package by name through a temporary
+ * node_modules symlink, so resolution goes through the real `exports` map and
+ * `sideEffects` fields.
  *
  * Usage: npm run build && node scripts/check-bundle-size.mjs [--json]
  */

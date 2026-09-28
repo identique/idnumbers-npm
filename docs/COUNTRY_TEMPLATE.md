@@ -265,7 +265,7 @@ export const NationalID = {
  * Registry definition: pass it to `register()` from `idnumbers/core`.
  * The root `idnumbers` entry registers it automatically.
  */
-export const country = defineCountry('XYZ', ['XY'], NationalID);
+export const country = /* @__PURE__ */ defineCountry('XYZ', ['XY'], NationalID);
 ```
 
 If the country has secondary ID types, re-export each from `index.ts` below the definition — e.g.
@@ -287,6 +287,12 @@ Rules the template encodes:
   `not_parsable`.
 - Omit `checksum` if the format has none (set `checksum: false` and describe why in
   `checksumAlgorithm`, e.g. `'None (check letter not algorithmically verified)'`).
+- Keep `/* @__PURE__ */` in front of `defineCountry(...)`, and in front of every other call inside
+  the definition (e.g. `createCompositeValidator(...)` and its `createValidator(...)` members, as in
+  [`bgd/index.ts`](../src/countries/bgd/index.ts)). Bundlers then drop the definition when a
+  consumer imports only the ID types. Don't use object spread in the definition: bundlers keep it as
+  a possible side effect. [`lka/index.ts`](../src/countries/lka/index.ts) overrides METADATA
+  without it.
 
 ### METADATA fields
 
@@ -418,6 +424,7 @@ until the country meets its contract:
 | [`issue-123-parse-results.test.ts`](../src/__tests__/issue-123-parse-results.test.ts)                                                                                                                    | A `ParseResultMap` entry matching `parse()`; `METADATA.example` validates, and parses unless the entry is `never`                                                                                                               |
 | [`issue-124-removals.test.ts`](../src/__tests__/issue-124-removals.test.ts)                                                                                                                              | Every alias, in either case, gives the same validate/parse/format results as the alpha-3 key                                                                                                                                    |
 | [`issue-124-input-formats.test.ts`](../src/__tests__/issue-124-input-formats.test.ts)                                                                                                                    | A row in [`docs/INPUT_FORMATS.md`](INPUT_FORMATS.md) matching the validator                                                                                                                                                     |
+| [`issue-183-tree-shaking.test.ts`](../src/__tests__/issue-183-tree-shaking.test.ts)                                                                                                                      | Importing every export of `index.ts` except `country` bundles no `defineCountry`: the definition is annotated `/* @__PURE__ */` and uses no object spread                                                                       |
 | `npm run size` ([`check-bundle-size.mjs`](../scripts/check-bundle-size.mjs))                                                                                                                             | `idnumbers/core` plus the country subpath stays within 6,000 B min+gzip ([ADR 002](adr/002-country-registration-model.md#bundle-size-budgets))                                                                                  |
 | `npm run lint:types` ([`check-declarations.mjs`](../scripts/check-declarations.mjs))                                                                                                                     | No `any` in the country's published type declarations                                                                                                                                                                           |
 
@@ -534,7 +541,7 @@ Copy into your PR description:
 - [ ] `METADATA.example` is synthetic and passes `validateNationalId()`
 - [ ] Reused `src/utils.ts` / `src/constants.ts` instead of reimplementing checksums or enums
 - [ ] `parse()` returns `null` on invalid input and never throws
-- [ ] `export const country = defineCountry(...)` in `index.ts` (alpha-3 key + alpha-2 alias matching `METADATA.iso3166Alpha2`), added to `ALL_COUNTRIES` in `registerAll.ts`
+- [ ] `export const country = /* @__PURE__ */ defineCountry(...)` in `index.ts` (alpha-3 key + alpha-2 alias matching `METADATA.iso3166Alpha2`), added to `ALL_COUNTRIES` in `registerAll.ts`
 - [ ] Registered METADATA covers every format `validate()` accepts (`createCompositeValidator` or a registry-level override if needed)
 - [ ] `export * as <ISO3>` added to `src/index.ts`
 - [ ] `ParseResultMap` entry in `src/parseResultMap.ts` (the parse result type, or `never`)
@@ -556,14 +563,14 @@ Copy into your PR description:
 [`src/countries/kaz/`](../src/countries/kaz/) is the closest thing to a reference implementation and
 exercises every part of this guide:
 
-| Concern                                                                         | Where                                                                                                                        |
-| ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| Primary type, `IdMetadata`, named capture groups, `validate`→`parse` delegation | [`kaz/index.ts`](../src/countries/kaz/index.ts)                                                                              |
-| Shared checksum + country enums in `util.ts`                                    | [`kaz/util.ts`](../src/countries/kaz/util.ts)                                                                                |
-| Secondary type, exported but not registered                                     | [`kaz/businessId.ts`](../src/countries/kaz/businessId.ts)                                                                    |
-| Century/gender decoding from a single digit                                     | `getGenderYearBase()` in [`kaz/index.ts`](../src/countries/kaz/index.ts)                                                     |
-| Two-stage checksum with a retry when the modulus is 10                          | [`kaz/util.ts`](../src/countries/kaz/util.ts)                                                                                |
-| Registration + alias                                                            | `export const country = defineCountry('KAZ', ['KZ'], IndividualIDNumber)` in [`kaz/index.ts`](../src/countries/kaz/index.ts) |
+| Concern                                                                         | Where                                                                                                                                        |
+| ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Primary type, `IdMetadata`, named capture groups, `validate`→`parse` delegation | [`kaz/index.ts`](../src/countries/kaz/index.ts)                                                                                              |
+| Shared checksum + country enums in `util.ts`                                    | [`kaz/util.ts`](../src/countries/kaz/util.ts)                                                                                                |
+| Secondary type, exported but not registered                                     | [`kaz/businessId.ts`](../src/countries/kaz/businessId.ts)                                                                                    |
+| Century/gender decoding from a single digit                                     | `getGenderYearBase()` in [`kaz/index.ts`](../src/countries/kaz/index.ts)                                                                     |
+| Two-stage checksum with a retry when the modulus is 10                          | [`kaz/util.ts`](../src/countries/kaz/util.ts)                                                                                                |
+| Registration + alias                                                            | `export const country = /* @__PURE__ */ defineCountry('KAZ', ['KZ'], IndividualIDNumber)` in [`kaz/index.ts`](../src/countries/kaz/index.ts) |
 
 [`src/countries/lva/`](../src/countries/lva/) shows a simpler country: a checksum but nothing worth
 parsing (`parsable: false`), plus a superseded format in

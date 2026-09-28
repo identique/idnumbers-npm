@@ -1,5 +1,6 @@
 import { IdMetadata } from '../types.js';
 import { CountryValidator } from './types.js';
+import { markBuilt } from './adapters.js';
 
 /** The parse result type of a validator, or of each validator in a union. */
 export type ParseResultOf<V> = V extends CountryValidator<infer I> ? I : never;
@@ -81,7 +82,8 @@ function unionRegExp(regexps: readonly RegExp[]): RegExp {
  * - `parse(id)` returns the first non-null result among members that can parse,
  *   in member order (`a.parse(id) ?? b.parse(id)`); it is omitted when no
  *   member can parse.
- * - `checksum` is omitted: members use different check-digit algorithms.
+ * - The composite's own `checksum()` method is omitted: members use different
+ *   check-digit algorithms.
  * - `METADATA` starts from the first member's METADATA, then spans every member:
  *   `minLength`/`maxLength` are the smallest/largest member bounds and `regexp`
  *   matches any member's shape. `parsable` is true when the composite has `parse`,
@@ -119,7 +121,7 @@ export function createCompositeValidator<
     ...defined,
   };
 
-  return {
+  return markBuilt({
     METADATA,
     validate: (id: string) => members.some(member => member.validate(id)),
     parse:
@@ -133,5 +135,5 @@ export function createCompositeValidator<
             return null;
           }
         : undefined,
-  };
+  });
 }

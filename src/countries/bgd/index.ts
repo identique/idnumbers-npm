@@ -13,8 +13,11 @@ export { OldNationalID, ResidentialType, NationalID };
  * Validates both the new (17-digit) and old (13-digit) national ID formats.
  * The new format comes first, so parse() prefers it (`new ?? old`).
  */
-export const country = defineCountry(
+export const country = /* @__PURE__ */ defineCountry(
   'BGD',
   ['BD'],
-  createCompositeValidator([createValidator(NationalID), createValidator(OldNationalID)])
+  /* @__PURE__ */ createCompositeValidator([
+    /* @__PURE__ */ createValidator(NationalID),
+    /* @__PURE__ */ createValidator(OldNationalID),
+  ])
 );

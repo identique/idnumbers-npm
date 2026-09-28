@@ -90,9 +90,9 @@ describe('issue #122: register()', () => {
       defs: [twn],
     } = loadIsolated('twn');
     core.register(twn.country);
-    expect(() => core.register(core.defineCountry('TWN', [], twn.country.validator))).toThrow(
-      /already registered/
-    );
+    // A copy is a different validator; the built validator itself would be passed through (#183).
+    const impostor = core.defineCountry('TWN', [], { ...twn.country.validator });
+    expect(() => core.register(impostor)).toThrow(/already registered/);
   });
 
   it('matches the root entry for every country', () => {

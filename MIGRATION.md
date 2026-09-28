@@ -140,11 +140,16 @@ validateNationalId('TWN', id);
   `reason: 'unsupported_country'`.
 - **`idnumbers/countries/<iso3>`** (lowercase alpha-3, e.g. `idnumbers/countries/twn`)
   exposes one country module: its validator types plus a `country` definition to pass
-  to `register()`. Importing it registers nothing.
+  to `register()`. Importing it registers nothing. Use the lowercase path exactly: on a
+  case-insensitive file system (macOS, Windows), `idnumbers/countries/TWN` loads a
+  second copy of the module whose `country` definition conflicts with the lowercase
+  one, so registering both throws; on Linux it does not resolve.
 - **`register(...countries)`** is idempotent for the same definition, so it is safe to
   call from several modules, or alongside the root import. Registering a different
-  validator under a taken key throws.
-- In a single-country bundle, core plus one country is about 1.8–5.2 KB min+gzip,
+  validator under a taken key or alias throws.
+- **Custom registries:** `IValidatorRegistry` gains a required `registerCountry(country)`
+  method, so a class that implements the interface itself must add one.
+- In a single-country bundle, core plus one country is about 1.9–5.4 KB min+gzip,
   versus about 38 KB for the root import. CI enforces the budgets
   (`npm run size`).
 - The root `idnumbers` entry and every country namespace (`TWN`, `USA`, …) also gain the

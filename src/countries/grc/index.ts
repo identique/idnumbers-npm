@@ -12,4 +12,4 @@ export * from './taxIdentity.js';
  * Registry definition: pass it to `register()` from `idnumbers/core`.
  * The root `idnumbers` entry registers it automatically.
  */
-export const country = defineCountry('GRC', ['GR'], TaxIdentityNumber);
+export const country = /* @__PURE__ */ defineCountry('GRC', ['GR'], TaxIdentityNumber);
