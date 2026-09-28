@@ -42,9 +42,6 @@ export interface IdMetadata {
   deprecated: boolean;
 }
 
-/** @deprecated Use {@link IdMetadata} instead. Removed in v2.0.0 (#124). */
-export type IMetadata = IdMetadata;
-
 /**
  * Base interface for ID number classes.
  *

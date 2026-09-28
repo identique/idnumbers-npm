@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `package.json` `sideEffects` (also declared in the `dist/cjs` and `dist/esm` marker package.json files that bundlers consult), so bundlers can drop unused countries ([#122](https://github.com/identique/idnumbers-npm/issues/122))
 - Per-country parse result types: `ParseResultMap` maps each of the 85 countries to its parse result type (`never` for a country without a parser), and `ParsedInfoFor<C>` resolves a country code to it case-insensitively and through aliases (`CountryAliasMap`, `CountryCode`). `parseIdInfo()` and `validateNationalId()` use it, so a literal country code gets that country's result type ([#123](https://github.com/identique/idnumbers-npm/issues/123))
 - `ValidationFailureReason.NOT_PARSABLE` (`not_parsable`), reported by `parseIdInfo()` for a valid ID the country cannot parse ([#123](https://github.com/identique/idnumbers-npm/issues/123))
+- `docs/INPUT_FORMATS.md`: which letter case, surrounding whitespace, and separators each country's validator accepts, checked against the validators by a test. Documentation only: no country accepts different input ([#124](https://github.com/identique/idnumbers-npm/issues/124))
 
 ### Changed
 
@@ -26,6 +27,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **BREAKING:** removed `FunctionBasedMetadata`, `AnyMetadata`, and `adaptMetadata` (including its match-anything `regexp: /./` fallback); `CountryModule` now requires `IdMetadata`, and `createValidator()` passes a module's METADATA through unchanged ([#121](https://github.com/identique/idnumbers-npm/issues/121))
 - **BREAKING:** `parseIdInfo()` returns `{ ok: true, countryCode, idNumber, info }` or `{ ok: false, countryCode, idNumber, reason, errorMessage? }` instead of `any | null`, so an unsupported country, an invalid ID, and a valid ID that cannot be parsed are told apart; `countryCode` is the resolved alpha-3 code. `ok: true` implies the ID is valid: the FRA and NOR parsers skip the check digits, so `parseIdInfo()` used to return info for some IDs `validateNationalId()` rejects ([#123](https://github.com/identique/idnumbers-npm/issues/123))
 - **BREAKING:** `ParsedInfo` is `{ [key: string]: unknown }` instead of `isValid: boolean` plus an `any` index signature, and every country's parse result type extends it; `ValidationResult.extractedInfo` is typed per country; `IdMetadata.aliasOf` is `IdNumberClass<object> | null` instead of `any`; `IdNumberClass`, `CountryModule`, `CountryValidator`, and `CountryDefinition` are generic over the parse result type. The published type declarations no longer contain `any`, which CI now enforces ([#123](https://github.com/identique/idnumbers-npm/issues/123))
+
+### Removed
+
+- **BREAKING:** `SUPPORTED_COUNTRIES` — use `listSupportedCountries()`, which returns a fresh array on every call ([#124](https://github.com/identique/idnumbers-npm/issues/124))
+- **BREAKING:** the `IMetadata` type alias — use `IdMetadata` ([#124](https://github.com/identique/idnumbers-npm/issues/124))
 
 ### Fixed
 

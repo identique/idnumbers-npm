@@ -1,11 +1,12 @@
 /**
  * Issue #118: countryName/idType live on each country's registered METADATA
- * (the single source of truth), and SUPPORTED_COUNTRIES / listSupportedCountries()
- * are derived from the registry rather than hand-maintained.
+ * (the single source of truth), and listSupportedCountries() is derived from
+ * the registry rather than hand-maintained. (SUPPORTED_COUNTRIES, its deprecated
+ * snapshot, was removed in v2.0.0 by #124.)
  */
 import { registry, ValidatorRegistry } from '../registry';
 import type { CountryValidator } from '../registry';
-import { getCountryIdFormat, listSupportedCountries, SUPPORTED_COUNTRIES } from '../index';
+import { getCountryIdFormat, listSupportedCountries } from '../index';
 
 // ---------------------------------------------------------------------------
 // Single source of truth: METADATA.countryName/idType drive getCountryIdFormat()
@@ -36,13 +37,9 @@ describe('registered METADATA is the single source of countryName/idType', () =>
 });
 
 // ---------------------------------------------------------------------------
-// SUPPORTED_COUNTRIES / listSupportedCountries() derivation
+// listSupportedCountries() derivation
 // ---------------------------------------------------------------------------
-describe('SUPPORTED_COUNTRIES and listSupportedCountries() derivation', () => {
-  it('SUPPORTED_COUNTRIES equals listSupportedCountries()', () => {
-    expect(SUPPORTED_COUNTRIES).toEqual(listSupportedCountries());
-  });
-
+describe('listSupportedCountries() derivation', () => {
   it('has the same length as registry.list()', () => {
     expect(listSupportedCountries().length).toBe(registry.list().length);
   });

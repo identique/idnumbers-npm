@@ -341,9 +341,8 @@ export * as XYZ from './countries/xyz/index.js';
 ```
 
 **4. the primary module's `METADATA`** — set `countryName` and `idType` directly on it (the same
-object the `country` definition in step 1 registers). `listSupportedCountries()` — and the deprecated
-`SUPPORTED_COUNTRIES` — derive from the registry automatically, so no separate country-list entry
-is needed. Without these fields the registry's own fallbacks apply
+object the `country` definition in step 1 registers). `listSupportedCountries()` derives from the
+registry automatically, so no separate country-list entry is needed. Without these fields the registry's own fallbacks apply
 ([`ValidatorRegistry.getFormat()`](../src/registry/ValidatorRegistry.ts)): `countryName` becomes the
 raw country code, and `idType` becomes `METADATA.names[0]` (or the country code if `names` is empty):
 
@@ -388,6 +387,7 @@ The registry count is hard-asserted, so adding country #86 fails the suite until
 | [`src/__tests__/parseIdInfo-migration.test.ts`](../src/__tests__/parseIdInfo-migration.test.ts)               | **Breaks the build:** `expect(registry.list().length).toBe(85)` → `86`. Also extend the `expectedKeys` list, the `expectedAliases` map, and — if the ID is parsable — the `parseableCountries` table |
 | [`src/__tests__/getCountryIdFormat-migration.test.ts`](../src/__tests__/getCountryIdFormat-migration.test.ts) | add the country to the `registeredCountries` fixture — this fixture is an independent copy of each country's `countryName`/`idType` and must move in lockstep with METADATA/format changes           |
 | [`src/__tests__/issue-123-parse-results.test.ts`](../src/__tests__/issue-123-parse-results.test.ts)           | `expect(ALL_COUNTRIES).toHaveLength(85)` → `86`; if the country has no parser, add it to `UNPARSABLE`, which is checked against `ParseResultMap` at compile time                                     |
+| [`docs/INPUT_FORMATS.md`](INPUT_FORMATS.md)                                                                   | add the country's row; `issue-124-input-formats.test.ts` fails and prints the row to add                                                                                                             |
 | [`README.md`](../README.md)                                                                                   | the country-count claims (intro sentence and feature list) and the "comprehensive test coverage with N tests" count                                                                                  |
 
 ### Add a country test file
@@ -477,6 +477,7 @@ Copy into your PR description:
 - [ ] Registered METADATA covers every format `validate()` accepts (`createCompositeValidator` or a registry-level override if needed)
 - [ ] `export * as <ISO3>` added to `src/index.ts`
 - [ ] `ParseResultMap` entry in `src/parseResultMap.ts` (the parse result type, or `never`)
+- [ ] Row added to `docs/INPUT_FORMATS.md` (the input-formats test prints it)
 - [ ] `countryName` and `idType` set on the primary METADATA
 - [ ] Secondary ID types exported from the country module only — NOT registered
 - [ ] Registry count bumped in `parseIdInfo-migration.test.ts`

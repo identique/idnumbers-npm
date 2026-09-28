@@ -23,7 +23,7 @@ A future v2.0.0 release will ship breaking changes ([epic #127](https://github.c
 - The root `idnumbers` import stays batteries-included and unchanged.
 - New tree-shakeable, per-country entry points (`idnumbers/countries/<iso3>`) alongside a registry-only `idnumbers/core` — implemented on `main` ([#122](https://github.com/identique/idnumbers-npm/issues/122)); see [Tree-shakeable imports](#tree-shakeable-imports-v200).
 - Typed, ok-shaped `parseIdInfo()` results instead of `any | null` — implemented on `main` ([#123](https://github.com/identique/idnumbers-npm/issues/123)); see [`parseIdInfo`](#parseidinfocountrycode-idnumber).
-- Removal of APIs already marked `@deprecated` today, such as `SUPPORTED_COUNTRIES` and `IMetadata`.
+- Removal of the APIs deprecated in v1.11.0, `SUPPORTED_COUNTRIES` and `IMetadata` — implemented on `main` ([#124](https://github.com/identique/idnumbers-npm/issues/124)).
 
 One breaking change has already landed ahead of the rest: a dual ESM/CJS build behind a proper
 `exports` map with a **Node.js >= 22 baseline** (CI runs 22.x/24.x) is implemented on `main` and
@@ -124,7 +124,8 @@ Validates a national ID number for a specific country.
 **Parameters:**
 
 - `countryCode` (string): ISO 3166-1 alpha-3 country code (e.g., 'USA', 'GBR', 'FRA'); the alpha-2 code (e.g. 'US', 'GB') is also accepted, case-insensitively
-- `idNumber` (string): The ID number to validate
+- `idNumber` (string): The ID number to validate. Which letter case, surrounding whitespace, and
+  separators are accepted varies by country: see [docs/INPUT_FORMATS.md](docs/INPUT_FORMATS.md).
 
 **Returns:** `ValidationResult`
 
@@ -133,7 +134,7 @@ Validates a national ID number for a specific country.
   isValid: boolean;
   countryCode: string;
   idNumber: string;
-  extractedInfo?: any;
+  extractedInfo?: ParsedInfo | null; // typed per country for a literal code (v2.0.0, #123)
   errorMessage?: string;
   reason?: ValidationFailureReason;
 }
@@ -273,8 +274,9 @@ results.forEach(result => {
 Returns a list of all supported countries, derived from the registry at call time and sorted by
 ISO 3166-1 alpha-3 code. Each call returns a fresh array.
 
-The `SUPPORTED_COUNTRIES` constant is a deprecated snapshot of this same list, kept for backward
-compatibility; it will be removed in v2.0.0 — use `listSupportedCountries()` instead.
+> **Removed in v2.0.0** ([#124](https://github.com/identique/idnumbers-npm/issues/124)): the
+> `SUPPORTED_COUNTRIES` constant, a snapshot of this list that 1.x deprecated. Use
+> `listSupportedCountries()` instead.
 
 **Returns:** Array of country information
 
@@ -580,9 +582,12 @@ if (!validation.valid) {
 
 ## Country-Specific Notes
 
+Accepted letter case, surrounding whitespace, and separators for every country are listed in
+[docs/INPUT_FORMATS.md](docs/INPUT_FORMATS.md).
+
 ### United States (USA)
 
-- Format: `XXX-XX-XXXX` (with or without dashes)
+- Format: `XXX-XX-XXXX`, with the dashes (`123456789` without them is rejected)
 - Forbidden prefixes: `000`, `666`, `900-999`
 - Example: `123-45-6789`
 
@@ -596,7 +601,7 @@ if (!validation.valid) {
 
 - Format: 18 digits (17 digits + checksum)
 - Contains: Region code, birth date, sequence number, checksum
-- Checksum can be `X` (representing 10)
+- Checksum can be `X` (representing 10), uppercase only
 - Example: `11010219840406970X`
 
 ### South Africa (ZAF)
@@ -619,7 +624,7 @@ if (!validation.valid) {
 
 ## Testing
 
-The library includes comprehensive test coverage with 3101 tests covering:
+The library includes comprehensive test coverage with 3359 tests covering:
 
 - Format validation
 - Checksum verification

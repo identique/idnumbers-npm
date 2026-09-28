@@ -1,6 +1,12 @@
 /**
  * Issue #119: deprecation pass and v2 migration guide skeleton.
  *
+ * v2.0.0 has since removed or changed everything #119 deprecated: #121 the
+ * function-based METADATA dialect, #123 the `any` type of `IdMetadata.aliasOf`,
+ * and #124 `SUPPORTED_COUNTRIES` and `IMetadata` (see issue-124-removals.test.ts).
+ * What remains are the negative controls: the replacements read without a
+ * deprecation diagnostic.
+ *
  * Acceptance criterion 1 ("deprecated symbols show IDE strikethrough") is driven
  * by the TypeScript LanguageService's suggestion diagnostics -- the same
  * mechanism editors use to render the strikethrough. This spec builds a real
@@ -12,7 +18,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as ts from 'typescript';
-import { SUPPORTED_COUNTRIES, listSupportedCountries } from '../index';
 
 jest.setTimeout(60000);
 
@@ -23,8 +28,6 @@ const VIRTUAL_FILE = path.join(__dirname, '__issue-119-deprecation-fixture.ts');
 // below can locate its own token by a small, unambiguous surrounding anchor.
 const FIXTURE_SOURCE = `
 import {
-  SUPPORTED_COUNTRIES,
-  IMetadata,
   IdMetadata,
   HUN,
   ITA,
@@ -32,10 +35,6 @@ import {
   validateNationalId,
   getCountryIdFormat,
 } from '../index';
-
-export const usedSupportedCountries = SUPPORTED_COUNTRIES;
-
-export const deprecatedMetaVar: IMetadata = HUN.METADATA as unknown as IMetadata;
 
 declare const someIdMetadata: IdMetadata;
 export const aliasOfValue = someIdMetadata.aliasOf;
@@ -131,21 +130,6 @@ describe('issue #119: deprecated symbols surface IDE deprecation diagnostics', (
     diagnostics = service.getSuggestionDiagnostics(VIRTUAL_FILE);
   });
 
-  // -- Positive: each symbol tagged @deprecated in this issue --------------
-
-  it('flags SUPPORTED_COUNTRIES as deprecated when read', () => {
-    const pos = offsetOf(
-      'export const usedSupportedCountries = SUPPORTED_COUNTRIES;',
-      'SUPPORTED_COUNTRIES;'
-    );
-    expect(isDeprecatedAt(diagnostics, pos)).toBe(true);
-  });
-
-  it('flags IMetadata as deprecated when used as a type annotation', () => {
-    const pos = offsetOf('deprecatedMetaVar: IMetadata =', ': IMetadata') + 2;
-    expect(isDeprecatedAt(diagnostics, pos)).toBe(true);
-  });
-
   it('no longer flags IdMetadata.aliasOf: #123 narrowed its `any` type', () => {
     const pos = offsetOf('someIdMetadata.aliasOf', 'aliasOf');
     expect(isDeprecatedAt(diagnostics, pos)).toBe(false);
@@ -187,16 +171,5 @@ describe('issue #119: deprecated symbols surface IDE deprecation diagnostics', (
   it('does NOT flag getCountryIdFormat(...)!.metadata.regexp', () => {
     const pos = offsetOf("getCountryIdFormat('HUN')!.metadata.regexp", 'regexp');
     expect(isDeprecatedAt(diagnostics, pos)).toBe(false);
-  });
-});
-
-describe('issue #119: runtime behavior is unchanged by the deprecation JSDoc', () => {
-  it('SUPPORTED_COUNTRIES still matches listSupportedCountries()', () => {
-    expect(SUPPORTED_COUNTRIES).toEqual(listSupportedCountries());
-  });
-
-  it('SUPPORTED_COUNTRIES still has one entry per registered country', () => {
-    expect(SUPPORTED_COUNTRIES.length).toBe(listSupportedCountries().length);
-    expect(SUPPORTED_COUNTRIES.length).toBeGreaterThan(0);
   });
 });
