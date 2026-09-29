@@ -44,7 +44,6 @@ jobs:
 
       - name: Run ESLint
         run: npm run lint
-        continue-on-error: true
 
       - name: Run TypeScript compilation
         run: npm run build
@@ -67,8 +66,17 @@ jobs:
           done
           echo "✓ Build artifacts verified"
 
+      - name: Validate package exports and types
+        run: npm run lint:package
+
+      - name: Check published declarations for any
+        run: npm run lint:types
+
       - name: Smoke-test packed package
         run: npm run test:pack
+
+      - name: Check bundle-size budgets
+        run: npm run size
 
       - name: Check if version matches tag
         run: |
@@ -80,6 +88,15 @@ jobs:
           fi
           echo "✓ Version matches tag: v$PACKAGE_VERSION"
 
+      # Trusted publishing (#193) needs npm >= 11.5.1; Node 22 ships npm 10.
+      - name: Upgrade npm for trusted publishing
+        run: npm install -g npm@11
+
+      # npm first tries trusted publishing: it exchanges this job's OIDC token
+      # (id-token: write) for a short-lived publish token, which works once
+      # npmjs.com lists this repository and workflow as a trusted publisher.
+      # Otherwise it falls back to NODE_AUTH_TOKEN. Delete the NPM_TOKEN
+      # secret, and this env entry, once trusted publishing is configured.
       - name: Publish to npm
         run: npm publish --access public --provenance
         env:

@@ -632,7 +632,7 @@ Accepted letter case, surrounding whitespace, and separators for every country a
 
 ## Testing
 
-The library includes comprehensive test coverage with 3596 tests covering:
+The library includes comprehensive test coverage with 3615 tests covering:
 
 - Format validation
 - Checksum verification
