@@ -24,6 +24,8 @@ describe('Issue #117: ValidationFailureReason', () => {
         'invalid_length',
         'invalid_format',
         'checksum_mismatch',
+        // #130: the ID's shape and checksum are fine, but its encoded birth date isn't real.
+        'invalid_birthdate',
         'validation_failed',
         // #123: reported only by parseIdInfo(), for a valid ID it cannot parse.
         'not_parsable',

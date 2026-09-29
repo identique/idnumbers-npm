@@ -75,10 +75,13 @@ describe('issue #122: country definitions', () => {
 
 describe('issue #122: module purity', () => {
   // The only non-country modules a country subpath may reach: shared types, enums,
-  // checksum utilities, and the side-effect-free definition helpers. Anything else --
-  // notably the registry singleton, registerAll, core/api, or the root entry --
-  // would let importing a subpath register a country (the rejected #115 Option A).
+  // checksum utilities, the birth-date tracing helper (#130, side-effect-free at
+  // import -- its state is only set inside rejectsBirthDate()), and the
+  // side-effect-free definition helpers. Anything else -- notably the registry
+  // singleton, registerAll, core/api, or the root entry -- would let importing a
+  // subpath register a country (the rejected #115 Option A).
   const ALLOWED_SHARED_MODULES = new Set([
+    'birthDateCheck.ts',
     'constants.ts',
     'failureReasons.ts',
     'types.ts',

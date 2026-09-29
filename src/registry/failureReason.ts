@@ -1,4 +1,5 @@
 import { ValidationFailureReason } from '../failureReasons.js';
+import { rejectsBirthDate } from '../birthDateCheck.js';
 import { CountryValidator } from './types.js';
 
 /** Separators stripped when producing the normalized candidate form. */
@@ -52,6 +53,15 @@ export function deriveFailureReason(
     candidates.every(candidate => isDefiniteChecksumMismatch(validator, candidate));
   if (isChecksumMismatch) {
     return ValidationFailureReason.CHECKSUM_MISMATCH;
+  }
+
+  // #130: re-run validate() under a trace to see whether a wrapped birth-date
+  // check (src/birthDateCheck.ts) is what rejected the ID.
+  const isBirthDateRejection = candidates.some(candidate =>
+    rejectsBirthDate(() => validator.validate(candidate))
+  );
+  if (isBirthDateRejection) {
+    return ValidationFailureReason.INVALID_BIRTHDATE;
   }
 
   return ValidationFailureReason.VALIDATION_FAILED;
