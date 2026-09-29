@@ -104,6 +104,27 @@ node docs/examples/real-world-integration.js
 
 ---
 
+### 6. Forms Integration (`forms-integration.js`)
+
+Companion to the [Forms Integration Guide](../FORMS.md): registers a single country through the
+tree-shakeable `idnumbers/core` + `idnumbers/countries/<iso3>` subpaths and exercises the mask,
+format, normalize, and validate calls a form field uses.
+
+**Run:**
+
+```bash
+node docs/examples/forms-integration.js
+```
+
+**Topics Covered:**
+
+- Tree-shakeable single-country subpath imports (`idnumbers/core` + `idnumbers/countries/bra`)
+- Input masks with `getInputMask()`
+- Display formatting and compact submission with `formatId()` / `normalizeId()`
+- Mapping `validateNationalId()`'s failure reason to a form message
+
+---
+
 ## Quick Start
 
 To run any example:

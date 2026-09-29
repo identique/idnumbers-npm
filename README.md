@@ -438,6 +438,8 @@ doesn't block a valid ID. A test checks this against every country's example and
 variants. A mask can allow more, for example any letter where only one letter is valid: validate
 the result with `validateNationalId()`.
 
+See [docs/FORMS.md](docs/FORMS.md) for a complete forms integration guide using this function.
+
 ## Supported Countries
 
 ### North America (6)
@@ -690,6 +692,10 @@ if (!validation.valid) {
 }
 ```
 
+See [docs/FORMS.md](docs/FORMS.md) for a complete guide: a React + react-hook-form worked
+example, a framework-free example, input masks with `getInputMask()`, and tree-shakeable
+single-country subpath imports.
+
 ## Country-Specific Notes
 
 Accepted letter case, surrounding whitespace, and separators for every country are listed in
@@ -734,7 +740,7 @@ Accepted letter case, surrounding whitespace, and separators for every country a
 
 ## Testing
 
-The library includes comprehensive test coverage with 4680 tests covering:
+The library includes comprehensive test coverage with 4684 tests covering:
 
 - Format validation
 - Checksum verification

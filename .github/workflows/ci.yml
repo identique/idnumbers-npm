@@ -150,6 +150,9 @@ jobs:
       - name: Test real-world integration example
         run: node docs/examples/real-world-integration.js
 
+      - name: Test forms integration example
+        run: node docs/examples/forms-integration.js
+
       - name: Test TypeScript usage examples
         run: |
           npm run example
