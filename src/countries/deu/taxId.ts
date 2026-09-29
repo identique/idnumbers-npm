@@ -18,6 +18,7 @@ export class TaxIdentificationNumber implements IdNumberClass {
     checksum: true,
     regexp: /^\d{2} ?\d{3} ?\d{3} ?\d{3}$/,
     displayFormat: 'XX XXX XXX XXX',
+    layouts: ['## ### ### ###'],
     example: '12345678911',
     checksumAlgorithm: 'Iterative modulus 11/10 (MN algorithm)',
     officialName: 'Steuerliche Identifikationsnummer (IdNr)',

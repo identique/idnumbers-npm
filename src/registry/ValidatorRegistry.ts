@@ -199,7 +199,12 @@ export class ValidatorRegistry implements IValidatorRegistry {
       isParsable: METADATA.parsable,
       // A copy: validation and the failure-reason derivation read the registered
       // METADATA, so a caller editing the result must not change them.
-      metadata: { ...METADATA, names: [...METADATA.names], links: [...METADATA.links] },
+      metadata: {
+        ...METADATA,
+        names: [...METADATA.names],
+        links: [...METADATA.links],
+        ...(METADATA.layouts && { layouts: [...METADATA.layouts] }),
+      },
     };
   }
 }

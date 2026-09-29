@@ -35,6 +35,7 @@ export const METADATA = {
   checksum: true,
   parsable: true,
   displayFormat: 'YY.MM.DD-SSS.CC',
+  layouts: ['##.##.##-###.##'],
   example: '85073003328',
   checksumAlgorithm: 'Mod-97 (97 - base mod 97; +2000000000 for births >= 2000)',
   officialName: 'Rijksregisternummer / Numéro de Registre National',

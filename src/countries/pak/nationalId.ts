@@ -33,6 +33,7 @@ export class NationalID implements IdNumberClass {
     checksum: false,
     regexp: /^(?<location>\d{5})-?(?<sn>\d{7})-?(?<gender>\d)$/,
     displayFormat: '#####-#######-#',
+    layouts: ['#####-#######-#'],
     example: '1234567890123',
     checksumAlgorithm: 'None (no check digit; final digit encodes gender)',
     officialName: 'قومی شناختی کارڈ (CNIC)',

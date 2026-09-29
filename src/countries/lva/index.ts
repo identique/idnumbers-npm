@@ -23,6 +23,7 @@ export const METADATA = {
   checksum: true,
   parsable: false,
   displayFormat: 'DDMMYY-SSSSS',
+  layouts: ['######-#####'],
   example: '161175-19997',
   checksumAlgorithm: 'Weighted sum mod 11, then mod 10',
   officialName: 'personas kods',

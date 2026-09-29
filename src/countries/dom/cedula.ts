@@ -41,6 +41,7 @@ export class Cedula implements IdNumberClass {
     checksum: true,
     regexp: /^(?<series>\d{3})(?<sequence>\d{7})(?<checkDigit>\d)$/,
     displayFormat: 'NNN-NNNNNNN-N',
+    layouts: ['###-#######-#'],
     example: '40200000012',
     checksumAlgorithm:
       'Luhn (mod 10), with a documented exception list of legitimately-issued numbers that fail it',

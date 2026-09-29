@@ -17,6 +17,7 @@ export const METADATA = {
   checksum: true,
   parsable: false,
   displayFormat: 'NN-NNN/NNNN',
+  layouts: ['##-###/####', '#### ######'],
   example: '12-345/6782',
   checksumAlgorithm: 'Weighted checksum mod 10 (alternating x1/x2 with digit-sum overflow)',
   officialName: 'Abgabenkontonummer (ATIN)',

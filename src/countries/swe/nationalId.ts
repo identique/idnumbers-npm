@@ -41,6 +41,7 @@ export class NationalID implements IdNumberClass {
     regexp:
       /^(?:(?<yyyy>\d{4})|(?<yy>\d{2}))(?<mm>\d{2})(?<dd>\d{2})(?<sep>[+|-]?)(?!000)(?<birth_number>\d{3})(?<checksum>\d)$/,
     displayFormat: 'YYMMDD[+-]XXXC',
+    layouts: ['######-####'],
     example: '811218-9876',
     checksumAlgorithm: 'Luhn (mod 10)',
     officialName: 'Personnummer',

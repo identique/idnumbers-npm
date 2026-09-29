@@ -25,6 +25,7 @@ export const METADATA = {
   checksum: true,
   parsable: true,
   displayFormat: '784-YYYY-NNNNNNN-C',
+  layouts: ['###-####-#######-#'],
   example: '784198012345678',
   checksumAlgorithm: 'Luhn (mod 10)',
   officialName: 'رقم الهوية (Emirates ID)',

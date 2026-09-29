@@ -37,6 +37,7 @@ export class DPI implements IdNumberClass {
     checksum: true,
     regexp: /^\d{13}$/,
     displayFormat: 'NNNN NNNNN NNNN',
+    layouts: ['#### ##### ####'],
     example: '1912345670101',
     checksumAlgorithm:
       'Mod-11 weighted sum (weights 2..9) over the 8-digit correlative; plain remainder, ' +

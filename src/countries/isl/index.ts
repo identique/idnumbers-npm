@@ -26,6 +26,7 @@ export const METADATA = {
   checksum: true,
   parsable: true,
   displayFormat: 'DDMMYY-SSKC',
+  layouts: ['######-####'],
   example: '120174-3399',
   checksumAlgorithm: 'Weighted sum mod 11 (weights 3,2,7,6,5,4,3,2)',
   officialName: 'kennitala',

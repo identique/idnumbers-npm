@@ -28,6 +28,7 @@ export class CPF implements IdNumberClass {
     checksum: true,
     regexp: /^(\d{3}\.?\d{3}\.?\d{3}-?\d{2})$/,
     displayFormat: '###.###.###-##',
+    layouts: ['###.###.###-##'],
     example: '111.444.777-35',
     checksumAlgorithm: 'Dual weighted mod 11 check digits',
     officialName: 'Cadastro de Pessoas Físicas (CPF)',

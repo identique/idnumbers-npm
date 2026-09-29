@@ -31,6 +31,7 @@ export const METADATA = {
   maxLength: 14,
   regexp: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})-(?<gender>\d)(?<sn>\d{6})$/,
   displayFormat: 'YYMMDD-GSSSSSS',
+  layouts: ['######-#######'],
   example: '800101-1234567',
   checksumAlgorithm: 'None (not validated; modern RRNs no longer carry a verifiable check digit)',
   officialName: '주민등록번호 (RRN)',
