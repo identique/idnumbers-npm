@@ -351,20 +351,21 @@ lowercase input all work.
 - `idNumber` (string): The ID, in any of those forms
 
 **Returns:** The formatted ID, or `null` when it can't be laid out: an unsupported country, or a
-compact length that none of the country's layouts fits. An ID written without separators, like
-France's, comes back in its compact form. Formatting doesn't validate, but when `validateNationalId()` accepts an ID in any form, it also
-accepts `formatId()`'s output for it. The exception is Sweden's `+` form (people aged 100 or over),
-for which `formatId()` returns `null`.
+compact length that none of the country's [masks](#getinputmaskcountrycode) has. An ID written
+without separators, like France's, comes back in its compact form. Formatting checks only the
+length and doesn't validate, but when `validateNationalId()` accepts an ID in any form, it also
+accepts `formatId()`'s output for it. The exception is Sweden's `+` form (people aged 100 or
+over), for which `formatId()` returns `null`.
 
 ```typescript
 formatId('BRA', '39053344705'); // '390.533.447-05'
 formatId('usa', ' 123 45 6789 '); // '123-45-6789'
 formatId('HKG', 'a1234563'); // 'A123456(3)'
-formatId('BRA', '123'); // null: no layout has 3 characters
+formatId('BRA', '123'); // null: no mask has 3 characters
 ```
 
-The layouts are each country's `METADATA.layouts`, so `formatId()` also works with
-`idnumbers/core` for the countries you register.
+`formatId()` follows each country's `METADATA.masks`, so it also works with `idnumbers/core` for
+the countries you register.
 
 ### `normalizeId(countryCode, idNumber)`
 
@@ -383,6 +384,53 @@ normalizeId('FIN', '131052-308t'); // '131052-308T'
 `validateNationalId()` accepts the compact form for every country except `USA` and `KOR`, whose
 validators require the separators: validate `formatId()`'s output there. See
 [docs/INPUT_FORMATS.md](docs/INPUT_FORMATS.md) for what each validator accepts.
+
+### `getInputMask(countryCode)`
+
+> **New in v2.1.0** (on `main`, not yet published to npm; [#129](https://github.com/identique/idnumbers-npm/issues/129)).
+
+Returns a country's input masks, one per length its ID comes in, ready for a form field. Returns
+`null` for an unsupported country, or for a country registered through `idnumbers/core` without
+masks; every built-in country has them.
+
+**Returns:**
+
+- `countryCode`: the alpha-3 code the country code resolved to
+- `masks`: the masks in this library's vocabulary (below)
+- `imask`: the same masks in [imask](https://imask.js.org/)'s pattern syntax, as its
+  dynamic-mask list
+- `pattern`: a `RegExp` matching an ID written in any of the masks, in uppercase (the form
+  `formatId()` returns), e.g. for react-hook-form's `pattern` rule
+
+| Mask character             | Meaning                                                          |
+| -------------------------- | ---------------------------------------------------------------- |
+| `#`                        | a digit                                                          |
+| `L`                        | a letter                                                         |
+| `X`                        | a letter or a digit                                              |
+| `*`                        | any character, e.g. Finland's century sign (`-`, `+`, a letter)  |
+| space, `.` `-` `/` `(` `)` | a separator: `formatId()` inserts it, `normalizeId()` removes it |
+
+```typescript
+getInputMask('BRA');
+// {
+//   countryCode: 'BRA',
+//   masks: ['###.###.###-##'],
+//   imask: [{ mask: '000.000.000-00' }],
+//   pattern: /^(?:\d\d\d\.\d\d\d\.\d\d\d\-\d\d)$/,
+// }
+getInputMask('HKG')!.masks; // ['L######(X)', 'LL######(X)']
+
+// imask: the dynamic list picks the mask that fits what has been typed
+IMask(input, { mask: getInputMask('BRA')!.imask, prepareChar: c => c.toUpperCase() });
+
+// react-hook-form: check the formatted value
+register('cpf', { pattern: getInputMask('BRA')!.pattern });
+```
+
+Each mask allows every character the country's validation pattern accepts in that position, so it
+doesn't block a valid ID. A test checks this against every country's example and its separator
+variants. A mask can allow more, for example any letter where only one letter is valid: validate
+the result with `validateNationalId()`.
 
 ## Supported Countries
 
@@ -680,7 +728,7 @@ Accepted letter case, surrounding whitespace, and separators for every country a
 
 ## Testing
 
-The library includes comprehensive test coverage with 3996 tests covering:
+The library includes comprehensive test coverage with 4186 tests covering:
 
 - Format validation
 - Checksum verification
