@@ -54,6 +54,45 @@ describe('issue #128: the compact form', () => {
   });
 });
 
+describe('issue #128: every input the validator accepts can be formatted', () => {
+  // Sweden's `+` (people aged 100 or over) is part of the ID, not a separator, and no
+  // layout has room for it, so formatId() returns null for that form.
+  const UNFORMATTABLE = new Set(['SWE:811218+9876']);
+  const SEPARATORS = [' ', '-', '.', '/', '(', ')'];
+
+  /** The example, compact and formatted, plus each with one separator inserted or swapped. */
+  function variants(code: string): string[] {
+    const example = exampleOf(code);
+    const bases = [example, example.replace(/[\s.\-/()]/g, ''), formatId(code, example)!];
+    const out = new Set<string>();
+    for (const base of bases) {
+      out.add(base);
+      for (let i = 1; i < base.length; i++) {
+        for (const separator of SEPARATORS) out.add(base.slice(0, i) + separator + base.slice(i));
+      }
+      for (const separator of SEPARATORS) out.add(base.replace(/[\s.\-/]/g, separator));
+    }
+    return [...out];
+  }
+
+  it.each(countries)('%s', code => {
+    const accepted = [...variants(code), code === 'SWE' ? '811218+9876' : '']
+      .filter(id => id && validateNationalId(code, id).isValid)
+      .filter(id => !UNFORMATTABLE.has(`${code}:${id}`));
+    expect(accepted.length).toBeGreaterThan(0);
+    const unformatted = accepted.filter(id => {
+      const formatted = formatId(code, id);
+      return formatted === null || !validateNationalId(code, formatted).isValid;
+    });
+    expect(unformatted).toEqual([]);
+  });
+
+  it("returns null for Sweden's + form, which the validator accepts", () => {
+    expect(validateNationalId('SWE', '811218+9876').isValid).toBe(true);
+    expect(formatId('SWE', '811218+9876')).toBeNull();
+  });
+});
+
 describe('issue #128: METADATA.layouts', () => {
   it.each(countries)('%s: one layout per compact length, consistent with displayFormat', code => {
     const layouts = layoutsOf(code);
@@ -71,9 +110,11 @@ describe('issue #128: METADATA.layouts', () => {
       expect(layouts).toContain(derived);
     }
 
-    // No separator may also be a character of the compact ID.
-    const separators = new Set(layouts.join('').replaceAll('#', ''));
-    expect([...compact].filter(char => separators.has(char))).toEqual([]);
+    // normalizeId() must strip every layout separator, and an ID with layouts may not
+    // contain one: those characters would be lost.
+    const separators = layouts.join('').replaceAll('#', '');
+    expect(separators).toMatch(/^[\s.\-/()]*$/);
+    if (layouts.length > 0) expect(compact).not.toMatch(/[\s.\-/()]/);
   });
 
   it('is copied by getCountryIdFormat(), so editing the result changes nothing', () => {
@@ -95,6 +136,8 @@ describe('issue #128: formatId', () => {
     ['HKG', 'a1234563', 'A123456(3)'],
     ['HKG', 'AB9876543', 'AB987654(3)'],
     ['MAC', '52154328', '5215432(8)'],
+    ['CHL', '11111113', '1.111.111-3'],
+    ['CHL', '11.111.111-k', '11.111.111-K'],
     ['COL', '123456788', '12.345.678-8'],
     ['COL', '1234567896', '123.456.789-6'],
     ['AUS', '2123456701', '2123 45670 1'],
@@ -138,9 +181,12 @@ describe('issue #128: normalizeId', () => {
     expect(normalizeId(code, input)).toBe(expected);
   });
 
-  it('keeps characters that are not separators for the country', () => {
-    // BRA's layout uses . and -, but not /.
-    expect(normalizeId('BRA', '111/444')).toBe('111/444');
+  it.each([
+    ['ALB', 'J50101001-A', 'J50101001A'],
+    ['AUS', '2123-45670-1', '2123456701'],
+    ['CRI', '1/0913/0259', '109130259'],
+  ])('%s %j -> %j: removes separators the layouts do not use', (code, input, expected) => {
+    expect(normalizeId(code, input)).toBe(expected);
   });
 
   it('returns null for an unsupported country', () => {

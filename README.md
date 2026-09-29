@@ -352,8 +352,9 @@ lowercase input all work.
 
 **Returns:** The formatted ID, or `null` when it can't be laid out: an unsupported country, or a
 compact length that none of the country's layouts fits. An ID written without separators, like
-France's, comes back in its compact form. Formatting doesn't validate; pass the result to
-`validateNationalId()`, which accepts `formatId()`'s output for every country.
+France's, comes back in its compact form. Formatting doesn't validate, but when `validateNationalId()` accepts an ID in any form, it also
+accepts `formatId()`'s output for it. The exception is Sweden's `+` form (people aged 100 or over),
+for which `formatId()` returns `null`.
 
 ```typescript
 formatId('BRA', '39053344705'); // '390.533.447-05'
@@ -369,9 +370,9 @@ The layouts are each country's `METADATA.layouts`, so `formatId()` also works wi
 
 > **New in v2.1.0** (on `main`, not yet published to npm; [#128](https://github.com/identique/idnumbers-npm/issues/128)).
 
-Returns the compact form of an ID: uppercase, with whitespace and the country's `formatId()`
-separators removed. Characters that belong to the ID stay, such as Finland's century sign in
-`131052-308T` or Sweden's `+` for people aged 100 or over. Returns `null` for an unsupported
+Returns the compact form of an ID: uppercase, with whitespace and the separators `. - / ( )`
+removed. Characters that belong to the ID stay, such as Finland's century sign in `131052-308T` or
+Sweden's `+` for people aged 100 or over. Returns `null` for an unsupported
 country.
 
 ```typescript
@@ -679,7 +680,7 @@ Accepted letter case, surrounding whitespace, and separators for every country a
 
 ## Testing
 
-The library includes comprehensive test coverage with 3906 tests covering:
+The library includes comprehensive test coverage with 3996 tests covering:
 
 - Format validation
 - Checksum verification
