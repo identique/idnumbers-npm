@@ -16,26 +16,30 @@ A comprehensive TypeScript/JavaScript library for validating and parsing nationa
 - ✨ **Well-tested** - Comprehensive test coverage with 100% pass rate
 - 🌍 **Multiple formats** - Supports various ID number formats per country
 
-## v2.0.0 is coming
+## What's new in v2.0.0
 
-A future v2.0.0 release will ship breaking changes ([epic #127](https://github.com/identique/idnumbers-npm/issues/127)). Highlights of the planned direction:
+v2.0.0 is a major release with breaking changes ([epic #127](https://github.com/identique/idnumbers-npm/issues/127)). See
+[MIGRATION.md](./MIGRATION.md) for how to upgrade from 1.x, and the [CHANGELOG](./CHANGELOG.md)
+for every change.
 
-- The root `idnumbers` import stays batteries-included and unchanged.
-- New tree-shakeable, per-country entry points (`idnumbers/countries/<iso3>`) alongside a registry-only `idnumbers/core` — implemented on `main` ([#122](https://github.com/identique/idnumbers-npm/issues/122)); see [Tree-shakeable imports](#tree-shakeable-imports-v200).
-- Typed, ok-shaped `parseIdInfo()` results instead of `any | null` — implemented on `main` ([#123](https://github.com/identique/idnumbers-npm/issues/123)); see [`parseIdInfo`](#parseidinfocountrycode-idnumber).
-- Removal of the APIs deprecated in v1.11.0, `SUPPORTED_COUNTRIES` and `IMetadata` — implemented on `main` ([#124](https://github.com/identique/idnumbers-npm/issues/124)).
+- **Node.js >= 22**, with ESM and CommonJS builds behind a `package.json` `exports` map
+  ([#120](https://github.com/identique/idnumbers-npm/issues/120)); see [Installation](#installation).
+- **Tree-shakeable entry points**: `idnumbers/core` plus one `idnumbers/countries/<iso3>` subpath
+  per country, so a bundle carries only the countries you register ([#122](https://github.com/identique/idnumbers-npm/issues/122)); see
+  [Tree-shakeable imports](#tree-shakeable-imports-v200). The root `idnumbers` import stays
+  batteries-included.
+- **Typed parse results**: `parseIdInfo()` returns `{ ok: true, info }` or `{ ok: false, reason }`,
+  typed per country, instead of `any | null` ([#123](https://github.com/identique/idnumbers-npm/issues/123)); see
+  [`parseIdInfo`](#parseidinfocountrycode-idnumber).
+- **One module contract**: every country's METADATA uses the same `IdMetadata` fields
+  ([#121](https://github.com/identique/idnumbers-npm/issues/121)).
+- **Removed**: `SUPPORTED_COUNTRIES` and `IMetadata`, deprecated in v1.11.0 ([#124](https://github.com/identique/idnumbers-npm/issues/124)).
 
-One breaking change has already landed ahead of the rest: a dual ESM/CJS build behind a proper
-`exports` map with a **Node.js >= 22 baseline** (CI runs 22.x/24.x) is implemented on `main` and
-ships in v2.0.0 — see [Requirements](#installation) below and
-[#120](https://github.com/identique/idnumbers-npm/issues/120).
-
-See [MIGRATION.md](./MIGRATION.md) for the full breakdown and how to prepare today.
+Which IDs validate does not change: v2.0.0 keeps parity with the Python `idnumbers` library.
 
 ## Installation
 
-**Requirements:** Node.js >= 22 from v2.0.0 (in development on `main`); the current 1.x releases
-support Node.js >= 16.
+**Requirements:** Node.js >= 22. The 1.x releases support Node.js >= 16.
 
 ```bash
 npm install idnumbers
@@ -72,7 +76,7 @@ hazard"), so pick one style per process.
 
 ### Tree-shakeable imports (v2.0.0)
 
-From v2.0.0 (in development on `main`), bundle only the countries you use: import the
+From v2.0.0, bundle only the countries you use: import the
 validation API from `idnumbers/core`, which registers no countries, and register the ones
 you need from `idnumbers/countries/<iso3>` (lowercase alpha-3 code):
 
@@ -106,7 +110,7 @@ const result = validateNationalId('USA', '123-45-6789');
 console.log(result.isValid); // true or false
 
 // Parse information from a South African ID
-// (v2.0.0 shape, #123; 1.x returns the info itself, or null)
+// (v2.0.0 shape, #123; 1.x returned the info itself, or null)
 const parsed = parseIdInfo('ZAF', '8001015009087');
 if (parsed.ok) {
   console.log(parsed.info);
@@ -196,10 +200,10 @@ switch (result.reason) {
 `reason` is also **best-effort**: `checksum_mismatch` is only reported for
 validators whose `checksum()` reports a definite pass/fail (a boolean); validators
 that expose a computed check digit instead, or none at all, fall back to
-`validation_failed`. In the 1.x releases, Bangladesh's registry metadata carries a
-match-anything placeholder regexp ([#160](https://github.com/identique/idnumbers-npm/issues/160)),
-so its shape-related codes (`invalid_length`/`invalid_format`) never trigger there — validation
-itself is unaffected, and v2.0.0 fixes the metadata ([#121](https://github.com/identique/idnumbers-npm/issues/121)).
+`validation_failed`. In 1.x, Bangladesh's registry metadata carried a match-anything
+placeholder regexp ([#160](https://github.com/identique/idnumbers-npm/issues/160)), so its
+shape-related codes (`invalid_length`/`invalid_format`) never triggered there; v2.0.0 fixes the
+metadata ([#121](https://github.com/identique/idnumbers-npm/issues/121)).
 More granular, per-country reason codes are planned in
 [#130](https://github.com/identique/idnumbers-npm/issues/130).
 
@@ -222,7 +226,7 @@ Extracts information from a national ID number (if supported by the country).
   country cannot parse.
 
 > **Changed in v2.0.0** ([#123](https://github.com/identique/idnumbers-npm/issues/123)):
-> 1.x returns the parsed info or `null`, typed `any`. See
+> 1.x returned the parsed info or `null`, typed `any`. See
 > [MIGRATION.md](./MIGRATION.md#typed-parse-results-123).
 
 `info` is typed per country. For a country code written as a literal (`'SWE'`, `'se'`),
