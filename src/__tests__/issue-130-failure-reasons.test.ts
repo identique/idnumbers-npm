@@ -159,6 +159,8 @@ describe('issue #130: 23 countries report invalid_birthdate', () => {
     });
   });
 
+  // Paired with the vector test above, this also catches a wrap validate() can't
+  // reach; see marksBirthDate().
   it('is reported by exactly the countries whose validators mark a birth-date check', () => {
     const marked = registry.list().filter(marksBirthDate).sort();
     expect(marked).toEqual(Object.keys(IMPOSSIBLE_BIRTHDATE_IDS).sort());

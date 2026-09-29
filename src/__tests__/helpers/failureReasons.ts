@@ -8,6 +8,20 @@ const COUNTRIES_DIR = path.resolve(__dirname, '../../countries');
 /**
  * Whether `code`'s country directory wraps a birth-date check in `invalidBirthDate()`
  * (#130), i.e. whether its validator can report `invalid_birthdate`.
+ *
+ * This is a static text scan of every `.ts` file under the country's directory: it
+ * cannot tell a wrap on the registered validator's `validate()` path from one in a
+ * file `validate()` can never reach. That's still sound in combination with the two
+ * tests in issue-130-failure-reasons.test.ts that consume it (#198): the coherence
+ * test requires the set of countries this function flags to equal exactly the set
+ * with a passing `invalid_birthdate` vector, and the vector test requires that ID to
+ * actually make `validate()` report `invalid_birthdate` under the trace. So a wrap
+ * this function sees but `validate()` can't reach makes a country "marked" with no
+ * vector to match (coherence test fails), and adding a vector for it fails in turn
+ * because `validate()` never trips the wrap (vector test fails). The one case this
+ * can't catch is a country that already reports `invalid_birthdate` via a reachable
+ * wrap and additionally has an unreachable one elsewhere — harmless, since the docs
+ * row for that country is still correct either way.
  */
 export function marksBirthDate(code: string): boolean {
   const dir = path.join(COUNTRIES_DIR, code.toLowerCase());

@@ -30,9 +30,12 @@ or that have no `checksum()` at all — report a wrong digit as `validation_fail
 
 `invalid_birthdate` needs a validator that checks the birth date its ID encodes, and reaches that
 check from `validate()` itself (see [`src/birthDateCheck.ts`](../src/birthDateCheck.ts)). A country
-whose date check runs only inside `parse()`, and whose `validate()` never calls `parse()` for that
-check, doesn't report it — for example Belgium (BEL) and Finland (FIN), whose `validate()` never
-decodes the date at all, so an impossible date there is `validation_failed`.
+whose `validate()` doesn't check the encoded date can't report it — Belgium (BEL), Finland (FIN),
+and Sri Lanka (LKA) check only the format and check digits there, so an ID whose check digits are
+right but whose date is impossible is accepted as valid, and `parseIdInfo()` reports `not_parsable`
+for it. For BEL and FIN this differs from the Python library, which rejects such IDs (tracked in
+[#205](https://github.com/identique/idnumbers-npm/issues/205)); LKA matches Python, since an
+overflowing day-of-year rolls into the next year there.
 
 The table below is re-derived by a test
 ([`issue-130-failure-reasons.test.ts`](../src/__tests__/issue-130-failure-reasons.test.ts)), so it
