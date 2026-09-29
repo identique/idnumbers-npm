@@ -102,19 +102,17 @@ describe('issue #130: birth-date tracing', () => {
   });
 
   it('nested traces restore the outer trace', () => {
-    let outerDuringInner: boolean | undefined;
+    // The outer trace records its rejection BEFORE the inner trace starts, so the
+    // only way `outerResult` can end up `true` is if the inner trace's `rejected =
+    // outer;` restore hands the outer trace's own recorded value back, rather than
+    // leaving the inner trace's (or a stale) value in place.
     const outerResult = rejectsBirthDate(() => {
       invalidBirthDate(true);
       const innerResult = rejectsBirthDate(() => {
         invalidBirthDate(false);
       });
       expect(innerResult).toBe(false);
-      // The outer trace must still be live (and still recorded) after the inner
-      // trace returns.
-      invalidBirthDate(true);
-      outerDuringInner = true;
     });
-    expect(outerDuringInner).toBe(true);
     expect(outerResult).toBe(true);
   });
 });
