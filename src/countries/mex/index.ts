@@ -34,6 +34,7 @@ export const METADATA = {
   regexp:
     /^(?<initial>[A-Z]{4})(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})(?<gender>[HMX])(?<location>[A-Z]{2})(?<consonant>[A-Z]{3})(?<sn>[0-9A-Z])(?<checksum>\d)$/,
   displayFormat: 'AAAANNNNNNAAAAAANN',
+  masks: ['LLLL######LLLLLLX#'],
   example: 'HEGG560427MVZRRL04',
   checksumAlgorithm:
     'Weighted alphanumeric sum mod 10 (positions weighted 18..2; check = (10 - remainder) mod 10)',

@@ -21,7 +21,7 @@ export const METADATA = {
   maxLength: 12,
   regexp: /^(\d{1,2}\.?\d{3}\.?\d{3}-?[\dK])$/i,
   displayFormat: '##.###.###-C',
-  layouts: ['#.###.###-#', '##.###.###-#'],
+  masks: ['##.###.###-X', '#.###.###-X'],
   example: '11.111.111-1',
   checksumAlgorithm: 'Weighted sum mod 11 (cyclic weights 2..7; 10 → K, 11 → 0)',
   officialName: 'Rol Único Nacional / Rol Único Tributario (RUN/RUT)',

@@ -36,6 +36,7 @@ export class NationalID implements IdNumberClass {
     checksum: true,
     regexp: /^[STFGM]\d{7}[A-Z]$/,
     displayFormat: 'L#######C',
+    masks: ['L#######L'],
     example: 'S1234567D',
     checksumAlgorithm:
       'Weighted sum mod 11 mapped to series-specific check letter (weights 2,7,6,5,4,3,2)',

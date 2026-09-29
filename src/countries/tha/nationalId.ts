@@ -48,7 +48,7 @@ export class NationalID implements IdNumberClass {
     regexp:
       /^(?<citizenship>[0-8])[\s-]?(?<province>\d{2})(?<district>\d{2})[\s-]?(?<sn>\d{5}[\s-]?\d{2})[\s-]?(?<checksum>\d)$/,
     displayFormat: '#-####-#####-##-#',
-    layouts: ['#-####-#####-##-#'],
+    masks: ['#-####-#####-##-#'],
     example: '3101012345673',
     checksumAlgorithm: 'Weighted sum mod 11 (weights 13..2; check = (11 - remainder) mod 10)',
     officialName: 'บัตรประชาชน (Population Identification Code)',

@@ -35,6 +35,7 @@ export class NationalID implements IdNumberClass {
     regexp:
       /^(?<yy>\d{2})(?<mm>0[1-9]|1[012])(?<dd>0[1-9]|[12][0-9]|3[01])(?<sn>\d{4})(?<citizenship>[01])([89])(?<checksum>\d)$/,
     displayFormat: 'YYMMDDSSSSCAZ',
+    masks: ['#############'],
     example: '8001015009087',
     checksumAlgorithm: 'Luhn (mod 10)',
     officialName: 'South African Identity Number',

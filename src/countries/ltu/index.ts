@@ -25,6 +25,7 @@ export const METADATA: IdMetadata = {
   checksum: true,
   regexp: /^(?<g>\d)(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})(?<sn>\d{3})(?<checksum>\d)$/,
   displayFormat: 'GYYMMDDSSSC',
+  masks: ['###########'],
   example: '39001010077',
   checksumAlgorithm: 'Weighted sum mod 11 (two passes; 10 -> 0)',
   officialName: 'asmens kodas',

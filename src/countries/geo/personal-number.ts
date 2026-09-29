@@ -16,6 +16,7 @@ export class PersonalNumber {
     checksum: false,
     regexp: new RegExp(/^\d{9}$/),
     displayFormat: '#########',
+    masks: ['#########'],
     example: '123456789',
     checksumAlgorithm: 'None (format/length only)',
     officialName: 'პირადი ნომერი (Personal Number)',

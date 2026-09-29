@@ -21,7 +21,7 @@ export const METADATA = {
   maxLength: 8,
   regexp: /^(\d{2}\.?\d{3}\.?\d{3})$/,
   displayFormat: '##.###.###',
-  layouts: ['##.###.###'],
+  masks: ['##.###.###'],
   example: '12.345.678',
   checksumAlgorithm: 'None (format/length only)',
   officialName: 'Documento Nacional de Identidad (DNI)',

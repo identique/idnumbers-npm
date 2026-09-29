@@ -26,6 +26,7 @@ export const METADATA = {
   maxLength: 16,
   regexp: /^(?<district>\d{6})(?<dd>[0-7]\d)(?<mm>(0[1-9]|1[012]))(?<yy>\d{2})(?!0000)\d{4}$/,
   displayFormat: 'PPPPPPDDMMYYSSSS',
+  masks: ['################'],
   example: '1101010101900001',
   checksumAlgorithm: 'None (district/date structure only)',
   officialName: 'Nomor Induk Kependudukan (NIK)',

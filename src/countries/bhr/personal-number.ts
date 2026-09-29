@@ -27,6 +27,7 @@ export class PersonalNumber {
     checksum: false,
     regexp: new RegExp(/^(?<yymm>\d{2}(?:0[1-9]|1[012]))(?<sn>\d{4})(?<checksum>\d)$/),
     displayFormat: 'YYMMSSSSC',
+    masks: ['#########'],
     example: '800101001',
     checksumAlgorithm:
       'None (check digit algorithm not publicly documented; format-only validation)',

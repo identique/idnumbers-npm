@@ -27,6 +27,7 @@ export const METADATA = {
   checksum: true,
   parsable: true,
   displayFormat: 'GYYMMDDSSSC',
+  masks: ['###########'],
   example: '37605030299',
   checksumAlgorithm: 'Weighted sum mod 11 (two passes; 10 -> 0)',
   officialName: 'isikukood',

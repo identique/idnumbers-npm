@@ -8,6 +8,7 @@ export class UniqueMasterCitizenNumber extends YugoslaviaJMBG {
     countryName: 'Bosnia and Herzegovina',
     idType: 'Unique Master Citizen Number',
     displayFormat: 'DDMMYYYRRSSSC',
+    masks: ['#############'],
     example: '0101990150002',
     checksumAlgorithm: 'JMBG weighted sum mod 11 (folded pairs x 7,6,5,4,3,2)',
     officialName: 'Jedinstveni matični broj građana (JMBG)',

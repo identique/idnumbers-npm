@@ -91,6 +91,7 @@ export const METADATA = {
   checksum: false,
   parsable: true,
   displayFormat: 'CYYMMDDGGSSSSV',
+  masks: ['##############'],
   example: '29001010100017',
   checksumAlgorithm:
     'None (check digit algorithm not publicly documented; format + semantic validation, no check-digit validation). See docs/research/egypt-national-id.md.',

@@ -29,6 +29,7 @@ export const METADATA = {
   checksum: true,
   parsable: true,
   displayFormat: 'GYYMMDDSSSC',
+  masks: ['###########'],
   example: '18001010016',
   checksumAlgorithm: 'Weighted sum mod 11 (weights 1-10)',
   officialName: 'Személyi azonosító',

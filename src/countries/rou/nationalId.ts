@@ -45,6 +45,7 @@ export class NationalID implements IdNumberClass {
     regexp:
       /^(?<gender_century>\d)(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})(?<location>\d{2})(?<sn>\d{3})(?<checksum>\d)$/,
     displayFormat: 'SAALLZZJJNNNC',
+    masks: ['#############'],
     example: '1800101226813',
     checksumAlgorithm: 'Weighted sum mod 11 (weights 2,7,9,1,4,6,3,5,8,2,7,9; 10 -> 1)',
     officialName: 'Cod Numeric Personal (CNP)',

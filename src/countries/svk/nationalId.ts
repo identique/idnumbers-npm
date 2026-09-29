@@ -36,7 +36,7 @@ export class NationalID implements IdNumberClass {
     checksum: true,
     regexp: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})\/?(?<sn>\d{3})(?<checksum>\d)$/,
     displayFormat: 'YYMMDD/SSSC',
-    layouts: ['######/####'],
+    masks: ['######/####'],
     example: '0001010009',
     checksumAlgorithm: 'Whole 10-digit number divisible by 11',
     officialName: 'Rodné číslo (RČ)',

@@ -26,6 +26,7 @@ export class NationalID implements IdNumberClass {
     checksum: true,
     regexp: /^\d{10}$/,
     displayFormat: '##########',
+    masks: ['##########'],
     example: '1000000008',
     checksumAlgorithm: 'Luhn (mod 10) over the full number',
     officialName: 'National ID / Iqama',

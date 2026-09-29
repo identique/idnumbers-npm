@@ -16,6 +16,7 @@ export class NationalID implements IdNumberClass {
     checksum: false,
     regexp: /^\d{12}$/,
     displayFormat: '############',
+    masks: ['############'],
     example: '123456789012',
     checksumAlgorithm: 'None (format/length only)',
     officialName: 'البطاقة الوطنية (National Card)',

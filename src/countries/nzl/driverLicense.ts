@@ -21,6 +21,7 @@ export class DriverLicense implements IdNumberClass {
     checksum: false,
     regexp: /^[A-Z0-9]{7,8}$/i,
     displayFormat: 'XXXXXXX(X)',
+    masks: ['XXXXXXXX', 'XXXXXXX'],
     example: 'AB123456',
     checksumAlgorithm: 'None (format/length and trailing-number blacklist only)',
     officialName: 'Driver Licence Number',

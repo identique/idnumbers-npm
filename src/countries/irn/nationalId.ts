@@ -16,7 +16,7 @@ export class NationalID implements IdNumberClass {
     checksum: true,
     regexp: /^\d{3}-?\d{6}-?\d$/,
     displayFormat: '###-######-#',
-    layouts: ['###-######-#'],
+    masks: ['###-######-#'],
     example: '0012345679',
     checksumAlgorithm:
       'Weighted sum mod 11 (weights 10..2; remainder < 2 → remainder, else 11 - remainder)',

@@ -33,6 +33,7 @@ export class NationalID implements IdNumberClass {
     checksum: true,
     regexp: /^\d{10}$/,
     displayFormat: 'DDDDDSSSSSC',
+    masks: ['##########'],
     example: '3245506789',
     checksumAlgorithm: 'Weighted sum (mod 11, then mod 10)',
     officialName: 'Individual Tax Number (RNOKPP)',

@@ -1,21 +1,24 @@
 /**
  * Issue #128: formatId() writes an ID in its country's display format, and
- * normalizeId() takes it back to the compact form. Layouts come from each
- * country's METADATA.layouts, so they travel with the country into
- * `idnumbers/core` bundles.
+ * normalizeId() takes it back to the compact form. Both follow each country's
+ * METADATA.masks (#129), so they travel with the country into `idnumbers/core`
+ * bundles.
  */
 import * as lib from '../index';
 import * as coreEntry from '../core';
 import { formatId, normalizeId, getCountryIdFormat, validateNationalId } from '../index';
 import { registry } from '../registry';
+import { acceptedVariants, UNFORMATTABLE } from './helpers/idVariants';
 
 type Core = typeof import('../core');
 type CountryModule = { country: Parameters<Core['register']>[0] };
 
 const countries = registry.list();
 const exampleOf = (code: string) => getCountryIdFormat(code)!.example!;
-const layoutsOf = (code: string) => registry.get(code)!.METADATA.layouts ?? [];
-const slots = (layout: string) => layout.split('#').length - 1;
+const masksOf = (code: string) => registry.get(code)!.METADATA.masks ?? [];
+/** A mask with every token written as `#`: where formatId() puts the ID's characters. */
+const layoutOf = (mask: string) => mask.replace(/[#LX*]/g, '#');
+const slots = (mask: string) => layoutOf(mask).split('#').length - 1;
 
 /** Separator characters a display format can use, as opposed to placeholders. */
 const DISPLAY_SEPARATORS = /[ .\-/]/;
@@ -55,30 +58,8 @@ describe('issue #128: the compact form', () => {
 });
 
 describe('issue #128: every input the validator accepts can be formatted', () => {
-  // Sweden's `+` (people aged 100 or over) is part of the ID, not a separator, and no
-  // layout has room for it, so formatId() returns null for that form.
-  const UNFORMATTABLE = new Set(['SWE:811218+9876']);
-  const SEPARATORS = [' ', '-', '.', '/', '(', ')'];
-
-  /** The example, compact and formatted, plus each with one separator inserted or swapped. */
-  function variants(code: string): string[] {
-    const example = exampleOf(code);
-    const bases = [example, example.replace(/[\s.\-/()]/g, ''), formatId(code, example)!];
-    const out = new Set<string>();
-    for (const base of bases) {
-      out.add(base);
-      for (let i = 1; i < base.length; i++) {
-        for (const separator of SEPARATORS) out.add(base.slice(0, i) + separator + base.slice(i));
-      }
-      for (const separator of SEPARATORS) out.add(base.replace(/[\s.\-/]/g, separator));
-    }
-    return [...out];
-  }
-
   it.each(countries)('%s', code => {
-    const accepted = [...variants(code), code === 'SWE' ? '811218+9876' : '']
-      .filter(id => id && validateNationalId(code, id).isValid)
-      .filter(id => !UNFORMATTABLE.has(`${code}:${id}`));
+    const accepted = acceptedVariants(code).filter(id => !UNFORMATTABLE.has(`${code}:${id}`));
     expect(accepted.length).toBeGreaterThan(0);
     const unformatted = accepted.filter(id => {
       const formatted = formatId(code, id);
@@ -93,35 +74,39 @@ describe('issue #128: every input the validator accepts can be formatted', () =>
   });
 });
 
-describe('issue #128: METADATA.layouts', () => {
-  it.each(countries)('%s: one layout per compact length, consistent with displayFormat', code => {
-    const layouts = layoutsOf(code);
+describe('issue #128: METADATA.masks as layouts', () => {
+  it.each(countries)('%s: one mask per compact length, consistent with displayFormat', code => {
+    const masks = masksOf(code);
     const displayFormat = registry.get(code)!.METADATA.displayFormat!;
-    const lengths = layouts.map(slots);
+    const lengths = masks.map(slots);
+    expect(masks.length).toBeGreaterThan(0);
     expect(new Set(lengths).size).toBe(lengths.length);
 
-    // A display format with separators needs layouts. A plain one with one placeholder
-    // per character of the compact example (VEN's `V-######## or E-########` has two
-    // alternatives, so it doesn't count) must be one of them.
+    // A plain display format with one placeholder per character of the compact example
+    // (VEN's `V-######## or E-########` has two alternatives, so it doesn't count) is
+    // one of the layouts; a display format with separators has a mask with separators.
     const compact = normalizeId(code, exampleOf(code))!;
-    if (DISPLAY_SEPARATORS.test(displayFormat)) expect(layouts.length).toBeGreaterThan(0);
+    const layouts = masks.map(layoutOf);
+    if (DISPLAY_SEPARATORS.test(displayFormat)) {
+      expect(layouts.some(layout => /[^#]/.test(layout))).toBe(true);
+    }
     const derived = displayFormat.replace(/[A-Za-z0-9#]/g, '#');
     if (PLAIN_DISPLAY_FORMAT.test(displayFormat) && slots(derived) === compact.length) {
       expect(layouts).toContain(derived);
     }
 
-    // normalizeId() must strip every layout separator, and an ID with layouts may not
-    // contain one: those characters would be lost.
+    // normalizeId() must strip every mask separator, and an ID whose masks have
+    // separators may not contain one: those characters would be lost.
     const separators = layouts.join('').replaceAll('#', '');
     expect(separators).toMatch(/^[\s.\-/()]*$/);
-    if (layouts.length > 0) expect(compact).not.toMatch(/[\s.\-/()]/);
+    if (separators.length > 0) expect(compact).not.toMatch(/[\s.\-/()]/);
   });
 
   it('is copied by getCountryIdFormat(), so editing the result changes nothing', () => {
     const metadata = getCountryIdFormat('BRA')!.metadata;
-    expect(metadata.layouts).toEqual(['###.###.###-##']);
-    expect(metadata.layouts).not.toBe(registry.get('BRA')!.METADATA.layouts);
-    (metadata.layouts as string[])[0] = '#';
+    expect(metadata.masks).toEqual(['###.###.###-##']);
+    expect(metadata.masks).not.toBe(registry.get('BRA')!.METADATA.masks);
+    (metadata.masks as string[])[0] = '#';
     expect(formatId('BRA', '11144477735')).toBe('111.444.777-35');
   });
 });
@@ -157,7 +142,7 @@ describe('issue #128: formatId', () => {
   it.each([
     ['an unsupported country', 'XXX', '123'],
     ['a length no layout fits', 'BRA', '123'],
-    ['a length outside minLength-maxLength, for a country without layouts', 'FRA', '1'],
+    ['a length none of the masks has, for an ID without separators', 'FRA', '1'],
     ["Sweden's + sign, which is part of the ID", 'SWE', '811218+9876'],
     ["Finland's century sign removed", 'FIN', '131052308T'],
   ])('returns null for %s', (_label, code, input) => {
@@ -185,7 +170,7 @@ describe('issue #128: normalizeId', () => {
     ['ALB', 'J50101001-A', 'J50101001A'],
     ['AUS', '2123-45670-1', '2123456701'],
     ['CRI', '1/0913/0259', '109130259'],
-  ])('%s %j -> %j: removes separators the layouts do not use', (code, input, expected) => {
+  ])('%s %j -> %j: removes separators the masks do not use', (code, input, expected) => {
     expect(normalizeId(code, input)).toBe(expected);
   });
 

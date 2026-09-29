@@ -22,7 +22,7 @@ export const METADATA = {
   checksum: true,
   parsable: false,
   displayFormat: '756.XXXX.XXXX.XX',
-  layouts: ['###.####.####.##'],
+  masks: ['###.####.####.##'],
   example: '756.1234.5678.97',
   checksumAlgorithm: 'EAN-13 check digit',
   officialName: 'AHV-Nr. / No AVS',

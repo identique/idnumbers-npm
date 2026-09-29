@@ -203,7 +203,7 @@ export class ValidatorRegistry implements IValidatorRegistry {
         ...METADATA,
         names: [...METADATA.names],
         links: [...METADATA.links],
-        ...(METADATA.layouts && { layouts: [...METADATA.layouts] }),
+        ...(METADATA.masks && { masks: [...METADATA.masks] }),
       },
     };
   }

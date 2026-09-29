@@ -55,6 +55,7 @@ export const NEW_METADATA = {
   checksum: false,
   parsable: true,
   displayFormat: 'YYYYDDRPPUUSSSSSS',
+  masks: ['#################', '#############'],
   example: '19841592824588424',
   checksumAlgorithm: 'None (structural validation only)',
   officialName: 'জাতীয় পরিচয়পত্র (NID)',

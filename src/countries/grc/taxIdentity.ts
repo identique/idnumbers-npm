@@ -23,6 +23,7 @@ export const METADATA = {
   checksum: true,
   parsable: false,
   displayFormat: '#########',
+  masks: ['#########'],
   example: '094014250',
   checksumAlgorithm: 'Weighted sum mod 11 (powers of two: 256..2)',
   officialName: 'ΑΦΜ (Αριθμός Φορολογικού Μητρώου)',

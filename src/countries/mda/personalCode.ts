@@ -16,6 +16,7 @@ export class PersonalCode implements IdNumberClass {
     checksum: false,
     regexp: /^\d{13}$/,
     displayFormat: '#############',
+    masks: ['#############'],
     example: '1234567890123',
     checksumAlgorithm: 'None (format/length only; not validated)',
     officialName: 'Numărul de identificare (IDNP)',

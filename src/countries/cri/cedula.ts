@@ -62,7 +62,7 @@ export class Cedula implements IdNumberClass {
     // short of 9 digits after stripping separators is rejected outright.
     regexp: /^[1-9]\d{8}$/,
     displayFormat: '#-####-####',
-    layouts: ['#-####-####'],
+    masks: ['#-####-####'],
     example: '1-0913-0259',
     // NOTE: the cédula física has NO check digit -- Costa Rica validates it via
     // Registro Civil / TRIBU-CR database lookup, not arithmetic. Do not add a
