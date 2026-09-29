@@ -28,6 +28,7 @@ export const METADATA = {
   checksum: true,
   parsable: true,
   displayFormat: 'DDMMYYCSSSX',
+  masks: ['######*###X'],
   example: '131052-308T',
   checksumAlgorithm: 'Mod-31 check character',
   officialName: 'Henkilötunnus (HETU)',

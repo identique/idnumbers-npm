@@ -86,8 +86,9 @@ function unionRegExp(regexps: readonly RegExp[]): RegExp {
  *   check-digit algorithms.
  * - `METADATA` starts from the first member's METADATA, then spans every member:
  *   `minLength`/`maxLength` are the smallest/largest member bounds and `regexp`
- *   matches any member's shape. `parsable` is true when the composite has `parse`,
- *   and `checksum` only when every member's format carries a checksum.
+ *   matches any member's shape; `masks` lists every member's masks, in member order
+ *   (#129). `parsable` is true when the composite has `parse`, and `checksum` only
+ *   when every member's format carries a checksum.
  *   `overrides` are applied last (e.g. a country-level `countryName`/`idType`, or a
  *   hand-written `regexp`); an override set to `undefined` is ignored.
  *
@@ -104,6 +105,7 @@ export function createCompositeValidator<
 >(members: M, overrides: Partial<IdMetadata> = {}): CountryValidator<ParseResultOf<M[number]>> {
   type Result = ParseResultOf<M[number]>;
   const parsers = members.filter(member => member.parse);
+  const masks = [...new Set(members.flatMap(member => member.METADATA.masks ?? []))];
   // `{ regexp: undefined }` must not spread over the derived value.
   const defined: Partial<IdMetadata> = Object.fromEntries(
     Object.entries(overrides).filter(([, value]) => value !== undefined)
@@ -118,6 +120,7 @@ export function createCompositeValidator<
     // An explicit override skips the derived union, so it also works for members
     // whose regexps cannot be unioned (e.g. different flags).
     regexp: defined.regexp ?? unionRegExp(members.map(member => member.METADATA.regexp)),
+    ...(masks.length > 0 && { masks }),
     ...defined,
   };
 

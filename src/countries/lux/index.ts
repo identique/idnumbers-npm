@@ -25,6 +25,7 @@ export const METADATA: IdMetadata = {
   checksum: true,
   regexp: /^(?<yyyy>\d{4})(?<mm>\d{2})(?<dd>\d{2})(?<sn>\d{3})(?<checksum1>\d)(?<checksum2>\d)$/,
   displayFormat: 'YYYYMMDDSSSCC',
+  masks: ['#############'],
   example: '1893120105732',
   checksumAlgorithm: 'Dual: Luhn (digit 12) + Verhoeff (digit 13)',
   officialName: "Numéro d'identification national",

@@ -29,6 +29,7 @@ export class NationalID implements IdNumberClass {
     regexp:
       /^(?<register_office_code>\d{2})(?<national_num>(\d{6}|\d{7}))(?<checksum>[A-Z])(?<district_code>\d{2})$/,
     displayFormat: 'RR######(N)CDD',
+    masks: ['########L##', '#########L##'],
     example: '63123456G02',
     checksumAlgorithm: 'Digit-sum mod 23 mapped to checksum letter',
     officialName: 'National Registration Number',

@@ -32,6 +32,7 @@ export class PersonalID {
     checksum: true,
     regexp: new RegExp(/^\d{11}$/),
     displayFormat: '###########',
+    masks: ['###########'],
     example: '12345678903',
     checksumAlgorithm: 'ISO 7064 MOD 11,10',
     officialName: 'Osobni identifikacijski broj (OIB)',

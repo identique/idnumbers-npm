@@ -58,6 +58,7 @@ export class Cedula implements IdNumberClass {
     checksum: true,
     regexp: /^\d{9}[-\s]?\d$/,
     displayFormat: 'PPTSSSSSSC',
+    masks: ['##########'],
     example: '1710000009',
     checksumAlgorithm: 'Luhn (mod 10), weights [2,1,2,1,2,1,2,1,2] over digits 1-9',
     officialName: 'Cédula de Identidad',

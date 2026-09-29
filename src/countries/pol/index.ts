@@ -32,6 +32,7 @@ export const METADATA = {
   checksum: true,
   parsable: true,
   displayFormat: 'YYMMDDSSSSC',
+  masks: ['###########'],
   example: '80010100000',
   checksumAlgorithm: 'Weighted sum mod 10 (weights 1,3,7,9 repeating)',
   officialName: 'PESEL',

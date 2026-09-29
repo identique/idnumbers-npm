@@ -19,6 +19,7 @@ export class NIF implements IdNumberClass {
     checksum: true,
     regexp: /^\d{9}$/,
     displayFormat: 'XXXXXXXXX',
+    masks: ['#########'],
     example: '123456789',
     checksumAlgorithm: 'Weighted sum mod 11 (weights 9..2)',
     officialName: 'Número de Identificação Fiscal (NIF)',

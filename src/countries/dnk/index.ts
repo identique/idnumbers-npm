@@ -35,7 +35,7 @@ export const METADATA = {
   checksum: false,
   parsable: true,
   displayFormat: 'DDMMYY-SSSS',
-  layouts: ['######-####'],
+  masks: ['######-####'],
   example: '0101001234',
   checksumAlgorithm: 'None (modern CPR numbers carry no check digit; not validated)',
   officialName: 'CPR-nummer',

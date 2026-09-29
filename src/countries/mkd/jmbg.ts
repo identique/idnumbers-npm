@@ -13,6 +13,7 @@ export class UniqueMasterCitizenNumber extends YugoslaviaJMBG {
     countryName: 'North Macedonia',
     idType: 'Unique Master Citizen Number (JMBG)',
     displayFormat: 'DDMMYYYRRSSSC',
+    masks: ['#############'],
     example: '0101990410004',
     checksumAlgorithm: 'JMBG weighted sum mod 11 (folded pairs x 7,6,5,4,3,2)',
     officialName: 'Единствен матичен број на граѓанинот (ЕМБГ)',

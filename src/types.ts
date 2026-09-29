@@ -25,13 +25,17 @@ export interface IdMetadata {
   /** A synthetic, checksum-valid example ID (passes validateNationalId) */
   example?: string;
   /**
-   * How `formatId()` lays out the compact ID (#128): `#` stands for one character of
-   * the compact ID, and every other character is a separator that `formatId()` inserts
-   * and `normalizeId()` removes. One layout per compact length the ID comes in, e.g.
-   * `['##.###.###-#', '###.###.###-#']`. Absent for an ID written without separators,
-   * which `formatId()` returns as its compact form.
+   * Input masks for the ID (#129), one per compact length it comes in, e.g.
+   * `['##.###.###-X', '#.###.###-X']` for Chile. Each character is a token or a
+   * separator:
+   * - `#`: a digit
+   * - `L`: a letter
+   * - `X`: a letter or a digit
+   * - `*`: any character, e.g. Finland's century sign (`-`, `+`, or a letter)
+   * - anything else (` . - / ( )`): a separator that `formatId()` inserts and
+   *   `normalizeId()` removes.
    */
-  layouts?: readonly string[];
+  masks?: readonly string[];
   /** Human-readable checksum algorithm description (e.g. "Luhn (mod 10)" or "None (...)") */
   checksumAlgorithm?: string;
   /** Official/local name of the ID (e.g. "Personnummer") */

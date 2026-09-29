@@ -17,6 +17,7 @@ export const METADATA: IdMetadata = {
   checksum: true,
   regexp: /^\d{12}$/,
   displayFormat: 'XXXXXXXXXXXX',
+  masks: ['############'],
   example: '765895492872',
   checksumAlgorithm:
     'Weighted sum mod 11 (weights 6,5,4,3,2,7,6,5,4,3,2; remainder <= 1 → 0, else 11 - remainder)',

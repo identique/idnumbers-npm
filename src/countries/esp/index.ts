@@ -17,6 +17,7 @@ export const METADATA = {
   checksum: true,
   parsable: false,
   displayFormat: '########L',
+  masks: ['########L'],
   example: '12345678Z',
   checksumAlgorithm: 'Mod-23 check letter (TRWAGMYFPDXBNJZSQVHLCKE)',
   officialName: 'Documento Nacional de Identidad (DNI)',

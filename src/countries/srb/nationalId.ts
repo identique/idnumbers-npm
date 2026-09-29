@@ -26,6 +26,7 @@ export class NationalID implements IdNumberClass {
     checksum: true,
     regexp: /^\d{13}$/,
     displayFormat: 'DDMMYYYRRSSSC',
+    masks: ['#############'],
     example: '0101990700002',
     checksumAlgorithm: 'JMBG weighted sum mod 11 (weights 7,6,5,4,3,2 x2)',
     officialName: 'Jedinstveni matični broj građana (JMBG)',

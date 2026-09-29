@@ -39,6 +39,7 @@ export class NationalID implements IdNumberClass {
     checksum: false,
     regexp: /^(?:(?<province_country_code>\d{3})(?<gender>\d)(?<yy>\d{2})(?<sn>\d{6})|\d{9})$/,
     displayFormat: 'PPPGYYSSSSSS',
+    masks: ['############', '#########'],
     example: '001089000123',
     checksumAlgorithm: 'None (structural validation only)',
     officialName: 'Thẻ căn cước công dân (CCCD)',

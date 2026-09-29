@@ -33,6 +33,7 @@ export const METADATA = {
   checksum: true,
   parsable: true,
   displayFormat: 'YYMMDDRRGC',
+  masks: ['##########'],
   example: '7501020018',
   checksumAlgorithm: 'Weighted sum mod 11 (weights 2,4,8,5,10,9,7,3,6)',
   officialName: 'Единен граждански номер (ЕГН)',

@@ -16,7 +16,7 @@ export class NationalID implements IdNumberClass {
     checksum: false,
     regexp: /^[VEJG][\d.\-\s]{7,}$/,
     displayFormat: 'V-######## or E-########',
-    layouts: ['#-#######', '#-########', '#-#########'],
+    masks: ['L-########', 'L-#######', 'L-#########'],
     example: 'V-12345678',
     checksumAlgorithm: 'None (prefix and serial length only)',
     officialName: 'Cédula de Identidad',

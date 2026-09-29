@@ -16,6 +16,7 @@ export class TaxNumber {
     checksum: true,
     regexp: new RegExp(/^\d{8}[A-Z]$/),
     displayFormat: '########L',
+    masks: ['########L'],
     example: '01234567U',
     checksumAlgorithm: 'Positional digit transform, mod 26 -> check letter',
     officialName: 'Tax Identification Code (ΦΠΑ)',

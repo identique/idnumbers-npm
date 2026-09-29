@@ -22,6 +22,7 @@ export class NationalID implements IdNumberClass {
     checksum: false,
     regexp: /^\d{10}$/,
     displayFormat: '##########',
+    masks: ['##########'],
     example: '1234567890',
     checksumAlgorithm: 'None (format/length only)',
     officialName: 'National Identification Number (NID)',

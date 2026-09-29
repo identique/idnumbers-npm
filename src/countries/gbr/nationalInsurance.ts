@@ -17,6 +17,7 @@ export class NationalInsuranceNumber implements IdNumberClass {
     checksum: false,
     regexp: /^[A-Z]{2}\d{6}[A-Z]$/,
     displayFormat: 'LL######L',
+    masks: ['LL######L'],
     example: 'AB123456C',
     checksumAlgorithm: 'None (validated via prefix/suffix rules)',
     officialName: 'National Insurance Number (NINO)',

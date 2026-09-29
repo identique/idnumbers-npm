@@ -30,6 +30,7 @@ export const METADATA = {
   checksum: true,
   parsable: true,
   displayFormat: 'AAAAAAYYYYMMDDSSSC',
+  masks: ['#################X'],
   example: '11010219840406970X',
   checksumAlgorithm: 'ISO 7064 MOD 11-2 (weights 2^(18-i) mod 11; 10 → X)',
   officialName: '居民身份证 (Resident Identity Card)',

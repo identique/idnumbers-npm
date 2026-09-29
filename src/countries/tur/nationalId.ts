@@ -20,6 +20,7 @@ export class NationalID implements IdNumberClass {
     checksum: true,
     regexp: /^[1-9]\d{10}$/,
     displayFormat: '###########',
+    masks: ['###########'],
     example: '11111111110',
     checksumAlgorithm:
       'Dual check digits: d10 = (7*odd-sum - even-sum) mod 10; d11 = sum of first 10 digits mod 10',

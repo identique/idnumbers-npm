@@ -17,7 +17,7 @@ export class NationalID implements IdNumberClass {
     checksum: false,
     regexp: /^\d{4}[ -]?\d{7}[ -]?\d$/,
     displayFormat: 'XXXX-XXXXXXX-X',
-    layouts: ['####-#######-#'],
+    masks: ['####-#######-#'],
     example: '123456789012',
     checksumAlgorithm: 'None (format/length only)',
     officialName: 'PhilSys Number (PSN)',

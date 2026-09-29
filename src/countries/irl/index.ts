@@ -30,6 +30,7 @@ export const METADATA = {
   checksum: true,
   parsable: false,
   displayFormat: '#######L(L)',
+  masks: ['#######L', '#######LL'],
   example: '1234567T',
   checksumAlgorithm: 'Weighted sum mod 23 -> check letter (A-W)',
   officialName: 'Uimhir Phearsanta Seirbhíse Poiblí (PPS)',

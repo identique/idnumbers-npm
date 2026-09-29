@@ -45,6 +45,7 @@ export class SocialSecurityNumber implements IdNumberClass {
     regexp:
       /^(?<gender>[123478])(?<yy>\d{2})(?<mm>(0[1-9]|1[0-2]|[2-3][0-9]|4[0-2]|[5-9][0-9]))(?<birth_department>((\d{2}|2[AaBb])\d{3}))(?<cert_number>((?!000)\d{3}))(?<control_key>((?!(00|98|99))\d{2}))$/,
     displayFormat: 'SYYMMDDCCCOOOKK',
+    masks: ['###############'],
     example: '255081416802538',
     checksumAlgorithm: 'Mod-97 (key = 97 - number mod 97)',
     officialName: 'Numéro de Sécurité Sociale (INSEE)',

@@ -28,7 +28,7 @@ export class NationalID implements IdNumberClass {
     checksum: false,
     regexp: /^\d{10}$/,
     displayFormat: 'SSSS NNNNNN',
-    layouts: ['#### ######'],
+    masks: ['#### ######'],
     example: '1234 567890',
     checksumAlgorithm: 'None',
     officialName: 'Внутренний паспорт (Internal Passport)',

@@ -29,6 +29,7 @@ export const METADATA = {
   checksum: true,
   parsable: true,
   displayFormat: 'LLLLLLYYMDDXXXXC',
+  masks: ['LLLLLLXXLXXLXXXL'],
   example: 'RSSMRA85M01H501Q',
   checksumAlgorithm: 'Weighted alphanumeric mod 26 -> check letter',
   officialName: 'Codice fiscale',

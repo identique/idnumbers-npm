@@ -17,6 +17,7 @@ export class NationalID implements IdNumberClass {
     checksum: true,
     regexp: /^(\d{9})$/,
     displayFormat: '#########',
+    masks: ['#########'],
     example: '000000018',
     checksumAlgorithm: 'Luhn (mod 10)',
     officialName: 'מספר זהות (Mispar Zehut)',

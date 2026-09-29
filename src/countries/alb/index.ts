@@ -34,6 +34,7 @@ export const METADATA = {
   checksum: false,
   parsable: true,
   displayFormat: 'LYMMDDSSSC',
+  masks: ['X########L'],
   example: 'J50101001A',
   checksumAlgorithm: 'None (check letter not algorithmically verified)',
   officialName: 'Numri i Identitetit (NID)',

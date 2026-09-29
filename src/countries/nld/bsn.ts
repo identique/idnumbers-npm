@@ -24,7 +24,7 @@ export class BurgerServiceNumber implements IdNumberClass {
     checksum: true,
     regexp: /^(?!0000\.?00\.?000)\d{4}\.?\d{2}\.?\d{3}$/,
     displayFormat: '####.##.###',
-    layouts: ['####.##.###'],
+    masks: ['####.##.###'],
     example: '123456782',
     checksumAlgorithm: '11-proof weighted sum (weights 9..2, mod 11)',
     officialName: 'Burgerservicenummer (BSN)',
