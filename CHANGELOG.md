@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-09-29
+
+A major release: every breaking change is marked **BREAKING** below, and
+[MIGRATION.md](MIGRATION.md) explains how to upgrade from 1.x. Which IDs validate does not
+change; the library keeps parity with the Python `idnumbers` source of truth.
+
 ### Added
 
 - A native ES module build alongside the existing CommonJS build. `import` loads the ESM build and `require` loads the CJS build, both resolved through a `package.json` `exports` map with per-condition type declarations ([#120](https://github.com/identique/idnumbers-npm/issues/120))
@@ -23,11 +29,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **BREAKING:** Node.js >= 22 is now required (`engines.node`), and CI tests Node.js 22.x and 24.x instead of 16.x/18.x/20.x ([#120](https://github.com/identique/idnumbers-npm/issues/120))
 - **BREAKING:** the `exports` map limits public entry points to `idnumbers`, `idnumbers/core`, `idnumbers/countries/<iso3>` ([#122](https://github.com/identique/idnumbers-npm/issues/122)), and `idnumbers/package.json`, so deep imports like `idnumbers/dist/countries/twn` no longer resolve ([#120](https://github.com/identique/idnumbers-npm/issues/120))
-- Compiled output moved from `dist/` to `dist/cjs/` and `dist/esm/` and is now compiled for ES2022. Declaration maps and source maps are no longer shipped; the previous ones pointed at unpublished `src/` files ([#120](https://github.com/identique/idnumbers-npm/issues/120))
+- **BREAKING:** compiled output moved from `dist/` to `dist/cjs/` and `dist/esm/` and is now compiled for ES2022, so a bundle for an older browser target must transpile the package. Declaration maps and source maps are no longer shipped; the previous ones pointed at unpublished `src/` files ([#120](https://github.com/identique/idnumbers-npm/issues/120))
 - **BREAKING:** the 26 country modules that used the function-based METADATA dialect (plus BGD's `OLD_METADATA`/`NEW_METADATA`) now use the canonical `IdMetadata` field names — `isParsable` → `parsable`, `hasChecksum` → `checksum`, `pattern` → `regexp` — and gain `aliasOf`/`deprecated`; their dialect-only `name` field is removed in favor of `countryName`/`idType`. Validation, parsing, and `getCountryIdFormat()` field names are unchanged ([#121](https://github.com/identique/idnumbers-npm/issues/121))
 - **BREAKING:** `parseIdInfo()` returns `{ ok: true, countryCode, idNumber, info }` or `{ ok: false, countryCode, idNumber, reason, errorMessage? }` instead of `any | null`, so an unsupported country, an invalid ID, and a valid ID that cannot be parsed are told apart; `countryCode` is the resolved alpha-3 code. `ok: true` implies the ID is valid: the FRA and NOR parsers skip the check digits, so `parseIdInfo()` used to return info for some IDs `validateNationalId()` rejects ([#123](https://github.com/identique/idnumbers-npm/issues/123))
 - **BREAKING:** `ParsedInfo` is `{ [key: string]: unknown }` instead of `isValid: boolean` plus an `any` index signature, and every country's parse result type extends it; `ValidationResult.extractedInfo` is typed per country; `IdMetadata.aliasOf` is `IdNumberClass<object> | null` instead of `any`; `IdNumberClass`, `CountryModule`, `CountryValidator`, and `CountryDefinition` are generic over the parse result type. The published type declarations no longer contain `any`, which CI now enforces ([#123](https://github.com/identique/idnumbers-npm/issues/123))
-- `getCountryIdFormat()` returns a copy of the registered METADATA as `metadata`, so editing the result no longer changes validation or later results. In v1.x, class-based countries returned the registered object itself ([#181](https://github.com/identique/idnumbers-npm/issues/181))
+- **BREAKING:** `getCountryIdFormat()` returns a copy of the registered METADATA as `metadata`, so editing the result no longer changes validation or later results. In v1.x, class-based countries returned the registered object itself ([#181](https://github.com/identique/idnumbers-npm/issues/181))
 - **BREAKING:** `IValidatorRegistry` requires a `registerCountry(country)` method, so a custom implementation of the interface must add one ([#122](https://github.com/identique/idnumbers-npm/issues/122))
 
 ### Removed
@@ -244,7 +250,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Full TypeScript support with type definitions
 - Comprehensive documentation and examples
 
-[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v1.11.0...HEAD
+[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/identique/idnumbers-npm/compare/v1.11.0...v2.0.0
 [1.11.0]: https://github.com/identique/idnumbers-npm/compare/v1.10.0...v1.11.0
 [1.10.0]: https://github.com/identique/idnumbers-npm/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/identique/idnumbers-npm/compare/v1.8.0...v1.9.0
