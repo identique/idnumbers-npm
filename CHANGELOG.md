@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `getInputMask(countryCode)` returns a country's input masks in three forms: this library's vocabulary (`#` a digit, `L` a letter, `X` a letter or a digit, `*` any character, other characters separators), imask's pattern syntax, and a `RegExp` for react-hook-form's `pattern` rule ([#129](https://github.com/identique/idnumbers-npm/issues/129))
 - `IdMetadata.masks`: one mask per length the ID comes in, set on all 85 countries; `formatId()` and `getInputMask()` both follow them ([#128](https://github.com/identique/idnumbers-npm/issues/128), [#129](https://github.com/identique/idnumbers-npm/issues/129))
 - Property-based tests (fast-check) for `formatId()` and `normalizeId()`: for every country, generated valid IDs round-trip through both, match `getInputMask().pattern`, and still validate, and any input normalizes idempotently to an uppercase form without whitespace ([#131](https://github.com/identique/idnumbers-npm/issues/131)). Test-only; no library behavior changes
+- `docs/FORMS.md`: a forms integration guide — react-hook-form and framework-free examples on a single-country subpath import, with a bundle-size comparison; `docs/examples/forms-integration.js` runs the same calls in CI ([#132](https://github.com/identique/idnumbers-npm/issues/132))
 
 ## [2.0.0] - 2026-09-29
 
