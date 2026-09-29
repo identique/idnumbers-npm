@@ -119,7 +119,7 @@ export interface InputMask {
   countryCode: string;
   /**
    * One mask per compact length the ID comes in. Tokens: `#` a digit, `L` a letter,
-   * `X` a letter or a digit, `*` any character; every other character is a separator.
+   * `X` a letter or a digit, `*` any character except whitespace; every other character is a separator.
    */
   masks: string[];
   /**

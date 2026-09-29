@@ -305,7 +305,7 @@ countries** — [`getFormat()`](../src/registry/ValidatorRegistry.ts) surfaces t
 **`masks`** describe the ID's characters and separators, one mask per length the ID comes in
 ([#129](https://github.com/identique/idnumbers-npm/issues/129)). `formatId()` lays IDs out with them, and `getInputMask()` exports them to forms.
 Every country sets them. Each character is a token or a separator: `#` a digit, `L` a letter, `X`
-a letter or a digit, `*` any character, and space, `.`, `-`, `/`, `(`, or `)` a separator. For
+a letter or a digit, `*` any character except whitespace, and space, `.`, `-`, `/`, `(`, or `)` a separator. For
 example, `masks: ['##.###.###-X', '#.###.###-X']` covers Chile's 9- and 8-character RUTs, whose
 check digit may be `K`. Rules:
 
