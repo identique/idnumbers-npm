@@ -24,7 +24,7 @@ type Token = keyof typeof TOKEN_ALPHABETS;
 const isToken = (char: string): char is Token => Object.hasOwn(TOKEN_ALPHABETS, char);
 
 /** Noise characters `messyIdArbitrary()` sprinkles in: whitespace, separators, zero-width. */
-const NOISE = [' ', '.', '-', '/', '(', ')', '\t', ' ', '​', '⁠', '﻿'];
+const NOISE = [' ', '.', '-', '/', '(', ')', '\t', '\u00A0', '\u200B', '\u2060', '\uFEFF'];
 
 /** The country's masks, in registry order (every built-in country has at least one). */
 function masksOf(code: string): readonly string[] {
@@ -75,7 +75,7 @@ function repair(code: string, chars: string[], positions: TokenPosition[]): stri
 /**
  * Generates IDs `validateNationalId(code, ...)` accepts, in the compact layout of
  * `getCountryIdFormat(code).example`'s mask (its mask's token count, i.e. compact
- * length) — a multi-length country's other lengths aren't covered by this arbitrary;
+ * length) - a multi-length country's other lengths aren't covered by this arbitrary;
  * the `anyInputArbitrary()` properties exercise those via generated-then-mutated
  * strings instead.
  *
@@ -121,7 +121,7 @@ export function validIdArbitrary(code: string): fc.Arbitrary<string> {
  * with token characters drawn from their alphabets plus lowercase, each literal
  * separator kept or dropped, up to one noise character inserted after each position,
  * and up to two leading noise characters. Not filtered by validity: most values are
- * invalid, which is the point — `normalizeId()`/`formatId()` must handle them cleanly
+ * invalid, which is the point - `normalizeId()`/`formatId()` must handle them cleanly
  * regardless.
  */
 export function messyIdArbitrary(code: string): fc.Arbitrary<string> {
