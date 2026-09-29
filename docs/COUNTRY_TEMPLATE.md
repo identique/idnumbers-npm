@@ -301,6 +301,15 @@ Rules the template encodes:
 countries** — [`getFormat()`](../src/registry/ValidatorRegistry.ts) surfaces them through the public
 `getCountryIdFormat()` API, and all 85 current countries populate them.
 
+**`layouts`** tell `formatId()` where the separators go
+([#128](https://github.com/identique/idnumbers-npm/issues/128)). Set them when the ID is written
+with separators: `#` stands for one character of the compact ID, and every other character is a
+separator. Give one layout per compact length the ID comes in, e.g.
+`layouts: ['##.###.###-#', '###.###.###-#']` for Colombia's 9- and 10-digit cédulas. A plain
+`displayFormat` such as `###.###.###-##` must appear among them with its placeholders written as
+`#`. A separator must never also be a character of the ID itself (Finland's `-` century sign is
+data, so FIN has no layouts). Omit `layouts` for an ID written without separators.
+
 ⚠️ **`METADATA.example` must be a synthetic, checksum-valid ID that passes `validateNationalId()`** —
 this is asserted by the format-info tests. Never use a real person's number.
 
@@ -429,6 +438,7 @@ until the country meets its contract:
 | [`issue-123-parse-results.test.ts`](../src/__tests__/issue-123-parse-results.test.ts)                                                                                                                    | A `ParseResultMap` entry matching `parse()`; `METADATA.example` validates, and parses unless the entry is `never`                                                                                                               |
 | [`issue-124-removals.test.ts`](../src/__tests__/issue-124-removals.test.ts)                                                                                                                              | Every alias, in either case, gives the same validate/parse/format results as the alpha-3 key                                                                                                                                    |
 | [`issue-124-input-formats.test.ts`](../src/__tests__/issue-124-input-formats.test.ts)                                                                                                                    | A row in [`docs/INPUT_FORMATS.md`](INPUT_FORMATS.md) matching the validator                                                                                                                                                     |
+| [`issue-128-format.test.ts`](../src/__tests__/issue-128-format.test.ts)                                                                                                                                  | `formatId()` lays out `METADATA.example`, the result validates, and `normalizeId()` round-trips it; `layouts` hold one layout per length and contain a plain `displayFormat`                                                    |
 | [`issue-183-tree-shaking.test.ts`](../src/__tests__/issue-183-tree-shaking.test.ts)                                                                                                                      | Importing every export of `index.ts` except `country` bundles no `defineCountry`: the definition is annotated `/* @__PURE__ */` and uses no object spread                                                                       |
 | `npm run size` ([`check-bundle-size.mjs`](../scripts/check-bundle-size.mjs))                                                                                                                             | `idnumbers/core` plus the country subpath stays within 6,000 B min+gzip ([ADR 002](adr/002-country-registration-model.md#bundle-size-budgets))                                                                                  |
 | `npm run lint:types` ([`check-declarations.mjs`](../scripts/check-declarations.mjs))                                                                                                                     | No `any` in the country's published type declarations                                                                                                                                                                           |

@@ -17,6 +17,7 @@ export const METADATA: IdMetadata = {
   checksum: true,
   regexp: /^[2-9]\d{3}[\s-]?\d{4}[\s-]?\d{4}$/,
   displayFormat: 'XXXX XXXX XXXX',
+  layouts: ['#### #### ####'],
   example: '892473528038',
   checksumAlgorithm: 'Verhoeff algorithm',
   officialName: 'Aadhaar (आधार)',

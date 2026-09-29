@@ -44,6 +44,7 @@ export class NationalID implements IdNumberClass {
     checksum: false,
     regexp: /^(?<doc_type>[01578])(?<sn>\d{6})\(?(?<extra>\d)\)?$/,
     displayFormat: '#######(#)',
+    layouts: ['#######(#)'],
     example: '5215432(8)',
     checksumAlgorithm: 'None (parenthesised digit not algorithmically verified)',
     officialName: 'Bilhete de Identidade de Residente (BIR)',

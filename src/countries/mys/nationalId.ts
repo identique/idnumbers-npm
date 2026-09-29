@@ -32,6 +32,7 @@ export class NationalID implements IdNumberClass {
     checksum: false,
     regexp: /^(?<yy>\d{2})(?<mm>\d{2})(?<dd>\d{2})-?(?<pb>\d{2})-?(?<sn>\d{4})$/,
     displayFormat: 'YYMMDD-PB-###G',
+    layouts: ['######-##-####'],
     example: '800101011234',
     checksumAlgorithm: 'None (date/structure validation only)',
     officialName: 'National Registration Identity Card (NRIC)',

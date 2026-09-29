@@ -24,6 +24,14 @@ export interface IdMetadata {
   displayFormat?: string;
   /** A synthetic, checksum-valid example ID (passes validateNationalId) */
   example?: string;
+  /**
+   * How `formatId()` lays out the compact ID (#128): `#` stands for one character of
+   * the compact ID, and every other character is a separator that `formatId()` inserts
+   * and `normalizeId()` removes. One layout per compact length the ID comes in, e.g.
+   * `['##.###.###-#', '###.###.###-#']`. Absent for an ID written without separators,
+   * which `formatId()` returns as its compact form.
+   */
+  layouts?: readonly string[];
   /** Human-readable checksum algorithm description (e.g. "Luhn (mod 10)" or "None (...)") */
   checksumAlgorithm?: string;
   /** Official/local name of the ID (e.g. "Personnummer") */

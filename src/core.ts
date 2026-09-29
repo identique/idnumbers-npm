@@ -18,5 +18,6 @@ export * from './constants.js';
 export * from './types.js';
 export * from './registry/index.js';
 export * from './api.js';
+export * from './format.js';
 // Type-only: the per-country parse result map adds nothing to a bundle (#123).
 export type * from './parseResultMap.js';

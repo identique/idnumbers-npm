@@ -16,6 +16,7 @@ export class NationalID {
     checksum: true,
     regexp: new RegExp(/^[A-Z]{1,2}[0-9]{6}\(?[0-9A]\)?$/),
     displayFormat: 'L(L)######(C)',
+    layouts: ['#######(#)', '########(#)'],
     example: 'A123456(3)',
     checksumAlgorithm:
       'Weighted sum mod 11 over char values (A=10..Z=35; single-letter IDs padded; remainder 1 → check char A)',

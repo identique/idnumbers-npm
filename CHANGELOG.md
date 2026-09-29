@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `formatId(countryCode, idNumber)` writes an ID in its country's display format (e.g. `'390.533.447-05'` for Brazil), and `normalizeId(countryCode, idNumber)` returns its compact form. Both accept compact, formatted, and lowercase input, return `null` for an unsupported country, and work with `idnumbers/core` for registered countries. `formatId()` also returns `null` when no layout fits the input's length ([#128](https://github.com/identique/idnumbers-npm/issues/128))
+- `IdMetadata.layouts`: the separator layouts `formatId()` uses, set on the 33 countries whose IDs are written with separators ([#128](https://github.com/identique/idnumbers-npm/issues/128))
+
 ## [2.0.0] - 2026-09-29
 
 A major release: every breaking change is marked **BREAKING** below, and

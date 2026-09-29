@@ -28,6 +28,7 @@ export const METADATA = {
   checksum: true,
   parsable: true,
   displayFormat: 'YYMMDD/SSSC',
+  layouts: ['######/####'],
   example: '0001010009',
   checksumAlgorithm: 'Whole 10-digit number divisible by 11',
   officialName: 'Rodné číslo (RČ)',

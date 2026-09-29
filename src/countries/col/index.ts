@@ -22,6 +22,7 @@ export const METADATA = {
   maxLength: 10,
   regexp: /^(\d{2,3}\.?\d{3}\.?\d{3}-?\d)$/,
   displayFormat: '##(#).###.###-C',
+  layouts: ['##.###.###-#', '###.###.###-#'],
   example: '12.345.678-8',
   checksumAlgorithm: 'Weighted sum mod 11 (right-to-left prime weights; 11 → 0, 10 → 1)',
   officialName: 'Número Único de Identificación Personal (NUIP)',
