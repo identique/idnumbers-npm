@@ -79,7 +79,7 @@ cannot drift from the validators; when a validator changes, the test prints the 
 | HKG  | no                  | no                  |
 | HRV  | yes                 | no                  |
 | HUN  | no                  | yes                 |
-| IDN  | no                  | no                  |
+| IDN  | no                  | yes                 |
 | IND  | yes                 | no                  |
 | IRL  | no                  | no                  |
 | IRN  | no                  | no                  |

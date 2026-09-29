@@ -209,7 +209,7 @@ placeholder regexp ([#160](https://github.com/identique/idnumbers-npm/issues/160
 shape-related codes (`invalid_length`/`invalid_format`) never triggered there; v2.0.0 fixes the
 metadata ([#121](https://github.com/identique/idnumbers-npm/issues/121)).
 `invalid_birthdate` ([#130](https://github.com/identique/idnumbers-npm/issues/130), new in
-v2.1.0, not yet published to npm) is reported by the 22 countries whose validators check the
+v2.1.0, not yet published to npm) is reported by the 23 countries whose validators check the
 birth date their IDs encode. See [docs/FAILURE_REASONS.md](docs/FAILURE_REASONS.md) for which
 reasons each country can report.
 
@@ -734,7 +734,7 @@ Accepted letter case, surrounding whitespace, and separators for every country a
 
 ## Testing
 
-The library includes comprehensive test coverage with 4421 tests covering:
+The library includes comprehensive test coverage with 4422 tests covering:
 
 - Format validation
 - Checksum verification

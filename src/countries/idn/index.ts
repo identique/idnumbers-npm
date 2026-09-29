@@ -6,6 +6,7 @@
 import { IdMetadata, ParsedInfo } from '../../types.js';
 import { DISTRICT_CODES } from './districts.js';
 import { defineCountry } from '../../registry/country.js';
+import { invalidBirthDate } from '../../birthDateCheck.js';
 
 export interface IndonesiaParseResult extends ParsedInfo {
   isValid: boolean;
@@ -93,7 +94,7 @@ export function parse(idNumber: string): IndonesiaParseResult | null {
       }
     }
 
-    if (!isValid) {
+    if (invalidBirthDate(!isValid)) {
       return null;
     }
 
