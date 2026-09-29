@@ -133,8 +133,10 @@ export function CpfField() {
 
 Notes:
 
-- `getInputMask('BRA')!.imask` is a **dynamic mask list** (one entry per length CPF comes in), so
-  `IMaskInput` picks the entry that fits what has been typed as the person types.
+- `getInputMask('BRA')!.imask` is built from a **mask list**, but CPF only has one entry
+  (`###.###.###-##`) since it comes in a single length. The dynamic behavior — `IMaskInput`
+  picking the entry that fits what has been typed — matters for a country with several ID
+  lengths, e.g. `getInputMask('HKG')!.masks` is `['L######(X)', 'LL######(X)']`.
 - `unmask={false}` keeps the field's value formatted (`390.533.447-05`), matching what
   `braMask.pattern` and `validateNationalId()` expect; `onAccept` (not the native `onChange`) is
   react-imask's callback for the masked value, so it's what feeds react-hook-form's `onChange`.

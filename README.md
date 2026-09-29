@@ -676,7 +676,7 @@ if (parsed.ok) {
 ### Integration with Forms
 
 ```typescript
-import { validateNationalId } from 'idnumbers';
+import { validateNationalId, ValidationFailureReason } from 'idnumbers';
 
 function validateUserID(
   country: string,
@@ -686,11 +686,24 @@ function validateUserID(
   message: string;
 } {
   const result = validateNationalId(country, idNumber);
+  if (result.isValid) {
+    return { valid: true, message: 'Valid ID number' };
+  }
 
-  return {
-    valid: result.isValid,
-    message: result.isValid ? 'Valid ID number' : result.errorMessage || 'Invalid ID number',
-  };
+  switch (result.reason) {
+    case ValidationFailureReason.UNSUPPORTED_COUNTRY:
+      return { valid: false, message: `Unsupported country: ${country}` };
+    case ValidationFailureReason.INVALID_LENGTH:
+      return { valid: false, message: 'Wrong length for this ID type' };
+    case ValidationFailureReason.INVALID_FORMAT:
+      return { valid: false, message: 'Does not match the expected pattern' };
+    case ValidationFailureReason.CHECKSUM_MISMATCH:
+      return { valid: false, message: 'Checksum digit is wrong' };
+    case ValidationFailureReason.INVALID_BIRTHDATE:
+      return { valid: false, message: 'Encoded birth date is not a real date' };
+    default:
+      return { valid: false, message: 'Invalid ID number' };
+  }
 }
 
 // In your form handler
