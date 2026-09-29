@@ -1,6 +1,7 @@
 import { CheckDigit, Gender, Citizenship } from '../../constants.js';
 import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
 import { luhnDigit } from '../../utils.js';
+import { invalidBirthDate } from '../../birthDateCheck.js';
 
 /**
  * Parse result of South Africa national ID
@@ -86,9 +87,11 @@ export class NationalID implements IdNumberClass {
 
       // Validate the date is actually valid
       if (
-        date.getFullYear() !== year ||
-        date.getMonth() !== parseInt(groups.mm) - 1 ||
-        date.getDate() !== parseInt(groups.dd)
+        invalidBirthDate(
+          date.getFullYear() !== year ||
+            date.getMonth() !== parseInt(groups.mm) - 1 ||
+            date.getDate() !== parseInt(groups.dd)
+        )
       ) {
         return null;
       }

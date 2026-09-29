@@ -7,6 +7,7 @@ import { IdMetadata, ParsedInfo } from '../../types.js';
 import { isValidDate } from '../../utils.js';
 import { Gender } from '../../constants.js';
 import { defineCountry } from '../../registry/country.js';
+import { invalidBirthDate } from '../../birthDateCheck.js';
 
 export interface MexicoParseResult extends ParsedInfo {
   isValid: boolean;
@@ -143,7 +144,7 @@ export function parse(idNumber: string): MexicoParseResult | null {
   const day = parseInt(dd, 10);
 
   // Validate date
-  if (!isValidDate(year, month, day)) {
+  if (invalidBirthDate(!isValidDate(year, month, day))) {
     return null;
   }
 

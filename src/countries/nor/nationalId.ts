@@ -1,5 +1,6 @@
 import { Gender } from '../../constants.js';
 import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
+import { invalidBirthDate } from '../../birthDateCheck.js';
 
 /**
  * Parse result of Norway national ID
@@ -129,9 +130,11 @@ export class NationalID implements IdNumberClass {
 
     // Validate date
     if (
-      date.getFullYear() !== fullYear ||
-      date.getMonth() !== mmNum - 1 ||
-      date.getDate() !== dayNum
+      invalidBirthDate(
+        date.getFullYear() !== fullYear ||
+          date.getMonth() !== mmNum - 1 ||
+          date.getDate() !== dayNum
+      )
     ) {
       return null;
     }

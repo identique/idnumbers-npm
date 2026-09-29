@@ -16,6 +16,7 @@
 import { IdMetadata, ParsedInfo } from '../../types.js';
 import { isValidDate, calculateAge } from '../../utils.js';
 import { defineCountry } from '../../registry/country.js';
+import { invalidBirthDate } from '../../birthDateCheck.js';
 
 export interface DenmarkParseResult extends ParsedInfo {
   isValid: boolean;
@@ -64,7 +65,7 @@ export function validate(idNumber: string): boolean {
   const yearValue = parseInt(yy, 10);
   const year = yearValue > 50 ? 1900 + yearValue : 2000 + yearValue;
 
-  return isValidDate(year, monthValue, dayValue);
+  return !invalidBirthDate(!isValidDate(year, monthValue, dayValue));
 }
 
 /**
@@ -87,7 +88,7 @@ export function parse(idNumber: string): DenmarkParseResult | null {
     const year = yearValue > 50 ? 1900 + yearValue : 2000 + yearValue;
 
     // Validate date
-    if (!isValidDate(year, monthValue, dayValue)) {
+    if (invalidBirthDate(!isValidDate(year, monthValue, dayValue))) {
       return null;
     }
 

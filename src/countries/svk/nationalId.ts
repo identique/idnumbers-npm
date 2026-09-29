@@ -1,5 +1,6 @@
 import { CheckDigit, Gender } from '../../constants.js';
 import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
+import { invalidBirthDate } from '../../birthDateCheck.js';
 
 /**
  * Parse result for Slovakia Birth Number
@@ -111,9 +112,11 @@ export class NationalID implements IdNumberClass {
 
       // Validate date
       if (
-        date.getFullYear() !== yearBase + yy ||
-        date.getMonth() !== mm - 1 ||
-        date.getDate() !== dd
+        invalidBirthDate(
+          date.getFullYear() !== yearBase + yy ||
+            date.getMonth() !== mm - 1 ||
+            date.getDate() !== dd
+        )
       ) {
         return null;
       }

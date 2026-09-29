@@ -5,6 +5,7 @@
 import { IdMetadata, ParsedInfo } from '../../types.js';
 import { isValidDate, calculateAge } from '../../utils.js';
 import { defineCountry } from '../../registry/country.js';
+import { invalidBirthDate } from '../../birthDateCheck.js';
 
 export interface ItalyParseResult extends ParsedInfo {
   isValid: boolean;
@@ -223,7 +224,7 @@ function extractBirthdayAndGender(
   const gender: 'Male' | 'Female' = dd >= 40 ? 'Female' : 'Male';
 
   // Validate date
-  if (!isValidDate(year, month, day)) {
+  if (invalidBirthDate(!isValidDate(year, month, day))) {
     return null;
   }
 

@@ -1,5 +1,6 @@
 import { CheckDigit, Citizenship } from '../../constants.js';
 import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
+import { invalidBirthDate } from '../../birthDateCheck.js';
 
 /**
  * Parse result of Malaysia national ID
@@ -119,7 +120,11 @@ export class NationalID implements IdNumberClass {
       const date = new Date(yyyy, mm - 1, dd);
 
       // Validate the date is actually valid by checking components match
-      if (date.getFullYear() !== yyyy || date.getMonth() !== mm - 1 || date.getDate() !== dd) {
+      if (
+        invalidBirthDate(
+          date.getFullYear() !== yyyy || date.getMonth() !== mm - 1 || date.getDate() !== dd
+        )
+      ) {
         return null;
       }
 
