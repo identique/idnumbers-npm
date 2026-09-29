@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-09-29
+
+A major release: every breaking change is marked **BREAKING** below, and
+[MIGRATION.md](MIGRATION.md) explains how to upgrade from 1.x. Which IDs validate does not
+change; the library keeps parity with the Python `idnumbers` source of truth.
+
 ### Added
 
 - A native ES module build alongside the existing CommonJS build. `import` loads the ESM build and `require` loads the CJS build, both resolved through a `package.json` `exports` map with per-condition type declarations ([#120](https://github.com/identique/idnumbers-npm/issues/120))
@@ -244,7 +250,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Full TypeScript support with type definitions
 - Comprehensive documentation and examples
 
-[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v1.11.0...HEAD
+[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/identique/idnumbers-npm/compare/v1.11.0...v2.0.0
 [1.11.0]: https://github.com/identique/idnumbers-npm/compare/v1.10.0...v1.11.0
 [1.10.0]: https://github.com/identique/idnumbers-npm/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/identique/idnumbers-npm/compare/v1.8.0...v1.9.0
