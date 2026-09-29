@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `formatId(countryCode, idNumber)` writes an ID in its country's display format (e.g. `'390.533.447-05'` for Brazil), and `normalizeId(countryCode, idNumber)` returns its compact form. Both accept compact, formatted, and lowercase input, return `null` for an unsupported country, and work with `idnumbers/core` for registered countries. `formatId()` also returns `null` when no layout fits the input's length ([#128](https://github.com/identique/idnumbers-npm/issues/128))
 - `getInputMask(countryCode)` returns a country's input masks in three forms: this library's vocabulary (`#` a digit, `L` a letter, `X` a letter or a digit, `*` any character, other characters separators), imask's pattern syntax, and a `RegExp` for react-hook-form's `pattern` rule ([#129](https://github.com/identique/idnumbers-npm/issues/129))
 - `IdMetadata.masks`: one mask per length the ID comes in, set on all 85 countries; `formatId()` and `getInputMask()` both follow them ([#128](https://github.com/identique/idnumbers-npm/issues/128), [#129](https://github.com/identique/idnumbers-npm/issues/129))
+- Property-based tests (fast-check) for `formatId()` and `normalizeId()`: for every country, generated valid IDs round-trip through both, match `getInputMask().pattern`, and still validate, and any input normalizes idempotently ([#131](https://github.com/identique/idnumbers-npm/issues/131)). Test-only; no library behavior changes
 
 ## [2.0.0] - 2026-09-29
 
