@@ -31,7 +31,7 @@ export interface IdMetadata {
    * - `#`: a digit
    * - `L`: a letter
    * - `X`: a letter or a digit
-   * - `*`: any character, e.g. Finland's century sign (`-`, `+`, or a letter)
+   * - `*`: any character except whitespace, e.g. Finland's century sign (`-`, `+`, or a letter)
    * - anything else (` . - / ( )`): a separator that `formatId()` inserts and
    *   `normalizeId()` removes.
    */

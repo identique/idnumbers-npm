@@ -1,7 +1,7 @@
 /**
  * Issue #129: machine-readable input masks. Each country's METADATA.masks uses
  * the documented token vocabulary (`#` digit, `L` letter, `X` letter or digit,
- * `*` any character; other characters are separators), and getInputMask()
+ * `*` any character except whitespace; other characters are separators), and getInputMask()
  * exports them in that vocabulary, in imask's pattern syntax, and as a RegExp.
  */
 import * as lib from '../index';
