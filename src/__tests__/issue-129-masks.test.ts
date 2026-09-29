@@ -7,7 +7,8 @@
 import * as lib from '../index';
 import * as coreEntry from '../core';
 import { formatId, getCountryIdFormat, getInputMask, validateNationalId } from '../index';
-import { registry, defineCountry } from '../registry';
+import { registry, defineCountry, createCompositeValidator, CountryValidator } from '../registry';
+import { IdMetadata } from '../types';
 import { acceptedVariants, UNFORMATTABLE } from './helpers/idVariants';
 
 type Core = typeof import('../core');
@@ -82,6 +83,62 @@ describe('issue #129: character classes', () => {
   it('resolves aliases and lowercase codes', () => {
     expect(getInputMask('br')!.countryCode).toBe('BRA');
     expect(getInputMask('UK')!.countryCode).toBe('GBR');
+  });
+});
+
+describe('issue #129: masks on every exported ID type', () => {
+  // Each ID type's own masks must describe only that type, so it can be registered
+  // alone through idnumbers/core. A composite country joins its members' masks.
+  const exported = Object.entries(lib as unknown as Record<string, unknown>)
+    .filter(([name]) => /^[A-Z]{3}$/.test(name))
+    .flatMap(([country, namespace]) =>
+      Object.entries(namespace as Record<string, { METADATA?: IdMetadata }>)
+        .filter(([, value]) => value?.METADATA?.masks)
+        .map(([name, value]) => [`${country}.${name}`, value.METADATA!] as const)
+    );
+
+  it('finds the exported ID types with masks', () => {
+    expect(exported.length).toBeGreaterThanOrEqual(countries.length);
+  });
+
+  it.each(exported)('%s: every mask fits its own minLength-maxLength', (_name, METADATA) => {
+    for (const mask of METADATA.masks!) {
+      const slots = mask.replace(/[^#LX*]/g, '').length;
+      expect(slots).toBeGreaterThanOrEqual(METADATA.minLength);
+      expect(slots).toBeLessThanOrEqual(METADATA.maxLength);
+    }
+  });
+});
+
+describe('issue #129: createCompositeValidator joins member masks', () => {
+  const member = (masks: string[] | undefined, regexp: RegExp): CountryValidator => ({
+    METADATA: { ...registry.get('BRA')!.METADATA, masks, regexp },
+    validate: id => regexp.test(id),
+  });
+
+  it('lists every member mask once, in member order', () => {
+    const composite = createCompositeValidator([
+      member(['###'], /^\d{3}$/),
+      member(['LL#', '###'], /^(?:[A-Z]{2}\d|\d{3})$/),
+    ]);
+    expect(composite.METADATA.masks).toEqual(['###', 'LL#']);
+  });
+
+  it('has no masks when no member has any, and lets an override win', () => {
+    expect(createCompositeValidator([member(undefined, /^\d$/)]).METADATA.masks).toBeUndefined();
+    const overridden = createCompositeValidator([member(['#'], /^\d$/)], { masks: ['##'] });
+    expect(overridden.METADATA.masks).toEqual(['##']);
+  });
+
+  it('gives BGD and SMR their members masks', () => {
+    expect(getInputMask('BGD')!.masks).toEqual([
+      ...lib.BGD.NationalID.METADATA.masks!,
+      ...lib.BGD.OldNationalID.METADATA.masks!,
+    ]);
+    expect(getInputMask('SMR')!.masks).toEqual([
+      ...lib.SMR.SocialSecurityNumber.METADATA.masks!,
+      ...lib.SMR.TaxRegistrationNumber.METADATA.masks!,
+    ]);
   });
 });
 

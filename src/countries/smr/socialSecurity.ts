@@ -14,7 +14,7 @@ export class SocialSecurityNumber implements IdNumberClass {
     checksum: false,
     regexp: /^\d{9}$/,
     displayFormat: '#########',
-    masks: ['#########', 'LL#####'],
+    masks: ['#########'],
     example: '123456789',
     checksumAlgorithm: 'None (format/length only)',
     officialName: 'Social Security Number (SSI)',

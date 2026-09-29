@@ -13,6 +13,7 @@ export class TaxRegistrationNumber implements IdNumberClass {
     parsable: false,
     checksum: false,
     regexp: /^SM\d{5}$/,
+    masks: ['LL#####'],
     aliasOf: null,
     names: ['Entity Tax Registration Number', 'COE'],
     links: [

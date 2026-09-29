@@ -314,6 +314,8 @@ check digit may be `K`. Rules:
   with its tokens written as `#`.
 - A separator must never also be a character of the ID. Finland's `-` century sign is data, so its
   mask is `######*###X`, with no separators.
+- Put each ID type's masks on its own METADATA, describing only that type. A composite country
+  (`createCompositeValidator`) lists every member's masks automatically, as BGD and SMR do.
 
 ⚠️ **`METADATA.example` must be a synthetic, checksum-valid ID that passes `validateNationalId()`** —
 this is asserted by the format-info tests. Never use a real person's number.
