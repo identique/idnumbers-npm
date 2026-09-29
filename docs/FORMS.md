@@ -237,8 +237,8 @@ v2.1.0 `main`:
 | `idnumbers/core` + `idnumbers/countries/bra` |  2,919 B |   7,385 B |
 
 That's about **13.7x** smaller. Validation alone (no `formatId`/`normalizeId`/`getInputMask`) with
-core plus one subpath runs 2.0–5.5 kB min+gzip across all 85 countries (`npm run size`'s
-per-country budget), depending on how much validation logic that country needs.
+core plus one subpath runs 2.0–5.5 kB min+gzip across all 85 countries (as `npm run size` measures
+it; the per-country budget is 6 kB), depending on how much validation logic that country needs.
 
 These numbers will vary with your bundler, its settings, and the library version — re-measure for
 your own build. And keep in mind that **importing the root `idnumbers` anywhere in an app**
