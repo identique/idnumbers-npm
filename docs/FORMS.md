@@ -219,7 +219,7 @@ that, use imask directly: `IMask(input, { mask: getInputMask('BRA')!.imask })`.
 (`input.pattern = braMask.pattern.source`) for a native, as-you-type shape hint: a browser anchors
 it (`^(?:<value>)$`) and compiles it under the Unicode-set (`v`) regex flag, both of which
 `pattern.source` is built to satisfy. It's a shape check only, same as the `RegExp` object itself
-— it can allow more than a valid ID does (see above) — so the real validation still happens on
+— it can allow more than a valid ID does ([README](../README.md#getinputmaskcountrycode)) — so the real validation still happens on
 submit, with `setCustomValidity()` and `validateNationalId()`.
 
 ## Bundle size
