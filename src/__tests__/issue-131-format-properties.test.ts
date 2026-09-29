@@ -40,11 +40,19 @@ describe('issue #131: arbitraries', () => {
     'messyIdArbitrary(%s) samples include lowercase letters and noise',
     code => {
       const samples = fc.sample(messyIdArbitrary(code), { numRuns: 200, seed: 131 });
+      // Zero-width noise characters (helpers/arbitraries.ts's NOISE), pinned individually so a
+      // change that drops zero-width chars from NOISE - and so stops exercising normalizeId()'s
+      // zero-width stripping - fails here rather than going unnoticed.
+      const ZERO_WIDTH_CHARS = ['\u200B', '\u2060', '\uFEFF'];
 
       expect(samples.some(sample => /[a-z]/.test(sample))).toBe(true);
       expect(samples.some(sample => [...sample].some(char => NOISE_CHARS.includes(char)))).toBe(
         true
       );
+      expect(
+        samples.some(sample => [...sample].some(char => ZERO_WIDTH_CHARS.includes(char)))
+      ).toBe(true);
+      expect(samples.some(sample => sample.includes('\u00A0'))).toBe(true);
     }
   );
 });
@@ -87,7 +95,7 @@ describe('issue #131: generated valid IDs', () => {
 
 describe('issue #131: any input', () => {
   it.each(countries)('%s', code => {
-    const requiresSeparators = hasSeparatorMask(code);
+    const masksHaveSeparators = hasSeparatorMask(code);
 
     fc.assert(
       fc.property(anyInputArbitrary(code), s => {
@@ -100,7 +108,7 @@ describe('issue #131: any input', () => {
         // zero-width), and, when the country's masks use them, no separators.
         expect(normalized).toBe(normalized.toUpperCase());
         expect(WHITESPACE_RE.test(normalized)).toBe(false);
-        if (requiresSeparators) {
+        if (masksHaveSeparators) {
           expect(normalized).not.toMatch(SEPARATOR_CHARS_RE);
         }
 
