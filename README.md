@@ -164,14 +164,15 @@ if (result.isValid) {
 When `isValid` is `false`, `ValidationResult` may carry a machine-readable `reason`
 (a `ValidationFailureReason` enum member) describing why validation failed:
 
-| Code                  | Meaning                                                                 |
-| --------------------- | ----------------------------------------------------------------------- |
-| `unsupported_country` | The country code doesn't resolve to a registered validator.             |
-| `invalid_length`      | The ID's length doesn't fit the country's expected range.               |
-| `invalid_format`      | The ID's length is plausible but it doesn't match the expected pattern. |
-| `checksum_mismatch`   | The ID matches the expected shape but fails a checksum digit.           |
-| `validation_failed`   | A generic fallback for any other failure (including thrown errors).     |
-| `not_parsable`        | Only from `parseIdInfo()`: the ID is valid, but nothing can be parsed.  |
+| Code                  | Meaning                                                                                   |
+| --------------------- | ----------------------------------------------------------------------------------------- |
+| `unsupported_country` | The country code doesn't resolve to a registered validator.                               |
+| `invalid_length`      | The ID's length doesn't fit the country's expected range.                                 |
+| `invalid_format`      | The ID's length is plausible but it doesn't match the expected pattern.                   |
+| `checksum_mismatch`   | The ID matches the expected shape but fails a checksum digit.                             |
+| `invalid_birthdate`   | The ID matches the expected shape, but its encoded birth date isn't real (new in v2.1.0). |
+| `validation_failed`   | A generic fallback for any other failure (including thrown errors).                       |
+| `not_parsable`        | Only from `parseIdInfo()`: the ID is valid, but nothing can be parsed.                    |
 
 `reason` is **non-exhaustive**: future minor releases may add new, more specific
 codes, so always handle unknown values with a `default` branch:
@@ -190,6 +191,9 @@ switch (result.reason) {
   case ValidationFailureReason.CHECKSUM_MISMATCH:
     console.log('Checksum digit is wrong');
     break;
+  case ValidationFailureReason.INVALID_BIRTHDATE:
+    console.log('Encoded birth date is not a real date');
+    break;
   case ValidationFailureReason.VALIDATION_FAILED:
   default:
     console.log('Validation failed for another reason');
@@ -204,8 +208,10 @@ that expose a computed check digit instead, or none at all, fall back to
 placeholder regexp ([#160](https://github.com/identique/idnumbers-npm/issues/160)), so its
 shape-related codes (`invalid_length`/`invalid_format`) never triggered there; v2.0.0 fixes the
 metadata ([#121](https://github.com/identique/idnumbers-npm/issues/121)).
-More granular, per-country reason codes are planned in
-[#130](https://github.com/identique/idnumbers-npm/issues/130).
+`invalid_birthdate` ([#130](https://github.com/identique/idnumbers-npm/issues/130), new in
+v2.1.0, not yet published to npm) is reported by the 22 countries whose validators check the
+birth date their IDs encode. See [docs/FAILURE_REASONS.md](docs/FAILURE_REASONS.md) for which
+reasons each country can report.
 
 ### `parseIdInfo(countryCode, idNumber)`
 
@@ -728,7 +734,7 @@ Accepted letter case, surrounding whitespace, and separators for every country a
 
 ## Testing
 
-The library includes comprehensive test coverage with 4300 tests covering:
+The library includes comprehensive test coverage with 4421 tests covering:
 
 - Format validation
 - Checksum verification

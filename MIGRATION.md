@@ -177,11 +177,11 @@ if (result.ok) {
 
 `reason` is one of:
 
-| Reason                                                                       | When                                                               |
-| ---------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `unsupported_country`                                                        | The country code is not registered (`errorMessage` is also set)    |
-| `invalid_length`, `invalid_format`, `checksum_mismatch`, `validation_failed` | The ID is invalid: the same reason `validateNationalId()` reports  |
-| `not_parsable` (new)                                                         | The ID is valid, but the country has no parser or it found nothing |
+| Reason                                                                                                     | When                                                               |
+| ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `unsupported_country`                                                                                      | The country code is not registered (`errorMessage` is also set)    |
+| `invalid_length`, `invalid_format`, `checksum_mismatch`, `invalid_birthdate` (v2.1.0), `validation_failed` | The ID is invalid: the same reason `validateNationalId()` reports  |
+| `not_parsable` (new)                                                                                       | The ID is valid, but the country has no parser or it found nothing |
 
 - **`ok: true` implies the ID is valid.** The France (FRA) and Norway (NOR) parsers skip
   the check digits, so v1.x `parseIdInfo()` returned info for some IDs

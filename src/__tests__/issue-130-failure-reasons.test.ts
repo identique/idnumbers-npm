@@ -3,10 +3,22 @@
  * helper (src/birthDateCheck.ts) that lets `deriveFailureReason()` report it
  * without ever changing what `validate()` itself returns.
  */
-import { validateNationalId, parseIdInfo, ValidationFailureReason } from '../index';
+import * as fs from 'fs';
+import * as path from 'path';
+import {
+  validateNationalId,
+  parseIdInfo,
+  listSupportedCountries,
+  ValidationFailureReason,
+} from '../index';
 import { registry } from '../registry/ValidatorRegistry';
 import { invalidBirthDate, rejectsBirthDate } from '../birthDateCheck';
 import { acceptedVariants } from './helpers/idVariants';
+import {
+  marksBirthDate,
+  failureReasonRows,
+  renderFailureReasonRow,
+} from './helpers/failureReasons';
 
 /**
  * Each ID below matches its country's shape and passes checksum, but encodes a
@@ -146,5 +158,59 @@ describe('issue #130: 22 countries report invalid_birthdate', () => {
         ValidationFailureReason.INVALID_BIRTHDATE
       );
     });
+  });
+
+  it('is reported by exactly the countries whose validators mark a birth-date check', () => {
+    const marked = registry.list().filter(marksBirthDate).sort();
+    expect(marked).toEqual(Object.keys(IMPOSSIBLE_BIRTHDATE_IDS).sort());
+  });
+});
+
+describe('issue #130: docs/FAILURE_REASONS.md', () => {
+  const DOC = path.resolve(__dirname, '../../docs/FAILURE_REASONS.md');
+  const START = '<!-- failure-reasons:start -->';
+  const END = '<!-- failure-reasons:end -->';
+
+  /** Split a Markdown table line into trimmed cells (Prettier pads them). */
+  function cells(line: string): string[] {
+    return line
+      .trim()
+      .replace(/^\|/, '')
+      .replace(/\|$/, '')
+      .split('|')
+      .map(cell => cell.trim());
+  }
+
+  /** The documented table's body rows, as cells. */
+  function documentedRows(): string[][] {
+    const doc = fs.readFileSync(DOC, 'utf8');
+    const start = doc.indexOf(START);
+    const end = doc.indexOf(END);
+    if (start === -1 || end === -1) throw new Error(`${DOC} is missing its table markers`);
+    const lines = doc
+      .slice(start + START.length, end)
+      .split('\n')
+      .filter(line => line.trim().startsWith('|'));
+    return lines.slice(2).map(cells); // skip the header and delimiter rows
+  }
+
+  it('has one row per registered country, in alpha-3 order', () => {
+    expect(documentedRows().map(row => row[0])).toEqual(
+      listSupportedCountries().map(country => country.code)
+    );
+  });
+
+  it("matches every country's validator", () => {
+    const expected = failureReasonRows().map(renderFailureReasonRow);
+    const actual = documentedRows();
+    const stale = expected.filter(
+      (line, index) => cells(line).join('|') !== actual[index]?.join('|')
+    );
+    if (stale.length > 0) {
+      throw new Error(
+        `docs/FAILURE_REASONS.md is out of date; replace these rows:\n${stale.join('\n')}`
+      );
+    }
+    expect(actual).toEqual(expected.map(cells));
   });
 });

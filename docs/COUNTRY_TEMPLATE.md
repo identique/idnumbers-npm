@@ -368,6 +368,13 @@ its module METADATA doesn't describe (e.g. an older format), override the metada
 definition as [`lka/index.ts`](../src/countries/lka/index.ts) does. Never rewrite the country
 module's public METADATA.
 
+If `validate()` checks a birth date the ID encodes, wrap the check in `invalidBirthDate()` from
+[`src/birthDateCheck.ts`](../src/birthDateCheck.ts), e.g.
+`if (invalidBirthDate(!isValidDate(year, month, day))) return null;`. It returns its argument
+unchanged, so it never changes what `validate()` returns; it only lets a rejected ID report
+`invalid_birthdate` instead of `validation_failed` (#130). Mark only checks `validate()` itself
+reaches — not a check only `parse()` runs.
+
 **3. [`src/index.ts`](../src/index.ts)** — export the country namespace:
 
 ```typescript
@@ -449,6 +456,7 @@ until the country meets its contract:
 | [`issue-183-tree-shaking.test.ts`](../src/__tests__/issue-183-tree-shaking.test.ts)                                                                                                                      | Importing every export of `index.ts` except `country` bundles no `defineCountry`: the definition is annotated `/* @__PURE__ */` and uses no object spread                                                                                                       |
 | `npm run size` ([`check-bundle-size.mjs`](../scripts/check-bundle-size.mjs))                                                                                                                             | `idnumbers/core` plus the country subpath stays within 6,000 B min+gzip ([ADR 002](adr/002-country-registration-model.md#bundle-size-budgets))                                                                                                                  |
 | `npm run lint:types` ([`check-declarations.mjs`](../scripts/check-declarations.mjs))                                                                                                                     | No `any` in the country's published type declarations                                                                                                                                                                                                           |
+| [`issue-130-failure-reasons.test.ts`](../src/__tests__/issue-130-failure-reasons.test.ts)                                                                                                                | A country that wraps a birth-date check has a test ID reported as `invalid_birthdate`, and its row in [`docs/FAILURE_REASONS.md`](FAILURE_REASONS.md) is current                                                                                                |
 
 ### Port the Python test cases
 
