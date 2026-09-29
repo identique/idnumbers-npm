@@ -215,12 +215,12 @@ resolves `idnumbers/core` and `idnumbers/countries/bra` for the browser.
 example a partial value mid-typing), so it's meant for blur/paste, not as-you-type masking — for
 that, use imask directly: `IMask(input, { mask: getInputMask('BRA')!.imask })`.
 
-Do **not** put `getInputMask('BRA')!.pattern.source` into an HTML `pattern` attribute. The
-`RegExp` `getInputMask()` returns isn't valid under the Unicode (`u`/`v`) regex flags — it has a
-`\-` identity escape — and a browser compiles an `<input pattern>` attribute under the `v` flag,
-silently ignoring an invalid one ([#202](https://github.com/identique/idnumbers-npm/issues/202)).
-Validate in JavaScript with the `RegExp` object itself (`braMask.pattern.test(value)`) or with
-`validateNationalId()`, both of which are unaffected.
+`getInputMask('BRA')!.pattern.source` can be put into an HTML `pattern` attribute
+(`input.pattern = braMask.pattern.source`) for a native, as-you-type shape hint: a browser anchors
+it (`^(?:<value>)$`) and compiles it under the Unicode-set (`v`) regex flag, both of which
+`pattern.source` is built to satisfy. It's a shape check only, same as the `RegExp` object itself
+— it can allow more than a valid ID does ([README](../README.md#getinputmaskcountrycode)) — so the real validation still happens on
+submit, with `setCustomValidity()` and `validateNationalId()`.
 
 ## Bundle size
 

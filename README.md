@@ -422,7 +422,7 @@ getInputMask('BRA');
 //   countryCode: 'BRA',
 //   masks: ['###.###.###-##'],
 //   imask: [{ mask: '000.000.000-00' }],
-//   pattern: /^(?:\d\d\d\.\d\d\d\.\d\d\d\-\d\d)$/,
+//   pattern: /^(?:\d\d\d\.\d\d\d\.\d\d\d-\d\d)$/,
 // }
 getInputMask('HKG')!.masks; // ['L######(X)', 'LL######(X)']
 
@@ -431,12 +431,20 @@ IMask(input, { mask: getInputMask('BRA')!.imask, prepareChar: c => c.toUpperCase
 
 // react-hook-form: check the formatted value
 register('cpf', { pattern: getInputMask('BRA')!.pattern });
+
+// pattern.source is also valid as a native HTML pattern attribute: browsers anchor it
+// (`^(?:<value>)$`) and compile it under the Unicode-set (`v`) regex flag, both of
+// which pattern.source is built to satisfy
+input.pattern = getInputMask('BRA')!.pattern.source;
 ```
 
 Each mask allows every character the country's validation pattern accepts in that position, so it
 doesn't block a valid ID. A test checks this against every country's example and its separator
 variants. A mask can allow more, for example any letter where only one letter is valid: validate
 the result with `validateNationalId()`.
+
+`pattern.source` is a shape check only, same as the `RegExp` itself: use it for a browser's native
+`<input pattern>` hint, and validate the real ID with `validateNationalId()`.
 
 See [docs/FORMS.md](docs/FORMS.md) for a complete forms integration guide using this function.
 
@@ -740,7 +748,7 @@ Accepted letter case, surrounding whitespace, and separators for every country a
 
 ## Testing
 
-The library includes comprehensive test coverage with 4684 tests covering:
+The library includes comprehensive test coverage with 4939 tests covering:
 
 - Format validation
 - Checksum verification
