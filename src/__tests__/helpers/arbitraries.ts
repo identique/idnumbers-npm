@@ -73,11 +73,11 @@ function repair(code: string, chars: string[], positions: TokenPosition[]): stri
 }
 
 /**
- * Generates IDs `validateNationalId(code, ...)` accepts, in the compact layout of
- * `getCountryIdFormat(code).example`'s mask (its mask's token count, i.e. compact
- * length) - a multi-length country's other lengths aren't covered by this arbitrary;
- * the `anyInputArbitrary()` properties exercise those via generated-then-mutated
- * strings instead.
+ * Generates IDs `validateNationalId(code, ...)` accepts, written in the layout of
+ * `getCountryIdFormat(code).example`'s mask, as `formatId()` writes it (i.e. with that
+ * mask's separators, if any) - a multi-length country's other lengths aren't covered by
+ * this arbitrary; the `anyInputArbitrary()` properties exercise those via
+ * generated-then-mutated strings instead.
  *
  * Seeds from the example laid out in its mask, then mutates 1-3 random token
  * positions to a random character from that token's alphabet. When the mutated

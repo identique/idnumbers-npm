@@ -10,6 +10,17 @@ import { validIdArbitrary, messyIdArbitrary, anyInputArbitrary } from './helpers
 const countries = registry.list();
 /** Noise characters messyIdArbitrary() can insert (helpers/arbitraries.ts's NOISE). */
 const NOISE_CHARS = [' ', '.', '-', '/', '(', ')', '\t', '\u00A0', '\u200B', '\u2060', '\uFEFF'];
+/** Mirrors src/format.ts's WHITESPACE regex, to pin normalizeId()'s no-whitespace contract. */
+const WHITESPACE_RE = /[\s\u200B-\u200D\u2060\uFEFF]/;
+/** The separator punctuation normalizeId() strips when a country's masks use it. */
+const SEPARATOR_CHARS_RE = /[.\-/()]/;
+/** Mask token characters (src/format.ts's TOKENS); anything else in a mask is a separator. */
+const isMaskToken = (char: string) => char === '#' || char === 'L' || char === 'X' || char === '*';
+/** Whether any of the country's masks has at least one literal (non-token) character. */
+const hasSeparatorMask = (code: string) =>
+  (registry.get(code)!.METADATA.masks ?? []).some(mask =>
+    [...mask].some(char => !isMaskToken(char))
+  );
 
 describe('issue #131: arbitraries', () => {
   it.each(countries)('validIdArbitrary(%s) generates only accepted, varied IDs', code => {
@@ -58,6 +69,16 @@ describe('issue #131: generated valid IDs', () => {
         if (!SEPARATORS_REQUIRED.includes(code)) {
           expect(validateNationalId(code, id).isValid).toBe(true);
         }
+
+        // normalizeId()/formatId() lowercase input and strip surrounding whitespace
+        // (including zero-width characters), in both branches of compact() - with or
+        // without mask separators.
+        const lower = raw.toLowerCase();
+        const messy = ' \u200B' + lower + '\t';
+        expect(normalizeId(code, lower)).toBe(id);
+        expect(normalizeId(code, messy)).toBe(id);
+        expect(formatId(code, lower)).toBe(formatted);
+        expect(formatId(code, messy)).toBe(formatted);
       }),
       { numRuns: 100 }
     );
@@ -66,15 +87,26 @@ describe('issue #131: generated valid IDs', () => {
 
 describe('issue #131: any input', () => {
   it.each(countries)('%s', code => {
+    const requiresSeparators = hasSeparatorMask(code);
+
     fc.assert(
       fc.property(anyInputArbitrary(code), s => {
         const n = normalizeId(code, s);
         expect(n).not.toBeNull();
-        expect(normalizeId(code, n!)).toBe(n);
+        const normalized = n!;
+        expect(normalizeId(code, normalized)).toBe(normalized);
+
+        // normalizeId()'s documented contract: uppercase, no whitespace (incl.
+        // zero-width), and, when the country's masks use them, no separators.
+        expect(normalized).toBe(normalized.toUpperCase());
+        expect(WHITESPACE_RE.test(normalized)).toBe(false);
+        if (requiresSeparators) {
+          expect(normalized).not.toMatch(SEPARATOR_CHARS_RE);
+        }
 
         const f = formatId(code, s);
         if (f !== null) {
-          expect(normalizeId(code, f)).toBe(n);
+          expect(normalizeId(code, f)).toBe(normalized);
           expect(formatId(code, f)).toBe(f);
         }
       }),
