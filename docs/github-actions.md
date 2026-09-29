@@ -44,53 +44,58 @@ Runs on every push and pull request to the main branch.
 
 Automatically publishes the package to npm when you create a new GitHub release.
 
-**Setup Instructions:**
+**Authentication.** The publish step tries npm
+[trusted publishing](https://docs.npmjs.com/trusted-publishers) first, then falls back to the
+`NPM_TOKEN` secret ([#193](https://github.com/identique/idnumbers-npm/issues/193)):
 
-1. **Get your npm token:**
-   - Log in to [npmjs.com](https://www.npmjs.com/)
-   - Go to your account settings
-   - Click on "Access Tokens"
-   - Generate a new token with "Automation" type
-   - Copy the token (it starts with `npm_`)
+1. **Trusted publishing (recommended).** Nothing to rotate. It needs a one-time setup on npmjs.com:
+   on the `idnumbers` package, open **Settings** → **Trusted Publisher**, choose **GitHub
+   Actions**, and enter organization `identique`, repository `idnumbers-npm`, and workflow
+   filename `npm-publish.yml`. npm then exchanges the job's OIDC token (`id-token: write`) for a
+   short-lived publish token and signs provenance itself. The workflow upgrades npm to 11.x first,
+   because trusted publishing needs npm 11.5.1 or later and Node.js 22 ships npm 10.
+2. **Token fallback.** Until trusted publishing is configured, npm uses the `NPM_TOKEN` repository
+   secret. Create a granular access token on npmjs.com (**Access Tokens** → **Generate New
+   Token**) with read and write access to `idnumbers`, and store it under **Settings** → **Secrets
+   and variables** → **Actions** as `NPM_TOKEN`. Write tokens expire after at most 90 days, and an
+   expired token makes the publish step fail with a misleading `E404 Not Found - PUT`. Re-run the
+   failed job after replacing the secret; the tag and release stay valid. Once trusted publishing
+   works, delete the secret and the `NODE_AUTH_TOKEN` line in `npm-publish.yml`.
 
-2. **Add the token to GitHub:**
-   - Go to your GitHub repository
-   - Click on "Settings" → "Secrets and variables" → "Actions"
-   - Click "New repository secret"
-   - Name: `NPM_TOKEN`
-   - Value: Paste your npm token
-   - Click "Add secret"
+**Creating a release:**
 
-3. **Creating a release:**
-   - Ensure your `package.json` version is updated
-   - Commit and push all changes
-   - Create a git tag: `git tag v2.1.0` (match the version in package.json)
-   - Push the tag: `git push origin v2.1.0`
-   - Go to GitHub → "Releases" → "Create a new release"
-   - Choose your tag
-   - Add release notes
-   - Click "Publish release"
+1. Merge a pull request that bumps `package.json` (and `package-lock.json`) to the new version and
+   moves the CHANGELOG's `[Unreleased]` entries under the new version.
+2. On GitHub, open **Releases** → **Draft a new release**, create the tag `v<version>` (for example
+   `v2.1.0`) on `main`, add release notes, and click **Publish release**.
 
 **The workflow will automatically:**
 
 - Verify package name is "idnumbers"
 - Install dependencies
-- Run Prettier format check
-- Run ESLint (continues on error)
+- Run the Prettier format check and ESLint; either failing stops the publish
 - Run TypeScript compilation (dual ESM/CJS build), on Node.js 22.x
 - Run the full Jest test suite
 - Verify build artifacts (both `dist/cjs/` and `dist/esm/`)
-- Smoke-test the packed tarball (`npm run test:pack`)
+- Run the same package checks as CI's Package Verification job: `npm run lint:package` (publint and
+  attw), `npm run lint:types` (no `any` in the published `.d.ts` files), `npm run test:pack` (a
+  smoke test of the packed tarball), and `npm run size` (the bundle-size budgets)
 - Check tag version matches package.json
-- Publish to npm with public access
+- Upgrade npm to 11.x and publish with public access and provenance
 - Show success message with package URL
+
+`src/__tests__/issue-193-publish-workflow.test.ts` fails if the publish job stops running one of
+CI's package checks, lets a step fail without stopping the publish, or uses an action older than
+its first Node.js 24 release.
 
 **Important Notes:**
 
 - The tag must start with `v` (e.g., `v2.1.0`)
 - The version in the tag must match the version in `package.json`
-- The workflow only runs on published releases (not drafts or pre-releases)
-- Make sure all tests pass before creating a release
+- The workflow runs when a release is published. Drafts don't trigger it, but GitHub
+  pre-releases do. A pre-release version such as `2.1.0-rc.0` then fails at the publish step:
+  npm 11 requires `--tag` for pre-release versions, and the workflow doesn't pass one, so
+  publishing a pre-release needs a workflow change first
 - Package is published as public (`--access public`)
 
 ## Local Development
