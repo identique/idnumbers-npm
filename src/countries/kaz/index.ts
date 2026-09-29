@@ -7,6 +7,7 @@ import { validateRegexp, isValidDate } from '../../utils.js';
 import { CheckDigit } from '../../constants.js';
 import { checksum } from './util.js';
 import { defineCountry } from '../../registry/country.js';
+import { invalidBirthDate } from '../../birthDateCheck.js';
 
 export interface KazakhstanParseResult extends ParsedInfo {
   isValid: boolean;
@@ -101,7 +102,7 @@ export function parse(idNumber: string): KazakhstanParseResult | null {
   const month = parseInt(match.groups.mm, 10);
   const day = parseInt(match.groups.dd, 10);
 
-  if (!isValidDate(year, month, day)) {
+  if (invalidBirthDate(!isValidDate(year, month, day))) {
     return null;
   }
 

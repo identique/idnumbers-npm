@@ -6,6 +6,7 @@ import { IdMetadata, ParsedInfo } from '../../types.js';
 import { validateRegexp, luhnDigit, verhoeffCheck, isValidDate } from '../../utils.js';
 import { CheckDigit } from '../../constants.js';
 import { defineCountry } from '../../registry/country.js';
+import { invalidBirthDate } from '../../birthDateCheck.js';
 
 export interface LuxembourgParseResult extends ParsedInfo {
   isValid: boolean;
@@ -70,7 +71,7 @@ export function parse(idNumber: string): LuxembourgParseResult | null {
   const month = parseInt(match.groups.mm, 10);
   const day = parseInt(match.groups.dd, 10);
 
-  if (!isValidDate(year, month, day)) {
+  if (invalidBirthDate(!isValidDate(year, month, day))) {
     return null;
   }
 

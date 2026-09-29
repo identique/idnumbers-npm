@@ -6,6 +6,7 @@
 import { IdMetadata, ParsedInfo } from '../../types.js';
 import { isValidDate, calculateAge } from '../../utils.js';
 import { defineCountry } from '../../registry/country.js';
+import { invalidBirthDate } from '../../birthDateCheck.js';
 
 export interface AlbaniaParseResult extends ParsedInfo {
   isValid: boolean;
@@ -90,7 +91,7 @@ export function parse(idNumber: string): AlbaniaParseResult | null {
     const day = parseInt(dd, 10);
 
     // Validate date
-    if (!isValidDate(year, actualMonth, day)) {
+    if (invalidBirthDate(!isValidDate(year, actualMonth, day))) {
       return null;
     }
 

@@ -6,6 +6,7 @@
 import { IdMetadata, ParsedInfo } from '../../types.js';
 import { validateRegexp, isValidDate, calculateAge } from '../../utils.js';
 import { defineCountry } from '../../registry/country.js';
+import { invalidBirthDate } from '../../birthDateCheck.js';
 
 export interface KoreaParseResult extends ParsedInfo {
   isValid: boolean;
@@ -112,7 +113,7 @@ export function parse(idNumber: string): KoreaParseResult | null {
     const day = parseInt(dd, 10);
 
     // Validate date
-    if (!isValidDate(year, month, day)) {
+    if (invalidBirthDate(!isValidDate(year, month, day))) {
       return null;
     }
 

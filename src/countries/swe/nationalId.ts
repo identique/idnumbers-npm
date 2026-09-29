@@ -1,5 +1,6 @@
 import { Gender } from '../../constants.js';
 import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
+import { invalidBirthDate } from '../../birthDateCheck.js';
 
 /**
  * Parse result of Swedish personal identity number
@@ -113,9 +114,11 @@ export class NationalID implements IdNumberClass {
 
       // Validate date
       if (
-        date.getFullYear() !== yyyy ||
-        date.getMonth() !== parseInt(mm, 10) - 1 ||
-        date.getDate() !== parseInt(dd, 10)
+        invalidBirthDate(
+          date.getFullYear() !== yyyy ||
+            date.getMonth() !== parseInt(mm, 10) - 1 ||
+            date.getDate() !== parseInt(dd, 10)
+        )
       ) {
         return null;
       }

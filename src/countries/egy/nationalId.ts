@@ -24,6 +24,7 @@
 import { IdMetadata, ParsedInfo } from '../../types.js';
 import { isValidDate, calculateAge } from '../../utils.js';
 import { Gender } from '../../constants.js';
+import { invalidBirthDate } from '../../birthDateCheck.js';
 
 export interface EgyptParseResult extends ParsedInfo {
   isValid: boolean;
@@ -162,7 +163,7 @@ export function validate(idNumber: string): boolean {
   const { century, yy, mm, dd, gov } = match.groups;
 
   const year = resolveYear(century, yy);
-  if (year === null || !isValidDate(year, parseInt(mm, 10), parseInt(dd, 10))) {
+  if (year === null || invalidBirthDate(!isValidDate(year, parseInt(mm, 10), parseInt(dd, 10)))) {
     return false;
   }
 
@@ -204,7 +205,7 @@ export function parse(idNumber: string): EgyptParseResult | null {
 
   const month = parseInt(mm, 10);
   const day = parseInt(dd, 10);
-  if (!isValidDate(year, month, day)) {
+  if (invalidBirthDate(!isValidDate(year, month, day))) {
     return null;
   }
 
