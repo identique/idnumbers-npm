@@ -134,7 +134,7 @@ export interface InputMask {
   pattern: RegExp;
 }
 
-const escapeRegExp = (char: string) => char.replace(/[.*+?^${}()|[\]\\/-]/g, '\\$&');
+const escapeRegExp = (char: string) => char.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
 
 /**
  * The input masks for a country's ID (#129), derived from its `METADATA.masks`, e.g.
