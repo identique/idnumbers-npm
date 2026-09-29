@@ -13,7 +13,9 @@ and after.
 ## Normalizing user input
 
 If you validate free-form user input, normalize it to a form the table marks as accepted before
-calling `validateNationalId()`:
+calling `validateNationalId()`. `formatId()` does all of this for you
+([#128](https://github.com/identique/idnumbers-npm/issues/128), new in v2.1.0): the validator
+accepts its output for every country. By hand:
 
 - **Trim surrounding whitespace.** Most countries reject it.
 - **Uppercase letters.** Several countries reject lowercase letters, for example `CHN`, `GBR`,
