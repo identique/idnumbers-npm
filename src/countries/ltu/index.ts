@@ -68,9 +68,7 @@ function extractYearBaseGender(g: number): [number, Gender] | null {
     yearBase = 1900;
   } else if (g === 5 || g === 6) {
     yearBase = 2000;
-  } else if (g === 7 || g === 8) {
-    yearBase = 2100;
-  } else if (g === 9) {
+  } else if (g >= 7 && g <= 9) {
     yearBase = 2100;
   } else {
     return null;
