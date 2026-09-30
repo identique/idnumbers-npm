@@ -5,6 +5,7 @@ A comprehensive TypeScript/JavaScript library for validating and parsing nationa
 [![npm version](https://img.shields.io/npm/v/idnumbers.svg)](https://www.npmjs.com/package/idnumbers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.2-blue.svg)](https://www.typescriptlang.org/)
+[![Coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fidentique%2Fidnumbers-npm%2Fbadges%2Fcoverage.json)](https://github.com/identique/idnumbers-npm/actions/workflows/ci.yml)
 
 **[API reference](https://identique.github.io/idnumbers-npm/)**: every public function with a typed example, and a page for each of the 85 countries.
 
@@ -802,7 +803,7 @@ Accepted letter case, surrounding whitespace, and separators for every country a
 
 ## Testing
 
-The library includes comprehensive test coverage with 5959 tests covering:
+The library includes comprehensive test coverage with 5960 tests covering:
 
 - Format validation
 - Checksum verification

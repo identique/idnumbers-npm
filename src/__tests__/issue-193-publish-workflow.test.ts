@@ -64,6 +64,7 @@ describe('issue #193: workflows use actions that run on Node.js 24', () => {
   const MIN_MAJOR: Record<string, number> = {
     'actions/checkout': 5,
     'actions/deploy-pages': 5,
+    'actions/download-artifact': 7,
     'actions/setup-node': 5,
     'actions/setup-python': 6,
     'actions/upload-artifact': 6,
