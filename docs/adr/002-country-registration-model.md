@@ -92,11 +92,11 @@ with esbuild. The prototype lives on the never-merged `idnumbers-node-issue-115`
     above the largest subpath measured at #122 (5,209 B). Measuring what ships is the right choice;
     the budgets were not re-derived for it.
 
-| Entry                               | Budget (min+gzip) | Measured at #122 | Derivation                                         |
-| ----------------------------------- | ----------------- | ---------------- | -------------------------------------------------- |
-| `idnumbers/core`                    | 1,800 B           | 1,405 B          | measured + 25%, rounded up (re-derived, see below) |
-| `idnumbers/countries/<iso3>` + core | 6,000 B each      | 1,801–5,209 B    | spike max 4,766 B + 25%, rounded up (#115)         |
-| `idnumbers` (root, all countries)   | 40,300 B          | 38,449 B         | spike 36,632 B + 10%, rounded up (#115)            |
+| Entry                               | Budget (min+gzip) | Measured at #122 | Derivation                                                                                                                                       |
+| ----------------------------------- | ----------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `idnumbers/core`                    | 1,800 B           | 1,405 B          | measured + 25%, rounded up (re-derived, see below)                                                                                               |
+| `idnumbers/countries/<iso3>` + core | 6,000 B each      | 1,801–5,209 B    | spike max 4,766 B + 25%, rounded up (#115)                                                                                                       |
+| `idnumbers` (root, all countries)   | 41,500 B          | 38,449 B         | raised from 40,300 B (spike 36,632 B + 10%, #115) for the full IDN district list ([#215](https://github.com/identique/idnumbers-npm/issues/215)) |
 
 **The core budget was re-derived.** The spike's 1,100 B budget came from its prototype core
 (821 B + 25%, rounded up to 100 B). That prototype predates two parts of the real core's contract:

@@ -39,11 +39,14 @@ const REPO_ROOT = fileURLToPath(new URL('..', import.meta.url));
  * budget 1,100 B) predates two parts of the core contract -- #117's failure
  * `reason` derivation (~600 B minified) and #122's atomic registerCountry.
  * See docs/adr/002-country-registration-model.md.
+ *
+ * The root budget was raised from 40,300 B for #215's full Indonesian district
+ * list (+~1.3 KB), approved by the maintainer.
  */
 export const BUDGETS = {
   core: 1_800,
   country: 6_000,
-  root: 40_300,
+  root: 41_500,
 };
 
 async function measure(workDir, source) {
