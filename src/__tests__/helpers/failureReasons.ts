@@ -9,9 +9,15 @@ const COUNTRIES_DIR = path.resolve(__dirname, '../../countries');
  * Relative imports in `source` that resolve into a directory under `src/countries`
  * (including the importing file's own), mapped to the `.ts` files they name. A `.js`
  * specifier maps to its `.ts` source, as the `.js` import convention requires.
+ *
+ * Matches `from '...'` and `from "..."` (which covers `import ... from` and
+ * `export ... from`), and the side-effect-only forms `import '...'` and
+ * `import "..."`. Dynamic `import('...')` is not followed.
  */
-function countryImports(file: string, source: string): string[] {
-  const specifiers = [...source.matchAll(/from\s+'(\.{1,2}\/[^']+)'/g)].map(match => match[1]);
+export function countryImports(file: string, source: string): string[] {
+  const specifiers = [...source.matchAll(/(?:\bfrom|\bimport)\s*(['"])(\.{1,2}\/[^'"]+)\1/g)].map(
+    match => match[2]
+  );
   return specifiers
     .map(specifier => path.resolve(path.dirname(file), specifier.replace(/\.js$/, '.ts')))
     .filter(
