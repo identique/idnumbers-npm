@@ -692,9 +692,9 @@ function validateUserID(
 
   switch (result.reason) {
     case ValidationFailureReason.UNSUPPORTED_COUNTRY:
-      return { valid: false, message: `Unsupported country: ${country}` };
+      return { valid: false, message: 'Unknown country code' };
     case ValidationFailureReason.INVALID_LENGTH:
-      return { valid: false, message: 'Wrong length for this ID type' };
+      return { valid: false, message: 'Wrong length' };
     case ValidationFailureReason.INVALID_FORMAT:
       return { valid: false, message: 'Does not match the expected pattern' };
     case ValidationFailureReason.CHECKSUM_MISMATCH:
@@ -702,7 +702,7 @@ function validateUserID(
     case ValidationFailureReason.INVALID_BIRTHDATE:
       return { valid: false, message: 'Encoded birth date is not a real date' };
     default:
-      return { valid: false, message: 'Invalid ID number' };
+      return { valid: false, message: 'Validation failed for another reason' };
   }
 }
 
