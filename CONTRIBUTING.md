@@ -55,7 +55,7 @@ All four commands should complete successfully before you begin development.
 | -------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | `npm run dev`              | Compile the CJS build in watch mode                                                                                         |
 | `npm run test:watch`       | Run Jest in watch mode                                                                                                      |
-| `npm run test:coverage`    | Run the test suite and generate coverage                                                                                    |
+| `npm run test:coverage`    | Run the test suite, generate coverage, and enforce the coverage thresholds                                                  |
 | `npm run example`          | Build and run the basic TypeScript example                                                                                  |
 | `npm run example:extended` | Build and run the extended TypeScript example                                                                               |
 | `npm run lint:fix`         | Apply supported ESLint fixes                                                                                                |
@@ -65,6 +65,7 @@ All four commands should complete successfully before you begin development.
 | `npm run test:pack`        | Pack, install, and smoke-test the tarball in a temp consumer                                                                |
 | `npm run docs`             | Build the TypeDoc API site into `docs-site/` (build first)                                                                  |
 | `npm run parity`           | Compare validity with the Python library (build first; needs `IDNUMBERS_PYTHON_PATH`, see [docs/PARITY.md](docs/PARITY.md)) |
+| `npm run bench`            | Measure validate/parse throughput and import time (build first); informational                                              |
 
 The fix and format commands modify files. Review their changes before committing them.
 

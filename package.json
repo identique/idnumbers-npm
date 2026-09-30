@@ -70,6 +70,7 @@
     "example:extended": "npm run build && tsx examples/basic-usage-extended.ts",
     "test:pack": "node scripts/smoke-pack.mjs",
     "size": "node scripts/check-bundle-size.mjs",
+    "bench": "node scripts/bench/run.mjs",
     "docs": "node scripts/docs/generate-country-pages.mjs && typedoc",
     "parity": "node scripts/parity/check-parity.mjs",
     "clean": "rm -rf dist",
