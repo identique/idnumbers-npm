@@ -11,8 +11,7 @@
  */
 
 import { Cedula, CedulaParseResult } from '../countries/ecu/cedula';
-import { validateNationalId, getCountryIdFormat } from '../index';
-import { parsedInfo } from './helpers/parsedInfo';
+import { describeRegistryIntegration, describeValidityTable } from './helpers/countrySuite';
 
 const VALID_CEDULAS = [
   '1710000009',
@@ -49,8 +48,10 @@ describe('Ecuador (ECU) — Cédula de Identidad', () => {
   });
 
   describe('validate() — valid vectors', () => {
-    it.each(VALID_CEDULAS)('accepts %s', id => {
-      expect(Cedula.validate(id)).toBe(true);
+    describeValidityTable({
+      code: 'ECU',
+      validate: id => Cedula.validate(id),
+      valid: VALID_CEDULAS,
     });
 
     it('accepts a hyphen before the check digit (as seen in the wild)', () => {
@@ -175,47 +176,22 @@ describe('Ecuador (ECU) — Cédula de Identidad', () => {
   });
 
   describe('public API integration (registry)', () => {
-    it('validates via validateNationalId for ECU and the EC/ec alias', () => {
-      expect(validateNationalId('ECU', '1710000009').isValid).toBe(true);
-      expect(validateNationalId('EC', '1710000009').isValid).toBe(true);
-      expect(validateNationalId('ec', '1710000009').isValid).toBe(true);
-      expect(validateNationalId('ECU', '1710000000').isValid).toBe(false);
-    });
-
-    it('returns non-null extractedInfo for a valid cédula', () => {
-      const result = validateNationalId('ECU', '1710000009');
-      expect(result.extractedInfo).toStrictEqual({
-        province: '17',
-        sequenceNumber: '000000',
-        checkDigit: 9,
-      });
-    });
-
-    it('returns null extractedInfo for an invalid cédula', () => {
-      expect(validateNationalId('ECU', 'INVALID').extractedInfo).toBeNull();
-    });
-
-    it('parseIdInfo is alias/case stable', () => {
-      const viaAlpha3 = parsedInfo('ECU', '1710000009');
-      expect(viaAlpha3).not.toBeNull();
-      expect(parsedInfo('EC', '1710000009')).toStrictEqual(viaAlpha3);
-      expect(parsedInfo('ec', '1710000009')).toStrictEqual(viaAlpha3);
-    });
-
-    it('parseIdInfo returns null for an invalid cédula', () => {
-      expect(parsedInfo('ECU', 'INVALID')).toBeNull();
-    });
-
-    it('reports a parsable, checksummed format via getCountryIdFormat', () => {
-      const format = getCountryIdFormat('ECU');
-      expect(format).not.toBeNull();
-      expect(format?.countryCode).toBe('ECU');
-      expect(format?.countryName).toBe('Ecuador');
-      expect(format?.idType).toBe('Cédula de Identidad');
-      expect(format?.isParsable).toBe(true);
-      expect(format?.hasChecksum).toBe(true);
-      expect(format?.length).toEqual({ min: 10, max: 10 });
-      expect(format?.format).toBe('PPTSSSSSSC');
+    describeRegistryIntegration({
+      code: 'ECU',
+      alias: 'EC',
+      valid: '1710000009',
+      invalid: '1710000000',
+      noun: 'cédula',
+      extractedInfo: { province: '17', sequenceNumber: '000000', checkDigit: 9 },
+      format: {
+        countryCode: 'ECU',
+        countryName: 'Ecuador',
+        idType: 'Cédula de Identidad',
+        isParsable: true,
+        hasChecksum: true,
+        length: { min: 10, max: 10 },
+        format: 'PPTSSSSSSC',
+      },
     });
   });
 });

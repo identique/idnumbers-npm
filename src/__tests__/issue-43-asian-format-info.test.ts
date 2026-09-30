@@ -15,13 +15,7 @@
  * issuance format in `format`; the accepted range is conveyed by `length`.
  */
 import { getCountryIdFormat, validateNationalId } from '../index';
-
-interface ExpectedFormat {
-  format: string;
-  example: string;
-  checksumAlgorithm: string;
-  officialName: string;
-}
+import { describeFormatInfoSuite, ExpectedFormat } from './helpers/formatInfo';
 
 const ASIAN_EXPECTED: Record<string, ExpectedFormat> = {
   ARE: {
@@ -193,34 +187,11 @@ const ASIAN_EXPECTED: Record<string, ExpectedFormat> = {
 };
 
 describe('Issue #43: Asian country format info', () => {
-  it('covers exactly 26 Asian countries', () => {
-    expect(Object.keys(ASIAN_EXPECTED).length).toBe(26);
+  describeFormatInfoSuite(ASIAN_EXPECTED, {
+    coverageTitle: 'covers exactly 26 Asian countries',
+    count: 26,
+    aliases: ['JP', 'KR', 'SG', 'TR', 'BD', 'VN'],
   });
-
-  describe.each(Object.entries(ASIAN_EXPECTED))('getCountryIdFormat(%s)', (code, expected) => {
-    it('returns the exact curated format info with a valid example', () => {
-      const format = getCountryIdFormat(code);
-      expect(format).not.toBeNull();
-      expect(format!.format).toBe(expected.format);
-      expect(format!.example).toBe(expected.example);
-      expect(format!.checksumAlgorithm).toBe(expected.checksumAlgorithm);
-      expect(format!.officialName).toBe(expected.officialName);
-      // The advertised example must pass validation (guards example/validator drift).
-      expect(validateNationalId(code, expected.example).isValid).toBe(true);
-    });
-  });
-
-  // Enriched fields must also surface through alpha-2 aliases.
-  it.each(['JP', 'KR', 'SG', 'TR', 'BD', 'VN'])(
-    'surfaces enriched fields via alpha-2 alias %s',
-    alias => {
-      const format = getCountryIdFormat(alias);
-      expect(format).not.toBeNull();
-      expect(typeof format!.example).toBe('string');
-      expect(typeof format!.checksumAlgorithm).toBe('string');
-      expect(typeof format!.officialName).toBe('string');
-    }
-  );
 
   // MEX is covered by #44; keep this cross-issue guard so the earlier
   // "out-of-scope" assertion does not regress after #44 lands.

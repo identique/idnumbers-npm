@@ -9,14 +9,8 @@
  * validators; they are for documentation/testing and are not intended to
  * identify real people.
  */
-import { getCountryIdFormat, validateNationalId } from '../index';
-
-interface ExpectedFormat {
-  format: string;
-  example: string;
-  checksumAlgorithm: string;
-  officialName: string;
-}
+import { getCountryIdFormat } from '../index';
+import { describeFormatInfoSuite, ExpectedFormat } from './helpers/formatInfo';
 
 const AMERICAS_AFRICA_OCEANIA_EXPECTED: Record<string, ExpectedFormat> = {
   ARG: {
@@ -107,35 +101,11 @@ const AMERICAS_AFRICA_OCEANIA_EXPECTED: Record<string, ExpectedFormat> = {
 };
 
 describe('Issue #44: Americas/Africa/Oceania country format info', () => {
-  it('covers exactly the 14 countries listed in issue #44', () => {
-    expect(Object.keys(AMERICAS_AFRICA_OCEANIA_EXPECTED).length).toBe(14);
+  describeFormatInfoSuite(AMERICAS_AFRICA_OCEANIA_EXPECTED, {
+    coverageTitle: 'covers exactly the 14 countries listed in issue #44',
+    count: 14,
+    aliases: ['BR', 'MX', 'NG', 'NZ', 'PG', 'VE', 'ZW'],
   });
-
-  describe.each(Object.entries(AMERICAS_AFRICA_OCEANIA_EXPECTED))(
-    'getCountryIdFormat(%s)',
-    (code, expected) => {
-      it('returns the exact curated format info with a valid example', () => {
-        const format = getCountryIdFormat(code);
-        expect(format).not.toBeNull();
-        expect(format!.format).toBe(expected.format);
-        expect(format!.example).toBe(expected.example);
-        expect(format!.checksumAlgorithm).toBe(expected.checksumAlgorithm);
-        expect(format!.officialName).toBe(expected.officialName);
-        expect(validateNationalId(code, expected.example).isValid).toBe(true);
-      });
-    }
-  );
-
-  it.each(['BR', 'MX', 'NG', 'NZ', 'PG', 'VE', 'ZW'])(
-    'surfaces enriched fields via alpha-2 alias %s',
-    alias => {
-      const format = getCountryIdFormat(alias);
-      expect(format).not.toBeNull();
-      expect(typeof format!.example).toBe('string');
-      expect(typeof format!.checksumAlgorithm).toBe('string');
-      expect(typeof format!.officialName).toBe('string');
-    }
-  );
 
   // Regression guard: getCountryIdFormat() surfaces idType from the registered
   // validator's own METADATA.idType. NZL's primary validator is the Driver
