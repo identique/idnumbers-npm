@@ -87,6 +87,10 @@ With several classes, an input is Python-valid if any of them validates it. An e
 Python (for example `OverflowError` for some LKA dates) counts as invalid, because TS returns
 `false` there.
 
+PRT is compared with Python's `PRT.NationalID` (an alias of `CivilIDNumber`). TS registers the type
+under the label "Tax Identification Number" (NIF), but its format and mod-11 check match
+`CivilIDNumber`, so parity holds; the label is not changed here.
+
 ## The corpus
 
 `parity/corpus.json` maps each compared country to a list of seed inputs:
