@@ -102,7 +102,8 @@ function unionRegExp(regexps: readonly RegExp[]): RegExp {
  *
  * @example
  * ```ts
- * import { createCompositeValidator, IdMetadata } from 'idnumbers/core';
+ * import { createCompositeValidator } from 'idnumbers/core';
+ * import type { IdMetadata } from 'idnumbers/core';
  *
  * const metadata = (regexp: RegExp, length: number): IdMetadata => ({
  *   iso3166Alpha2: 'XX',

@@ -30,6 +30,43 @@
       "ids": ["00073003318"]
     },
     {
+      "country": "CHE",
+      "direction": "python-only",
+      "issue": 246,
+      "reason": "Intentional, decided in #246: TS uses the standard EAN-13 weights (even positions x3) so real AHV numbers validate; Python weights even positions by 2.",
+      "ids": [
+        "756.0000.5678.17",
+        "756.0431.5678.90",
+        "756.1230.5678.67",
+        "756.1234.0078.77",
+        "756.1234.3002.97",
+        "756.1234.5138.90",
+        "756.1234.5629.96",
+        "756.1234.5678.21",
+        "756.1294.5678.87",
+        "756.3002.5678.27",
+        "756.3234.5678.93"
+      ]
+    },
+    {
+      "country": "CHE",
+      "direction": "ts-only",
+      "issue": 246,
+      "reason": "Intentional, decided in #246: TS uses the standard EAN-13 weights (even positions x3) so real AHV numbers validate; Python weights even positions by 2.",
+      "ids": [
+        "756.0431.5678.91",
+        "756.0431.5679.90",
+        "756.0431.5778.90",
+        "756.0432.5678.90",
+        "756.0531.5678.90",
+        "756.1230.5678.77",
+        "756.1230.5688.67",
+        "756.1230.6678.67",
+        "756.1240.5678.67",
+        "756.2230.5678.67"
+      ]
+    },
+    {
       "country": "IDN",
       "direction": "python-only",
       "issue": 228,

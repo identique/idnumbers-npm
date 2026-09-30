@@ -148,7 +148,7 @@ its first Node.js 24 release.
 ### 3. Docs Workflow (`docs.yml`)
 
 Builds the TypeDoc API site on every pull request and push to `main`, and deploys it to GitHub
-Pages when a release is published or the workflow is run by hand
+Pages when a release (not a pre-release) is published or the workflow is run by hand
 ([#136](https://github.com/identique/idnumbers-npm/issues/136)). The site is at
 https://identique.github.io/idnumbers-npm/, which is also the package's `homepage`; npm shows the
 new homepage from the first release after the site went live.
@@ -158,10 +158,10 @@ new homepage from the first release after the site went live.
 warning, so a pull request that breaks a `{@link}`, a guide link, or the generated country pages
 fails here.
 
-**Deploy to GitHub Pages (`deploy`):** runs only for a published release or a manual run
-(`workflow_dispatch`), after `build` succeeds. It needs the `pages: write` and `id-token: write`
-permissions and deploys to the `github-pages` environment. Pull requests and pushes to `main` only
-check that the site builds. Only the `deploy` job has a concurrency group (`pages`), so builds run
+**Deploy to GitHub Pages (`deploy`):** runs only for a published release (not a pre-release) or a
+manual run (`workflow_dispatch`), after `build` succeeds. It needs the `pages: write` and
+`id-token: write` permissions and deploys to the `github-pages` environment. Pull requests and
+pushes to `main` only check that the site builds. Only the `deploy` job has a concurrency group (`pages`), so builds run
 freely, one deployment runs at a time, and a deployment that has started is never cancelled.
 
 **One-time repository setup** (Settings, by a repository admin):
@@ -185,6 +185,10 @@ freely, one deployment runs at a time, and a deployment that has started is neve
   registry metadata of the built library (`listSupportedCountries()`, `getCountryIdFormat()`,
   `getInputMask()`), so a new country gets a page without anyone writing one. The pages go to
   `build/docs/` and are listed in `typedoc.json` under `projectDocuments`.
+
+TypeDoc copies the files the guides link to (`CHANGELOG.md`, `CONTRIBUTING.md`, `FORMS.md`, the
+country-registration ADR, `src/birthDateCheck.ts`, and one test file) into `docs-site/media/`, so
+the published site includes those public repository files.
 
 `typedoc.json` sets `validation.notExported` to `false`. The per-country parse result types are
 reachable from `ParseResultMap` and the country definitions but are not exported from the root

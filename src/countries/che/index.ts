@@ -3,7 +3,6 @@
  */
 
 import { IdMetadata, ParsedInfo } from '../../types.js';
-import { ean13Digit } from '../../utils.js';
 import { defineCountry } from '../../registry/country.js';
 
 export interface SwitzerlandParseResult extends ParsedInfo {
@@ -39,7 +38,20 @@ function normalize(idNumber: string): string {
 }
 
 /**
- * Validate checksum using EAN-13 algorithm
+ * Standard EAN-13 check digit of the first 12 digits: odd positions weighted by 1, even
+ * positions by 3. Real AHV numbers use it.
+ *
+ * This intentionally differs from the Python library's `ean13_digit`, which weights even
+ * positions by 2 and so rejects real numbers such as 756.9217.0769.85 (decided in #246).
+ */
+function ahvCheckDigit(digits: number[]): number {
+  const sum = digits.reduce((total, digit, index) => total + digit * (index % 2 === 0 ? 1 : 3), 0);
+
+  return (10 - (sum % 10)) % 10;
+}
+
+/**
+ * Validate checksum using the standard EAN-13 algorithm
  */
 function validateChecksum(idNumber: string): boolean {
   // First normalize the number
@@ -51,7 +63,7 @@ function validateChecksum(idNumber: string): boolean {
   }
 
   const numbers = normalized.split('').map(Number);
-  const calculatedChecksum = ean13Digit(numbers.slice(0, -1));
+  const calculatedChecksum = ahvCheckDigit(numbers.slice(0, -1));
 
   return numbers[numbers.length - 1] === calculatedChecksum;
 }
