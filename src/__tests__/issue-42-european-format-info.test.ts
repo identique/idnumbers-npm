@@ -11,14 +11,8 @@
  * Examples are synthetic, checksum-valid samples for documentation/testing,
  * not intended to identify real people.
  */
-import { getCountryIdFormat, validateNationalId } from '../index';
-
-interface ExpectedFormat {
-  format: string;
-  example: string;
-  checksumAlgorithm: string;
-  officialName: string;
-}
+import { getCountryIdFormat } from '../index';
+import { describeFormatInfoSuite, ExpectedFormat } from './helpers/formatInfo';
 
 const EUROPEAN_EXPECTED: Record<string, ExpectedFormat> = {
   ALB: {
@@ -264,30 +258,10 @@ const EUROPEAN_EXPECTED: Record<string, ExpectedFormat> = {
 };
 
 describe('Issue #42: European country format info', () => {
-  it('covers exactly 40 European countries', () => {
-    expect(Object.keys(EUROPEAN_EXPECTED).length).toBe(40);
-  });
-
-  describe.each(Object.entries(EUROPEAN_EXPECTED))('getCountryIdFormat(%s)', (code, expected) => {
-    it('returns the exact curated format info with a valid example', () => {
-      const format = getCountryIdFormat(code);
-      expect(format).not.toBeNull();
-      expect(format!.format).toBe(expected.format);
-      expect(format!.example).toBe(expected.example);
-      expect(format!.checksumAlgorithm).toBe(expected.checksumAlgorithm);
-      expect(format!.officialName).toBe(expected.officialName);
-      // The advertised example must pass validation (guards example/validator drift).
-      expect(validateNationalId(code, expected.example).isValid).toBe(true);
-    });
-  });
-
-  // Enriched fields must also surface through alpha-2 aliases.
-  it.each(['DE', 'FR', 'MK', 'ME'])('surfaces enriched fields via alpha-2 alias %s', alias => {
-    const format = getCountryIdFormat(alias);
-    expect(format).not.toBeNull();
-    expect(typeof format!.example).toBe('string');
-    expect(typeof format!.checksumAlgorithm).toBe('string');
-    expect(typeof format!.officialName).toBe('string');
+  describeFormatInfoSuite(EUROPEAN_EXPECTED, {
+    coverageTitle: 'covers exactly 40 European countries',
+    count: 40,
+    aliases: ['DE', 'FR', 'MK', 'ME'],
   });
 
   // USA is covered by #44; keep this cross-issue guard so the earlier
