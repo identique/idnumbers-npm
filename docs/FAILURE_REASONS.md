@@ -35,12 +35,13 @@ were previously in this situation, but now check the encoded date from `validate
 ([#205](https://github.com/identique/idnumbers-npm/issues/205)), and so do Bosnia and Herzegovina
 (BIH), China (CHN), Sri Lanka (LKA), North Macedonia (MKD), Montenegro (MNE), Serbia (SRB), and
 Slovenia (SVN) ([#214](https://github.com/identique/idnumbers-npm/issues/214)). All of them match
-the Python library, which rejects such IDs too. Sri Lanka encodes a day of the year rather than a
-month and day. As in the Python library, a day number outside the year (day 000, or a day past the
-year's end) rolls into the adjacent year, so the ID stays valid. `parseIdInfo()` reports
-`not_parsable` for such an ID, and also for a year before 0100. Sri Lanka rejects year 0000, as
-Python does, and also rejects a date before 0001-01-01 or after 9999-12-31, where the Python library
-raises an error instead of returning a result.
+the Python library, which rejects such IDs too, apart from the Sri Lanka dates outside 0001-01-01 to
+9999-12-31 noted below. Sri Lanka encodes a day of the year rather than a month and day. As in the
+Python library, a day number outside the year (day 000, or a day past the year's end) rolls into the
+adjacent year, so the ID stays valid. `parseIdInfo()` reports `not_parsable` for such an ID, and
+also for a year before 0100. Sri Lanka rejects year 0000, as Python does, and also rejects a date
+before 0001-01-01 or after 9999-12-31, where the Python library raises an error instead of returning
+a result.
 
 The table below is re-derived by a test
 ([`issue-130-failure-reasons.test.ts`](../src/__tests__/issue-130-failure-reasons.test.ts)), so it
