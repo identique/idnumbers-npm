@@ -89,7 +89,6 @@ export const SINGLE_DIGIT_CHANGE_UNDETECTED: Readonly<Record<string, string>> = 
 
   // Weights that share a factor with the modulus 10, so a change is undetected when the
   // difference is a multiple of the shared factor.
-  CHE: 'the EAN-13 variant weights even positions by 2 (as the Python library does), so a change of 5 there is undetected',
   MEX: 'weights share a factor with modulus 10, so some changes cancel out',
   TWN: 'weights share a factor with modulus 10, so some changes cancel out',
 
