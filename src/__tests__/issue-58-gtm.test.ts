@@ -24,8 +24,7 @@
  */
 
 import { DPI, DPIParseResult } from '../countries/gtm/dpi';
-import { validateNationalId, getCountryIdFormat } from '../index';
-import { parsedInfo } from './helpers/parsedInfo';
+import { describeRegistryIntegration } from './helpers/countrySuite';
 
 const VALID_DPI = '1912345670101';
 
@@ -204,47 +203,21 @@ describe('Guatemala (GTM) — DPI / CUI', () => {
   });
 
   describe('public API integration (registry)', () => {
-    it('validates via validateNationalId for GTM and the GT/gt alias', () => {
-      expect(validateNationalId('GTM', VALID_DPI).isValid).toBe(true);
-      expect(validateNationalId('GT', VALID_DPI).isValid).toBe(true);
-      expect(validateNationalId('gt', VALID_DPI).isValid).toBe(true);
-      expect(validateNationalId('GTM', '1912345660101').isValid).toBe(false);
-    });
-
-    it('returns non-null extractedInfo for a valid CUI', () => {
-      const result = validateNationalId('GTM', VALID_DPI);
-      expect(result.extractedInfo).toStrictEqual({
-        correlative: '19123456',
-        checkDigit: 7,
-        department: 1,
-        municipality: 1,
-      });
-    });
-
-    it('returns null extractedInfo for an invalid CUI', () => {
-      expect(validateNationalId('GTM', 'INVALID').extractedInfo).toBeNull();
-    });
-
-    it('parseIdInfo is alias/case stable', () => {
-      const viaAlpha3 = parsedInfo('GTM', VALID_DPI);
-      expect(viaAlpha3).not.toBeNull();
-      expect(parsedInfo('GT', VALID_DPI)).toEqual(viaAlpha3);
-      expect(parsedInfo('gt', VALID_DPI)).toEqual(viaAlpha3);
-    });
-
-    it('parseIdInfo returns null for an invalid CUI', () => {
-      expect(parsedInfo('GTM', 'INVALID')).toBeNull();
-    });
-
-    it('reports a parsable, checksummed format via getCountryIdFormat', () => {
-      const format = getCountryIdFormat('GTM');
-      expect(format).not.toBeNull();
-      expect(format?.countryCode).toBe('GTM');
-      expect(format?.isParsable).toBe(true);
-      expect(format?.hasChecksum).toBe(true);
-      expect(format?.length).toEqual({ min: 13, max: 13 });
-      expect(format?.format).toBe('NNNN NNNNN NNNN');
-      expect(format?.example).toBe(VALID_DPI);
+    describeRegistryIntegration({
+      code: 'GTM',
+      alias: 'GT',
+      valid: VALID_DPI,
+      invalid: '1912345660101',
+      noun: 'CUI',
+      extractedInfo: { correlative: '19123456', checkDigit: 7, department: 1, municipality: 1 },
+      format: {
+        countryCode: 'GTM',
+        isParsable: true,
+        hasChecksum: true,
+        length: { min: 13, max: 13 },
+        format: 'NNNN NNNNN NNNN',
+        example: VALID_DPI,
+      },
     });
   });
 });
