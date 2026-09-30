@@ -23,10 +23,19 @@ Runs on every push and pull request to the main branch.
 - Validates both `dist/cjs/` and `dist/esm/` build artifacts exist, including each subfolder's
   `index.js`, `index.d.ts`, and `package.json` module-type marker
 
-**Test Coverage:**
+**Test Coverage (`test-coverage`, "Test Coverage Report"):**
 
-- Generates coverage report
-- Displays summary in GitHub
+- Runs `npm run test:coverage`, which fails when a global coverage figure drops below its floor.
+  The floors are in `coverageThreshold.global` in `jest.config.js`: 93% lines, 93% statements,
+  83% functions, 89% branches, set from the coverage on `main` on 2026-09-30
+  ([#137](https://github.com/identique/idnumbers-npm/issues/137)). Raise them when coverage rises;
+  don't lower them without a maintainer decision. Plain `npm test` and the pre-commit hook run
+  without coverage and are not gated.
+- Writes a Markdown table (covered / total, percentage, threshold, ok or below for each metric) to
+  the job summary with `node scripts/coverage-report.mjs summary`. The step runs even when the
+  thresholds fail, so the numbers are visible on a failing run.
+- On pushes to `main`, uploads `coverage/coverage-summary.json` as the `coverage-summary` artifact
+  (kept for one day) for the Coverage Badge job.
 
 **Examples Check:**
 
@@ -48,6 +57,35 @@ Runs on every push and pull request to the main branch.
 - Compares `validateNationalId()` with the Python library for the 78 countries both support, and
   fails on any divergence not listed in `parity/allowlist.json` or any allowlist entry that has gone
   stale — see [PARITY.md](PARITY.md)
+
+**Coverage Badge (`coverage-badge`):**
+
+- Runs only on pushes to `main`, after Test Coverage succeeds. It is not part of `CI Summary`.
+- The only job with `contents: write`. It downloads the `coverage-summary` artifact, turns the
+  line coverage into a shields.io endpoint file with `node scripts/coverage-report.mjs badge`, and
+  commits it as `coverage.json` on the `badges` branch as `github-actions[bot]`. The first run
+  creates `badges` as an orphan branch; a run whose badge is unchanged pushes nothing. A
+  concurrency group (`coverage-badge`) keeps two runs from pushing at once.
+- The README badge reads the file through shields.io:
+  `https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fidentique%2Fidnumbers-npm%2Fbadges%2Fcoverage.json`.
+  No external coverage service is involved. The colour is bright green from 90%, green from 80%,
+  yellow-green from 70%, yellow from 60%, and red below that.
+- The repository ruleset only protects `refs/heads/release/*`, so `GITHUB_TOKEN` can push to
+  `badges`. Don't add a rule that covers it.
+
+**Benchmarks (`benchmarks`):**
+
+- Informational. It is not part of `CI Summary`, and it never fails on a number: it fails only if
+  the script crashes or `dist/` is missing. CI runners are too noisy to gate on throughput.
+- Builds the package and runs `npm run bench` (`scripts/bench/run.mjs`), which prints a Markdown
+  table to the log and the job summary. It measures `validateNationalId` and `parseIdInfo` ops/sec
+  for 10 countries (USA, GBR, DEU, FRA, CHN, IND, BRA, TWN, KOR, ZAF), each with its
+  `getCountryIdFormat()` example, once with the full registry (root entry) and once with only that
+  country registered (`idnumbers/core` plus the country's subpath). Every scenario runs in a fresh
+  child process, since the registry is a module singleton. It also reports the median cold import
+  time of the root entry and of core plus one country.
+- To run it locally: `npm run build && npm run bench` (about 30 seconds). Compare figures only
+  from the same machine and Node version.
 
 ### 2. NPM Publish Workflow (`npm-publish.yml`)
 
