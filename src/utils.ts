@@ -269,16 +269,15 @@ export function modulusOverflowMod10(modulus: number): CheckDigit {
 }
 
 /**
- * EAN-13-style check digit, as used by the Swiss AHV number (even positions weighted by 2)
+ * EAN-13-style check digit with even positions weighted by 2, as in the Python library
+ * (standard EAN-13 weights them by 3). The CHE (Swiss AHV) validator uses it.
  * https://boxshot.com/barcode/tutorials/ean-13-calculator/
  *
  * @example
  * ```ts
  * import { ean13Digit } from 'idnumbers';
  *
- * // The check digit of the Swiss AHV number 756.1234.5678.97. This is the variant the AHV
- * // number uses: even positions are weighted by 2, as in the Python library, not by 3 as
- * // in EAN-13 barcodes.
+ * // The check digit of CHE's METADATA example, 756.1234.5678.97.
  * ean13Digit([7, 5, 6, 1, 2, 3, 4, 5, 6, 7, 8, 9]); // 7
  * ```
  */
