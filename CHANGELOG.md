@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.1] - 2026-09-30
+
+A patch release: Python-parity fixes, no API changes. Which IDs validate changes for the countries
+listed below.
+
 ### Fixed
 
 - Bosnia and Herzegovina (BIH), China (CHN), Sri Lanka (LKA), North Macedonia (MKD), Montenegro (MNE), Serbia (SRB), and Slovenia (SVN) now reject IDs whose encoded birth date isn't real, matching the Python library. Examples include 31 April, and 29 February outside a leap year. `validateNationalId()` previously accepted these IDs and now reports `invalid_birthdate`. SRB and SVN already rejected an out-of-range day or month; those IDs now report `invalid_birthdate` instead of `validation_failed`. SRB and SVN also now read the 3-digit years 100–799 as 2100–2799, as Python does (previously 1100–1799). LKA now rejects year 0000 and dates outside 0001-01-01 to 9999-12-31 ([#214](https://github.com/identique/idnumbers-npm/issues/214))
@@ -274,7 +279,9 @@ change; the library keeps parity with the Python `idnumbers` source of truth.
 - Full TypeScript support with type definitions
 - Comprehensive documentation and examples
 
-[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v2.1.1...HEAD
+[2.1.1]: https://github.com/identique/idnumbers-npm/compare/v2.1.0...v2.1.1
+[2.1.0]: https://github.com/identique/idnumbers-npm/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/identique/idnumbers-npm/compare/v1.11.0...v2.0.0
 [1.11.0]: https://github.com/identique/idnumbers-npm/compare/v1.10.0...v1.11.0
 [1.10.0]: https://github.com/identique/idnumbers-npm/compare/v1.9.0...v1.10.0
