@@ -3,6 +3,8 @@ module.exports = {
   testEnvironment: 'node',
   roots: ['<rootDir>/src', '<rootDir>'],
   testMatch: ['**/__tests__/**/*.test.ts', '**/?(*.)+(spec|test).ts'],
+  // `npm run docs` (#136) copies files the guides link to, including a test file, into docs-site/.
+  testPathIgnorePatterns: ['/node_modules/', '<rootDir>/docs-site/'],
   transform: {
     '^.+\.ts$': 'ts-jest',
   },

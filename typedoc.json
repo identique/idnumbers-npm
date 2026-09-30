@@ -1,0 +1,19 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "idnumbers",
+  "entryPoints": ["src/index.ts"],
+  "tsconfig": "tsconfig.build.esm.json",
+  "out": "docs-site",
+  "readme": "README.md",
+  "projectDocuments": [
+    "build/docs/countries.md",
+    "docs/INPUT_FORMATS.md",
+    "docs/FAILURE_REASONS.md",
+    "MIGRATION.md"
+  ],
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "validation": { "notExported": false },
+  "treatWarningsAsErrors": true,
+  "hostedBaseUrl": "https://identique.github.io/idnumbers-npm/"
+}
