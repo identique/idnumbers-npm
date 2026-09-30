@@ -12,7 +12,8 @@ const TOKENS: Record<string, { imask: string; regex: string }> = {
 
 /**
  * Whitespace, including the zero-width characters `\s` doesn't cover (U+200B–U+200D,
- * U+2060, U+FEFF), which pasted IDs sometimes carry.
+ * U+2060), which pasted IDs sometimes carry; U+FEFF is included too for clarity,
+ * though `\s` already matches it.
  */
 const WHITESPACE = /[\s\u200B-\u200D\u2060\uFEFF]/g;
 
@@ -118,8 +119,8 @@ export interface InputMask {
   /** The alpha-3 code the country code resolved to. */
   countryCode: string;
   /**
-   * One mask per compact length the ID comes in. Tokens: `#` a digit, `L` a letter,
-   * `X` a letter or a digit, `*` any character except whitespace; every other character is a separator.
+   * One mask per compact length the ID comes in. Tokens: `#` a digit, `L` a letter, `X` a letter
+   * or a digit, `*` any character except whitespace; every other character is a separator.
    */
   masks: string[];
   /**
