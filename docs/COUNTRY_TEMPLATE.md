@@ -488,22 +488,42 @@ Cover, at minimum:
   as `validateNationalId()`
 - the public API path: `validateNationalId('XYZ', ...)` and the alpha-2 alias `'XY'`
 
+`src/__tests__/helpers/countrySuite.ts` has two helpers that register the repetitive checks, so the
+test file only carries the country's data:
+
+- `describeValidityTable({ code, validate, valid, invalid })` makes one `accepts <id>` / `rejects <id>`
+  test per ID and checks each through the country class **and** through
+  `validateNationalId(code, id)`, so the registered validator is held to the same table as the class.
+- `describeRegistryIntegration({ code, alias, valid, invalid, noun, extractedInfo, format })` covers
+  the public API path: the alpha-3, alpha-2 and lowercase alpha-2 keys, an exact `extractedInfo`,
+  `null` results for `'INVALID'`, `parseIdInfo()` stability across aliases, and a partial match on
+  `getCountryIdFormat()`. A country without `parse()` omits `extractedInfo`.
+
+Hand-write the tests that are specific to the country (embedded dates, parse output field by field,
+`parseIdInfo()` failure reasons). The per-region format-info suites (issues #42, #43 and #44) share
+`describeFormatInfoSuite` from `src/__tests__/helpers/formatInfo.ts`.
+
 ```typescript
-import { validateNationalId, parseIdInfo, getCountryIdFormat } from '../index';
+import { parseIdInfo } from '../index';
 import { NationalID, METADATA } from '../countries/xyz';
+import { describeRegistryIntegration, describeValidityTable } from './helpers/countrySuite';
 
 describe('Xyz National ID', () => {
-  it('accepts the METADATA example', () => {
-    expect(NationalID.validate(METADATA.example!)).toBe(true);
-    expect(validateNationalId('XYZ', METADATA.example!).isValid).toBe(true);
+  describeValidityTable({
+    code: 'XYZ',
+    validate: id => NationalID.validate(id),
+    valid: [METADATA.example!, '9001010017'],
+    invalid: ['9001011234', '90010100', 'ABCDEFGHIJ', ''],
   });
 
-  it('resolves the alpha-2 alias', () => {
-    expect(validateNationalId('XY', METADATA.example!).isValid).toBe(true);
-  });
-
-  it('rejects a bad checksum', () => {
-    expect(NationalID.validate('9001011234')).toBe(false);
+  describeRegistryIntegration({
+    code: 'XYZ',
+    alias: 'XY',
+    valid: METADATA.example!,
+    invalid: '9001011234',
+    noun: 'national ID',
+    extractedInfo: { birthDate: new Date(1990, 0, 1) },
+    format: { countryCode: 'XYZ', isParsable: true, hasChecksum: true, format: 'YYMMDDSSSC' },
   });
 
   it('parses the METADATA example through parseIdInfo', () => {
@@ -513,10 +533,6 @@ describe('Xyz National ID', () => {
       // `result.info` is typed as XyzParseResult through ParseResultMap
       expect(result.info.birthDate).toEqual(new Date(1990, 0, 1));
     }
-  });
-
-  it('exposes format info', () => {
-    expect(getCountryIdFormat('XYZ')?.format).toBe('YYMMDDSSSC');
   });
 });
 ```
