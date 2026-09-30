@@ -34,7 +34,7 @@ export class NationalID implements IdNumberClass {
     maxLength: 9,
     parsable: true,
     checksum: true,
-    regexp: /^[STFGM]\d{7}[A-Z]$/,
+    regexp: /^[STFGM]\d{7}[A-Z]$/i,
     displayFormat: 'L#######C',
     masks: ['L#######L'],
     example: 'S1234567D',

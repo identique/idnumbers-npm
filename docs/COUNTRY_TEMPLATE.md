@@ -440,8 +440,9 @@ CI's package check) until you update each of them:
 
 ### What already covers your country
 
-These run over every registered country, so they cover a new one with no test changes; each fails
-until the country meets its contract:
+These run over every registered country, so they cover a new one with no test changes (the #134
+validator properties may need an exception entry; see below the table); each fails until the country
+meets its contract:
 
 | Check                                                                                                                                                                                                    | What it requires of the country                                                                                                                                                                                                                                                                                                           |
 | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

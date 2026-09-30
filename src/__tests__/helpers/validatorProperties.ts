@@ -7,7 +7,8 @@
  * Properties, for IDs `validateNationalId(code, ...)` accepts:
  *   1. The ID matches `METADATA.regexp`, and its length is within `[minLength, maxLength]`,
  *      either as written or with separators stripped (the candidates
- *      src/registry/failureReason.ts tries).
+ *      src/registry/failureReason.ts tries). A country that also accepts the ID in
+ *      lowercase must describe that too: the lowercase form matches the regexp.
  *   2. Inputs whose length is outside that range, as written and stripped, are rejected.
  *   3. `checksum: true` countries: replacing the check character with any other
  *      character from 0-9A-Z makes the ID invalid.
@@ -16,6 +17,11 @@
  *      staleness check: some single-digit change must still validate, so an entry can't
  *      outlive a fix.
  *
+ * Limits: the length property only generates the example's layout, so for countries whose
+ * `minLength` differs from `maxLength` it catches over-acceptance but not a range that
+ * under-reports other lengths. `displayFormat` agreement is covered by the #129/#131 mask
+ * tests, not here.
+ *
  * A new country is covered automatically: the test file loops over `registry.list()`.
  * Add an exception only when a property fails for a documented reason:
  *   - the check character isn't the last alphanumeric character: `CHECK_CHARACTER_INDEX`;
@@ -23,9 +29,10 @@
  *     with the reason;
  *   - the validator hard-codes valid IDs that fail the checksum: `KNOWN_VALID_IDS`.
  *
- * Only the canonical uppercase form is asserted against `METADATA.regexp`. ESP, FIN, ITA,
- * SGP and VEN also accept lowercase input, and FIN surrounding whitespace, which their
- * case-sensitive regexps don't match. That gap is known and out of scope here.
+ * Lowercase input is covered by property 1: ESP, FIN, ITA, SGP and VEN accept it, and
+ * their regexps carry the `i` flag since #242. FIN also accepts surrounding whitespace
+ * (`validate()` trims), which its regexp doesn't describe, by design; the property
+ * doesn't feed whitespace.
  *
  * To replay a failure: see the note at the top of ./arbitraries.ts (fast-check prints
  * `seed` and `path`; pass them back to `fc.assert`). The staleness sampling uses a fixed
@@ -76,7 +83,9 @@ export const SINGLE_DIGIT_CHANGE_UNDETECTED: Readonly<Record<string, string>> = 
   GTM: 'the department and municipality digits after the check digit are not covered by it',
   ISL: 'the century digit after the check digit is not covered by it',
   ZWE: 'the district digits after the check letter are not covered by it',
-  KAZ: 'the 11th digit has weight 11 (0 mod 11) in the first pass, and its mod-11 result is also folded',
+
+  // A two-pass mod-11 check: the retry adds single-digit changes the first pass alone wouldn't allow.
+  KAZ: 'the 11th digit has weight 11 (0 mod 11) in the first pass, and when the first pass gives 10 a second pass with shifted weights runs, so some other single-digit changes also keep the check digit',
 
   // Weights that share a factor with the modulus 10, so a change is undetected when the
   // difference is a multiple of the shared factor.
@@ -226,6 +235,11 @@ export function describeValidatorProperties(code: string): void {
           if (validateNationalId(code, stripped).isValid) {
             expect(matchesRegexp(code, stripped)).toBe(true);
           }
+          // A country that accepts the lowercase form must describe it (#242).
+          const lower = id.toLowerCase();
+          if (validateNationalId(code, lower).isValid) {
+            expect(matchesRegexp(code, lower)).toBe(true);
+          }
         }),
         { numRuns: RUNS_CHEAP }
       );
@@ -261,7 +275,7 @@ export function describeValidatorProperties(code: string): void {
           );
         });
       } else {
-        it(`still lets some single-digit change through (${undetectedReason})`, () => {
+        it('still lets some single-digit change through', () => {
           const samples = fc.sample(validIdArbitrary(code), {
             numRuns: STALENESS_SAMPLES,
             seed: STALENESS_SEED,
@@ -272,9 +286,12 @@ export function describeValidatorProperties(code: string): void {
                 mutation => validateNationalId(code, mutation).isValid
               ) !== undefined
           );
-          // If this fails, the checksum now catches every single-digit change: remove
-          // the country from SINGLE_DIGIT_CHANGE_UNDETECTED.
-          expect(found).toBe(true);
+          if (!found) {
+            throw new Error(
+              `${code}: no single-digit change validated any more - remove it from ` +
+                `SINGLE_DIGIT_CHANGE_UNDETECTED (reason was: ${undetectedReason})`
+            );
+          }
         });
       }
     }

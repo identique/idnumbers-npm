@@ -26,7 +26,7 @@ export const METADATA = {
   minLength: 16,
   maxLength: 16,
   regexp:
-    /^(?<surname>[A-Z]{3})(?<firstname>[A-Z]{3})(?<yy>[0-9A-Z]{2})(?<m>[A-EHLMPR-T])(?<dd>[0-9A-Z]{2})(?<area_code>[A-Z][0-9A-Z]{3})(?<checksum>[A-Z])$/,
+    /^(?<surname>[A-Z]{3})(?<firstname>[A-Z]{3})(?<yy>[0-9A-Z]{2})(?<m>[A-EHLMPR-T])(?<dd>[0-9A-Z]{2})(?<area_code>[A-Z][0-9A-Z]{3})(?<checksum>[A-Z])$/i,
   checksum: true,
   parsable: true,
   displayFormat: 'LLLLLLYYMDDXXXXC',
