@@ -30,11 +30,12 @@ or that have no `checksum()` at all — report a wrong digit as `validation_fail
 
 `invalid_birthdate` needs a validator that checks the birth date its ID encodes, and reaches that
 check from `validate()` itself (see [`src/birthDateCheck.ts`](../src/birthDateCheck.ts)). A country
-whose `validate()` doesn't check the encoded date can't report it — Belgium (BEL), Finland (FIN),
-and Sri Lanka (LKA) check only the format and check digits there, so an ID whose check digits are
-right but whose date is impossible is accepted as valid, and `parseIdInfo()` reports `not_parsable`
-for it. For BEL and FIN this differs from the Python library, which rejects such IDs (tracked in
-[#205](https://github.com/identique/idnumbers-npm/issues/205)); LKA matches Python, since an
+whose `validate()` doesn't check the encoded date can't report it — Belgium (BEL) and Finland (FIN)
+were previously in this situation, but now check the encoded date from `validate()` as well
+([#205](https://github.com/identique/idnumbers-npm/issues/205)), matching the Python library, which
+rejects such IDs too. Sri Lanka (LKA) is the remaining country that checks only the format and
+check digits: an ID whose check digits are right but whose date is impossible is accepted as valid
+there, and `parseIdInfo()` reports `not_parsable` for it. This still matches Python, since an
 overflowing day-of-year rolls into the next year there.
 
 The table below is re-derived by a test
@@ -52,7 +53,7 @@ cannot drift from the validators; when a validator changes, the test prints the 
 | ARG  | no                  | no                  |
 | AUS  | no                  | no                  |
 | AUT  | no                  | no                  |
-| BEL  | no                  | no                  |
+| BEL  | no                  | yes                 |
 | BGD  | no                  | no                  |
 | BGR  | no                  | yes                 |
 | BHR  | no                  | no                  |
@@ -73,7 +74,7 @@ cannot drift from the validators; when a validator changes, the test prints the 
 | EGY  | no                  | yes                 |
 | ESP  | no                  | no                  |
 | EST  | no                  | yes                 |
-| FIN  | no                  | no                  |
+| FIN  | no                  | yes                 |
 | FRA  | yes                 | no                  |
 | GBR  | no                  | no                  |
 | GEO  | no                  | no                  |

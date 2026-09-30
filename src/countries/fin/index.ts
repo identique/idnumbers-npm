@@ -6,6 +6,7 @@
 import { IdMetadata, ParsedInfo } from '../../types.js';
 import { isValidDate, calculateAge } from '../../utils.js';
 import { defineCountry } from '../../registry/country.js';
+import { invalidBirthDate } from '../../birthDateCheck.js';
 
 export interface FinlandParseResult extends ParsedInfo {
   isValid: boolean;
@@ -116,7 +117,11 @@ export function validate(idNumber: string): boolean {
     return false;
   }
 
-  return validateChecksum(idNumber.trim().toUpperCase());
+  // Mirrors Python's `validate_regexp(...) and parse(id) is not None`:
+  // `parse` re-checks the checksum (a no-op re-verification here) and also
+  // gates on the birth date being real, which is what makes an impossible
+  // date (e.g. 31 Feb, or month 13) invalid, matching the Python library.
+  return parse(idNumber) !== null;
 }
 
 /**
@@ -149,7 +154,7 @@ export function parse(idNumber: string): FinlandParseResult | null {
     const year = yearBase + yearValue;
 
     // Validate date
-    if (!isValidDate(year, monthValue, dayValue)) {
+    if (invalidBirthDate(!isValidDate(year, monthValue, dayValue))) {
       return null;
     }
 
