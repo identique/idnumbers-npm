@@ -40,6 +40,14 @@ Runs on every push and pull request to the main branch.
   [Packaging (#120)](../MIGRATION.md#packaging-120) in `MIGRATION.md` for what these
   validate and why.
 
+**Python Parity (`parity`):**
+
+- Checks out the Python `idnumbers` library at its final commit (the upstream repository is
+  archived), sets up Python 3.12, builds the package, and runs `npm run parity`
+- Compares `validateNationalId()` with the Python library for the 78 countries both support, and
+  fails on any divergence not listed in `parity/allowlist.json` or any allowlist entry that has gone
+  stale — see [PARITY.md](PARITY.md)
+
 ### 2. NPM Publish Workflow (`npm-publish.yml`)
 
 Automatically publishes the package to npm when you create a new GitHub release.
