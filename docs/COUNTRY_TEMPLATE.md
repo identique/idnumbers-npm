@@ -537,8 +537,11 @@ describe('Xyz National ID', () => {
 });
 ```
 
-> There is no enforced coverage threshold in [`jest.config.js`](../jest.config.js), but new country
-> logic is expected to be covered end-to-end; reviewers will ask for the branches above.
+> Global coverage floors in [`jest.config.js`](../jest.config.js) are enforced by
+> `npm run test:coverage` and CI's Test Coverage Report (see
+> [CONTRIBUTING.md](../CONTRIBUTING.md#coverage)); they don't guarantee a new country is covered, so
+> new country logic is still expected to be covered end-to-end, and reviewers will ask for the
+> branches above.
 
 ---
 
