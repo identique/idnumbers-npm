@@ -42,23 +42,35 @@ export const METADATA: IdMetadata = {
 /**
  * Extract year base and gender from first digit
  * First digit encoding:
+ * - 0: 1700s (female)
  * - 1, 2: 1800s (male, female)
  * - 3, 4: 1900s (male, female)
  * - 5, 6: 2000s (male, female)
  * - 7, 8: 2100s (male, female)
+ * - 9: 2100s (male)
  * If the value is odd -> male, if the value is even -> female
+ *
+ * The digits 0 and 9 follow the Python library, so they are valid here too.
+ * For 1-8, Python's `(g // 2) * 2` places every odd (male) digit a century
+ * early, so this port keeps the standard mapping above instead (#216). The two
+ * libraries therefore differ on 29 February of a year ending in 00 when the
+ * first digit is 5 or 7.
  */
 function extractYearBaseGender(g: number): [number, Gender] | null {
   const gender = g % 2 === 0 ? Gender.FEMALE : Gender.MALE;
   let yearBase: number;
 
-  if (g === 1 || g === 2) {
+  if (g === 0) {
+    yearBase = 1700;
+  } else if (g === 1 || g === 2) {
     yearBase = 1800;
   } else if (g === 3 || g === 4) {
     yearBase = 1900;
   } else if (g === 5 || g === 6) {
     yearBase = 2000;
   } else if (g === 7 || g === 8) {
+    yearBase = 2100;
+  } else if (g === 9) {
     yearBase = 2100;
   } else {
     return null;

@@ -54,7 +54,7 @@ describe('Low Coverage Countries - Comprehensive Tests', () => {
 
     const invalidIDs = [
       '39001010072', // Wrong checksum
-      '99001010071', // Invalid gender/century digit
+      '99001010071', // Wrong checksum (century digit 9 is valid)
       '39013010071', // Invalid month
       '39001320071', // Invalid day
       '3900101007', // Too short
