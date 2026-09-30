@@ -33,8 +33,8 @@ check from `validate()` itself (see [`src/birthDateCheck.ts`](../src/birthDateCh
 whose `validate()` doesn't check the encoded date can't report it — Belgium (BEL) and Finland (FIN)
 were previously in this situation, but now check the encoded date from `validate()` as well
 ([#205](https://github.com/identique/idnumbers-npm/issues/205)), matching the Python library, which
-rejects such IDs too. Sri Lanka (LKA) is the remaining country that checks only the format and
-check digits: an ID whose check digits are right but whose date is impossible is accepted as valid
+rejects such IDs too. Sri Lanka (LKA) is the remaining country that validates only the format and
+the check digits: an ID whose check digits are right but whose date is impossible is accepted as valid
 there, and `parseIdInfo()` reports `not_parsable` for it. This still matches Python, since an
 overflowing day-of-year rolls into the next year there.
 
