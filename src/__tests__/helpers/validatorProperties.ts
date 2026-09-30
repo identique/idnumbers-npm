@@ -7,7 +7,8 @@
  * Properties, for IDs `validateNationalId(code, ...)` accepts:
  *   1. The ID matches `METADATA.regexp`, and its length is within `[minLength, maxLength]`,
  *      either as written or with separators stripped (the candidates
- *      src/registry/failureReason.ts tries).
+ *      src/registry/failureReason.ts tries). A country that also accepts the ID in
+ *      lowercase must describe that too: the lowercase form matches the regexp.
  *   2. Inputs whose length is outside that range, as written and stripped, are rejected.
  *   3. `checksum: true` countries: replacing the check character with any other
  *      character from 0-9A-Z makes the ID invalid.
@@ -23,9 +24,10 @@
  *     with the reason;
  *   - the validator hard-codes valid IDs that fail the checksum: `KNOWN_VALID_IDS`.
  *
- * Only the canonical uppercase form is asserted against `METADATA.regexp`. ESP, FIN, ITA,
- * SGP and VEN also accept lowercase input, and FIN surrounding whitespace, which their
- * case-sensitive regexps don't match. That gap is known and out of scope here.
+ * Lowercase input is covered by property 1: ESP, FIN, ITA, SGP and VEN accept it, and
+ * their regexps carry the `i` flag since #242. FIN also accepts surrounding whitespace
+ * (`validate()` trims), which its regexp doesn't describe, by design; the property
+ * doesn't feed whitespace.
  *
  * To replay a failure: see the note at the top of ./arbitraries.ts (fast-check prints
  * `seed` and `path`; pass them back to `fc.assert`). The staleness sampling uses a fixed
@@ -225,6 +227,11 @@ export function describeValidatorProperties(code: string): void {
           const stripped = stripSeparators(id);
           if (validateNationalId(code, stripped).isValid) {
             expect(matchesRegexp(code, stripped)).toBe(true);
+          }
+          // A country that accepts the lowercase form must describe it (#242).
+          const lower = id.toLowerCase();
+          if (validateNationalId(code, lower).isValid) {
+            expect(matchesRegexp(code, lower)).toBe(true);
           }
         }),
         { numRuns: RUNS_CHEAP }

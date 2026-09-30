@@ -25,7 +25,7 @@ export const METADATA = {
   minLength: 11,
   maxLength: 11,
   regexp:
-    /^(?<dd>\d{2})(?<mm>\d{2})(?<yy>\d{2})(?<century>[-+ABCDEFUVWXY])(?<sn>\d{3})(?<check>[0-9A-Z])$/,
+    /^(?<dd>\d{2})(?<mm>\d{2})(?<yy>\d{2})(?<century>[-+ABCDEFUVWXY])(?<sn>\d{3})(?<check>[0-9A-Z])$/i,
   checksum: true,
   parsable: true,
   displayFormat: 'DDMMYYCSSSX',

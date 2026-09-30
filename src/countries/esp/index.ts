@@ -13,7 +13,7 @@ export const METADATA = {
   idType: 'DNI',
   minLength: 9,
   maxLength: 9,
-  regexp: /^(\d{8})([A-Z])$/,
+  regexp: /^(\d{8})([A-Z])$/i,
   checksum: true,
   parsable: false,
   displayFormat: '########L',

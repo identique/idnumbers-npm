@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `npm run bench` measures `validateNationalId()` and `parseIdInfo()` throughput for 10 countries, with the full registry and with a single country registered, plus cold import time of the root entry and of `idnumbers/core` with one country. An informational Benchmarks CI job runs it and prints the table to the job summary; it never fails on a number. Dev tooling; no library behavior changes ([#137](https://github.com/identique/idnumbers-npm/issues/137))
 - Coverage thresholds of 93% lines, 93% statements, 83% functions, and 89% branches, enforced by `npm run test:coverage` and CI's Test Coverage Report job, which now also writes a per-metric table to the job summary. The README shows a coverage badge that CI updates from `main` through a shields.io endpoint file on the `badges` branch. Dev tooling; no library behavior changes ([#137](https://github.com/identique/idnumbers-npm/issues/137))
 
+### Changed
+
+- The `METADATA.regexp` of ESP, FIN, ITA, SGP and VEN is now case-insensitive, matching the lowercase input their validators already accept. A lowercase ID with a wrong check character now reports the same `reason` as its uppercase form (previously `invalid_format`). Which IDs validate is unchanged ([#242](https://github.com/identique/idnumbers-npm/issues/242))
+
 ## [2.1.1] - 2026-09-30
 
 A patch release: Python-parity fixes, no API changes. Which IDs validate changes for the countries
