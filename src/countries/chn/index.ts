@@ -4,9 +4,10 @@
  */
 
 import { IdMetadata, ParsedInfo } from '../../types.js';
-import { validateRegexp, calculateAge } from '../../utils.js';
+import { validateRegexp, calculateAge, isValidDate } from '../../utils.js';
 import { Gender } from '../../constants.js';
 import { defineCountry } from '../../registry/country.js';
+import { invalidBirthDate } from '../../birthDateCheck.js';
 
 export interface ChinaParseResult extends ParsedInfo {
   isValid: boolean;
@@ -102,8 +103,18 @@ export function parse(idNumber: string): ChinaParseResult | null {
     return null;
   }
 
+  const year = parseInt(yyyy);
+  const month = parseInt(mm);
+  const day = parseInt(dd);
+
+  // Mirrors Python's `date(yyyy, mm, dd)` in `try/except ValueError`, which also
+  // rejects year 0000.
+  if (invalidBirthDate(year < 1 || !isValidDate(year, month, day))) {
+    return null;
+  }
+
   try {
-    const birthDate = new Date(parseInt(yyyy), parseInt(mm) - 1, parseInt(dd));
+    const birthDate = new Date(year, month - 1, day);
 
     return {
       isValid: true,

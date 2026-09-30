@@ -6,12 +6,32 @@ import { registry } from '../../registry/ValidatorRegistry';
 const COUNTRIES_DIR = path.resolve(__dirname, '../../countries');
 
 /**
+ * Relative imports in `source` that resolve into a directory under `src/countries`
+ * (including the importing file's own), mapped to the `.ts` files they name. A `.js`
+ * specifier maps to its `.ts` source, as the `.js` import convention requires.
+ */
+function countryImports(file: string, source: string): string[] {
+  const specifiers = [...source.matchAll(/from\s+'(\.{1,2}\/[^']+)'/g)].map(match => match[1]);
+  return specifiers
+    .map(specifier => path.resolve(path.dirname(file), specifier.replace(/\.js$/, '.ts')))
+    .filter(
+      resolved =>
+        resolved.startsWith(COUNTRIES_DIR + path.sep) &&
+        resolved.endsWith('.ts') &&
+        fs.existsSync(resolved)
+    );
+}
+
+/**
  * Whether `code`'s country directory wraps a birth-date check in `invalidBirthDate()`
  * (#130), i.e. whether its validator can report `invalid_birthdate`.
  *
- * This is a static text scan of every `.ts` file under the country's directory: it
- * cannot tell a wrap on the registered validator's `validate()` path from one in a
- * file `validate()` can never reach. Why that's still sound (#198): in combination
+ * This is a static text scan of every `.ts` file under the country's directory, plus
+ * every file under `src/countries` that a scanned file imports through a relative
+ * specifier, followed transitively (MKD and MNE inherit BIH's shared JMBG, so their
+ * `validate()` runs the wrap that lives in `bih/yugoslavia.ts`). It cannot tell a wrap
+ * on the registered validator's `validate()` path from one in a file `validate()` can
+ * never reach. Why that's still sound (#198): in combination
  * with the two tests in issue-130-failure-reasons.test.ts that consume it, the
  * coherence test requires the set of countries this function flags to equal exactly
  * the set with a passing `invalid_birthdate` vector, and the vector test requires
@@ -21,14 +41,29 @@ const COUNTRIES_DIR = path.resolve(__dirname, '../../countries');
  * because `validate()` never trips the wrap (vector test fails). The one case this
  * can't catch is a country that already reports `invalid_birthdate` via a reachable
  * wrap and additionally has an unreachable one elsewhere — harmless, since the docs
- * row for that country is still correct either way.
+ * row for that country is still correct either way. Following imports adds no new
+ * gap: a wrap in an imported file is subject to the same two tests.
  */
 export function marksBirthDate(code: string): boolean {
   const dir = path.join(COUNTRIES_DIR, code.toLowerCase());
-  return fs
+  const pending = fs
     .readdirSync(dir)
     .filter(file => file.endsWith('.ts'))
-    .some(file => fs.readFileSync(path.join(dir, file), 'utf8').includes('invalidBirthDate('));
+    .map(file => path.join(dir, file));
+  const visited = new Set<string>();
+  while (pending.length > 0) {
+    const file = pending.pop()!;
+    if (visited.has(file)) {
+      continue;
+    }
+    visited.add(file);
+    const source = fs.readFileSync(file, 'utf8');
+    if (source.includes('invalidBirthDate(')) {
+      return true;
+    }
+    pending.push(...countryImports(file, source));
+  }
+  return false;
 }
 
 /**
