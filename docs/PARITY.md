@@ -40,7 +40,7 @@ checkout, no build, or missing, malformed or inconsistent data files). A passing
 summary such as:
 
 ```text
-78 countries, 17946 vectors: 17585 match, 199 TS-only input formats (allowed), 162 allowlisted divergences, 0 unexpected, 0 stale
+78 countries, 17960 vectors: 17599 match, 199 TS-only input formats (allowed), 162 allowlisted divergences, 0 unexpected, 0 stale
 ```
 
 When `GITHUB_STEP_SUMMARY` is set (as in CI), the summary line and the first 50 failure lines are also
