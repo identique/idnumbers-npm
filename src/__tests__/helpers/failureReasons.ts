@@ -13,6 +13,9 @@ const COUNTRIES_DIR = path.resolve(__dirname, '../../countries');
  * Matches `from '...'` and `from "..."` (which covers `import ... from` and
  * `export ... from`), and the side-effect-only forms `import '...'` and
  * `import "..."`. Dynamic `import('...')` is not followed.
+ *
+ * This is a text scan, so it would also pick up matching `import`/`from` text inside comments or
+ * string literals; that is harmless for this test helper.
  */
 export function countryImports(file: string, source: string): string[] {
   const specifiers = [...source.matchAll(/(?:\bfrom|\bimport)\s*(['"])(\.{1,2}\/[^'"]+)\1/g)].map(

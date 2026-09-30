@@ -27,14 +27,13 @@ const VECTORS: Vector[] = [
   ['00402290012', true, '1704-02-29', 'female', '29 Feb 1704 (leap)'],
   ['00002290019', false, null, null, '29 Feb 1700 (not leap)'],
   ['00001010012', true, '1700-01-01', 'female', '1 Jan 1700'],
-  ['99001010017', true, '2190-01-01', 'male', '1 Jan 2190 (g=9: male, 2100s)'],
+  ['99001010017', true, '2190-01-01', 'male', '1 Jan 2190 (g=9: male, 2100s; issue example)'],
   ['90402290018', true, '2104-02-29', 'male', '29 Feb 2104 (leap)'],
   ['90002290017', false, null, null, '29 Feb 2100 (not leap)'],
   ['99912310016', true, '2199-12-31', 'male', '31 Dec 2199'],
   ['09002300013', false, null, null, '30 Feb 1790'],
   ['99004310017', false, null, null, '31 Apr 2190'],
   ['00001010067', true, '1700-01-01', 'female', '1 Jan 1700 (issue example)'],
-  ['99001010017', true, '2190-01-01', 'male', '1 Jan 2190 (issue example)'],
 ];
 
 /** The local calendar date of a parsed birth date, as `YYYY-MM-DD`. */
