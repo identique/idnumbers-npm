@@ -16,6 +16,18 @@ A comprehensive TypeScript/JavaScript library for validating and parsing nationa
 - ✨ **Well-tested** - Comprehensive test coverage with 100% pass rate
 - 🌍 **Multiple formats** - Supports various ID number formats per country
 
+## What's new in v2.1.1
+
+v2.1.1 is a patch release with Python-parity fixes and no API changes. See the
+[CHANGELOG](./CHANGELOG.md) for every change.
+
+- BIH, MKD, MNE, SRB, SVN, CHN and LKA now reject IDs whose encoded birth date isn't real, and
+  report `invalid_birthdate` ([#214](https://github.com/identique/idnumbers-npm/issues/214)).
+- Indonesia (IDN) accepts every district code the Python library knows (7,030, up from 290)
+  ([#215](https://github.com/identique/idnumbers-npm/issues/215)).
+- Lithuania (LTU) accepts personal codes whose first digit is 0 or 9
+  ([#216](https://github.com/identique/idnumbers-npm/issues/216)).
+
 ## What's new in v2.1.0
 
 v2.1.0 is a minor release with no breaking changes. See the [CHANGELOG](./CHANGELOG.md) for every
