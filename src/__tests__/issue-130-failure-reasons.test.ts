@@ -23,7 +23,7 @@ import {
 /**
  * Each ID below matches its country's shape and passes checksum, but encodes a
  * birth date that is not real (found by editing digits of the country's
- * METADATA.example). Every one of these 30 countries wraps the birth-date check
+ * METADATA.example). Every one of these 31 countries wraps the birth-date check
  * its validator reaches in `invalidBirthDate()`.
  */
 const IMPOSSIBLE_BIRTHDATE_IDS: Record<string, string> = {
@@ -31,6 +31,7 @@ const IMPOSSIBLE_BIRTHDATE_IDS: Record<string, string> = {
   BEL: '85023103360',
   BGR: '0501820018',
   BIH: '0001990150032',
+  CHN: '11010219840431973X',
   CZE: '209101/0009',
   DNK: '410100-1234',
   EGY: '29011310100017',
@@ -124,7 +125,7 @@ describe('issue #130: birth-date tracing', () => {
   });
 });
 
-describe('issue #130: 30 countries report invalid_birthdate', () => {
+describe('issue #130: 31 countries report invalid_birthdate', () => {
   it.each(Object.entries(IMPOSSIBLE_BIRTHDATE_IDS))(
     '%s reports invalid_birthdate for an ID with an impossible encoded date',
     (code, id) => {

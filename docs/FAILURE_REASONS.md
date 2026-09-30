@@ -62,7 +62,7 @@ cannot drift from the validators; when a validator changes, the test prints the 
 | CAN  | no                  | no                  |
 | CHE  | no                  | no                  |
 | CHL  | no                  | no                  |
-| CHN  | no                  | no                  |
+| CHN  | no                  | yes                 |
 | COL  | no                  | no                  |
 | CRI  | no                  | no                  |
 | CYP  | yes                 | no                  |
