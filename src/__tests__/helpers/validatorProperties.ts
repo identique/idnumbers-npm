@@ -237,8 +237,10 @@ export function describeValidatorProperties(code: string): void {
           }
           // A country that accepts the lowercase form must describe it (#242).
           const lower = id.toLowerCase();
-          if (validateNationalId(code, lower).isValid) {
-            expect(matchesRegexp(code, lower)).toBe(true);
+          if (validateNationalId(code, lower).isValid && !matchesRegexp(code, lower)) {
+            throw new Error(
+              `${code}: lowercase form ${lower} validates but doesn't match METADATA.regexp — add the i flag`
+            );
           }
         }),
         { numRuns: RUNS_CHEAP }

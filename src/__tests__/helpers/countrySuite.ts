@@ -1,4 +1,5 @@
-import { getCountryIdFormat, IdFormat, validateNationalId } from '../../index';
+import { getCountryIdFormat, validateNationalId } from '../../index';
+import type { IdFormat } from '../../index';
 import { parsedInfo } from './parsedInfo';
 
 /**
@@ -8,12 +9,15 @@ import { parsedInfo } from './parsedInfo';
  * the registry (`validateNationalId(code, id)`), so a table ported from the
  * Python library also proves that the registered validator agrees with the
  * country class. Each ID becomes its own test, titled `accepts <id>` or
- * `rejects <id>`.
+ * `rejects <id>`. An omitted or empty list registers no tests, and calling this
+ * with both lists empty throws at registration time, so a table emptied by
+ * mistake can't pass silently.
  *
  * @param options.code Registry key of the country (alpha-3 or alpha-2).
  * @param options.validate The country class's own validity check.
  * @param options.valid IDs both paths must accept.
  * @param options.invalid IDs both paths must reject.
+ * @throws {Error} When both `valid` and `invalid` are empty or omitted.
  */
 export function describeValidityTable(options: {
   code: string;
@@ -22,6 +26,12 @@ export function describeValidityTable(options: {
   invalid?: readonly string[];
 }): void {
   const { code, validate, valid = [], invalid = [] } = options;
+
+  if (valid.length === 0 && invalid.length === 0) {
+    throw new Error(
+      `describeValidityTable(${code}): both valid and invalid are empty, so no tests would be registered`
+    );
+  }
 
   if (valid.length > 0) {
     it.each(valid)('accepts %s', id => {
@@ -107,7 +117,7 @@ export function describeRegistryIntegration(options: {
     });
   }
 
-  it('reports its format via getCountryIdFormat', () => {
+  it(`reports the ${noun} format via getCountryIdFormat`, () => {
     const actual = getCountryIdFormat(code);
     expect(actual).not.toBeNull();
     expect(actual).toMatchObject(format);
