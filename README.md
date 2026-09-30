@@ -803,7 +803,7 @@ Accepted letter case, surrounding whitespace, and separators for every country a
 
 ## Testing
 
-The library includes comprehensive test coverage with 5980 tests covering:
+The test suite covers:
 
 - Format validation
 - Checksum verification
