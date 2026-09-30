@@ -101,7 +101,6 @@ When behavior changes:
 - Add or update tests under `src/__tests__/`.
 - Use an issue-scoped filename such as `issue-123-validator.test.ts`.
 - Cover valid inputs, invalid inputs, and relevant edge cases from the Python implementation.
-- Update the README test count if the total number of Jest tests changes.
 
 Documentation-only changes do not require new Jest tests, but their commands, links, and technical claims must be verified.
 
@@ -196,7 +195,7 @@ Every country module exports a side-effect-free `country` definition (`defineCou
 
 Only primary country validators belong in this registry. Secondary ID types remain available through their country-module exports and must not be registered as additional primary countries.
 
-The number of registered primary validators is asserted in `src/__tests__/parseIdInfo-migration.test.ts`. Adding a new country requires bumping that expected count in the same change, alongside the README test count noted above.
+The number of registered primary validators is asserted in `src/__tests__/parseIdInfo-migration.test.ts`. Adding a new country requires bumping that expected count in the same change.
 
 ## Testing Requirements
 
@@ -284,8 +283,6 @@ The thresholds are floors to raise, not lower. When your change raises coverage,
 As a guideline, a change should not reduce coverage of the code it touches, and new validator logic should aim for at least 80% line and 70% branch coverage. Run `npm run test:coverage` for the current totals; the suite comfortably exceeds both figures today, so the practical bar is the code you are adding rather than the repository average.
 
 The 80% and 70% figures are guidelines, not gates, so reviewers may still ask for tests covering an untested branch even when the totals look healthy.
-
-If the total number of Jest tests changes, update the count in the README's "comprehensive test coverage with N tests" line to the new total reported by `npm test`.
 
 ## Code Style
 
