@@ -77,6 +77,15 @@ function compact(idNumber: string, METADATA: IdMetadata): string {
  * there.
  *
  * Returns null for an unsupported country code or a non-string ID.
+ *
+ * @example
+ * ```ts
+ * import { normalizeId } from 'idnumbers';
+ *
+ * normalizeId('BRA', '111.444.777-35'); // '11144477735'
+ * normalizeId('TWN', 'a123456789'); // 'A123456789'
+ * normalizeId('XX', '1'); // null, unsupported country
+ * ```
  */
 export function normalizeId(countryCode: FormatCountryCode, idNumber: string): string | null {
   const METADATA = metadataFor(countryCode);
@@ -97,6 +106,14 @@ export function normalizeId(countryCode: FormatCountryCode, idNumber: string): s
  * Returns null when the ID can't be laid out: an unsupported country code, a
  * non-string ID, or a compact length that matches none of the country's masks (or,
  * for a country registered without masks, lies outside its `minLength`–`maxLength`).
+ *
+ * @example
+ * ```ts
+ * import { formatId } from 'idnumbers';
+ *
+ * formatId('BRA', '11144477735'); // '111.444.777-35'
+ * formatId('BRA', '123'); // null, no mask fits this length
+ * ```
  */
 export function formatId(countryCode: FormatCountryCode, idNumber: string): string | null {
   const METADATA = metadataFor(countryCode);
@@ -143,6 +160,16 @@ const escapeRegExp = (char: string) => char.replace(/[.*+?^${}()|[\]\\/]/g, '\\$
  *
  * Returns null for an unsupported country code, or a country registered without
  * masks. Every built-in country has them.
+ *
+ * @example
+ * ```ts
+ * import { getInputMask } from 'idnumbers';
+ *
+ * const mask = getInputMask('BRA');
+ * mask?.masks; // ['###.###.###-##']
+ * mask?.imask; // [{ mask: '000.000.000-00' }]
+ * mask?.pattern.test('111.444.777-35'); // true
+ * ```
  */
 export function getInputMask(countryCode: FormatCountryCode): InputMask | null {
   const resolved = registry.resolveKey(countryCode);

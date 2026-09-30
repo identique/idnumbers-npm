@@ -6,6 +6,8 @@ A comprehensive TypeScript/JavaScript library for validating and parsing nationa
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.2-blue.svg)](https://www.typescriptlang.org/)
 
+**[API reference](https://identique.github.io/idnumbers-npm/)**: every public function with a typed example, and a page for each of the 85 countries.
+
 ## Features
 
 - ✅ **85 countries supported** - Comprehensive coverage across all continents
@@ -160,6 +162,9 @@ if (parsed.ok) {
 ```
 
 ## API Reference
+
+The [API reference site](https://identique.github.io/idnumbers-npm/) has a typed example for every
+public function and a page per country. It is rebuilt and published with each release.
 
 ### `validateNationalId(countryCode, idNumber)`
 
@@ -797,7 +802,7 @@ Accepted letter case, surrounding whitespace, and separators for every country a
 
 ## Testing
 
-The library includes comprehensive test coverage with 5894 tests covering:
+The library includes comprehensive test coverage with 5959 tests covering:
 
 - Format validation
 - Checksum verification
@@ -841,6 +846,7 @@ This library is inspired by and maintains compatibility with validation logic fr
 
 For issues, questions, or contributions, please visit:
 
+- API reference: https://identique.github.io/idnumbers-npm/
 - GitHub: https://github.com/identique/idnumbers-npm
 - Issues: https://github.com/identique/idnumbers-npm/issues
 

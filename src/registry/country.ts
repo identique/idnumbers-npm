@@ -37,6 +37,17 @@ export interface CountryDefinition<
  * The definition, its aliases, and its validator are frozen, so a definition cannot
  * swap the functions the registry calls. The validator's `METADATA` is the module's
  * own object and stays mutable; `getCountryIdFormat()` returns a copy of it.
+ *
+ * @example
+ * ```ts
+ * import { defineCountry } from 'idnumbers/core';
+ * import { NationalID } from 'idnumbers/countries/twn';
+ *
+ * const definition = defineCountry('TWN', ['TW'], NationalID);
+ * definition.key; // 'TWN'
+ * definition.aliases; // ['TW']
+ * definition.validator.validate('A123456789'); // true
+ * ```
  */
 export function defineCountry<
   K extends string,

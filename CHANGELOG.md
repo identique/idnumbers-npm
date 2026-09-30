@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- An API reference site (TypeDoc), published to https://identique.github.io/idnumbers-npm/ on each release. It has a typed `@example` for every public function, which a test type-checks, and a page per country generated from the registry metadata. `npm run docs` builds it into `docs-site/`. `homepage` in `package.json` now points to the site ([#136](https://github.com/identique/idnumbers-npm/issues/136))
 - CI now checks validity against the Python `idnumbers` library. `npm run parity` compares `validateNationalId()` with Python for the 78 countries both libraries support, on a seed corpus plus one-character mutations. Known divergences are listed with their tracking issue in `parity/allowlist.json`, and [docs/PARITY.md](docs/PARITY.md) explains the formats ([#133](https://github.com/identique/idnumbers-npm/issues/133)). Dev tooling; no library behavior changes
 - Property-based tests now cover every country's validator. Generated valid IDs must match `METADATA.regexp` and the length range, and inputs outside the range must be rejected. For the 59 countries with a checksum, a changed check character must be rejected. 33 of them also reject any single changed digit; the other 26, whose checksum can't catch every such change, are listed with the reason in `src/__tests__/helpers/validatorProperties.ts` ([#134](https://github.com/identique/idnumbers-npm/issues/134)). Test-only; no library behavior changes
 

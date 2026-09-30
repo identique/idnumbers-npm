@@ -99,6 +99,38 @@ function unionRegExp(regexps: readonly RegExp[]): RegExp {
  *
  * @throws Error if member regexps use different flags or a backreference and no
  * `regexp` override is given.
+ *
+ * @example
+ * ```ts
+ * import { createCompositeValidator, IdMetadata } from 'idnumbers/core';
+ *
+ * const metadata = (regexp: RegExp, length: number): IdMetadata => ({
+ *   iso3166Alpha2: 'XX',
+ *   minLength: length,
+ *   maxLength: length,
+ *   parsable: false,
+ *   checksum: false,
+ *   regexp,
+ *   aliasOf: null,
+ *   names: [],
+ *   links: [],
+ *   deprecated: false,
+ * });
+ *
+ * const digits = {
+ *   METADATA: metadata(/^\d{6}$/, 6),
+ *   validate: (id: string) => /^\d{6}$/.test(id),
+ * };
+ * const prefixed = {
+ *   METADATA: metadata(/^XX\d{4}$/, 6),
+ *   validate: (id: string) => /^XX\d{4}$/.test(id),
+ * };
+ *
+ * const either = createCompositeValidator([digits, prefixed]);
+ * either.validate('123456'); // true
+ * either.validate('XX1234'); // true
+ * either.validate('YY1234'); // false
+ * ```
  */
 export function createCompositeValidator<
   M extends readonly [CountryValidator<object>, ...CountryValidator<object>[]],

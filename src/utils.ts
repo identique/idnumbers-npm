@@ -2,6 +2,14 @@ import { CheckDigit } from './constants.js';
 
 /**
  * Validate string against a regular expression
+ *
+ * @example
+ * ```ts
+ * import { validateRegexp } from 'idnumbers';
+ *
+ * validateRegexp('A123456789', /^[A-Z]\d{9}$/); // true
+ * validateRegexp('123456789', /^[A-Z]\d{9}$/); // false
+ * ```
  */
 export function validateRegexp(idNumber: string, regexp: RegExp): boolean {
   if (typeof idNumber !== 'string') {
@@ -12,6 +20,15 @@ export function validateRegexp(idNumber: string, regexp: RegExp): boolean {
 
 /**
  * Validate if a date is valid
+ *
+ * @example
+ * ```ts
+ * import { isValidDate } from 'idnumbers';
+ *
+ * isValidDate(2024, 2, 29); // true
+ * isValidDate(2023, 2, 29); // false
+ * isValidDate(2024, 13, 1); // false
+ * ```
  */
 export function isValidDate(year: number, month: number, day: number): boolean {
   if (month < 1 || month > 12) return false;
@@ -30,6 +47,15 @@ export function isValidDate(year: number, month: number, day: number): boolean {
 
 /**
  * Check if a year is a leap year
+ *
+ * @example
+ * ```ts
+ * import { isLeapYear } from 'idnumbers';
+ *
+ * isLeapYear(2024); // true
+ * isLeapYear(1900); // false
+ * isLeapYear(2000); // true
+ * ```
  */
 export function isLeapYear(year: number): boolean {
   return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
@@ -37,6 +63,14 @@ export function isLeapYear(year: number): boolean {
 
 /**
  * Calculate age from birth date
+ *
+ * @example
+ * ```ts
+ * import { calculateAge } from 'idnumbers';
+ *
+ * // Whole years between the date and today: 26 in 2026, until the birthday has passed.
+ * calculateAge(new Date(2000, 0, 1));
+ * ```
  */
 export function calculateAge(birthDate: Date): number {
   const today = new Date();
@@ -52,6 +86,13 @@ export function calculateAge(birthDate: Date): number {
 
 /**
  * Clean digits from a string
+ *
+ * @example
+ * ```ts
+ * import { cleanDigits } from 'idnumbers';
+ *
+ * cleanDigits('A1-23 4b5'); // '12345'
+ * ```
  */
 export function cleanDigits(input: string): string {
   return input.replace(/\D/g, '');
@@ -60,6 +101,14 @@ export function cleanDigits(input: string): string {
 /**
  * Implement the Luhn algorithm
  * https://en.wikipedia.org/wiki/Luhn_algorithm
+ *
+ * @example
+ * ```ts
+ * import { luhnDigit } from 'idnumbers';
+ *
+ * // The check digit that completes 7992739871 to the valid number 79927398713.
+ * luhnDigit([7, 9, 9, 2, 7, 3, 9, 8, 7, 1]); // 3
+ * ```
  */
 export function luhnDigit(digits: number[], multipliersStartByTwo: boolean = false): CheckDigit {
   let totalSum = 0;
@@ -110,6 +159,14 @@ const VERHOEFF_TABLES = {
 /**
  * Verhoeff algorithm check
  * https://en.wikipedia.org/wiki/Verhoeff_algorithm#Table-based_algorithm
+ *
+ * @example
+ * ```ts
+ * import { verhoeffCheck } from 'idnumbers';
+ *
+ * verhoeffCheck([2, 3, 6, 3]); // true: the last digit is the Verhoeff check digit of 236
+ * verhoeffCheck([2, 3, 6, 4]); // false
+ * ```
  */
 export function verhoeffCheck(digits: number[]): boolean {
   const revDigits = [...digits].reverse();
@@ -125,6 +182,14 @@ export function verhoeffCheck(digits: number[]): boolean {
 
 /**
  * Weighted modulus digit calculation
+ *
+ * @example
+ * ```ts
+ * import { weightedModulusDigit } from 'idnumbers';
+ *
+ * weightedModulusDigit([1, 2, 3, 4], [4, 3, 2, 1], 11); // 2: 11 - (20 % 11)
+ * weightedModulusDigit([1, 2, 3, 4], [4, 3, 2, 1], 11, true); // 9: only the remainder, 20 % 11
+ * ```
  */
 export function weightedModulusDigit(
   numbers: number[],
@@ -146,6 +211,14 @@ export function weightedModulusDigit(
 
 /**
  * MN modulus check (ISO 7064 mod 11, 10)
+ *
+ * @example
+ * ```ts
+ * import { mnModulusDigit } from 'idnumbers';
+ *
+ * // ISO 7064 mod 11,10 check digit.
+ * mnModulusDigit([7, 9, 4, 3], 11, 10); // 2
+ * ```
  */
 export function mnModulusDigit(numbers: number[], m: number, n: number): number {
   let product = m;
@@ -163,6 +236,14 @@ export function mnModulusDigit(numbers: number[], m: number, n: number): number 
 
 /**
  * Convert letter to number (A=1, B=2, etc.)
+ *
+ * @example
+ * ```ts
+ * import { letterToNumber } from 'idnumbers';
+ *
+ * letterToNumber('C'); // 3
+ * letterToNumber('c', false); // 3
+ * ```
  */
 export function letterToNumber(letter: string, capital: boolean = true): number {
   if (letter.length !== 1 || !/[a-zA-Z]/.test(letter)) {
@@ -174,14 +255,31 @@ export function letterToNumber(letter: string, capital: boolean = true): number 
 
 /**
  * Get the units digit of a modulus
+ *
+ * @example
+ * ```ts
+ * import { modulusOverflowMod10 } from 'idnumbers';
+ *
+ * modulusOverflowMod10(11); // 1
+ * modulusOverflowMod10(7); // 7
+ * ```
  */
 export function modulusOverflowMod10(modulus: number): CheckDigit {
   return (modulus > 9 ? modulus % 10 : modulus) as CheckDigit;
 }
 
 /**
- * EAN-13 check digit calculation
+ * EAN-13-style check digit with even positions weighted by 2, as in the Python library
+ * (standard EAN-13 weights them by 3). The CHE (Swiss AHV) validator uses it.
  * https://boxshot.com/barcode/tutorials/ean-13-calculator/
+ *
+ * @example
+ * ```ts
+ * import { ean13Digit } from 'idnumbers';
+ *
+ * // The check digit of CHE's METADATA example, 756.1234.5678.97.
+ * ean13Digit([7, 5, 6, 1, 2, 3, 4, 5, 6, 7, 8, 9]); // 7
+ * ```
  */
 export function ean13Digit(numbers: number[]): CheckDigit {
   let odd = 0;
@@ -203,6 +301,13 @@ export function ean13Digit(numbers: number[]): CheckDigit {
 
 /**
  * Normalize an ID number by removing common separators
+ *
+ * @example
+ * ```ts
+ * import { normalize } from 'idnumbers';
+ *
+ * normalize('A-123 456/789'); // 'A123456789'
+ * ```
  */
 export function normalize(idNumber: string): string {
   return idNumber.replace(/[\s\-/]/g, '');

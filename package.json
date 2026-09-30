@@ -70,6 +70,7 @@
     "example:extended": "npm run build && tsx examples/basic-usage-extended.ts",
     "test:pack": "node scripts/smoke-pack.mjs",
     "size": "node scripts/check-bundle-size.mjs",
+    "docs": "node scripts/docs/generate-country-pages.mjs && typedoc",
     "parity": "node scripts/parity/check-parity.mjs",
     "clean": "rm -rf dist",
     "prepublishOnly": "npm run build && npm test",
@@ -128,7 +129,7 @@
   "bugs": {
     "url": "https://github.com/identique/idnumbers-npm/issues"
   },
-  "homepage": "https://github.com/identique/idnumbers-npm#readme",
+  "homepage": "https://identique.github.io/idnumbers-npm/",
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",
     "@types/jest": "^29.5.5",
@@ -145,6 +146,7 @@
     "publint": "^0.3.24",
     "ts-jest": "^29.1.1",
     "tsx": "^4.23.15",
+    "typedoc": "^0.28.20",
     "typescript": "^5.2.2"
   },
   "files": [

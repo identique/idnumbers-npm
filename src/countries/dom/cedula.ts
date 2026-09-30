@@ -71,7 +71,7 @@ export class Cedula implements IdNumberClass {
    * it does NOT mean "this person does not exist". A small, documented set
    * of legitimately-issued cedulas (including modern 402-series cards) fail
    * the standard Luhn checksum; those are matched against
-   * {@link CEDULA_LUHN_EXCEPTION_SET} before falling back to Luhn.
+   * `CEDULA_LUHN_EXCEPTION_SET` (in `./exceptions.ts`) before falling back to Luhn.
    */
   static validate(idNumber: string): boolean {
     if (typeof idNumber !== 'string') {
