@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Bosnia and Herzegovina (BIH), China (CHN), Sri Lanka (LKA), North Macedonia (MKD), Montenegro (MNE), Serbia (SRB), and Slovenia (SVN) now reject IDs whose encoded birth date isn't real, matching the Python library. Examples include 31 April, and 29 February outside a leap year. `validateNationalId()` previously accepted these IDs and now reports `invalid_birthdate`. SRB and SVN already rejected an out-of-range day or month; those IDs now report `invalid_birthdate` instead of `validation_failed`. SRB and SVN also now read the 3-digit years 100–799 as 2100–2799, as Python does (previously 1100–1799). LKA now rejects year 0000 and dates outside 0001-01-01 to 9999-12-31 ([#214](https://github.com/identique/idnumbers-npm/issues/214))
+- Indonesia (IDN) now accepts every district code the Python library knows (7,030, up from 290), so valid NIKs such as `1301010101900001` are no longer rejected. The list is packed to keep the bundle small: the IDN subpath grows by about 1.2 KB and the root bundle by about 1.3 KB min+gzip, and the root budget in `npm run size` rises from 40,300 B to 41,500 B ([#215](https://github.com/identique/idnumbers-npm/issues/215))
 
 ## [2.1.0] - 2026-09-30
 
