@@ -21,6 +21,15 @@ import type { ParsedInfoFor } from './parseResultMap.js';
  * is safe to call from several places, or alongside the root `idnumbers` entry.
  *
  * @throws Error if a key or alias is already registered for a different validator.
+ *
+ * @example
+ * ```ts
+ * import { register, validateNationalId } from 'idnumbers/core';
+ * import { country as taiwan } from 'idnumbers/countries/twn';
+ *
+ * register(taiwan);
+ * validateNationalId('TWN', 'A123456789').isValid; // true
+ * ```
  */
 export function register(
   ...countries: CountryDefinition<string, readonly string[], object>[]
@@ -35,6 +44,15 @@ export function register(
  *
  * Sorted by ISO 3166-1 alpha-3 code. Returns a fresh array on every call, so
  * mutating the result of one call never affects another.
+ *
+ * @example
+ * ```ts
+ * import { listSupportedCountries } from 'idnumbers';
+ *
+ * const countries = listSupportedCountries();
+ * countries.length; // 85
+ * countries[0]; // { code: 'ALB', name: 'Albania', idType: 'Identity Number' }
+ * ```
  */
 export function listSupportedCountries(): CountryInfo[] {
   return registry.list().map(code => {
@@ -50,6 +68,20 @@ export function listSupportedCountries(): CountryInfo[] {
  * are resolved to their primary alpha-3 key (e.g. "FRA") which is returned
  * as the countryCode in the result. For a built-in country code, `extractedInfo`
  * has that country's parse result type (#123).
+ *
+ * @example
+ * ```ts
+ * import { validateNationalId } from 'idnumbers';
+ *
+ * const result = validateNationalId('TWN', 'A123456789');
+ * result.isValid; // true
+ * result.extractedInfo?.location; // 'A'
+ *
+ * // Aliases resolve to the alpha-3 code; a failure carries a machine-readable reason.
+ * const invalid = validateNationalId('TW', 'A12345');
+ * invalid.countryCode; // 'TWN'
+ * invalid.reason; // 'invalid_length'
+ * ```
  */
 export function validateNationalId<C extends string>(
   countryCode: C,
@@ -109,6 +141,21 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
  * Aliases resolve like `validateNationalId()`, and `countryCode` in the result is
  * the resolved alpha-3 code. For a built-in country code, `info` has that
  * country's parse result type; see `ParseResultMap`.
+ *
+ * @example
+ * ```ts
+ * import { parseIdInfo } from 'idnumbers';
+ *
+ * const result = parseIdInfo('TWN', 'A123456789');
+ * if (result.ok) {
+ *   result.info.location; // 'A'
+ *   result.info.gender; // 'male'
+ * } else {
+ *   result.reason;
+ * }
+ *
+ * parseIdInfo('XX', '1').ok; // false, with reason 'unsupported_country'
+ * ```
  */
 export function parseIdInfo<C extends string>(
   countryCode: C,
@@ -161,6 +208,18 @@ export function parseIdInfo(countryCode: string, idNumber: string): ParseIdInfoR
 
 /**
  * Validate multiple national ID numbers at once
+ *
+ * @example
+ * ```ts
+ * import { validateMultipleIds } from 'idnumbers';
+ *
+ * const results = validateMultipleIds([
+ *   { countryCode: 'TWN', idNumber: 'A123456789' },
+ *   { countryCode: 'BRA', idNumber: '111.444.777-35' },
+ *   { countryCode: 'XX', idNumber: '1' },
+ * ]);
+ * results.map(result => result.isValid); // [true, true, false]
+ * ```
  */
 export function validateMultipleIds(
   idData: Array<{ countryCode: string; idNumber: string }>
@@ -173,6 +232,19 @@ export function validateMultipleIds(
  *
  * Delegates to the registry. Aliases (e.g. "IN", "jp") are resolved to their
  * primary alpha-3 key. Returns null for unregistered country codes.
+ *
+ * @example
+ * ```ts
+ * import { getCountryIdFormat } from 'idnumbers';
+ *
+ * const format = getCountryIdFormat('TWN');
+ * format?.idType; // 'National Identification Card'
+ * format?.format; // 'X#########'
+ * format?.length; // { min: 10, max: 10 }
+ * format?.hasChecksum; // true
+ *
+ * getCountryIdFormat('XX'); // null
+ * ```
  */
 export function getCountryIdFormat(countryCode: string): IdFormat | null {
   return registry.getFormat(countryCode) ?? null;

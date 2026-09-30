@@ -45,6 +45,30 @@ export function markBuilt<V extends CountryValidator<object>>(validator: V): V {
  *
  * A validator that this function or `createCompositeValidator()` built is returned
  * as-is instead of being wrapped again (#183).
+ *
+ * @example
+ * ```ts
+ * import { createValidator } from 'idnumbers/core';
+ *
+ * const validator = createValidator({
+ *   METADATA: {
+ *     iso3166Alpha2: 'XX',
+ *     minLength: 6,
+ *     maxLength: 6,
+ *     parsable: false,
+ *     checksum: false,
+ *     regexp: /^\d{6}$/,
+ *     aliasOf: null,
+ *     names: [],
+ *     links: [],
+ *     deprecated: false,
+ *   },
+ *   validate: (id: string) => /^\d{6}$/.test(id),
+ * });
+ *
+ * validator.validate('123456'); // true
+ * validator.validate('12345A'); // false
+ * ```
  */
 export function createValidator<M extends CountryModule<object>>(
   mod: M
