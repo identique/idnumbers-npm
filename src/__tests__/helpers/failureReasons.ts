@@ -11,11 +11,11 @@ const COUNTRIES_DIR = path.resolve(__dirname, '../../countries');
  *
  * This is a static text scan of every `.ts` file under the country's directory: it
  * cannot tell a wrap on the registered validator's `validate()` path from one in a
- * file `validate()` can never reach. That's still sound in combination with the two
- * tests in issue-130-failure-reasons.test.ts that consume it (#198): the coherence
- * test requires the set of countries this function flags to equal exactly the set
- * with a passing `invalid_birthdate` vector, and the vector test requires that ID to
- * actually make `validate()` report `invalid_birthdate` under the trace. So a wrap
+ * file `validate()` can never reach. Why that's still sound (#198): in combination
+ * with the two tests in issue-130-failure-reasons.test.ts that consume it, the
+ * coherence test requires the set of countries this function flags to equal exactly
+ * the set with a passing `invalid_birthdate` vector, and the vector test requires
+ * that ID to actually make `validate()` report `invalid_birthdate` under the trace. So a wrap
  * this function sees but `validate()` can't reach makes a country "marked" with no
  * vector to match (coherence test fails), and adding a vector for it fails in turn
  * because `validate()` never trips the wrap (vector test fails). The one case this
