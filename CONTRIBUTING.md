@@ -63,6 +63,7 @@ All four commands should complete successfully before you begin development.
 | `npm run lint:package`     | Validate the packed package's `exports`/types (publint, attw)                                                               |
 | `npm run lint:types`       | Reject `any` in the built `.d.ts` files (build first)                                                                       |
 | `npm run test:pack`        | Pack, install, and smoke-test the tarball in a temp consumer                                                                |
+| `npm run docs`             | Build the TypeDoc API site into `docs-site/` (build first)                                                                  |
 | `npm run parity`           | Compare validity with the Python library (build first; needs `IDNUMBERS_PYTHON_PATH`, see [docs/PARITY.md](docs/PARITY.md)) |
 
 The fix and format commands modify files. Review their changes before committing them.

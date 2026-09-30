@@ -129,7 +129,7 @@
   "bugs": {
     "url": "https://github.com/identique/idnumbers-npm/issues"
   },
-  "homepage": "https://github.com/identique/idnumbers-npm#readme",
+  "homepage": "https://identique.github.io/idnumbers-npm/",
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",
     "@types/jest": "^29.5.5",
