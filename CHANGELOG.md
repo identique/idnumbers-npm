@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- CI now checks validity against the Python `idnumbers` library. `npm run parity` compares `validateNationalId()` with Python for the 78 countries both libraries support, on a seed corpus plus one-character mutations. Known divergences are listed with their tracking issue in `parity/allowlist.json`, and [docs/PARITY.md](docs/PARITY.md) explains the formats ([#133](https://github.com/identique/idnumbers-npm/issues/133)). Dev tooling; no library behavior changes
+
 ## [2.1.1] - 2026-09-30
 
 A patch release: Python-parity fixes, no API changes. Which IDs validate changes for the countries

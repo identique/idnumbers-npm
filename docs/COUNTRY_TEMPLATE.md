@@ -425,17 +425,18 @@ below and misrepresents them as countries.
 The country count is hard-asserted in several places, so adding country #86 fails the suite (and
 CI's package check) until you update each of them:
 
-| File                                                                                                                  | What to change                                                                                                                                                                                       |
-| --------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`src/__tests__/parseIdInfo-migration.test.ts`](../src/__tests__/parseIdInfo-migration.test.ts)                       | **Breaks the build:** `expect(registry.list().length).toBe(85)` → `86`. Also extend the `expectedKeys` list, the `expectedAliases` map, and — if the ID is parsable — the `parseableCountries` table |
-| [`src/__tests__/getCountryIdFormat-migration.test.ts`](../src/__tests__/getCountryIdFormat-migration.test.ts)         | add the country to the `registeredCountries` fixture — this fixture is an independent copy of each country's `countryName`/`idType` and must move in lockstep with METADATA/format changes           |
-| [`src/__tests__/issue-118-metadata-single-source.test.ts`](../src/__tests__/issue-118-metadata-single-source.test.ts) | `expect(keys.length).toBe(85)` → `86`                                                                                                                                                                |
-| [`src/__tests__/issue-122-core.test.ts`](../src/__tests__/issue-122-core.test.ts)                                     | both `listSupportedCountries()` `toHaveLength(85)` assertions → `86`                                                                                                                                 |
-| [`scripts/smoke-pack.mjs`](../scripts/smoke-pack.mjs)                                                                 | both `countries.length, 85` assertions (CJS and ESM checks) → `86`; `npm run test:pack` runs it in CI's package check                                                                                |
-| [`src/__tests__/issue-123-parse-results.test.ts`](../src/__tests__/issue-123-parse-results.test.ts)                   | `expect(ALL_COUNTRIES).toHaveLength(85)` → `86`; if the country has no parser, add it to `UNPARSABLE`, which is checked against `ParseResultMap` at compile time                                     |
-| [`docs/INPUT_FORMATS.md`](INPUT_FORMATS.md)                                                                           | add the country's row; `issue-124-input-formats.test.ts` fails and prints the row to add                                                                                                             |
-| [`README.md`](../README.md)                                                                                           | the country-count claims (intro sentence, feature list, and the region heading's count under "Supported Countries") and the "comprehensive test coverage with N tests" count                         |
-| [`package.json`](../package.json)                                                                                     | the country count in `description`                                                                                                                                                                   |
+| File                                                                                                                  | What to change                                                                                                                                                                                                                      |
+| --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`src/__tests__/parseIdInfo-migration.test.ts`](../src/__tests__/parseIdInfo-migration.test.ts)                       | **Breaks the build:** `expect(registry.list().length).toBe(85)` → `86`. Also extend the `expectedKeys` list, the `expectedAliases` map, and — if the ID is parsable — the `parseableCountries` table                                |
+| [`src/__tests__/getCountryIdFormat-migration.test.ts`](../src/__tests__/getCountryIdFormat-migration.test.ts)         | add the country to the `registeredCountries` fixture — this fixture is an independent copy of each country's `countryName`/`idType` and must move in lockstep with METADATA/format changes                                          |
+| [`src/__tests__/issue-118-metadata-single-source.test.ts`](../src/__tests__/issue-118-metadata-single-source.test.ts) | `expect(keys.length).toBe(85)` → `86`                                                                                                                                                                                               |
+| [`src/__tests__/issue-122-core.test.ts`](../src/__tests__/issue-122-core.test.ts)                                     | both `listSupportedCountries()` `toHaveLength(85)` assertions → `86`                                                                                                                                                                |
+| [`scripts/smoke-pack.mjs`](../scripts/smoke-pack.mjs)                                                                 | both `countries.length, 85` assertions (CJS and ESM checks) → `86`; `npm run test:pack` runs it in CI's package check                                                                                                               |
+| [`src/__tests__/issue-123-parse-results.test.ts`](../src/__tests__/issue-123-parse-results.test.ts)                   | `expect(ALL_COUNTRIES).toHaveLength(85)` → `86`; if the country has no parser, add it to `UNPARSABLE`, which is checked against `ParseResultMap` at compile time                                                                    |
+| [`docs/INPUT_FORMATS.md`](INPUT_FORMATS.md)                                                                           | add the country's row; `issue-124-input-formats.test.ts` fails and prints the row to add                                                                                                                                            |
+| [`README.md`](../README.md)                                                                                           | the country-count claims (intro sentence, feature list, and the region heading's count under "Supported Countries") and the "comprehensive test coverage with N tests" count                                                        |
+| [`package.json`](../package.json)                                                                                     | the country count in `description`                                                                                                                                                                                                  |
+| [`parity/corpus.json`](../parity/corpus.json), [`parity/allowlist.json`](../parity/allowlist.json)                    | a country the Python library has gets a `corpus.json` entry (its Python test inputs and `METADATA.example`); one it lacks goes in `tsOnlyCountries`. `issue-133-parity-data.test.ts` fails until you do; see [PARITY.md](PARITY.md) |
 
 ### What already covers your country
 
@@ -465,10 +466,9 @@ The Python library's test file for the country — `tests/nationalid/test_XYZ.py
 corpus: port every valid and invalid input it asserts, and every parse expectation, into your test
 file, so the TypeScript validator accepts and rejects exactly what the Python one does. Keep the
 Python test's input strings verbatim, including their case and separators; don't normalize them.
-Automated round-trip property tests
-([#131](https://github.com/identique/idnumbers-npm/issues/131)) and a Python parity harness
-([#133](https://github.com/identique/idnumbers-npm/issues/133)) are planned for v2.1.0 and v2.2.0;
-until they land, the ported cases are the parity check.
+CI's Python parity check ([#133](https://github.com/identique/idnumbers-npm/issues/133))
+re-checks this: add the country's Python test inputs to its entry in `parity/corpus.json`. See
+[PARITY.md](PARITY.md).
 
 ### Add a country test file
 
@@ -549,6 +549,10 @@ npm run test:pack      # pack, install, and import every subpath in CJS and ESM
 npm run size           # bundle-size budgets, per country subpath
 ```
 
+CI's `parity` job also compares your country's validity with the Python library. `npm run parity`
+needs a local checkout of the Python library, so run it when the library has your country (see
+[PARITY.md](PARITY.md)).
+
 `format:check` and `lint` both cover every `.ts` file under `src/` (the scripts quote their glob so
 the tools expand it recursively), and both steps are blocking in CI, so a clean local run is a
 faithful preview of the quality gate.
@@ -566,6 +570,8 @@ Copy into your PR description:
       (or documented why it does not exist yet, with official sources cited)
 - [ ] `src/countries/<iso3>/` created; camelCase file names; one file per ID type
 - [ ] Python test cases (`tests/nationalid/test_<ISO3>.py`) ported verbatim
+- [ ] `parity/corpus.json` entry added with those inputs and `METADATA.example` (or the country added
+      to `tsOnlyCountries` if Python lacks it); `npm run parity` passes when Python has the country
 - [ ] Primary type reachable from `index.ts` — defined there or re-exported from a named file —
       providing `{ validate, METADATA }` (+ `parse`/`checksum` if applicable)
 - [ ] `METADATA` checked as `IdMetadata` (`satisfies IdMetadata`, or `: IdMetadata` on a class static), with `displayFormat`, `masks`, `example`, `checksumAlgorithm`, `officialName`
