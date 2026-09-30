@@ -30,13 +30,15 @@ or that have no `checksum()` at all — report a wrong digit as `validation_fail
 
 `invalid_birthdate` needs a validator that checks the birth date its ID encodes, and reaches that
 check from `validate()` itself (see [`src/birthDateCheck.ts`](../src/birthDateCheck.ts)). A country
-whose `validate()` doesn't check the encoded date can't report it — Belgium (BEL) and Finland (FIN)
+whose `validate()` doesn't check the encoded date can't report it. Belgium (BEL) and Finland (FIN)
 were previously in this situation, but now check the encoded date from `validate()` as well
-([#205](https://github.com/identique/idnumbers-npm/issues/205)), matching the Python library, which
-rejects such IDs too. Sri Lanka (LKA) is the remaining country that validates only the format and
-the check digits: an ID whose check digits are right but whose date is impossible is accepted as valid
-there, and `parseIdInfo()` reports `not_parsable` for it. This still matches Python, since an
-overflowing day-of-year rolls into the next year there.
+([#205](https://github.com/identique/idnumbers-npm/issues/205)), and so do Bosnia and Herzegovina
+(BIH), China (CHN), Sri Lanka (LKA), North Macedonia (MKD), Montenegro (MNE), Serbia (SRB), and
+Slovenia (SVN) ([#214](https://github.com/identique/idnumbers-npm/issues/214)). All of them match
+the Python library, which rejects such IDs too. Sri Lanka encodes a day of the year rather than a
+month and day. As in the Python library, a day number past the end of the year rolls into the next
+year, so the ID stays valid. `parseIdInfo()` reports `not_parsable` for such an ID, and also for a
+year before 0100.
 
 The table below is re-derived by a test
 ([`issue-130-failure-reasons.test.ts`](../src/__tests__/issue-130-failure-reasons.test.ts)), so it
@@ -95,7 +97,7 @@ cannot drift from the validators; when a validator changes, the test prints the 
 | KAZ  | no                  | yes                 |
 | KOR  | no                  | yes                 |
 | KWT  | no                  | yes                 |
-| LKA  | yes                 | no                  |
+| LKA  | yes                 | yes                 |
 | LTU  | no                  | yes                 |
 | LUX  | yes                 | yes                 |
 | LVA  | no                  | no                  |

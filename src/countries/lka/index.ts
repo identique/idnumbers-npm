@@ -11,6 +11,7 @@ import { IdMetadata, ParsedInfo, Gender } from '../../types.js';
 import { weightedModulusDigit, modulusOverflowMod10 } from '../../utils.js';
 import { CheckDigit, Citizenship } from '../../constants.js';
 import { defineCountry } from '../../registry/country.js';
+import { invalidBirthDate } from '../../birthDateCheck.js';
 
 export interface SriLankaParseResult extends ParsedInfo {
   isValid: boolean;
@@ -102,6 +103,49 @@ function calculateDate(year: number, days: number): Date | null {
 }
 
 /**
+ * Whether the day-of-year `days` in `year` falls inside the dates the Python library
+ * can represent (0001-01-01 to 9999-12-31), using the same offset as `calculateDate`.
+ *
+ * Any other day number that overflows its year rolls into the adjacent year and stays
+ * valid, as in Python. Three cases don't:
+ * - `year < 1`: Python's `date(0, 1, 1)` raises ValueError, so year 0000 is invalid.
+ * - `year === 1 && offset < 0`: the date falls before 0001-01-01 (Python raises
+ *   OverflowError).
+ * - `year === 9999 && offset > 364`: the date falls after 9999-12-31 (Python raises
+ *   OverflowError; 9999 is not a leap year).
+ */
+function isRepresentableDate(year: number, days: number): boolean {
+  const offset = days > 500 ? days - 501 : days - 1;
+  if (year < 1) {
+    return false;
+  }
+  if (year === 1 && offset < 0) {
+    return false;
+  }
+  if (year === 9999 && offset > 364) {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Whether a new-format (12-digit) ID has a correct checksum and encodes a date that
+ * Python can represent.
+ */
+function isValidNewFormat(newFormatId: string): boolean {
+  if (!validateNewChecksum(newFormatId)) {
+    return false;
+  }
+  const match = NEW_FORMAT.exec(newFormatId);
+  if (!match || !match.groups) {
+    return false;
+  }
+  const year = parseInt(match.groups.year, 10);
+  const days = parseInt(match.groups.days, 10);
+  return !invalidBirthDate(!isRepresentableDate(year, days));
+}
+
+/**
  * Validate Sri Lanka National ID Number (both old and new formats)
  */
 export function validate(idNumber: string): boolean {
@@ -115,12 +159,12 @@ export function validate(idNumber: string): boolean {
     if (!newId) {
       return false;
     }
-    return validateNewChecksum(newId);
+    return isValidNewFormat(newId);
   }
 
   // Try new format (12 digits)
   if (NEW_FORMAT.test(idNumber)) {
-    return validateNewChecksum(idNumber);
+    return isValidNewFormat(idNumber);
   }
 
   return false;
