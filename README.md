@@ -408,13 +408,13 @@ masks; every built-in country has them.
 - `pattern`: a `RegExp` matching an ID written in any of the masks, in uppercase (the form
   `formatId()` returns), e.g. for react-hook-form's `pattern` rule
 
-| Mask character             | Meaning                                                                                                                          |
-| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `#`                        | a digit                                                                                                                          |
-| `L`                        | a letter                                                                                                                         |
-| `X`                        | a letter or a digit                                                                                                              |
-| `*`                        | any character except whitespace (zero-width characters aren't whitespace here), e.g. Finland's century sign (`-`, `+`, a letter) |
-| space, `.` `-` `/` `(` `)` | a separator: `formatId()` inserts it, `normalizeId()` removes it                                                                 |
+| Mask character             | Meaning                                                                                                                                                                                                       |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `#`                        | a digit                                                                                                                                                                                                       |
+| `L`                        | a letter                                                                                                                                                                                                      |
+| `X`                        | a letter or a digit                                                                                                                                                                                           |
+| `*`                        | any character except whitespace (the zero-width space and joiners U+200B–U+200D and U+2060 aren't whitespace here; a zero-width no-break space, U+FEFF, is), e.g. Finland's century sign (`-`, `+`, a letter) |
+| space, `.` `-` `/` `(` `)` | a separator: `formatId()` inserts it, `normalizeId()` removes it                                                                                                                                              |
 
 ```typescript
 getInputMask('BRA');
