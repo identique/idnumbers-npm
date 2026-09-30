@@ -1,6 +1,6 @@
 # Forms Integration Guide
 
-> **New in v2.1.0** (on `main`, not yet published to npm; [#132](https://github.com/identique/idnumbers-npm/issues/132)).
+> **New in v2.1.0** ([#132](https://github.com/identique/idnumbers-npm/issues/132)).
 > Builds on `formatId()` / `normalizeId()` ([#128](https://github.com/identique/idnumbers-npm/issues/128))
 > and `getInputMask()` ([#129](https://github.com/identique/idnumbers-npm/issues/129)) — see the
 > [README](../README.md#formatidcountrycode-idnumber) for both.
