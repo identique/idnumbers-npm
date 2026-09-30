@@ -16,6 +16,30 @@ A comprehensive TypeScript/JavaScript library for validating and parsing nationa
 - ✨ **Well-tested** - Comprehensive test coverage with 100% pass rate
 - 🌍 **Multiple formats** - Supports various ID number formats per country
 
+## What's new in v2.1.0
+
+v2.1.0 is a minor release with no breaking changes. See the [CHANGELOG](./CHANGELOG.md) for every
+change.
+
+- **`formatId(countryCode, idNumber)`** / **`normalizeId(countryCode, idNumber)`**: write an ID in
+  its country's display format, or return its compact form
+  ([#128](https://github.com/identique/idnumbers-npm/issues/128)); see
+  [`formatId`](#formatidcountrycode-idnumber).
+- **`getInputMask(countryCode)`** and **`IdMetadata.masks`**: input masks for form fields, with a
+  `RegExp` whose `pattern.source` also works as an HTML `<input pattern>` attribute
+  ([#129](https://github.com/identique/idnumbers-npm/issues/129),
+  [#202](https://github.com/identique/idnumbers-npm/issues/202)); see
+  [`getInputMask`](#getinputmaskcountrycode).
+- **`invalid_birthdate` failure reason**: `validateNationalId()` and `parseIdInfo()` report it when
+  a country's validator rejects an ID because the birth date it encodes isn't real
+  ([#130](https://github.com/identique/idnumbers-npm/issues/130)); see
+  [docs/FAILURE_REASONS.md](docs/FAILURE_REASONS.md).
+- **[docs/FORMS.md](docs/FORMS.md)**: a forms integration guide covering react-hook-form and
+  framework-free examples ([#132](https://github.com/identique/idnumbers-npm/issues/132)).
+- Belgium (BEL) and Finland (FIN) now reject IDs whose encoded birth date isn't real, matching the
+  Python library — the only change to which IDs validate
+  ([#205](https://github.com/identique/idnumbers-npm/issues/205)).
+
 ## What's new in v2.0.0
 
 v2.0.0 is a major release with breaking changes ([epic #127](https://github.com/identique/idnumbers-npm/issues/127)). See
@@ -209,7 +233,7 @@ placeholder regexp ([#160](https://github.com/identique/idnumbers-npm/issues/160
 shape-related codes (`invalid_length`/`invalid_format`) never triggered there; v2.0.0 fixes the
 metadata ([#121](https://github.com/identique/idnumbers-npm/issues/121)).
 `invalid_birthdate` ([#130](https://github.com/identique/idnumbers-npm/issues/130), new in
-v2.1.0, not yet published to npm) is reported by the 25 countries whose validators check the
+v2.1.0) is reported by the 25 countries whose validators check the
 birth date their IDs encode. See [docs/FAILURE_REASONS.md](docs/FAILURE_REASONS.md) for which
 reasons each country can report.
 
@@ -344,7 +368,7 @@ console.log(format);
 
 ### `formatId(countryCode, idNumber)`
 
-> **New in v2.1.0** (on `main`, not yet published to npm; [#128](https://github.com/identique/idnumbers-npm/issues/128)).
+> **New in v2.1.0** ([#128](https://github.com/identique/idnumbers-npm/issues/128)).
 
 Writes an ID in its country's display format. The input is normalized first (see
 [`normalizeId`](#normalizeidcountrycode-idnumber)), so compact, formatted, partly formatted, and
@@ -375,7 +399,7 @@ the countries you register.
 
 ### `normalizeId(countryCode, idNumber)`
 
-> **New in v2.1.0** (on `main`, not yet published to npm; [#128](https://github.com/identique/idnumbers-npm/issues/128)).
+> **New in v2.1.0** ([#128](https://github.com/identique/idnumbers-npm/issues/128)).
 
 Returns the compact form of an ID: uppercase, with whitespace and the separators `. - / ( )`
 removed. Characters that belong to the ID stay, such as Finland's century sign in `131052-308T` or
@@ -393,7 +417,7 @@ validators require the separators: validate `formatId()`'s output there. See
 
 ### `getInputMask(countryCode)`
 
-> **New in v2.1.0** (on `main`, not yet published to npm; [#129](https://github.com/identique/idnumbers-npm/issues/129)).
+> **New in v2.1.0** ([#129](https://github.com/identique/idnumbers-npm/issues/129)).
 
 Returns a country's input masks, one per length its ID comes in, ready for a form field. Returns
 `null` for an unsupported country, or for a country registered through `idnumbers/core` without

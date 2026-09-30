@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-09-30
+
+A minor release: no breaking changes. Which IDs validate is unchanged except for the BEL/FIN fix
+noted below.
+
 ### Added
 
 - `ValidationFailureReason.INVALID_BIRTHDATE` (`invalid_birthdate`): `validateNationalId()` and `parseIdInfo()` report it, instead of `validation_failed`, when a country's validator rejects an ID because the birth date it encodes isn't a real date; 25 countries report it; which IDs validate is unchanged; docs/FAILURE_REASONS.md lists each country's specific reasons ([#130](https://github.com/identique/idnumbers-npm/issues/130))
