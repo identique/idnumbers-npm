@@ -120,9 +120,9 @@ cannot drift from the validators; when a validator changes, the test prints the 
 | SAU  | no                  | no                  |
 | SGP  | no                  | no                  |
 | SMR  | no                  | no                  |
-| SRB  | no                  | no                  |
+| SRB  | no                  | yes                 |
 | SVK  | yes                 | yes                 |
-| SVN  | no                  | no                  |
+| SVN  | no                  | yes                 |
 | SWE  | no                  | yes                 |
 | THA  | no                  | no                  |
 | TUR  | no                  | no                  |

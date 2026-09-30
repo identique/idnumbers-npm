@@ -1,4 +1,14 @@
 import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
+import { isValidDate } from '../../utils.js';
+import { invalidBirthDate } from '../../birthDateCheck.js';
+
+/**
+ * Full year encoded by the 3-digit JMBG year field. Mirrors the year base of Python's
+ * `YugoslaviaJMBG`: 2000 + yyy below 800, otherwise 1000 + yyy.
+ */
+function jmbgYear(yyy: number): number {
+  return (yyy < 800 ? 2000 : 1000) + yyy;
+}
 
 /**
  * Information parsed from a Serbian JMBG
@@ -61,16 +71,12 @@ export class NationalID implements IdNumberClass {
     // Extract components
     const day = parseInt(cleanId.substring(0, 2));
     const month = parseInt(cleanId.substring(2, 4));
+    const yearPart = parseInt(cleanId.substring(4, 7));
     const region = parseInt(cleanId.substring(7, 9));
     const sequence = parseInt(cleanId.substring(9, 12));
 
-    // Validate month
-    if (month < 1 || month > 12) {
-      return false;
-    }
-
-    // Validate day
-    if (day < 1 || day > 31) {
+    // Validate the birth date (day and month ranges, month lengths, leap years)
+    if (invalidBirthDate(!isValidDate(jmbgYear(yearPart), month, day))) {
       return false;
     }
 
@@ -122,15 +128,7 @@ export class NationalID implements IdNumberClass {
     const region = parseInt(cleanId.substring(7, 9));
     const sequence = parseInt(cleanId.substring(9, 12));
 
-    // Determine full year
-    let fullYear: number;
-    if (yearPart >= 0 && yearPart <= 99) {
-      fullYear = 2000 + yearPart;
-    } else if (yearPart >= 900 && yearPart <= 999) {
-      fullYear = 1900 + (yearPart - 900);
-    } else {
-      fullYear = 1000 + yearPart;
-    }
+    const fullYear = jmbgYear(yearPart);
 
     const isMale = sequence < 500;
 
