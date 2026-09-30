@@ -57,7 +57,7 @@ cannot drift from the validators; when a validator changes, the test prints the 
 | BGD  | no                  | no                  |
 | BGR  | no                  | yes                 |
 | BHR  | no                  | no                  |
-| BIH  | yes                 | no                  |
+| BIH  | yes                 | yes                 |
 | BRA  | no                  | no                  |
 | CAN  | no                  | no                  |
 | CHE  | no                  | no                  |
@@ -102,8 +102,8 @@ cannot drift from the validators; when a validator changes, the test prints the 
 | MAC  | no                  | no                  |
 | MDA  | no                  | no                  |
 | MEX  | no                  | yes                 |
-| MKD  | yes                 | no                  |
-| MNE  | yes                 | no                  |
+| MKD  | yes                 | yes                 |
+| MNE  | yes                 | yes                 |
 | MYS  | no                  | yes                 |
 | NGA  | no                  | no                  |
 | NLD  | no                  | no                  |

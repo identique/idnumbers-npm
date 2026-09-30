@@ -1,4 +1,6 @@
 import { IdMetadata, Citizenship, Gender } from '../../types.js';
+import { isValidDate } from '../../utils.js';
+import { invalidBirthDate } from '../../birthDateCheck.js';
 
 // Helper functions from util.py
 function validateRegexp(idNumber: string, regexp: RegExp): boolean {
@@ -107,6 +109,11 @@ export class UniqueMasterCitizenNumber {
     const dd = parseInt(match.groups!.dd, 10);
     const yearBase = yyy < 800 ? 2000 : 1000;
     const sn = match.groups!.sn;
+
+    // Mirrors Python's `date(year_base + yyy, mm, dd)` inside `try/except ValueError`.
+    if (invalidBirthDate(!isValidDate(yearBase + yyy, mm, dd))) {
+      return null;
+    }
 
     try {
       return {
