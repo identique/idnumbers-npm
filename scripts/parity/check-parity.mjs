@@ -33,6 +33,8 @@ const REPO_ROOT = fileURLToPath(new URL('../..', import.meta.url));
 const PYTHON_HELPER = fileURLToPath(new URL('./python_validity.py', import.meta.url));
 const SEPARATORS = /[\s.\-/()]/g;
 const DIRECTIONS = ['ts-only', 'python-only'];
+/** Failure lines written to the GitHub step summary; the console output stays complete. */
+const SUMMARY_FAILURE_LIMIT = 50;
 
 /** Setup problem: print the message and exit 2 (as opposed to a parity failure, 1). */
 function abort(message) {
@@ -40,8 +42,13 @@ function abort(message) {
   process.exit(2);
 }
 
+/** Read and parse a repo-relative JSON file; a missing or malformed file exits 2. */
 function readJson(relativePath) {
-  return JSON.parse(readFileSync(join(REPO_ROOT, relativePath), 'utf8'));
+  try {
+    return JSON.parse(readFileSync(join(REPO_ROOT, relativePath), 'utf8'));
+  } catch (error) {
+    return abort(`${relativePath}: ${error.message}`);
+  }
 }
 
 // --- setup -----------------------------------------------------------------
@@ -320,7 +327,11 @@ function main() {
     );
   }
   if (process.env.GITHUB_STEP_SUMMARY) {
-    const lines = ['## Python parity', '', summary, '', ...failures.map(line => `- \`${line}\``)];
+    const shown = failures.slice(0, SUMMARY_FAILURE_LIMIT);
+    const lines = ['## Python parity', '', summary, '', ...shown.map(line => `- \`${line}\``)];
+    if (failures.length > shown.length) {
+      lines.push(`- …and ${failures.length - shown.length} more (see the job log)`);
+    }
     appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${lines.join('\n')}\n`);
   }
   process.exit(failures.length > 0 ? 1 : 0);
