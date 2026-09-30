@@ -797,7 +797,7 @@ Accepted letter case, surrounding whitespace, and separators for every country a
 
 ## Testing
 
-The library includes comprehensive test coverage with 5574 tests covering:
+The library includes comprehensive test coverage with 5894 tests covering:
 
 - Format validation
 - Checksum verification
@@ -805,6 +805,7 @@ The library includes comprehensive test coverage with 5574 tests covering:
 - Information extraction
 - Cross-country consistency
 - Property-based format/normalize round-trips (fast-check)
+- Property-based validator checks: check characters, single-digit changes, length ranges, and `METADATA.regexp` (fast-check)
 
 Run tests:
 

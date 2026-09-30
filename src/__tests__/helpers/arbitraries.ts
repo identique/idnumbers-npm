@@ -1,7 +1,8 @@
 /**
  * Issue #131: shared fast-check infrastructure for property tests on `formatId()` and
  * `normalizeId()` (src/format.ts). The v2.2.0 validator property tests extend this file
- * rather than building their own generators.
+ * rather than building their own generators; they live in `validatorProperties.ts`
+ * (issue #134).
  *
  * To replay a failure: fast-check prints `seed` and `path` (and, for a named property,
  * `counterexample`) in the failure output. Pass them back in as
