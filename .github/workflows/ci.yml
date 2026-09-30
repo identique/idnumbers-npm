@@ -110,13 +110,17 @@ jobs:
       - name: Run tests with coverage
         run: npm run test:coverage
 
-      - name: Display coverage summary
-        run: |
-          echo "## Test Coverage Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          cat coverage/coverage-summary.txt 2>/dev/null || echo "Coverage report not available" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+      - name: Write coverage summary
+        if: always()
+        run: node scripts/coverage-report.mjs summary >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload coverage summary
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-summary
+          path: coverage/coverage-summary.json
+          retention-days: 1
 
   examples-check:
     name: Verify Examples

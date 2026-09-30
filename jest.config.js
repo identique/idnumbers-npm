@@ -15,7 +15,11 @@ module.exports = {
     '!src/**/*.spec.ts',
   ],
   coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'lcov', 'html'],
+  coverageReporters: ['text', 'lcov', 'html', 'json-summary'],
+  // Floored from main's coverage on 2026-09-30 (#137); raise them when coverage rises, never lower them without a decision.
+  coverageThreshold: {
+    global: { lines: 93, statements: 93, functions: 83, branches: 89 },
+  },
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },

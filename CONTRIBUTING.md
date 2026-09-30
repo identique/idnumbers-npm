@@ -274,13 +274,15 @@ A positional argument filters by **file path**; `-t` filters by **test name**. T
 
 ### Coverage
 
-Generate a coverage report with `npm run test:coverage`. Jest is configured with the `text`, `lcov`, and `html` reporters, so results print to the terminal and a browsable report is written to `coverage/lcov-report/index.html`. Coverage is collected from `src/**/*.ts`, excluding declaration and test files.
+Generate a coverage report with `npm run test:coverage`. Jest is configured with the `text`, `lcov`, `html`, and `json-summary` reporters, so results print to the terminal and a browsable report is written to `coverage/lcov-report/index.html`. Coverage is collected from `src/**/*.ts`, excluding declaration and test files.
 
-**No `coverageThreshold` is configured**, in Jest or anywhere else. Coverage is reported and archived by CI, but no coverage number can fail a build, and the `test-coverage` workflow job passes regardless of the percentages. Treat the guidance below as a review expectation, not an automated gate.
+Jest enforces global coverage thresholds (`coverageThreshold.global` in [`jest.config.js`](jest.config.js)): 93% lines, 93% statements, 83% functions, and 89% branches. They were floored from the coverage on `main` on 2026-09-30 (#137) and apply to `npm run test:coverage`, which is what CI's **Test Coverage Report** job runs; plain `npm test` and the pre-commit hook run without coverage and are not gated. The job also writes a per-metric table to the run summary. The property tests use random seeds, so measured coverage can move by about a statement or a branch between runs; the floors leave room for that.
+
+The thresholds are floors to raise, not lower. When your change raises coverage, raise the numbers in `jest.config.js` to match; never lower one to get a build through without a maintainer decision.
 
 As a guideline, a change should not reduce coverage of the code it touches, and new validator logic should aim for at least 80% line and 70% branch coverage. Run `npm run test:coverage` for the current totals; the suite comfortably exceeds both figures today, so the practical bar is the code you are adding rather than the repository average.
 
-Because these are guidelines rather than gates, reviewers may still ask for tests covering an untested branch even when the totals look healthy.
+The 80% and 70% figures are guidelines, not gates, so reviewers may still ask for tests covering an untested branch even when the totals look healthy.
 
 If the total number of Jest tests changes, update the count in the README's "comprehensive test coverage with N tests" line to the new total reported by `npm test`.
 
