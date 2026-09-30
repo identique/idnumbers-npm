@@ -785,7 +785,7 @@ Accepted letter case, surrounding whitespace, and separators for every country a
 
 ## Testing
 
-The library includes comprehensive test coverage with 5202 tests covering:
+The library includes comprehensive test coverage with 5230 tests covering:
 
 - Format validation
 - Checksum verification
