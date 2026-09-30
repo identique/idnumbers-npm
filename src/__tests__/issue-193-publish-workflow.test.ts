@@ -63,9 +63,12 @@ describe('issue #193: workflows use actions that run on Node.js 24', () => {
   // The first major of each action whose runtime is node24.
   const MIN_MAJOR: Record<string, number> = {
     'actions/checkout': 5,
+    'actions/deploy-pages': 5,
     'actions/setup-node': 5,
     'actions/setup-python': 6,
     'actions/upload-artifact': 6,
+    // Composite: v5 is the first major that wraps a node24 upload-artifact.
+    'actions/upload-pages-artifact': 5,
   };
   // One case per distinct action version in each file.
   const uses = [
