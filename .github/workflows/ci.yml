@@ -157,13 +157,29 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          remote="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          # Pass the token per command (never in the clone URL) so it is not
+          # persisted in the clone's .git/config.
+          encoded="$(printf 'x-access-token:%s' "$GITHUB_TOKEN" | base64 | tr -d '\n')"
+          echo "::add-mask::${encoded}"
+          auth="AUTHORIZATION: basic ${encoded}"
+          remote="https://github.com/${GITHUB_REPOSITORY}.git"
           badges="$RUNNER_TEMP/badges"
-          if ! git clone --quiet --depth 1 --branch badges "$remote" "$badges"; then
+          # Probe for the branch first: only a definite "missing" (exit 2) may start an
+          # orphan branch, so a transient network or auth failure cannot reset the history.
+          set +e
+          git -c http.extraheader="$auth" ls-remote --exit-code --heads "$remote" badges > /dev/null
+          probe=$?
+          set -e
+          if [ "$probe" -eq 0 ]; then
+            git -c http.extraheader="$auth" clone --quiet --depth 1 --branch badges "$remote" "$badges"
+          elif [ "$probe" -eq 2 ]; then
             # First run: the badges branch does not exist yet, so start it as an orphan.
             git init --quiet "$badges"
             git -C "$badges" checkout --quiet --orphan badges
             git -C "$badges" remote add origin "$remote"
+          else
+            echo "::error::git ls-remote failed with exit code ${probe}; not touching the badges branch"
+            exit "$probe"
           fi
           cp "$RUNNER_TEMP/coverage.json" "$badges/coverage.json"
           cd "$badges"
@@ -171,7 +187,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add coverage.json
           git diff --cached --quiet || git commit --quiet -m "chore: update the coverage badge"
-          git push --quiet origin badges
+          git -c http.extraheader="$auth" push --quiet origin badges
 
   examples-check:
     name: Verify Examples
