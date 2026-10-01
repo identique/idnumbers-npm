@@ -42,13 +42,21 @@ function abort(message) {
   process.exit(2);
 }
 
-/** Read and parse a repo-relative JSON file; a missing or malformed file exits 2. */
+/**
+ * Read and parse a repo-relative JSON data file whose top-level value must be a plain object;
+ * a missing, malformed, or wrongly shaped file exits 2.
+ */
 function readJson(relativePath) {
+  let data;
   try {
-    return JSON.parse(readFileSync(join(REPO_ROOT, relativePath), 'utf8'));
+    data = JSON.parse(readFileSync(join(REPO_ROOT, relativePath), 'utf8'));
   } catch (error) {
     return abort(`${relativePath}: ${error.message}`);
   }
+  if (data === null || typeof data !== 'object' || Array.isArray(data)) {
+    return abort(`${relativePath}: expected a JSON object`);
+  }
+  return data;
 }
 
 // --- setup -----------------------------------------------------------------

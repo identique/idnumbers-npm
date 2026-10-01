@@ -94,11 +94,15 @@ Check these before writing any checksum or enum by hand.
 | `luhnDigit(digits, multipliersStartByTwo?)`                     | Luhn / mod-10                                                  |
 | `verhoeffCheck(digits)`                                         | Verhoeff (e.g. India Aadhaar)                                  |
 | `mnModulusDigit(numbers, m, n)`                                 | ISO 7064 mod 11,10                                             |
-| `ean13Digit(numbers)`                                           | EAN-13 style check digits                                      |
+| `ean13Digit(numbers)`                                           | EAN-13 style check digits (even positions ×2, see note below)  |
 | `isValidDate(year, month, day)`                                 | embedded birth dates — **do not** use `new Date()` to validate |
 | `normalize(idNumber)`                                           | strip spaces, `-`, `/`                                         |
 | `cleanDigits(input)`                                            | strip every non-digit                                          |
 | `letterToNumber(letter, capital?)`                              | letter→number mapping                                          |
+
+`ean13Digit` weights even positions by 2, as the Python library does; standard EAN-13 weights them
+by 3. A country that needs standard EAN-13 must not reuse it. CHE has used its own check since
+[#246](https://github.com/identique/idnumbers-npm/issues/246).
 
 [`src/constants.ts`](../src/constants.ts): `Gender`, `Citizenship`, `CheckDigit`, `CheckAlpha`,
 `ThaiCitizenship`.

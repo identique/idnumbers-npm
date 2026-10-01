@@ -154,6 +154,8 @@ function buildReport() {
   }
   lines.push(
     '',
+    `Each figure is the median of ${SAMPLES} samples of ${SAMPLE_MS} ms after a ${WARMUP_MS} ms warm-up; differences of up to ~20% between columns are within noise.`,
+    '',
     `Cold import (\`require\`), median of ${IMPORT_RUNS} fresh processes:`,
     '',
     '| Entry | Import time |',

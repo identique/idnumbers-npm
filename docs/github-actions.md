@@ -161,8 +161,9 @@ fails here.
 **Deploy to GitHub Pages (`deploy`):** runs only for a published release (not a pre-release) or a
 manual run (`workflow_dispatch`), after `build` succeeds. It needs the `pages: write` and
 `id-token: write` permissions and deploys to the `github-pages` environment. Pull requests and
-pushes to `main` only check that the site builds. Only the `deploy` job has a concurrency group (`pages`), so builds run
-freely, one deployment runs at a time, and a deployment that has started is never cancelled.
+pushes to `main` only check that the site builds. Only the `deploy` job has a concurrency group
+(`pages`), so builds run freely, one deployment runs at a time, and a deployment that has started
+is never cancelled.
 
 **One-time repository setup** (Settings, by a repository admin):
 
