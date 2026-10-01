@@ -238,7 +238,7 @@ export function describeValidatorProperties(code: string): void {
           const lower = id.toLowerCase();
           if (validateNationalId(code, lower).isValid && !matchesRegexp(code, lower)) {
             throw new Error(
-              `${code}: lowercase form ${lower} validates but doesn't match METADATA.regexp — add the i flag`
+              `${code}: lowercase form ${lower} validates but doesn't match METADATA.regexp — make the regexp match lowercase (e.g. the i flag)`
             );
           }
         }),

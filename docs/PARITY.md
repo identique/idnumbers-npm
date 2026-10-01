@@ -36,8 +36,8 @@ and refuses to run if `idnumbers` resolves anywhere else, so a `pip install idnu
 machine can't be compared by accident.
 
 Exit codes: `0` parity holds, `1` unexpected or stale divergences, `2` the check could not run (no
-checkout, no build, or missing, malformed or inconsistent data files). A passing run prints the Python commit and a
-summary such as:
+checkout, no build, or missing, malformed or inconsistent data files). A passing run prints the
+Python commit and a summary such as:
 
 ```text
 78 countries, 17960 vectors: 17599 match, 199 TS-only input formats (allowed), 162 allowlisted divergences, 0 unexpected, 0 stale
