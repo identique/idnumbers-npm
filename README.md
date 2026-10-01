@@ -19,6 +19,28 @@ A comprehensive TypeScript/JavaScript library for validating and parsing nationa
 - ✨ **Well-tested** - Comprehensive test coverage with 100% pass rate
 - 🌍 **Multiple formats** - Supports various ID number formats per country
 
+## What's new in v2.2.0
+
+v2.2.0 is a minor release with no API changes. See the [CHANGELOG](./CHANGELOG.md) for every change.
+
+- **API reference site**: the [API reference](https://identique.github.io/idnumbers-npm/) has a
+  typed example for every public function and a page per country
+  ([#136](https://github.com/identique/idnumbers-npm/issues/136)).
+- **Parity check**: CI checks validity against the Python library for the 78 shared countries, and
+  documented divergences live in `parity/allowlist.json`
+  ([#133](https://github.com/identique/idnumbers-npm/issues/133)); see
+  [docs/PARITY.md](./docs/PARITY.md).
+- **Property tests**: property-based tests for every validator
+  ([#134](https://github.com/identique/idnumbers-npm/issues/134)) and shared test helpers for
+  country suites ([#135](https://github.com/identique/idnumbers-npm/issues/135)).
+- **Benchmarks and coverage**: `npm run bench`, plus enforced coverage thresholds with a coverage
+  badge ([#137](https://github.com/identique/idnumbers-npm/issues/137)).
+- **Case-insensitive regexps**: the `METADATA.regexp` of ESP, FIN, ITA, SGP and VEN now matches
+  lowercase input ([#242](https://github.com/identique/idnumbers-npm/issues/242)).
+- **CHE fix**: Switzerland (CHE) validates AHV numbers with the standard EAN-13 check digit, an
+  intentional divergence from the Python library
+  ([#246](https://github.com/identique/idnumbers-npm/issues/246)).
+
 ## What's new in v2.1.1
 
 v2.1.1 is a patch release with Python-parity fixes and no API changes. See the

@@ -7,11 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-10-01
+
+A minor release focused on trust and parity: a Python differential check in CI, property tests for
+every validator, an API reference site, benchmarks, and enforced coverage. No API changes; which IDs
+validate changes only for Switzerland (CHE, see Fixed).
+
 ### Added
 
 - An API reference site (TypeDoc), published to https://identique.github.io/idnumbers-npm/ on each release. It has a typed `@example` for every public function, which a test type-checks, and a page per country generated from the registry metadata. `npm run docs` builds it into `docs-site/`. `homepage` in `package.json` now points to the site ([#136](https://github.com/identique/idnumbers-npm/issues/136))
 - CI now checks validity against the Python `idnumbers` library. `npm run parity` compares `validateNationalId()` with Python for the 78 countries both libraries support, on a seed corpus plus one-character mutations. Known divergences are listed with their tracking issue in `parity/allowlist.json`, and [docs/PARITY.md](docs/PARITY.md) explains the formats ([#133](https://github.com/identique/idnumbers-npm/issues/133)). Dev tooling; no library behavior changes
 - Property-based tests now cover every country's validator. Generated valid IDs must match `METADATA.regexp` and the length range, and inputs outside the range must be rejected. For the 59 countries with a checksum, a changed check character must be rejected. 34 of them also reject any single changed digit; the other 25, whose checksum can't catch every such change, are listed with the reason in `src/__tests__/helpers/validatorProperties.ts` ([#134](https://github.com/identique/idnumbers-npm/issues/134)). Test-only; no library behavior changes
+- Shared Jest helpers for country test suites: `describeFormatInfoSuite()` in `src/__tests__/helpers/formatInfo.ts`, plus `describeValidityTable()` and `describeRegistryIntegration()` in `src/__tests__/helpers/countrySuite.ts`. The ECU and GTM suites use them, and `docs/COUNTRY_TEMPLATE.md` §6 shows them. Test-only; no library behavior changes ([#135](https://github.com/identique/idnumbers-npm/issues/135))
 - `npm run bench` measures `validateNationalId()` and `parseIdInfo()` throughput for 10 countries, with the full registry and with a single country registered, plus cold import time of the root entry and of `idnumbers/core` with one country. An informational Benchmarks CI job runs it and prints the table to the job summary; it never fails on a number. Dev tooling; no library behavior changes ([#137](https://github.com/identique/idnumbers-npm/issues/137))
 - Coverage thresholds of 93% lines, 93% statements, 83% functions, and 89% branches, enforced by `npm run test:coverage` and CI's Test Coverage Report job, which now also writes a per-metric table to the job summary. The README shows a coverage badge that CI updates from `main` through a shields.io endpoint file on the `badges` branch. Dev tooling; no library behavior changes ([#137](https://github.com/identique/idnumbers-npm/issues/137))
 
@@ -295,7 +302,8 @@ change; the library keeps parity with the Python `idnumbers` source of truth.
 - Full TypeScript support with type definitions
 - Comprehensive documentation and examples
 
-[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v2.1.1...HEAD
+[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v2.2.0...HEAD
+[2.2.0]: https://github.com/identique/idnumbers-npm/compare/v2.1.1...v2.2.0
 [2.1.1]: https://github.com/identique/idnumbers-npm/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/identique/idnumbers-npm/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/identique/idnumbers-npm/compare/v1.11.0...v2.0.0
