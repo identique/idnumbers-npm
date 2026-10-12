@@ -26,7 +26,7 @@ v2.2.0 is a minor release with no API changes. See the [CHANGELOG](./CHANGELOG.m
 - **API reference site**: the [API reference](https://identique.github.io/idnumbers-npm/) has a
   typed example for every public function and a page per country
   ([#136](https://github.com/identique/idnumbers-npm/issues/136)).
-- **Parity check**: CI checks validity against the Python library for the 78 shared countries, and
+- **Parity check**: CI checks validity against the Python library for all 85 countries, and
   documented divergences live in `parity/allowlist.json`
   ([#133](https://github.com/identique/idnumbers-npm/issues/133)); see
   [docs/PARITY.md](./docs/PARITY.md).

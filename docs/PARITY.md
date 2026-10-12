@@ -10,18 +10,21 @@ valid, so a validation change here can't silently drift from Python
 - **Validity only.** For each test vector it compares `validateNationalId(country, input).isValid`
   with the Python class's `validate(input)`. It does not compare `parse()` output, failure reasons,
   or metadata.
-- **Against a pinned Python commit.** The upstream repository is archived, so CI checks out its final
-  commit, `4def4c30036ae7b79c9c69317fa9f6cee4b8a2b2`, into `idnumbers-python/`.
-- **78 of the 85 registered countries.** The Python library has no CRI, DOM, ECU, EGY, GTM, RUS or SAU.
-  Those seven are listed in `tsOnlyCountries` and are not compared. That includes SAU's
-  `2000000007` carve-out, the precedent that motivated this check: Python has no SAU, so it is
-  outside this harness.
+- **Against a pinned Python commit.** CI checks out a fixed commit of the upstream `main` branch,
+  `28d33f3db83f6dcb657100d0ed19fa7c9e1bd90c`, into `idnumbers-python/`, so a change upstream can't fail an
+  unrelated run. Moving the pin means refreshing the allowlist in the same change.
+- **All 85 registered countries.** Each one has a corpus entry. `tsOnlyCountries` in
+  `parity/allowlist.json` is empty now; a country the Python library lacks would be listed there and
+  not compared. SAU's `2000000007` carve-out ([#280](https://github.com/identique/idnumbers-npm/issues/280))
+  makes TS accept an id that fails the Luhn check. It matches Python only because Python's SAU
+  validator does not check Luhn at all; the other Luhn failures are allowlisted
+  ([#323](https://github.com/identique/idnumbers-npm/issues/323)).
 
 ## Run it locally
 
 ```bash
 git clone https://github.com/identique/idnumbers.git ../idnumbers
-git -C ../idnumbers checkout 4def4c30036ae7b79c9c69317fa9f6cee4b8a2b2
+git -C ../idnumbers checkout 28d33f3db83f6dcb657100d0ed19fa7c9e1bd90c
 npm run build
 IDNUMBERS_PYTHON_PATH=../idnumbers npm run parity
 ```
@@ -40,7 +43,7 @@ checkout, no build, or missing, malformed or inconsistent data files). A passing
 Python commit and a summary such as:
 
 ```text
-78 countries, 17960 vectors: 17599 match, 199 TS-only input formats (allowed), 162 allowlisted divergences, 0 unexpected, 0 stale
+85 countries, 20672 vectors: 19715 match, 458 TS-only input formats (allowed), 499 allowlisted divergences, 0 unexpected, 0 stale
 ```
 
 When `GITHUB_STEP_SUMMARY` is set (as in CI), the summary line and the first 50 failure lines are also
@@ -129,7 +132,7 @@ the TS side.
 
 ## The allowlist
 
-`parity/allowlist.json` holds the seven TS-only countries and the known divergences:
+`parity/allowlist.json` holds the TS-only countries (none at present) and the known divergences:
 
 ```json
 {
@@ -169,23 +172,27 @@ paste-ready allowlist snippet with `"issue": 0` and `"reason": "TODO"`. Then eit
 
 ## Current divergences
 
-| Country | Direction   | Issue                                                         | Ids | Reason                                                                                                              |
-| ------- | ----------- | ------------------------------------------------------------- | --- | ------------------------------------------------------------------------------------------------------------------- |
-| AUT     | ts-only     | [#236](https://github.com/identique/idnumbers-npm/issues/236) | 13  | TS accepts a 10-digit form with no real checksum; Python's TaxIDNumber accepts only the 9-digit form                |
-| BEL     | ts-only     | [#217](https://github.com/identique/idnumbers-npm/issues/217) | 1   | Post-2000 check digit: TS uses the documented formula, Python's differs (decision pending)                          |
-| CHE     | ts-only     | [#246](https://github.com/identique/idnumbers-npm/issues/246) | 10  | Intentional: TS uses the standard EAN-13 weights (even positions x3); Python weights them by 2                      |
-| CHE     | python-only | [#246](https://github.com/identique/idnumbers-npm/issues/246) | 11  | Same as above                                                                                                       |
-| IDN     | ts-only     | [#228](https://github.com/identique/idnumbers-npm/issues/228) | 50  | Day and gender decoding differs, and 29 February of a year ending in 00                                             |
-| IDN     | python-only | [#228](https://github.com/identique/idnumbers-npm/issues/228) | 13  | Same as above                                                                                                       |
-| LTU     | ts-only     | [#216](https://github.com/identique/idnumbers-npm/issues/216) | 1   | Intentional: Python puts odd first digits a century early; differs on 29 February of a year ending in 00            |
-| LTU     | python-only | [#216](https://github.com/identique/idnumbers-npm/issues/216) | 1   | Same as above                                                                                                       |
-| NZL     | ts-only     | [#237](https://github.com/identique/idnumbers-npm/issues/237) | 26  | TS accepts 7-character licences and letters in the last six positions; Python needs two word characters, six digits |
-| SRB     | ts-only     | [#219](https://github.com/identique/idnumbers-npm/issues/219) | 1   | TS region-code allow-list differs from Python's block list                                                          |
-| SVN     | ts-only     | [#219](https://github.com/identique/idnumbers-npm/issues/219) | 2   | Same as above                                                                                                       |
-| SVN     | python-only | [#219](https://github.com/identique/idnumbers-npm/issues/219) | 4   | Same as above                                                                                                       |
-| TWN     | ts-only     | [#218](https://github.com/identique/idnumbers-npm/issues/218) | 3   | When the weighted sum is a multiple of 10, Python computes check digit 10 and rejects; TS accepts 0                 |
-| VEN     | ts-only     | [#238](https://github.com/identique/idnumbers-npm/issues/238) | 47  | TS accepts E, J and G prefixes and 7- or 9-digit numbers; Python accepts only V and 8 digits                        |
-
-In IDN, TS reads a female day as the day plus 40 while Python reads it as up to 39 and subtracts 30
-for a male day; Python also requires 29 February of a year ending in 00 to exist in both 19yy and
-20yy.
+| Country | Direction   | Issue                                                         | Ids | Reason                                                                                                                                                   |
+| ------- | ----------- | ------------------------------------------------------------- | --- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| AUT     | ts-only     | [#236](https://github.com/identique/idnumbers-npm/issues/236) | 13  | TS accepts a 10-digit form with no real checksum; Python's TaxIDNumber accepts only the 9-digit form                                                     |
+| BGR     | python-only | [#260](https://github.com/identique/idnumbers-npm/issues/260) | 2   | Python treats a mod-11 remainder of 10 as check digit 0; TS rejects it                                                                                   |
+| CZE     | python-only | [#265](https://github.com/identique/idnumbers-npm/issues/265) | 10  | Python accepts 9-digit birth numbers up to 1953; TS requires 10 digits                                                                                   |
+| CZE     | ts-only     | [#313](https://github.com/identique/idnumbers-npm/issues/313) | 1   | TS accepts a birth number dated in the future; Python rejects it                                                                                         |
+| DEU     | ts-only     | [#266](https://github.com/identique/idnumbers-npm/issues/266) | 1   | TS accepts a number with a leading 0; Python rejects it                                                                                                  |
+| DOM     | ts-only     | [#323](https://github.com/identique/idnumbers-npm/issues/323) | 2   | TS also accepts python-stdnum's list of cédulas that fail the Luhn check; Python leaves the list out                                                     |
+| ECU     | python-only | [#323](https://github.com/identique/idnumbers-npm/issues/323) | 2   | Python accepts 6 as the third digit; TS allows only 0-5                                                                                                  |
+| EGY     | python-only | [#323](https://github.com/identique/idnumbers-npm/issues/323) | 42  | TS requires one of 28 known governorate codes; Python accepts any two digits                                                                             |
+| GEO     | ts-only     | [#269](https://github.com/identique/idnumbers-npm/issues/269) | 129 | TS accepts 9-digit numbers; Python now requires 11 digits                                                                                                |
+| GTM     | python-only | [#323](https://github.com/identique/idnumbers-npm/issues/323) | 54  | Python checks only the layout, department 01-22 and municipality 01-99; TS also verifies the mod-11 check digit and each department's municipality count |
+| IRN     | ts-only     | [#272](https://github.com/identique/idnumbers-npm/issues/272) | 1   | TS accepts the repeated-digit code 1111111111; Python rejects repeated-digit codes                                                                       |
+| ISR     | ts-only     | [#290](https://github.com/identique/idnumbers-npm/issues/290) | 1   | TS accepts the all-zero number 000000000, which Python rejects                                                                                           |
+| LVA     | ts-only     | [#276](https://github.com/identique/idnumbers-npm/issues/276) | 10  | TS checks only the check digit; Python also needs the first two digits to be 32-39 or a real birth date                                                  |
+| NZL     | ts-only     | [#237](https://github.com/identique/idnumbers-npm/issues/237) | 27  | TS accepts any 7 or 8 letters or digits; Python requires two ASCII letters followed by six digits                                                        |
+| SAU     | python-only | [#323](https://github.com/identique/idnumbers-npm/issues/323) | 97  | TS enforces the Luhn check digit; Python checks only the layout                                                                                          |
+| SRB     | ts-only     | [#219](https://github.com/identique/idnumbers-npm/issues/219) | 1   | TS region-code allow-list differs from Python's block list                                                                                               |
+| SVK     | python-only | [#283](https://github.com/identique/idnumbers-npm/issues/283) | 11  | Python accepts 9-digit pre-1954 birth numbers and a remainder of 10 with check digit 0; TS rejects them                                                  |
+| SVN     | python-only | [#219](https://github.com/identique/idnumbers-npm/issues/219) | 4   | TS region-code allow-list differs from Python's block list                                                                                               |
+| SVN     | ts-only     | [#219](https://github.com/identique/idnumbers-npm/issues/219) | 2   | TS region-code allow-list differs from Python's block list                                                                                               |
+| VEN     | ts-only     | [#238](https://github.com/identique/idnumbers-npm/issues/238) | 47  | TS accepts E, J and G prefixes and 7- or 9-digit numbers; Python accepts only V and 8 digits                                                             |
+| ZWE     | python-only | [#287](https://github.com/identique/idnumbers-npm/issues/287) | 3   | Check letter: Python reads the office code and number as one integer mod 23, TS sums the digits mod 23                                                   |
+| ZWE     | ts-only     | [#287](https://github.com/identique/idnumbers-npm/issues/287) | 39  | Check letter: Python reads the office code and number as one integer mod 23, TS sums the digits mod 23                                                   |
