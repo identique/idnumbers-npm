@@ -94,8 +94,8 @@ Automatically publishes the package to npm when you create a new GitHub release.
 **Authentication.** The publish step uses npm
 [trusted publishing](https://docs.npmjs.com/trusted-publishers) and keeps the `NPM_TOKEN` secret as
 a fallback ([#193](https://github.com/identique/idnumbers-npm/issues/193)). Trusted publishing is
-configured for `identique/idnumbers-npm` and `npm-publish.yml`, and v2.2.0 was the first release
-published through it:
+configured for `identique/idnumbers-npm` and `npm-publish.yml`, and every release since v2.1.0 has
+been published through it:
 
 1. **Trusted publishing (primary).** Nothing to rotate. It was set up once on npmjs.com: on the
    `idnumbers` package, open **Settings** → **Trusted Publisher**, choose **GitHub Actions**, and
