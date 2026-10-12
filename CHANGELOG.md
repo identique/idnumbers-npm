@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Germany (DEU) tax IDs whose check digit completes a run of three identical digits, such as `12347658999`, are now valid. The rule that no digit fills three consecutive positions covers only the first ten digits (ELSTER, section 2.2), as in the Python library ([#293](https://github.com/identique/idnumbers-npm/issues/293))
+
 ## [2.2.0] - 2026-10-01
 
 A minor release focused on trust and parity: a Python differential check in CI, property tests for

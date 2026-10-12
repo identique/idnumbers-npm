@@ -6,6 +6,7 @@ import { validateRegexp, mnModulusDigit, modulusOverflowMod10 } from '../../util
  * Germany Tax Identification Number (Steuerliche Identifikationsnummer) format
  * https://en.wikipedia.org/wiki/National_identification_number#Germany
  * https://www.bzst.de/DE/Privatpersonen/SteuerlicheIdentifikationsnummer/steuerlicheidentifikationsnummer_node.html
+ * https://download.elster.de/download/schnittstellen/Pruefung_der_Steuer_und_Steueridentifikatsnummer.pdf
  */
 export class TaxIdentificationNumber implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
@@ -105,10 +106,13 @@ export class TaxIdentificationNumber implements IdNumberClass {
   }
 
   /**
-   * Check if no digit appears more than 2 times consecutively
+   * Check that, within the first 10 digits, no digit fills three directly consecutive
+   * positions. The check digit (the 11th) is excluded, so a check digit that completes a
+   * run of three is allowed (ELSTER, "Prüfung der Steuer- und Steueridentifikationsnummer",
+   * section 2.2).
    */
   static checkConsecutivePosition(idNumber: string): boolean {
-    const normalized = TaxIdentificationNumber.normalize(idNumber).split('');
+    const normalized = TaxIdentificationNumber.normalize(idNumber).slice(0, 10).split('');
 
     for (let index = 0; index < normalized.length - 2; index++) {
       if (
