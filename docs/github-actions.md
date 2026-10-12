@@ -99,8 +99,8 @@ Automatically publishes the package to npm when you create a new GitHub release.
    on the `idnumbers` package, open **Settings** → **Trusted Publisher**, choose **GitHub
    Actions**, and enter organization `identique`, repository `idnumbers-npm`, and workflow
    filename `npm-publish.yml`. npm then exchanges the job's OIDC token (`id-token: write`) for a
-   short-lived publish token and signs provenance itself. The workflow upgrades npm to 11.x first,
-   because trusted publishing needs npm 11.5.1 or later and Node.js 22 ships npm 10.
+   short-lived publish token. The workflow upgrades npm to 11.x first, because trusted publishing
+   needs npm 11.5.1 or later and Node.js 22 ships npm 10.
 2. **Token fallback.** Until trusted publishing is configured, npm uses the `NPM_TOKEN` repository
    secret. Create a granular access token on npmjs.com (**Access Tokens** → **Generate New
    Token**) with read and write access to `idnumbers`, and store it under **Settings** → **Secrets
@@ -108,6 +108,10 @@ Automatically publishes the package to npm when you create a new GitHub release.
    expired token makes the publish step fail with a misleading `E404 Not Found - PUT`. Re-run the
    failed job after replacing the secret; the tag and release stay valid. Once trusted publishing
    works, delete the secret and the `NODE_AUTH_TOKEN` line in `npm-publish.yml`.
+
+**Provenance** doesn't depend on the path: `npm publish --provenance` and the job's
+`id-token: write` permission sign the provenance statement whether npm authenticated through
+trusted publishing or the token.
 
 **Creating a release:**
 
