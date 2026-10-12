@@ -1,6 +1,7 @@
 import { registry } from './registry/ValidatorRegistry.js';
 import type { IdMetadata } from './types.js';
 import type { CountryCode } from './parseResultMap.js';
+import { asciiUpperCase } from './ascii.js';
 
 /** Mask tokens (#129): each stands for one character of the compact ID. */
 const TOKENS: Record<string, { imask: string; regex: string }> = {
@@ -55,13 +56,14 @@ function fitsLength(id: string, METADATA: IdMetadata): boolean {
 }
 
 /**
- * Uppercase, and drop whitespace and separators. An ID whose masks have separators
+ * Uppercase the ASCII letters (other letters stay as written, #301), and drop whitespace
+ * and separators. An ID whose masks have separators
  * never contains a separator character. Other IDs may (Finland's `-` century sign),
  * so their separators are kept when the ID without whitespace already has an allowed
  * length.
  */
 function compact(idNumber: string, METADATA: IdMetadata): string {
-  const upper = idNumber.toUpperCase();
+  const upper = asciiUpperCase(idNumber);
   const stripped = upper.replace(SEPARATORS, '');
   const masks = METADATA.masks ?? [];
   if (masks.some(mask => slotCount(mask) < mask.length)) return stripped;
@@ -70,8 +72,10 @@ function compact(idNumber: string, METADATA: IdMetadata): string {
 }
 
 /**
- * The compact form of an ID (#128): uppercase, without whitespace and without the
- * separators `. - / ( )`. For an ID written without separators, those characters stay
+ * The compact form of an ID (#128): ASCII letters uppercased, without whitespace and without
+ * the separators `. - / ( )`. Other letters, such as the sharp s or a Greek letter, are kept
+ * as written, as in the Python library (#301); `toUpperCase()` would turn some of them into
+ * ASCII letters. For an ID written without separators, those characters stay
  * when the ID without whitespace already has an allowed length, so Finland's century
  * sign in `131052-308T` is kept. Sweden's `+` for people aged 100 or over always stays.
  *
@@ -102,7 +106,7 @@ export function normalizeId(countryCode: FormatCountryCode, idNumber: string): s
  * `formatId('BRA', '11144477735')` returns `'111.444.777-35'`.
  *
  * The ID is first normalized (see `normalizeId()`), so formatted, partly formatted,
- * and lowercase input all work. The mask is chosen by the compact length; an ID
+ * and lowercase input all work; ASCII letters are uppercased and other letters stay as written. The mask is chosen by the compact length; an ID
  * written without separators, like `'FRA'`'s, is returned in its compact form.
  * Formatting checks only the length, not the characters, and doesn't validate. When
  * `validateNationalId()` accepts an ID, it also accepts `formatId()`'s output for it.

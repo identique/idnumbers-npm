@@ -34,3 +34,25 @@ describe('issue #301: Python-only whitespace in normalizeId() and formatId()', (
     expect(normalizeId('TWN', char)).toBe('');
   });
 });
+
+describe('issue #301: normalizeId() and formatId() uppercase only ASCII letters', () => {
+  const KEPT_AS_WRITTEN: Array<[string, number]> = [
+    ['sharp s', 0xdf],
+    ['long s', 0x17f],
+    ['dotless i', 0x131],
+    ['fi ligature', 0xfb01],
+    ['lowercase Greek alpha', 0x3b1],
+  ];
+
+  it.each(KEPT_AS_WRITTEN)('keeps the %s unchanged', (_name, codePoint) => {
+    const char = String.fromCodePoint(codePoint);
+    expect(normalizeId('TWN', `a1234${char}6789`)).toBe(`A1234${char}6789`);
+    expect(normalizeId('TWN', char)).toBe(char);
+  });
+
+  it('still uppercases ASCII letters', () => {
+    expect(normalizeId('TWN', 'a123456789')).toBe('A123456789');
+    expect(normalizeId('FIN', '131052-308t')).toBe('131052-308T');
+    expect(formatId('BRA', '11144477735')).toBe('111.444.777-35');
+  });
+});

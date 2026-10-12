@@ -104,9 +104,10 @@ describe('issue #131: any input', () => {
         const normalized = n!;
         expect(normalizeId(code, normalized)).toBe(normalized);
 
-        // normalizeId()'s documented contract: uppercase, no whitespace (incl.
-        // zero-width), and, when the country's masks use them, no separators.
-        expect(normalized).toBe(normalized.toUpperCase());
+        // normalizeId()'s documented contract: ASCII letters uppercased (other letters
+        // stay as written, #301), no whitespace (incl. zero-width), and, when the
+        // country's masks use them, no separators.
+        expect(normalized).not.toMatch(/[a-z]/);
         expect(WHITESPACE_RE.test(normalized)).toBe(false);
         if (masksHaveSeparators) {
           expect(normalized).not.toMatch(SEPARATOR_CHARS_RE);

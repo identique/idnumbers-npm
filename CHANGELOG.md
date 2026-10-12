@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - South Africa (ZAF) and Ecuador (ECU) `checksum()` return `null` for input that doesn't match the ID format (a wrong length, trailing characters, a month or day out of range, or an unknown province) instead of computing a digit, as in the Python library. Validation is unchanged ([#299](https://github.com/identique/idnumbers-npm/issues/299))
 - When a validator or parser throws, `validateNationalId()` and `parseIdInfo()` report the resolved alpha-3 code as `countryCode` (`'TWN'` for `'tw'`) instead of the code as passed, as in the Python library. An unsupported country still echoes the code as passed ([#301](https://github.com/identique/idnumbers-npm/issues/301))
 - `normalizeId()` and `formatId()` also remove U+001C–U+001F (the information separators) and U+0085 (next line), which the Python library treats as whitespace and JavaScript's `\s` doesn't. Validation is unchanged ([#301](https://github.com/identique/idnumbers-npm/issues/301))
+- `normalizeId()` and `formatId()` uppercase only ASCII letters. Other letters, such as the sharp s, the long s or a lowercase Greek letter, are kept as written instead of changing, sometimes into ASCII letters (`ß` into `SS`, `ſ` into `S`), as in the Python library ([#301](https://github.com/identique/idnumbers-npm/issues/301))
 
 ## [2.2.0] - 2026-10-01
 
