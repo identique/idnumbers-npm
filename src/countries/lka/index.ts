@@ -3,8 +3,14 @@
  * New format (12 digits): YYYYDDDSSSSC
  * Old format (10 chars): YYDDDSSSCV/X (phased out 2016)
  *
+ * The old format's last letter is the voter flag, not citizenship: `V` marked a
+ * registered voter and `X` a non-voter (a group that included citizens under voting
+ * age). Cards issued in 2007 made no such distinction. parse() therefore reports no
+ * citizenship for either format, as the Python library does.
+ *
  * https://en.wikipedia.org/wiki/National_identification_number#Sri_Lanka
  * https://drp.gov.lk/Templates/Artical%20-%20English%20new%20number.html
+ * https://www.irb-cisr.gc.ca/en/country-information/rir/Pages/index.aspx?doc=451823
  */
 
 import { IdMetadata, ParsedInfo, Gender } from '../../types.js';
@@ -19,15 +25,19 @@ export interface SriLankaParseResult extends ParsedInfo {
   gender: Gender;
   serialNumber: string;
   checksum: CheckDigit;
+  /**
+   * @deprecated Never set since #296. The old NIC's `V`/`X` suffix records voter
+   * eligibility, not citizenship, so the value cannot be derived. The field stays only
+   * for type compatibility.
+   */
   citizenship?: Citizenship;
 }
 
 /** New format: 4-digit year + 3-digit days + 4-digit serial + 1-digit checksum */
 const NEW_FORMAT = /^(?<year>\d{4})(?<days>\d{3})(?<sn>\d{4})(?<checksum>\d)$/;
 
-/** Old format: 2-digit year + 3-digit days + 3-digit serial + 1-digit checksum + V/X */
-const OLD_FORMAT =
-  /^(?<year>\d{2})(?<days>\d{3})(?<sn>\d{3})(?<checksum>\d)(?<citizenship>[VvXx])$/;
+/** Old format: 2-digit year + 3-digit days + 3-digit serial + 1-digit checksum + V/X voter flag */
+const OLD_FORMAT = /^(?<year>\d{2})(?<days>\d{3})(?<sn>\d{3})(?<checksum>\d)(?<voterFlag>[VvXx])$/;
 
 export const METADATA: IdMetadata = {
   iso3166Alpha2: 'LK',
@@ -179,7 +189,6 @@ export function parse(idNumber: string): SriLankaParseResult | null {
   }
 
   let newFormatId: string;
-  let citizenship: Citizenship | undefined;
 
   // Try old format
   const oldMatch = OLD_FORMAT.exec(idNumber);
@@ -189,10 +198,6 @@ export function parse(idNumber: string): SriLankaParseResult | null {
       return null;
     }
     newFormatId = converted;
-    citizenship =
-      oldMatch.groups.citizenship.toUpperCase() === 'V'
-        ? Citizenship.CITIZEN
-        : Citizenship.RESIDENT;
   } else if (NEW_FORMAT.test(idNumber)) {
     newFormatId = idNumber;
   } else {
@@ -217,19 +222,13 @@ export function parse(idNumber: string): SriLankaParseResult | null {
     return null;
   }
 
-  const result: SriLankaParseResult = {
+  return {
     isValid: true,
     birthDate,
     gender: days < 500 ? Gender.MALE : Gender.FEMALE,
     serialNumber: match.groups.sn,
     checksum: parseInt(match.groups.checksum, 10) as CheckDigit,
   };
-
-  if (citizenship !== undefined) {
-    result.citizenship = citizenship;
-  }
-
-  return result;
 }
 
 /**
