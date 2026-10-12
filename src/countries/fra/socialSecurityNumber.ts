@@ -1,5 +1,6 @@
 import { Gender } from '../../constants.js';
 import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
+import { asciiUpperCase } from '../../ascii.js';
 import { validateRegexp } from '../../utils.js';
 
 /**
@@ -183,7 +184,7 @@ export class SocialSecurityNumber implements IdNumberClass {
    * For Corsica departments, letters must be replaced for calculation
    */
   static checksum(idNumber: string): boolean {
-    const normalized = idNumber.toUpperCase().replace('2A', '19').replace('2B', '18');
+    const normalized = asciiUpperCase(idNumber).replace('2A', '19').replace('2B', '18');
     return (
       97 - (parseInt(normalized.substring(0, 13)) % 97) === parseInt(normalized.substring(13, 15))
     );

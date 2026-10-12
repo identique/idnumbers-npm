@@ -1,10 +1,13 @@
 import { CountryValidator, ValidatorKey, IdFormat, IValidatorRegistry } from './types.js';
 import type { CountryDefinition } from './country.js';
+import { asciiUpperCase } from '../ascii.js';
 
 /**
  * Central registry for country ID validators.
  *
- * Keys are stored uppercase. Aliases resolve to primary keys only (no chaining).
+ * Keys are stored uppercase. Only the ASCII letters are case-folded, so a non-ASCII
+ * lookalike (long s, dotless i, ...) never matches an ASCII code (#298).
+ * Aliases resolve to primary keys only (no chaining).
  * Qualified keys use colon separator, e.g. "USA:SSN".
  */
 export class ValidatorRegistry implements IValidatorRegistry {
@@ -22,7 +25,7 @@ export class ValidatorRegistry implements IValidatorRegistry {
    * @throws Error if the key is already registered as a primary key.
    */
   register(key: ValidatorKey, validator: CountryValidator<object>): void {
-    const normalized = key.toUpperCase();
+    const normalized = asciiUpperCase(key);
     if (this.validators.has(normalized)) {
       throw new Error(`Validator already registered for key: ${normalized}`);
     }
@@ -40,8 +43,8 @@ export class ValidatorRegistry implements IValidatorRegistry {
    * without one of the (otherwise free) aliases.
    */
   registerCountry(country: CountryDefinition<string, readonly string[], object>): void {
-    const key = country.key.toUpperCase();
-    const aliases = country.aliases.map(alias => alias.toUpperCase());
+    const key = asciiUpperCase(country.key);
+    const aliases = country.aliases.map(alias => asciiUpperCase(alias));
     // The same validator is already registered under `key`, possibly with fewer aliases.
     const sameValidator = this.validators.get(key) === country.validator;
 
@@ -91,8 +94,8 @@ export class ValidatorRegistry implements IValidatorRegistry {
    * @throws Error if the alias is already registered as an alias.
    */
   registerAlias(alias: string, key: ValidatorKey): void {
-    const normalizedAlias = alias.toUpperCase();
-    const normalizedKey = key.toUpperCase();
+    const normalizedAlias = asciiUpperCase(alias);
+    const normalizedKey = asciiUpperCase(key);
 
     if (!this.validators.has(normalizedKey)) {
       throw new Error(
@@ -114,13 +117,15 @@ export class ValidatorRegistry implements IValidatorRegistry {
   }
 
   /**
-   * Return the primary key (alpha-3) for a given key or alias.
+   * Return the primary key (alpha-3) for a given key or alias. Matching is
+   * case-insensitive for ASCII letters only, so a non-ASCII lookalike never resolves
+   * to a built-in code (#298), like Python's `resolve_country`.
    * Returns undefined when the key is unknown or not a string (an untyped JavaScript
    * caller may pass `undefined`, `null` or a number), as the Python library does (#295).
    */
   resolveKey(key: ValidatorKey): string | undefined {
     if (typeof key !== 'string') return undefined;
-    const normalized = key.toUpperCase();
+    const normalized = asciiUpperCase(key);
     if (this.validators.has(normalized)) return normalized;
     const target = this.aliases.get(normalized);
     return target;

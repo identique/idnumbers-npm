@@ -1,5 +1,6 @@
 import { CheckDigit } from '../../constants.js';
 import { IdMetadata, IdNumberClass } from '../../types.js';
+import { asciiUpperCase } from '../../ascii.js';
 
 /**
  * Portuguese Citizen Card Number (Cartão de Cidadão) - 12 digits
@@ -40,7 +41,7 @@ export class NationalID implements IdNumberClass {
     }
 
     // Remove spaces if present
-    const cleanId = idNumber.replace(/\s/g, '').toUpperCase();
+    const cleanId = asciiUpperCase(idNumber.replace(/\s/g, ''));
 
     // Must match the regex pattern
     if (!NationalID.METADATA.regexp.test(cleanId)) {
@@ -81,7 +82,7 @@ export class NationalID implements IdNumberClass {
    * Calculate first check digit
    */
   private static calculateFirstCheckDigit(idNumber: string): CheckDigit {
-    const cleanId = idNumber.replace(/\s/g, '').toUpperCase();
+    const cleanId = asciiUpperCase(idNumber.replace(/\s/g, ''));
 
     if (cleanId.length < 9) {
       return null;
@@ -100,7 +101,7 @@ export class NationalID implements IdNumberClass {
    * Calculate second check digit
    */
   private static calculateSecondCheckDigit(idNumber: string): CheckDigit {
-    const cleanId = idNumber.replace(/\s/g, '').toUpperCase();
+    const cleanId = asciiUpperCase(idNumber.replace(/\s/g, ''));
 
     if (cleanId.length < 10) {
       return null;

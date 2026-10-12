@@ -81,6 +81,7 @@ describe('issue #122: module purity', () => {
   // singleton, registerAll, core/api, or the root entry -- would let importing a
   // subpath register a country (the rejected #115 Option A).
   const ALLOWED_SHARED_MODULES = new Set([
+    'ascii.ts',
     'birthDateCheck.ts',
     'constants.ts',
     'failureReasons.ts',
