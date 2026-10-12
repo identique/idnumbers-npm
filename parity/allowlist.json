@@ -26,7 +26,7 @@
       "country": "BGR",
       "direction": "python-only",
       "issue": 260,
-      "reason": "Python accepts a remainder of 10 with check digit 0; TS rejects it.",
+      "reason": "Python treats a mod-11 remainder of 10 as check digit 0; TS rejects it.",
       "ids": ["7501120260", "7542111030"]
     },
     {
@@ -234,8 +234,9 @@
       "country": "NZL",
       "direction": "ts-only",
       "issue": 237,
-      "reason": "TS accepts 7-character licences and letters in the last six positions; Python requires two word characters then six digits.",
+      "reason": "TS accepts any 7 or 8 letters or digits; Python requires two ASCII letters followed by six digits.",
       "ids": [
+        "12345678",
         "AA00000",
         "AA34567",
         "AB00000",
@@ -263,13 +264,6 @@
         "BBCDEFGH",
         "aa12345"
       ]
-    },
-    {
-      "country": "NZL",
-      "direction": "ts-only",
-      "issue": 290,
-      "reason": "TS accepts 12345678, below the 10,000,000 start of the issued IRD range; Python rejects it.",
-      "ids": ["12345678"]
     },
     {
       "country": "SRB",
