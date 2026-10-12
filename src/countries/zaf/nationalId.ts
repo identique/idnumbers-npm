@@ -113,9 +113,16 @@ export class NationalID implements IdNumberClass {
   }
 
   /**
-   * Calculate checksum using Luhn algorithm
+   * Calculate checksum using Luhn algorithm.
+   *
+   * Returns null when the input does not match the ID format, as the Python
+   * library does (#299).
    */
   static checksum(idNumber: string): CheckDigit {
+    if (typeof idNumber !== 'string' || !NationalID.METADATA.regexp.test(idNumber)) {
+      return null;
+    }
+
     const digits = idNumber
       .slice(0, -1)
       .split('')
