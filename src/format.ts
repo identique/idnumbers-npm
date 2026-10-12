@@ -76,7 +76,8 @@ function compact(idNumber: string, METADATA: IdMetadata): string {
  * KOR, whose validators require the separators: validate `formatId()`'s output
  * there.
  *
- * Returns null for an unsupported country code or a non-string ID.
+ * Returns null for an unsupported country code (including a non-string one from
+ * untyped JavaScript) or a non-string ID.
  *
  * @example
  * ```ts
@@ -103,7 +104,8 @@ export function normalizeId(countryCode: FormatCountryCode, idNumber: string): s
  * Formatting checks only the length, not the characters, and doesn't validate. When
  * `validateNationalId()` accepts an ID, it also accepts `formatId()`'s output for it.
  *
- * Returns null when the ID can't be laid out: an unsupported country code, a
+ * Returns null when the ID can't be laid out: an unsupported country code (a non-string
+ * one from untyped JavaScript included), a
  * non-string ID, or a compact length that matches none of the country's masks (or,
  * for a country registered without masks, lies outside its `minLength`–`maxLength`).
  *
@@ -158,7 +160,8 @@ const escapeRegExp = (char: string) => char.replace(/[.*+?^${}()|[\]\\/]/g, '\\$
  * The input masks for a country's ID (#129), derived from its `METADATA.masks`, e.g.
  * `getInputMask('BRA')!.imask` is `[{ mask: '000.000.000-00' }]`.
  *
- * Returns null for an unsupported country code, or a country registered without
+ * Returns null for an unsupported country code (a non-string one from untyped
+ * JavaScript included), or a country registered without
  * masks. Every built-in country has them.
  *
  * @example
