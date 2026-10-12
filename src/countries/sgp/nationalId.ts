@@ -1,5 +1,6 @@
 import { CheckDigit, Citizenship } from '../../constants.js';
 import { IdMetadata, IdNumberClass, ParsedInfo } from '../../types.js';
+import { asciiUpperCase } from '../../ascii.js';
 
 /**
  * Parse result of Singapore NRIC/FIN
@@ -71,7 +72,7 @@ export class NationalID implements IdNumberClass {
     }
 
     // Remove spaces if present
-    const cleanId = idNumber.replace(/\s/g, '').toUpperCase();
+    const cleanId = asciiUpperCase(idNumber.replace(/\s/g, ''));
 
     // Must match the regex pattern
     if (!NationalID.METADATA.regexp.test(cleanId)) {
@@ -101,7 +102,7 @@ export class NationalID implements IdNumberClass {
     }
 
     // Remove spaces if present
-    const cleanId = idNumber.replace(/\s/g, '').toUpperCase();
+    const cleanId = asciiUpperCase(idNumber.replace(/\s/g, ''));
     const firstLetter = cleanId[0];
     const sequentialNumber = cleanId.substring(1, 8);
     const checkLetter = cleanId[8];
@@ -147,7 +148,7 @@ export class NationalID implements IdNumberClass {
    * Calculate checksum (returns the modulus index as a number representation)
    */
   static checksum(idNumber: string): CheckDigit {
-    const cleanId = idNumber.replace(/\s/g, '').toUpperCase();
+    const cleanId = asciiUpperCase(idNumber.replace(/\s/g, ''));
 
     if (cleanId.length < 8) {
       return null;

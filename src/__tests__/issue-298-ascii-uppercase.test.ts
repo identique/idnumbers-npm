@@ -22,6 +22,9 @@ import {
 } from '../index';
 import { defineCountry } from '../registry/country';
 import * as ESP from '../countries/esp';
+import * as SGP from '../countries/sgp';
+import * as ITA from '../countries/ita';
+import * as FIN from '../countries/fin';
 
 const LONG_S = String.fromCodePoint(0x17f);
 const DOTLESS_I = String.fromCodePoint(0x131);
@@ -124,5 +127,67 @@ describe('Issue #298: ValidatorRegistry case folding', () => {
     expect(reg.resolveKey('in')).toBeUndefined();
     // Only a-z is folded, so the key is stored as written (the dotless i is not touched).
     expect(reg.resolveKey(`${DOTLESS_I}n`)).toBe(`${DOTLESS_I}N`);
+  });
+});
+
+describe('Issue #298: validators that uppercase their input reject lookalikes', () => {
+  describe('ESP', () => {
+    it.each(['00000015S', '00000015s'])('accepts %s', id => {
+      expect(ESP.validate(id)).toBe(true);
+      expect(validateNationalId('ESP', id).isValid).toBe(true);
+    });
+
+    it.each([
+      ['the long s', `00000015${LONG_S}`],
+      ['a full-width S', `00000015${FULLWIDTH_S}`],
+    ])('rejects %s as the check letter', (_name, id) => {
+      expect(ESP.validate(id)).toBe(false);
+      expect(validateNationalId('ESP', id).isValid).toBe(false);
+    });
+  });
+
+  describe('SGP', () => {
+    it.each(['S1234567D', 's1234567d'])('accepts %s', id => {
+      expect(SGP.NationalID.validate(id)).toBe(true);
+      expect(validateNationalId('SGP', id).isValid).toBe(true);
+    });
+
+    it('rejects the long s as the prefix letter', () => {
+      const id = `${LONG_S}1234567D`;
+      expect(SGP.NationalID.validate(id)).toBe(false);
+      expect(SGP.NationalID.parse(id)).toBeNull();
+      expect(validateNationalId('SGP', id).isValid).toBe(false);
+    });
+  });
+
+  describe('ITA', () => {
+    it.each(['RSSMRA85M01H501Q', 'rssmra85m01h501q'])('accepts %s', id => {
+      expect(ITA.validate(id)).toBe(true);
+      expect(ITA.parse(id)).not.toBeNull();
+      expect(validateNationalId('ITA', id).isValid).toBe(true);
+    });
+
+    it.each([
+      ['the long s', `R${LONG_S}SMRA85M01H501Q`],
+      ['the sharp s (which would also change the length)', `R${SHARP_S}MRA85M01H501Q`],
+    ])('rejects %s', (_name, id) => {
+      expect(ITA.validate(id)).toBe(false);
+      expect(ITA.parse(id)).toBeNull();
+      expect(validateNationalId('ITA', id).isValid).toBe(false);
+    });
+  });
+
+  describe('FIN', () => {
+    it.each(['131052-121S', '131052-121s'])('accepts %s', id => {
+      expect(FIN.validate(id)).toBe(true);
+      expect(validateNationalId('FIN', id).isValid).toBe(true);
+    });
+
+    it('rejects the long s as the check character', () => {
+      const id = `131052-121${LONG_S}`;
+      expect(FIN.validate(id)).toBe(false);
+      expect(FIN.parse(id)).toBeNull();
+      expect(validateNationalId('FIN', id).isValid).toBe(false);
+    });
   });
 });

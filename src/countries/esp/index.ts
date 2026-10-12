@@ -4,6 +4,7 @@
  */
 
 import { IdMetadata } from '../../types.js';
+import { asciiUpperCase } from '../../ascii.js';
 import { defineCountry } from '../../registry/country.js';
 
 export const METADATA = {
@@ -55,7 +56,7 @@ export function validate(idNumber: string): boolean {
     return false;
   }
 
-  const upperIdNumber = idNumber.trim().toUpperCase();
+  const upperIdNumber = asciiUpperCase(idNumber.trim());
   const match = METADATA.regexp.test(upperIdNumber);
   if (!match) {
     return false;

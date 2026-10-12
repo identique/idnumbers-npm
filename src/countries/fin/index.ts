@@ -4,6 +4,7 @@
  */
 
 import { IdMetadata, ParsedInfo } from '../../types.js';
+import { asciiUpperCase } from '../../ascii.js';
 import { isValidDate, calculateAge } from '../../utils.js';
 import { defineCountry } from '../../registry/country.js';
 import { invalidBirthDate } from '../../birthDateCheck.js';
@@ -112,7 +113,7 @@ export function validate(idNumber: string): boolean {
     return false;
   }
 
-  const match = METADATA.regexp.test(idNumber.trim().toUpperCase());
+  const match = METADATA.regexp.test(asciiUpperCase(idNumber.trim()));
   if (!match) {
     return false;
   }
@@ -128,7 +129,7 @@ export function validate(idNumber: string): boolean {
  * Parse Finland HETU
  */
 export function parse(idNumber: string): FinlandParseResult | null {
-  const upperIdNumber = idNumber.trim().toUpperCase();
+  const upperIdNumber = asciiUpperCase(idNumber.trim());
   const match = METADATA.regexp.exec(upperIdNumber);
   if (!match || !match.groups) {
     return null;

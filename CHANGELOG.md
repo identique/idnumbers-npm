@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A country code that isn't a string, such as `undefined` from an optional form field, `null` or a number, is now treated as unsupported, as in the Python library. `getCountryIdFormat()`, `normalizeId()`, `formatId()`, `getInputMask()` and the registry lookups return `null` / `undefined` instead of throwing a TypeError, and `validateNationalId()` / `parseIdInfo()` report `unsupported_country` instead of `validation_failed` ([#295](https://github.com/identique/idnumbers-npm/issues/295))
 - Slovakia (SVK) birth numbers dated after today, such as `2701010004`, are now rejected with `invalid_birthdate`, as in the Python library. The parity allowlist lists the corpus IDs that the pinned Python commit still accepts ([#297](https://github.com/identique/idnumbers-npm/issues/297))
 - China (CHN) `parse()` keeps birth years 0001–0099 as written; `birthDate` used to fall in 1901–1999 because `new Date()` maps two-digit years to the 1900s. Validity is unchanged ([#297](https://github.com/identique/idnumbers-npm/issues/297))
+- Non-ASCII lookalike letters (the long s, the dotless i, ligatures such as `fi`, the sharp s) no longer turn into ASCII letters when the input is uppercased. They no longer resolve a country code (the dotless i followed by `n` no longer means `IND`) and no longer pass the ESP, ITA, SGP and FIN validators. Lowercase ASCII input still works. Matches the Python library ([#298](https://github.com/identique/idnumbers-npm/issues/298))
 
 ## [2.2.0] - 2026-10-01
 

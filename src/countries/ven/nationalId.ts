@@ -1,4 +1,5 @@
 import { IdNumberClass, IdMetadata, ParsedInfo } from '../../types.js';
+import { asciiUpperCase } from '../../ascii.js';
 
 export interface NationalIdParseResult extends ParsedInfo {
   type: string;
@@ -35,7 +36,7 @@ export class NationalID implements IdNumberClass {
       return false;
     }
 
-    const cleanValue = value.toUpperCase().trim();
+    const cleanValue = asciiUpperCase(value).trim();
 
     // Basic format check
     if (!NationalID.METADATA.regexp.test(cleanValue)) {
@@ -72,7 +73,7 @@ export class NationalID implements IdNumberClass {
       return null;
     }
 
-    const cleanValue = value.toUpperCase().trim();
+    const cleanValue = asciiUpperCase(value).trim();
     const firstLetter = cleanValue[0];
     const numbers = cleanValue.substring(1).replace(/[^0-9]/g, '');
 

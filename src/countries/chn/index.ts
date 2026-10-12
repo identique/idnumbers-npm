@@ -4,6 +4,7 @@
  */
 
 import { IdMetadata, ParsedInfo } from '../../types.js';
+import { asciiUpperCase } from '../../ascii.js';
 import { validateRegexp, calculateAge, isValidDate } from '../../utils.js';
 import { Gender } from '../../constants.js';
 import { defineCountry } from '../../registry/country.js';
@@ -47,7 +48,7 @@ export const METADATA = {
  * Normalize by converting to uppercase
  */
 function normalize(idNumber: string): string {
-  return idNumber.toUpperCase();
+  return asciiUpperCase(idNumber);
 }
 
 /**
