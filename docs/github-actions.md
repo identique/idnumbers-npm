@@ -91,23 +91,30 @@ Runs on every push and pull request to the main branch.
 
 Automatically publishes the package to npm when you create a new GitHub release.
 
-**Authentication.** The publish step tries npm
-[trusted publishing](https://docs.npmjs.com/trusted-publishers) first, then falls back to the
-`NPM_TOKEN` secret ([#193](https://github.com/identique/idnumbers-npm/issues/193)):
+**Authentication.** The publish step uses npm
+[trusted publishing](https://docs.npmjs.com/trusted-publishers) and keeps the `NPM_TOKEN` secret as
+a fallback ([#193](https://github.com/identique/idnumbers-npm/issues/193)). Trusted publishing is
+configured for `identique/idnumbers-npm` and `npm-publish.yml`, and every release since v2.1.0 has
+been published through it:
 
-1. **Trusted publishing (recommended).** Nothing to rotate. It needs a one-time setup on npmjs.com:
-   on the `idnumbers` package, open **Settings** → **Trusted Publisher**, choose **GitHub
-   Actions**, and enter organization `identique`, repository `idnumbers-npm`, and workflow
-   filename `npm-publish.yml`. npm then exchanges the job's OIDC token (`id-token: write`) for a
-   short-lived publish token and signs provenance itself. The workflow upgrades npm to 11.x first,
+1. **Trusted publishing (primary).** Nothing to rotate. It was set up once on npmjs.com: on the
+   `idnumbers` package, open **Settings** → **Trusted Publisher**, choose **GitHub Actions**, and
+   enter organization `identique`, repository `idnumbers-npm`, and workflow filename
+   `npm-publish.yml`; repeat these steps to re-create it. npm then exchanges the job's OIDC token
+   (`id-token: write`) for a short-lived publish token. The workflow upgrades npm to 11.x first,
    because trusted publishing needs npm 11.5.1 or later and Node.js 22 ships npm 10.
-2. **Token fallback.** Until trusted publishing is configured, npm uses the `NPM_TOKEN` repository
-   secret. Create a granular access token on npmjs.com (**Access Tokens** → **Generate New
-   Token**) with read and write access to `idnumbers`, and store it under **Settings** → **Secrets
-   and variables** → **Actions** as `NPM_TOKEN`. Write tokens expire after at most 90 days, and an
-   expired token makes the publish step fail with a misleading `E404 Not Found - PUT`. Re-run the
-   failed job after replacing the secret; the tag and release stay valid. Once trusted publishing
-   works, delete the secret and the `NODE_AUTH_TOKEN` line in `npm-publish.yml`.
+2. **Token fallback.** The `NPM_TOKEN` repository secret is only a fallback, used if trusted
+   publishing fails. Create a granular access token on npmjs.com (**Access Tokens** → **Generate
+   New Token**) with read and write access to `idnumbers`, and store it under **Settings** →
+   **Secrets and variables** → **Actions** as `NPM_TOKEN`. Write tokens expire after at most 90
+   days, and an expired token makes the publish step fail with a misleading `E404 Not Found - PUT`.
+   Re-run the failed job after replacing the secret; the tag and release stay valid. The
+   `NODE_AUTH_TOKEN` entry will be removed from `npm-publish.yml` in a later change, and whether to
+   delete the `NPM_TOKEN` secret is the maintainer's decision.
+
+**Provenance** doesn't depend on the path: `npm publish --provenance` and the job's
+`id-token: write` permission sign the provenance statement whether npm authenticated through
+trusted publishing or the token.
 
 **Creating a release:**
 
