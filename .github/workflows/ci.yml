@@ -273,8 +273,8 @@ jobs:
         uses: actions/checkout@v7
         with:
           repository: identique/idnumbers
-          # The upstream repository is archived; this is its final commit (see docs/PARITY.md).
-          ref: 4def4c30036ae7b79c9c69317fa9f6cee4b8a2b2
+          # Pinned to a commit of the Python library's main branch (see docs/PARITY.md).
+          ref: 28d33f3db83f6dcb657100d0ed19fa7c9e1bd90c
           path: idnumbers-python
           persist-credentials: false
 
