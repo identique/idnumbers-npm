@@ -201,6 +201,13 @@
       "ids": ["0101992900009"]
     },
     {
+      "country": "SVK",
+      "direction": "python-only",
+      "issue": 297,
+      "reason": "Future birth date: TS rejects a birth number dated after today, like current Python main; the pinned Python commit still accepts it.",
+      "ids": ["2902010001"]
+    },
+    {
       "country": "SVN",
       "direction": "python-only",
       "issue": 219,

@@ -114,7 +114,10 @@ export function parse(idNumber: string): ChinaParseResult | null {
   }
 
   try {
+    // `new Date(year, ...)` maps years 0-99 to 1900-1999; set the full year explicitly so
+    // years 0001-0099 stay as written.
     const birthDate = new Date(year, month - 1, day);
+    birthDate.setFullYear(year, month - 1, day);
 
     return {
       isValid: true,

@@ -24,6 +24,8 @@ export interface NationalIdParseResult extends ParsedInfo {
  * - DD: day
  * - SSS: serial number
  * - C: checksum digit (whole number divisible by 11)
+ *
+ * The birth date must be a real calendar date and must not be after today.
  * https://en.wikipedia.org/wiki/National_identification_number#Slovakia
  */
 export class NationalID implements IdNumberClass {
@@ -78,7 +80,8 @@ export class NationalID implements IdNumberClass {
   }
 
   /**
-   * Parse Slovak Birth Number
+   * Parse Slovak Birth Number. Returns null when the checksum fails or the encoded birth date
+   * is not a real date or lies after today.
    */
   static parse(idNumber: string): NationalIdParseResult | null {
     const match = NationalID.METADATA.regexp.exec(idNumber);
@@ -118,6 +121,14 @@ export class NationalID implements IdNumberClass {
             date.getDate() !== dd
         )
       ) {
+        return null;
+      }
+
+      // A birth date after today is not valid (a date equal to today is). Compare calendar
+      // dates in local time, like Python's `birth_date <= date.today()`.
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      if (invalidBirthDate(date > today)) {
         return null;
       }
 

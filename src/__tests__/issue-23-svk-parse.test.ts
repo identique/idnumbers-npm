@@ -24,11 +24,18 @@ describe('SVK NationalID parse() — Birth Date Extraction', () => {
   });
 
   test('should map yy=49 to year 2049 (century boundary)', () => {
-    const result = NationalID.parse('4901150001');
-    expect(result).not.toBeNull();
-    expect(result!.yyyymmdd.getFullYear()).toBe(2049);
-    expect(result!.yyyymmdd.getMonth()).toBe(0);
-    expect(result!.yyyymmdd.getDate()).toBe(15);
+    // 2049 is in the future, which is invalid (#297); pin the clock past it.
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date(2060, 0, 1));
+    try {
+      const result = NationalID.parse('4901150001');
+      expect(result).not.toBeNull();
+      expect(result!.yyyymmdd.getFullYear()).toBe(2049);
+      expect(result!.yyyymmdd.getMonth()).toBe(0);
+      expect(result!.yyyymmdd.getDate()).toBe(15);
+    } finally {
+      jest.useRealTimers();
+    }
   });
 
   test('should map yy=50 to year 1950 (century boundary)', () => {
