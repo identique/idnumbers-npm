@@ -119,10 +119,20 @@ export class Cedula implements IdNumberClass {
    * Calculate the Luhn (mod 10) check digit over the first 9 digits.
    * Weights are [2,1,2,1,2,1,2,1,2] with products >9 having 9 subtracted;
    * `luhnDigit` (multipliersStartByTwo=true) implements this exactly.
+   *
+   * Returns null unless the input matches the cédula layout, as the Python
+   * library does (#299): nine digits, an optional hyphen or whitespace
+   * separator, a final digit, and a province code (digits 1-2) of 01-24 or
+   * 30. The input's own last digit and the person-type (third digit) rule are
+   * not applied here; `validate()` does that.
    */
   static checksum(idNumber: string): CheckDigit {
+    if (typeof idNumber !== 'string' || !Cedula.METADATA.regexp.test(idNumber)) {
+      return null;
+    }
+
     const normalized = normalize(idNumber);
-    if (!/^\d{9}/.test(normalized)) {
+    if (!VALID_PROVINCE_CODES.has(normalized.slice(0, 2))) {
       return null;
     }
 

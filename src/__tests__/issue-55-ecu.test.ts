@@ -125,14 +125,15 @@ describe('Ecuador (ECU) — Cédula de Identidad', () => {
 
   describe('checksum()', () => {
     it('computes the Luhn check digit over the first 9 digits', () => {
-      expect(Cedula.checksum('171000000')).toBe(9);
-      expect(Cedula.checksum('090000000')).toBe(1);
-      expect(Cedula.checksum('170000005')).toBe(0); // remainder-0 edge case
+      // #299: the input must be a full ten-digit cédula; its own last digit is ignored.
+      expect(Cedula.checksum('1710000009')).toBe(9);
+      expect(Cedula.checksum('0900000001')).toBe(1);
+      expect(Cedula.checksum('1700000050')).toBe(0); // remainder-0 edge case
     });
 
     it('delegates from the instance method to the static method', () => {
       const instance = new Cedula();
-      expect(instance.checksum('171000000')).toBe(9);
+      expect(instance.checksum('1710000009')).toBe(9);
     });
   });
 
