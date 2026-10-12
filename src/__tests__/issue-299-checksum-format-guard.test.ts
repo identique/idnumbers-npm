@@ -25,6 +25,7 @@ describe('#299 ZAF checksum() format guard', () => {
     'abc',
     '',
     '8013015009087', // month 13
+    '8001325009087', // day 32
     ' 8001015009087', // leading space
   ])('returns null for %p', input => {
     expect(ZafNationalID.checksum(input)).toBeNull();
@@ -32,6 +33,12 @@ describe('#299 ZAF checksum() format guard', () => {
 
   it.each(notString)('returns null for the non-string %p', input => {
     expect(ZafNationalID.checksum(input)).toBeNull();
+  });
+
+  it('leaves day validity within the month to parse()/validate()', () => {
+    // 30 Feb matches the format regexp (day 01-31), so a digit is returned, as in Python.
+    expect(ZafNationalID.checksum('8002305009087')).toBe(4);
+    expect(ZafNationalID.validate('8002305009087')).toBe(false);
   });
 
   it('delegates from the instance method', () => {
