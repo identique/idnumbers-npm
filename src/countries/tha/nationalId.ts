@@ -46,7 +46,7 @@ export class NationalID implements IdNumberClass {
     parsable: true,
     checksum: true,
     regexp:
-      /^(?<citizenship>[0-8])[\s-]?(?<province>\d{2})(?<district>\d{2})[\s-]?(?<sn>\d{5}[\s-]?\d{2})[\s-]?(?<checksum>\d)$/,
+      /^(?<citizenship>[0-8])[ -]?(?<province>\d{2})(?<district>\d{2})[ -]?(?<sn>\d{5}[ -]?\d{2})[ -]?(?<checksum>\d)$/,
     displayFormat: '#-####-#####-##-#',
     masks: ['#-####-#####-##-#'],
     example: '3101012345673',

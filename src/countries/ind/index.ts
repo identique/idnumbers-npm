@@ -15,7 +15,7 @@ export const METADATA: IdMetadata = {
   maxLength: 14,
   parsable: false,
   checksum: true,
-  regexp: /^[2-9]\d{3}[\s-]?\d{4}[\s-]?\d{4}$/,
+  regexp: /^[2-9]\d{3}[ -]?\d{4}[ -]?\d{4}$/,
   displayFormat: 'XXXX XXXX XXXX',
   masks: ['#### #### ####'],
   example: '892473528038',
