@@ -55,7 +55,7 @@ const EUROPEAN_EXPECTED: Record<string, ExpectedFormat> = {
     format: '########L',
     example: '01234567U',
     checksumAlgorithm: 'Positional digit transform, mod 26 -> check letter',
-    officialName: 'Tax Identification Code (ΦΠΑ)',
+    officialName: 'Αριθμός Φορολογικής Ταυτότητας',
   },
   CZE: {
     format: 'YYMMDD/SSSC',
@@ -250,7 +250,7 @@ const EUROPEAN_EXPECTED: Record<string, ExpectedFormat> = {
     officialName: 'Personnummer',
   },
   UKR: {
-    format: 'DDDDDSSSSSC',
+    format: 'DDDDDSSSSC',
     example: '3245506789',
     checksumAlgorithm: 'Weighted sum (mod 11, then mod 10)',
     officialName: 'Individual Tax Number (RNOKPP)',

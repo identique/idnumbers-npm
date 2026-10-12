@@ -15,7 +15,7 @@ export interface NationalIdParseResult extends ParsedInfo {
 
 /**
  * Ukrainian Individual Tax Number (РНОКПП/RNTRC) - 10 digits
- * Format: DDDDDSSSSSC
+ * Format: DDDDDSSSSC
  * - DDDDD: Days since 1900-01-01
  * - SSSS: Serial number
  * - C: Checksum digit
@@ -32,7 +32,7 @@ export class NationalID implements IdNumberClass {
     parsable: true,
     checksum: true,
     regexp: /^\d{10}$/,
-    displayFormat: 'DDDDDSSSSSC',
+    displayFormat: 'DDDDDSSSSC',
     masks: ['##########'],
     example: '3245506789',
     checksumAlgorithm: 'Weighted sum (mod 11, then mod 10)',

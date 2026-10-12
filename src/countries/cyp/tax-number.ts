@@ -19,10 +19,12 @@ export class TaxNumber {
     masks: ['########L'],
     example: '01234567U',
     checksumAlgorithm: 'Positional digit transform, mod 26 -> check letter',
-    officialName: 'Tax Identification Code (ΦΠΑ)',
+    officialName: 'Αριθμός Φορολογικής Ταυτότητας',
     aliasOf: null,
     names: [
       'tax number',
+      'Αριθμός Φορολογικής Ταυτότητας',
+      'ΑΦΤ',
       'Αριθμός Εγγραφής',
       'ΦΠΑ',
       'Φ.Π.Α.',
