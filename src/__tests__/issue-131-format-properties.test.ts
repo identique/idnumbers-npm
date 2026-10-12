@@ -11,7 +11,7 @@ const countries = registry.list();
 /** Noise characters messyIdArbitrary() can insert (helpers/arbitraries.ts's NOISE). */
 const NOISE_CHARS = [' ', '.', '-', '/', '(', ')', '\t', '\u00A0', '\u200B', '\u2060', '\uFEFF'];
 /** Mirrors src/format.ts's WHITESPACE regex, to pin normalizeId()'s no-whitespace contract. */
-const WHITESPACE_RE = /[\s\u200B-\u200D\u2060\uFEFF]/;
+const WHITESPACE_RE = /[\s\x1C-\x1F\x85\u200B-\u200D\u2060\uFEFF]/;
 /** The separator punctuation normalizeId() strips when a country's masks use it. */
 const SEPARATOR_CHARS_RE = /[.\-/()]/;
 /** Mask token characters (src/format.ts's TOKENS); anything else in a mask is a separator. */

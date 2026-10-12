@@ -11,18 +11,21 @@ const TOKENS: Record<string, { imask: string; regex: string }> = {
 };
 
 /**
- * Whitespace, including the zero-width characters `\s` doesn't cover (U+200B–U+200D,
- * U+2060), which pasted IDs sometimes carry; U+FEFF is included too for clarity,
- * though `\s` already matches it.
+ * Whitespace, as Python's `str.isspace()` and `\s` define it (#301): everything JavaScript's
+ * `\s` matches, plus the information separators U+001C-U+001F and NEL U+0085, which `\s`
+ * doesn't cover but Python's does. Also the zero-width characters (U+200B-U+200D, U+2060)
+ * that pasted IDs sometimes carry; U+FEFF is included too for clarity, though `\s` already
+ * matches it.
  */
-const WHITESPACE = /[\s\u200B-\u200D\u2060\uFEFF]/g;
+const WHITESPACE = /[\s\x1C-\x1F\x85\u200B-\u200D\u2060\uFEFF]/g;
 
 /**
- * Separators that normalizeId() removes: whitespace and `. - / ( )`, the same set the
- * failure-reason derivation ignores (#117). Validators accept these in more places
- * than a country's masks use them, e.g. `2123-45670-1` for Australia.
+ * Separators that normalizeId() removes: whitespace (the set above, including U+001C-U+001F
+ * and U+0085) and `. - / ( )`, the same set the failure-reason derivation ignores (#117).
+ * Validators accept these in more places than a country's masks use them, e.g.
+ * `2123-45670-1` for Australia.
  */
-const SEPARATORS = /[\s\u200B-\u200D\u2060\uFEFF.\-/()]/g;
+const SEPARATORS = /[\s\x1C-\x1F\x85\u200B-\u200D\u2060\uFEFF.\-/()]/g;
 
 /**
  * A country code: autocompletes the built-in codes, and accepts any other string,
