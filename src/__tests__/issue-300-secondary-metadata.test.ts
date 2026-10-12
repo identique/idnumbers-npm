@@ -165,8 +165,6 @@ const CASES: Case[] = [
       officialName: 'Unternehmens-Identifikationsnummer',
       displayFormat: 'CHE-###.###.###',
       example: 'CHE-123.456.788',
-      checksumAlgorithm:
-        'Weighted sum mod 11 (weights 5, 4, 3, 2, 7, 6, 5, 4; check = 11 - remainder, a result of 10 is invalid)',
       masks: ['LLL-###.###.###', 'LLL#########'],
     },
   },
@@ -310,9 +308,16 @@ const CASES: Case[] = [
 const SLOT_CHARS = /[#LX*]/g;
 
 describe('Issue #300: metadata of the secondary ID classes', () => {
-  it('covers 17 classes and 106 added fields', () => {
+  it('covers 17 classes and 105 added fields', () => {
     expect(CASES).toHaveLength(17);
-    expect(CASES.reduce((sum, c) => sum + Object.keys(c.added).length, 0)).toBe(106);
+    expect(CASES.reduce((sum, c) => sum + Object.keys(c.added).length, 0)).toBe(105);
+  });
+
+  it('describes no check digit for CHE BusinessID, which does not verify one yet (#262)', () => {
+    const metadata: IdMetadata = BusinessID.METADATA;
+    expect(metadata.checksum).toBe(false);
+    expect(metadata.checksumAlgorithm).toBeUndefined();
+    expect('checksumAlgorithm' in metadata).toBe(false);
   });
 
   describe.each(CASES)('$name', ({ cls, added, registryCountry, primaryIdType }) => {

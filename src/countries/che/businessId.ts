@@ -29,8 +29,6 @@ export const METADATA = {
   displayFormat: 'CHE-###.###.###',
   masks: ['LLL-###.###.###', 'LLL#########'],
   example: 'CHE-123.456.788',
-  checksumAlgorithm:
-    'Weighted sum mod 11 (weights 5, 4, 3, 2, 7, 6, 5, 4; check = 11 - remainder, a result of 10 is invalid)',
   officialName: 'Unternehmens-Identifikationsnummer',
   aliasOf: null,
   names: ['business identification number', 'UID'],
