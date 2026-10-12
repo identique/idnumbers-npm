@@ -15,12 +15,18 @@ import { validateRegexp } from '../../utils.js';
 export class IdentityCard implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'GR',
+    countryName: 'Greece',
+    idType: 'Identity Card Number',
     minLength: 7,
     maxLength: 8,
     parsable: false,
     checksum: false,
     regexp:
       /^[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩABEZHIKMNOPTYXαβγδεζηθικλμνξοπρστυφχψωabezhikmnoptyx]{2}[-]?\d{6}$/,
+    displayFormat: 'LL-######',
+    masks: ['LL-######', 'LL######'],
+    example: 'AB-123456',
+    officialName: 'Δελτίο Ταυτότητας',
     aliasOf: null,
     names: ['Identity Card Number', 'Δελτίο Ταυτότητας'],
     links: ['https://en.wikipedia.org/wiki/National_identification_number#Greece'],

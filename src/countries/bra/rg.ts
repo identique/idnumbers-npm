@@ -13,11 +13,19 @@ import { validateRegexp } from '../../utils.js';
 export class RG implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'BR',
+    countryName: 'Brazil',
+    idType: 'General Registry Number',
     minLength: 9,
     maxLength: 9,
     parsable: false,
     checksum: true,
     regexp: /^(\d{2}\.\d{3}\.\d{3}-[\dX])$/,
+    displayFormat: '##.###.###-X',
+    masks: ['##.###.###-X'],
+    example: '12.345.678-2',
+    checksumAlgorithm:
+      'Library convention: weights 2-9 over the first eight digits; check value is the complement of the sum modulo 11 (remainder 0 gives 0, remainder 1 gives X; X counts as 10)',
+    officialName: 'Registro Geral',
     aliasOf: null,
     names: ['RG number', 'Registro Geral number'],
     links: [

@@ -37,11 +37,19 @@ const DIVISION_TYPE_MAP: Record<string, EntityDivision> = {
 
 export const METADATA = {
   iso3166Alpha2: 'KZ',
+  countryName: 'Kazakhstan',
+  idType: 'Business Identification Number',
   minLength: 12,
   maxLength: 12,
   parsable: true,
   checksum: true,
   regexp: REGEXP,
+  displayFormat: 'YYMMTDSSSSSC',
+  masks: ['############'],
+  example: '100140000003',
+  checksumAlgorithm:
+    'Weighted sum mod 11 (weights 1-11; with a remainder of 10 the weights 3-11, 1, 2 are used and a second 10 is invalid)',
+  officialName: 'Бизнес-идентификационный номер',
   aliasOf: null,
   names: ['Business Identification Number', 'Бизнес-идентификационный номер'],
   links: ['https://korgan-zan.kz/en/obtaining-iin-and-bin-in-kazakhstan/'],

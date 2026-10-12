@@ -31,11 +31,19 @@ export interface EntityIdParseResult extends ParsedInfo {
 export class EntityID implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'UA',
+    countryName: 'Ukraine',
+    idType: 'Legal Entity ID Number',
     minLength: 8,
     maxLength: 8,
     parsable: true,
     checksum: true,
     regexp: /^\d{8}$/,
+    displayFormat: '########',
+    masks: ['########'],
+    example: '32000001',
+    checksumAlgorithm:
+      'Weighted sum mod 11 (weights 1-7, or 7 then 1-6 when the first digit is 3 to 6; a remainder of 10 retries with every weight raised by 2)',
+    officialName: 'Код ЄДРПОУ',
     aliasOf: null,
     names: ['Legal Entity ID Number', 'EDRPOU', 'ЄДРПОУ'],
     links: [

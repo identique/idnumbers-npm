@@ -57,11 +57,19 @@ export function validate(idNumber: string): boolean {
 
 export const METADATA = {
   iso3166Alpha2: 'BG',
+  countryName: 'Bulgaria',
+  idType: 'Unified Identification Code',
   minLength: 9,
   maxLength: 13,
   parsable: false,
   checksum: true,
   regexp: REGEXP,
+  displayFormat: '#########[####]',
+  masks: ['#########', '#############'],
+  example: '123456786',
+  checksumAlgorithm:
+    'Weighted sum mod 11 in two passes (weights 1-8, then 3-10; a remainder of 10 in both passes becomes 0); the 13th digit of a 13-digit code uses weights 2, 7, 3, 5 then 4, 9, 5, 7',
+  officialName: 'Единен идентификационен код',
   aliasOf: null,
   names: ['Unified Identification Code', 'UIC', 'EIK', 'BULSTAT', 'ЕИК', 'БУЛСТАТ'],
   links: [

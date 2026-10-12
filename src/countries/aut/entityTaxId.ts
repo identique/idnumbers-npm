@@ -45,11 +45,19 @@ export function validate(idNumber: string): boolean {
 
 export const METADATA = {
   iso3166Alpha2: 'AT',
+  countryName: 'Austria',
+  idType: 'VAT Identification Number',
   minLength: 9,
   maxLength: 9,
   parsable: false,
   checksum: true,
   regexp: REGEXP,
+  displayFormat: 'U########',
+  masks: ['L########', 'L## ### ###'],
+  example: 'U12345675',
+  checksumAlgorithm:
+    'Luhn-style mod 10 (every second digit doubled and folded to its digit sum; the sum starts at 4)',
+  officialName: 'Umsatzsteuer-Identifikationsnummer',
   aliasOf: null,
   names: ['Entities Tax ID number', 'UID', 'Umsatzsteuer-Identifikationsnummer', 'VAT'],
   links: [

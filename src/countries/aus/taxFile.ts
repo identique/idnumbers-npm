@@ -9,11 +9,17 @@ import { validateRegexp, normalize } from '../../utils.js';
 
 export const METADATA: IdMetadata = {
   iso3166Alpha2: 'AU',
+  countryName: 'Australia',
+  idType: 'Tax File Number',
   minLength: 8,
   maxLength: 9,
   parsable: false,
   checksum: true,
   regexp: /^(\d{9}|\d{8})$/,
+  displayFormat: '#########',
+  masks: ['#########', '########'],
+  example: '123456782',
+  checksumAlgorithm: 'Weighted sum mod 11 (weights 1, 4, 3, 7, 5, 8, 6, 9, 10; the sum must be 0)',
   aliasOf: null,
   names: ['Tax file number', 'TFN'],
   links: [

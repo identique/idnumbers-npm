@@ -8,12 +8,25 @@ import { validateRegexp, normalize } from '../../utils.js';
 
 export const METADATA: IdMetadata = {
   iso3166Alpha2: 'AU',
+  countryName: 'Australia',
+  idType: 'Driver Licence Number',
   minLength: 6,
   maxLength: 10,
   parsable: false,
   checksum: false,
   regexp:
     /^(\d{9}|\d{3} \d{3} \d{3}|\d{8}|\d{2} \d{3} \d{3}|[A-Za-z]\d{5}|\d{10}|\d{3}-\d{3}-\d{4})$/,
+  displayFormat: '### ### ###',
+  masks: [
+    '### ### ###',
+    '#########',
+    '## ### ###',
+    '########',
+    'L#####',
+    '###-###-####',
+    '##########',
+  ],
+  example: '123 456 789',
   aliasOf: null,
   names: ['Driver Licence Number'],
   links: [
