@@ -56,7 +56,9 @@ export class RG implements IdNumberClass {
 
   /**
    * Validate RG checksum
-   * X is treated as 11 in the check digit calculation
+   * The check character X counts as 10: a remainder of 1 gives a check value of 10, written X.
+   * The check weight 100 is congruent to 1 modulo 11, so the check value is added to the
+   * weighted sum as it is.
    */
   static checksumValidate(idNumber: string): boolean {
     const normalized = RG.normalize(idNumber);
@@ -65,8 +67,8 @@ export class RG implements IdNumberClass {
       .split('')
       .map(c => parseInt(c, 10));
 
-    // X is equal to 11 in check digit
-    const checkDigit = normalized[8] === 'X' ? 11 : parseInt(normalized[8], 10);
+    // X stands for the check value 10
+    const checkDigit = normalized[8] === 'X' ? 10 : parseInt(normalized[8], 10);
 
     const total = numberList.reduce((sum, value, index) => {
       return sum + value * RG.MULTIPLIER[index];
