@@ -10,17 +10,24 @@ describe('Issue #297: SVK birth numbers dated after today', () => {
     jest.useRealTimers();
   });
 
-  // Checksum-valid (divisible by 11) numbers whose birth dates lie in the future.
-  const FUTURE_IDS = ['2701010004', '4912310007', '2902010001'];
+  describe('with the clock pinned to 2026-10-12', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date(2026, 9, 12, 12, 0, 0));
+    });
 
-  it.each(FUTURE_IDS)('%s passes the checksum but is rejected as a future birth date', id => {
-    expect(SVK.NationalID.checksum(id)).toBe(true);
-    expect(SVK.NationalID.validate(id)).toBe(false);
-    expect(SVK.NationalID.parse(id)).toBeNull();
+    // Checksum-valid (divisible by 11) numbers whose birth dates lie after the pinned date.
+    const FUTURE_IDS = ['2701010004', '4912310007', '2902010001'];
 
-    const result = validateNationalId('SVK', id);
-    expect(result.isValid).toBe(false);
-    expect(result.reason).toBe('invalid_birthdate');
+    it.each(FUTURE_IDS)('%s passes the checksum but is rejected as a future birth date', id => {
+      expect(SVK.NationalID.checksum(id)).toBe(true);
+      expect(SVK.NationalID.validate(id)).toBe(false);
+      expect(SVK.NationalID.parse(id)).toBeNull();
+
+      const result = validateNationalId('SVK', id);
+      expect(result.isValid).toBe(false);
+      expect(result.reason).toBe('invalid_birthdate');
+    });
   });
 
   it('still accepts the metadata example (a past date)', () => {
