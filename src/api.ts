@@ -67,7 +67,8 @@ export function listSupportedCountries(): CountryInfo[] {
  * Delegates to the registry-based validator lookup. Aliases (e.g. "FR", "fr")
  * are resolved to their primary alpha-3 key (e.g. "FRA") which is returned
  * as the countryCode in the result. For a built-in country code, `extractedInfo`
- * has that country's parse result type (#123).
+ * has that country's parse result type (#123). A country code that isn't a registered
+ * string, including a non-string from untyped JavaScript, yields `unsupported_country`.
  *
  * @example
  * ```ts
@@ -95,7 +96,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
         isValid: false,
         countryCode,
         idNumber,
-        errorMessage: `Unsupported country code: ${countryCode}`,
+        errorMessage: `Unsupported country code: ${String(countryCode)}`,
         reason: ValidationFailureReason.UNSUPPORTED_COUNTRY,
       };
     }
@@ -140,7 +141,8 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
  *
  * Aliases resolve like `validateNationalId()`, and `countryCode` in the result is
  * the resolved alpha-3 code. For a built-in country code, `info` has that
- * country's parse result type; see `ParseResultMap`.
+ * country's parse result type; see `ParseResultMap`. A non-string country code, from
+ * untyped JavaScript, is unsupported too.
  *
  * @example
  * ```ts
@@ -170,7 +172,7 @@ export function parseIdInfo(countryCode: string, idNumber: string): ParseIdInfoR
         countryCode,
         idNumber,
         reason: ValidationFailureReason.UNSUPPORTED_COUNTRY,
-        errorMessage: `Unsupported country code: ${countryCode}`,
+        errorMessage: `Unsupported country code: ${String(countryCode)}`,
       };
     }
 
@@ -231,7 +233,8 @@ export function validateMultipleIds(
  * Get information about the ID number format for a specific country.
  *
  * Delegates to the registry. Aliases (e.g. "IN", "jp") are resolved to their
- * primary alpha-3 key. Returns null for unregistered country codes.
+ * primary alpha-3 key. Returns null for unregistered country codes, including a
+ * non-string one from untyped JavaScript.
  *
  * @example
  * ```ts

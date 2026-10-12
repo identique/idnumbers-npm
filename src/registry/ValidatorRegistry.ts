@@ -115,9 +115,11 @@ export class ValidatorRegistry implements IValidatorRegistry {
 
   /**
    * Return the primary key (alpha-3) for a given key or alias.
-   * Returns undefined when the key is unknown.
+   * Returns undefined when the key is unknown or not a string (an untyped JavaScript
+   * caller may pass `undefined`, `null` or a number), as the Python library does (#295).
    */
   resolveKey(key: ValidatorKey): string | undefined {
+    if (typeof key !== 'string') return undefined;
     const normalized = key.toUpperCase();
     if (this.validators.has(normalized)) return normalized;
     const target = this.aliases.get(normalized);

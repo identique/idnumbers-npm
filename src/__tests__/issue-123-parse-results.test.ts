@@ -254,10 +254,10 @@ describe('issue #123: parseIdInfo() runtime', () => {
     });
   });
 
-  it('reports VALIDATION_FAILED instead of throwing', () => {
+  it('reports UNSUPPORTED_COUNTRY instead of throwing for a non-string country (#295)', () => {
     expect(parseIdInfo(null as unknown as string, '123')).toMatchObject({
       ok: false,
-      reason: ValidationFailureReason.VALIDATION_FAILED,
+      reason: ValidationFailureReason.UNSUPPORTED_COUNTRY,
     });
   });
 

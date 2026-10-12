@@ -494,7 +494,7 @@ describe('parseIdInfo parity (registry vs old switch)', () => {
       expect(parseIdInfo('ZAF', null as unknown as string).ok).toBe(false);
       expect(parseIdInfo(null as unknown as string, '123')).toMatchObject({
         ok: false,
-        reason: ValidationFailureReason.VALIDATION_FAILED,
+        reason: ValidationFailureReason.UNSUPPORTED_COUNTRY,
       });
     });
   });
