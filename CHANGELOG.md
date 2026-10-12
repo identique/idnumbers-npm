@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - When a validator or parser throws, `validateNationalId()` and `parseIdInfo()` report the resolved alpha-3 code as `countryCode` (`'TWN'` for `'tw'`) instead of the code as passed, as in the Python library. An unsupported country still echoes the code as passed ([#301](https://github.com/identique/idnumbers-npm/issues/301))
 - `normalizeId()` and `formatId()` also remove U+001C–U+001F (the information separators) and U+0085 (next line), which the Python library treats as whitespace and JavaScript's `\s` doesn't. Validation is unchanged ([#301](https://github.com/identique/idnumbers-npm/issues/301))
 - `normalizeId()` and `formatId()` uppercase only ASCII letters. Other letters, such as the sharp s, the long s or a lowercase Greek letter, are kept as written instead of changing, sometimes into ASCII letters (`ß` into `SS`, `ſ` into `S`), as in the Python library ([#301](https://github.com/identique/idnumbers-npm/issues/301))
+- Sri Lanka (LKA) `parse()` no longer reports `citizenship` for old NICs. The `V`/`X` suffix records voter eligibility, not citizenship (citizens under voting age hold `X` cards), so `citizenship` is no longer set, as for the 12-digit NIC; the field is deprecated. Validation and the other parsed fields are unchanged. Matches the Python library ([#296](https://github.com/identique/idnumbers-npm/issues/296))
 
 ## [2.2.0] - 2026-10-01
 
