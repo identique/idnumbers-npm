@@ -441,9 +441,10 @@ the countries you register.
 
 > **New in v2.1.0** ([#128](https://github.com/identique/idnumbers-npm/issues/128)).
 
-Returns the compact form of an ID: uppercase, with whitespace and the separators `. - / ( )`
-removed. Characters that belong to the ID stay, such as Finland's century sign in `131052-308T` or
-Sweden's `+` for people aged 100 or over. Returns `null` for an unsupported
+Returns the compact form of an ID: ASCII letters uppercased (other letters, such as `ß` or a Greek
+letter, are kept as written), with whitespace and the separators `. - / ( )` removed. Characters
+that belong to the ID stay, such as Finland's century sign in `131052-308T` or Sweden's `+` for
+people aged 100 or over. Returns `null` for an unsupported
 country.
 
 ```typescript

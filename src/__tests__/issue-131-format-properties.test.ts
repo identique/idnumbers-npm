@@ -11,7 +11,8 @@ const countries = registry.list();
 /** Noise characters messyIdArbitrary() can insert (helpers/arbitraries.ts's NOISE). */
 const NOISE_CHARS = [' ', '.', '-', '/', '(', ')', '\t', '\u00A0', '\u200B', '\u2060', '\uFEFF'];
 /** Mirrors src/format.ts's WHITESPACE regex, to pin normalizeId()'s no-whitespace contract. */
-const WHITESPACE_RE = /[\s\u200B-\u200D\u2060\uFEFF]/;
+// eslint-disable-next-line no-control-regex -- U+001C-U+001F are whitespace in Python's sense (#301)
+const WHITESPACE_RE = /[\s\x1C-\x1F\x85\u200B-\u200D\u2060\uFEFF]/;
 /** The separator punctuation normalizeId() strips when a country's masks use it. */
 const SEPARATOR_CHARS_RE = /[.\-/()]/;
 /** Mask token characters (src/format.ts's TOKENS); anything else in a mask is a separator. */
@@ -104,9 +105,10 @@ describe('issue #131: any input', () => {
         const normalized = n!;
         expect(normalizeId(code, normalized)).toBe(normalized);
 
-        // normalizeId()'s documented contract: uppercase, no whitespace (incl.
-        // zero-width), and, when the country's masks use them, no separators.
-        expect(normalized).toBe(normalized.toUpperCase());
+        // normalizeId()'s documented contract: ASCII letters uppercased (other letters
+        // stay as written, #301), no whitespace (incl. zero-width), and, when the
+        // country's masks use them, no separators.
+        expect(normalized).not.toMatch(/[a-z]/);
         expect(WHITESPACE_RE.test(normalized)).toBe(false);
         if (masksHaveSeparators) {
           expect(normalized).not.toMatch(SEPARATOR_CHARS_RE);
