@@ -55,11 +55,18 @@ const DOB_BASE_MAP: Record<number, number> = {
 
 export const METADATA = {
   iso3166Alpha2: 'KR',
+  countryName: 'South Korea',
+  idType: 'Resident Registration Number (Old)',
   minLength: 14,
   maxLength: 14,
   parsable: true,
   checksum: true,
   regexp: REGEXP,
+  displayFormat: 'YYMMDD-GLLLLSC',
+  example: '800101-1234560',
+  checksumAlgorithm:
+    'Weighted sum mod 11 (weights 2-9, then 2-5 over the first twelve digits; check = 11 - remainder, reduced to its last digit)',
+  officialName: '주민등록번호',
   aliasOf: null,
   names: [
     'Resident Registration Number',

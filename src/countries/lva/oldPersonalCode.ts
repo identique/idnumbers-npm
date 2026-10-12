@@ -92,11 +92,18 @@ export function parse(idNumber: string): LatviaOldParseResult | null {
 
 export const METADATA = {
   iso3166Alpha2: 'LV',
+  countryName: 'Latvia',
+  idType: 'Personal Code (Old)',
   minLength: 11,
   maxLength: 12,
   parsable: true,
   checksum: true,
   regexp: REGEXP,
+  displayFormat: 'DDMMYY-CSSSK',
+  masks: ['######-#####', '###########'],
+  example: '161175-19997',
+  checksumAlgorithm: '(1101 - weighted sum) mod 11 mod 10 (weights 1, 6, 3, 7, 9, 10, 5, 8, 4, 2)',
+  officialName: 'personas kods',
   aliasOf: null,
   names: ['Personal Code', 'personas kods'],
   links: [

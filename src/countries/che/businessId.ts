@@ -19,11 +19,17 @@ export function validate(idNumber: string): boolean {
 
 export const METADATA = {
   iso3166Alpha2: 'CH',
+  countryName: 'Switzerland',
+  idType: 'Business Identification Number',
   minLength: 12,
   maxLength: 15,
   parsable: false,
   checksum: false,
   regexp: REGEXP,
+  displayFormat: 'CHE-###.###.###',
+  masks: ['LLL-###.###.###', 'LLL#########'],
+  example: 'CHE-123.456.788',
+  officialName: 'Unternehmens-Identifikationsnummer',
   aliasOf: null,
   names: ['business identification number', 'UID'],
   links: [

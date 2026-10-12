@@ -21,11 +21,17 @@ export function validate(idNumber: string): boolean {
 
 export const METADATA = {
   iso3166Alpha2: 'GR',
+  countryName: 'Greece',
+  idType: 'Identity Card Number (Old)',
   minLength: 7,
   maxLength: 8,
   parsable: false,
   checksum: false,
   regexp: REGEXP,
+  displayFormat: 'L-######',
+  masks: ['L-######', 'L######'],
+  example: 'Χ-123456',
+  officialName: 'Δελτίο Ταυτότητας',
   aliasOf: null,
   names: ['Identity Card Number'],
   links: ['https://en.wikipedia.org/wiki/National_identification_number#Greece'],

@@ -8,12 +8,17 @@ import { validateRegexp } from '../../utils.js';
 export class TaxRegistrationNumber implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'SM',
+    countryName: 'San Marino',
+    idType: 'Entity Tax Registration Number',
     minLength: 7,
     maxLength: 7,
     parsable: false,
     checksum: false,
     regexp: /^SM\d{5}$/,
     masks: ['LL#####'],
+    displayFormat: 'SM#####',
+    example: 'SM12345',
+    officialName: 'Codice Operatore Economico',
     aliasOf: null,
     names: ['Entity Tax Registration Number', 'COE'],
     links: [

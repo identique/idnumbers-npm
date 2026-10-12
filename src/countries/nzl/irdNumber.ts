@@ -33,11 +33,18 @@ import { validateRegexp, normalize, weightedModulusDigit } from '../../utils.js'
 
 export const METADATA: IdMetadata = {
   iso3166Alpha2: 'NZ',
+  countryName: 'New Zealand',
+  idType: 'Inland Revenue Department Number',
   minLength: 8,
   maxLength: 9,
   parsable: false,
   checksum: true,
   regexp: /^(\d{9}|\d{3}-\d{3}-\d{3}|\d{8}|\d{2}-\d{3}-\d{3})$/,
+  displayFormat: '##-###-###',
+  masks: ['##-###-###', '###-###-###', '########', '#########'],
+  example: '49-091-850',
+  checksumAlgorithm:
+    'Weighted sum mod 11 in two passes (weights 3, 2, 7, 6, 5, 4, 3, 2; then 7, 4, 3, 2, 5, 2, 7, 6 when the first check digit is 10)',
   aliasOf: null,
   names: ['Inland Revenue Department Number', 'IRD'],
   links: [

@@ -33,11 +33,18 @@ export function validate(idNumber: string): boolean {
 
 export const METADATA = {
   iso3166Alpha2: 'BE',
+  countryName: 'Belgium',
+  idType: 'VAT Identification Number',
   minLength: 9,
   maxLength: 10,
   parsable: false,
   checksum: true,
   regexp: REGEXP,
+  displayFormat: '0#########',
+  masks: ['##########', '#########'],
+  example: '0123456749',
+  checksumAlgorithm: 'Mod 97 (the last two digits are 97 - (the first eight digits mod 97))',
+  officialName: 'BTW identificatienummer',
   aliasOf: null,
   names: [
     'tax registration numbers',

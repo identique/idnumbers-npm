@@ -13,11 +13,19 @@ import { validateRegexp } from '../../utils.js';
 export class RG implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
     iso3166Alpha2: 'BR',
+    countryName: 'Brazil',
+    idType: 'General Registry Number',
     minLength: 9,
     maxLength: 9,
     parsable: false,
     checksum: true,
     regexp: /^(\d{2}\.\d{3}\.\d{3}-[\dX])$/,
+    displayFormat: '##.###.###-X',
+    masks: ['##.###.###-X'],
+    example: '12.345.678-2',
+    checksumAlgorithm:
+      'Library convention: weights 2-9 over the first eight digits; check value is the complement of the sum modulo 11 (remainder 0 gives 0, remainder 1 gives X; X counts as 10)',
+    officialName: 'Registro Geral',
     aliasOf: null,
     names: ['RG number', 'Registro Geral number'],
     links: [
@@ -56,7 +64,9 @@ export class RG implements IdNumberClass {
 
   /**
    * Validate RG checksum
-   * X is treated as 11 in the check digit calculation
+   * The check character X counts as 10: a remainder of 1 gives a check value of 10, written X.
+   * The check weight 100 is congruent to 1 modulo 11, so the check value is added to the
+   * weighted sum as it is.
    */
   static checksumValidate(idNumber: string): boolean {
     const normalized = RG.normalize(idNumber);
@@ -65,8 +75,8 @@ export class RG implements IdNumberClass {
       .split('')
       .map(c => parseInt(c, 10));
 
-    // X is equal to 11 in check digit
-    const checkDigit = normalized[8] === 'X' ? 11 : parseInt(normalized[8], 10);
+    // X stands for the check value 10
+    const checkDigit = normalized[8] === 'X' ? 10 : parseInt(normalized[8], 10);
 
     const total = numberList.reduce((sum, value, index) => {
       return sum + value * RG.MULTIPLIER[index];

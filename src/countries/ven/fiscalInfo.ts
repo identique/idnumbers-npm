@@ -44,11 +44,19 @@ export function validate(idNumber: string): boolean {
 
 export const METADATA = {
   iso3166Alpha2: 'VE',
+  countryName: 'Venezuela',
+  idType: 'Fiscal Information Number',
   minLength: 10,
   maxLength: 12,
   parsable: false,
   checksum: true,
   regexp: REGEXP,
+  displayFormat: 'L-########-#',
+  masks: ['L-########-#', 'L#########'],
+  example: 'J-12345678-4',
+  checksumAlgorithm:
+    'Weighted sum mod 11 (weights 1, 3, 2, 7, 6, 5, 4, 3, 2 with the type letter V, E, J, P, G counted as 4, 8, 12, 16, 20; check = 11 - remainder, values above 9 become 0)',
+  officialName: 'Registro de Información Fiscal',
   aliasOf: null,
   names: ['Fiscal Information Number', 'RIF', 'Registro de Informacion Fiscal'],
   links: ['https://en.wikipedia.org/wiki/National_identification_number#Venezuela'],
