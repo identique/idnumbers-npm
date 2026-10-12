@@ -23,9 +23,9 @@ const WHITESPACE = /[\s\x1C-\x1F\x85\u200B-\u200D\u2060\uFEFF]/g;
 
 /**
  * Separators that normalizeId() removes: whitespace (the set above, including U+001C-U+001F
- * and U+0085) and `. - / ( )`, the same set the failure-reason derivation ignores (#117).
- * Validators accept these in more places than a country's masks use them, e.g.
- * `2123-45670-1` for Australia.
+ * and U+0085) and `. - / ( )`: a superset of what the failure-reason derivation ignores
+ * (`\s` plus `. - / ( )`, #117). Validators accept these in more places than a country's
+ * masks use them, e.g. `2123-45670-1` for Australia.
  */
 // eslint-disable-next-line no-control-regex -- U+001C-U+001F are whitespace in Python's sense (#301)
 const SEPARATORS = /[\s\x1C-\x1F\x85\u200B-\u200D\u2060\uFEFF.\-/()]/g;
