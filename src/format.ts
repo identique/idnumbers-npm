@@ -18,6 +18,7 @@ const TOKENS: Record<string, { imask: string; regex: string }> = {
  * that pasted IDs sometimes carry; U+FEFF is included too for clarity, though `\s` already
  * matches it.
  */
+// eslint-disable-next-line no-control-regex -- U+001C-U+001F are whitespace in Python's sense (#301)
 const WHITESPACE = /[\s\x1C-\x1F\x85\u200B-\u200D\u2060\uFEFF]/g;
 
 /**
@@ -26,6 +27,7 @@ const WHITESPACE = /[\s\x1C-\x1F\x85\u200B-\u200D\u2060\uFEFF]/g;
  * Validators accept these in more places than a country's masks use them, e.g.
  * `2123-45670-1` for Australia.
  */
+// eslint-disable-next-line no-control-regex -- U+001C-U+001F are whitespace in Python's sense (#301)
 const SEPARATORS = /[\s\x1C-\x1F\x85\u200B-\u200D\u2060\uFEFF.\-/()]/g;
 
 /**
