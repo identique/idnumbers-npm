@@ -56,9 +56,16 @@ describe('Slovakia (SVK) - Birth Number (Rodné číslo)', () => {
 
   describe('Century Boundary (yy=49 vs yy=50)', () => {
     test('yy=49 should map to year 2049', () => {
-      const result = NationalID.parse('4901010015');
-      expect(result).not.toBeNull();
-      expect(result!.yyyymmdd.getFullYear()).toBe(2049);
+      // 2049 is in the future, which is invalid (#297); pin the clock past it.
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date(2060, 0, 1));
+      try {
+        const result = NationalID.parse('4901010015');
+        expect(result).not.toBeNull();
+        expect(result!.yyyymmdd.getFullYear()).toBe(2049);
+      } finally {
+        jest.useRealTimers();
+      }
     });
 
     test('yy=50 should map to year 1950', () => {
