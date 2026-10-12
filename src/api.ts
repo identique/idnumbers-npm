@@ -68,7 +68,10 @@ export function listSupportedCountries(): CountryInfo[] {
  * are resolved to their primary alpha-3 key (e.g. "FRA") which is returned
  * as the countryCode in the result. For a built-in country code, `extractedInfo`
  * has that country's parse result type (#123). A country code that isn't a registered
- * string, including a non-string from untyped JavaScript, yields `unsupported_country`.
+ * string, including a non-string from untyped JavaScript, yields `unsupported_country`
+ * and echoes the code as passed. When a validator or parser throws, the result is
+ * `validation_failed` with the error message, and `countryCode` is the resolved alpha-3 key
+ * (#301).
  *
  * @example
  * ```ts
@@ -89,18 +92,18 @@ export function validateNationalId<C extends string>(
   idNumber: string
 ): ValidationResult<ParsedInfoFor<C>>;
 export function validateNationalId(countryCode: string, idNumber: string): ValidationResult {
-  try {
-    const resolvedKey = registry.resolveKey(countryCode);
-    if (!resolvedKey) {
-      return {
-        isValid: false,
-        countryCode,
-        idNumber,
-        errorMessage: `Unsupported country code: ${String(countryCode)}`,
-        reason: ValidationFailureReason.UNSUPPORTED_COUNTRY,
-      };
-    }
+  const resolvedKey = registry.resolveKey(countryCode);
+  if (!resolvedKey) {
+    return {
+      isValid: false,
+      countryCode,
+      idNumber,
+      errorMessage: `Unsupported country code: ${String(countryCode)}`,
+      reason: ValidationFailureReason.UNSUPPORTED_COUNTRY,
+    };
+  }
 
+  try {
     const validator = registry.get(resolvedKey)!;
     const isValid = validator.validate(idNumber);
     const extractedInfo = isValid && validator.parse ? validator.parse(idNumber) : null;
@@ -119,7 +122,7 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
   } catch (error) {
     return {
       isValid: false,
-      countryCode,
+      countryCode: resolvedKey,
       idNumber,
       errorMessage: error instanceof Error ? error.message : 'Unknown error occurred',
       reason: ValidationFailureReason.VALIDATION_FAILED,
@@ -140,9 +143,9 @@ export function validateNationalId(countryCode: string, idNumber: string): Valid
  *   extracted nothing.
  *
  * Aliases resolve like `validateNationalId()`, and `countryCode` in the result is
- * the resolved alpha-3 code. For a built-in country code, `info` has that
- * country's parse result type; see `ParseResultMap`. A non-string country code, from
- * untyped JavaScript, is unsupported too.
+ * the resolved alpha-3 code, also when a validator or parser throws (#301). For a
+ * built-in country code, `info` has that country's parse result type; see
+ * `ParseResultMap`. A non-string country code, from untyped JavaScript, is unsupported too.
  *
  * @example
  * ```ts
@@ -164,18 +167,18 @@ export function parseIdInfo<C extends string>(
   idNumber: string
 ): ParseIdInfoResult<ParsedInfoFor<C>>;
 export function parseIdInfo(countryCode: string, idNumber: string): ParseIdInfoResult {
-  try {
-    const resolvedKey = registry.resolveKey(countryCode);
-    if (!resolvedKey) {
-      return {
-        ok: false,
-        countryCode,
-        idNumber,
-        reason: ValidationFailureReason.UNSUPPORTED_COUNTRY,
-        errorMessage: `Unsupported country code: ${String(countryCode)}`,
-      };
-    }
+  const resolvedKey = registry.resolveKey(countryCode);
+  if (!resolvedKey) {
+    return {
+      ok: false,
+      countryCode,
+      idNumber,
+      reason: ValidationFailureReason.UNSUPPORTED_COUNTRY,
+      errorMessage: `Unsupported country code: ${String(countryCode)}`,
+    };
+  }
 
+  try {
     const validator = registry.get(resolvedKey)!;
     if (!validator.validate(idNumber)) {
       return {
@@ -200,7 +203,7 @@ export function parseIdInfo(countryCode: string, idNumber: string): ParseIdInfoR
   } catch (error) {
     return {
       ok: false,
-      countryCode,
+      countryCode: resolvedKey,
       idNumber,
       reason: ValidationFailureReason.VALIDATION_FAILED,
       errorMessage: error instanceof Error ? error.message : 'Unknown error occurred',
