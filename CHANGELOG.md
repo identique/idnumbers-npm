@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Germany (DEU) tax IDs whose check digit completes a run of three identical digits, such as `12347658999`, are now valid. The rule that no digit fills three consecutive positions covers only the first ten digits (ELSTER, section 2.2), as in the Python library ([#293](https://github.com/identique/idnumbers-npm/issues/293))
+- India (IND) and Thailand (THA) accept only a space or hyphen as separator, as in the Python library. A tab, newline or no-break space separator used to make the validator throw (`validateNationalId()` reported `validation_failed` with a TypeError message); such input is now rejected cleanly, with no error message. Which IDs validate is unchanged ([#294](https://github.com/identique/idnumbers-npm/issues/294))
 
 ## [2.2.0] - 2026-10-01
 
