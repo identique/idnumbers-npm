@@ -3,7 +3,7 @@
  * library), and China's `parse()` keeps birth years 0001-0099 as written (`new Date(year, ...)`
  * maps two-digit years to 1900-1999).
  */
-import { SVK, validateNationalId } from '../index';
+import { CHN, SVK, validateNationalId } from '../index';
 
 describe('Issue #297: SVK birth numbers dated after today', () => {
   afterEach(() => {
@@ -71,5 +71,46 @@ describe('Issue #297: SVK birth numbers dated after today', () => {
       expect(SVK.NationalID.validate(TODAY)).toBe(true);
       expect(SVK.NationalID.validate(TOMORROW)).toBe(false);
     });
+  });
+});
+
+describe('Issue #297: CHN parse() keeps birth years 0001-0099 as written', () => {
+  const YEAR_ONE = '110102000101019709';
+
+  it('parses year 0001 as year 1, not 1901', () => {
+    const parsed = CHN.ResidentID.parse(YEAR_ONE);
+    expect(parsed).not.toBeNull();
+    expect(parsed?.birthDate.getFullYear()).toBe(1);
+    expect(parsed?.birthDate.getMonth()).toBe(0);
+    expect(parsed?.birthDate.getDate()).toBe(1);
+    expect(parsed?.birthDate.getHours()).toBe(0);
+    expect(parsed?.age).toBeGreaterThan(2000);
+  });
+
+  it('keeps every year from 0001 to 0099 as written', () => {
+    const base = YEAR_ONE.slice(0, 6);
+    for (const year of [1, 9, 10, 50, 99]) {
+      const prefix = `${base}${String(year).padStart(4, '0')}0101019`;
+      // Find the check character that makes the number valid.
+      const id = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'X']
+        .map(c => `${prefix.slice(0, 17)}${c}`)
+        .find(candidate => CHN.ResidentID.parse(candidate) !== null);
+      expect(id).toBeDefined();
+      expect(CHN.ResidentID.parse(id as string)?.birthDate.getFullYear()).toBe(year);
+    }
+  });
+
+  it('leaves validity unchanged', () => {
+    expect(validateNationalId('CHN', YEAR_ONE).isValid).toBe(true);
+    expect(CHN.ResidentID.validate(YEAR_ONE)).toBe(true);
+  });
+
+  it('does not change the date of an ordinary ID', () => {
+    const example = CHN.ResidentID.METADATA.example as string;
+    const parsed = CHN.ResidentID.parse(example);
+    expect(parsed).not.toBeNull();
+    expect(parsed?.birthDate.getFullYear()).toBe(Number(example.slice(6, 10)));
+    expect(parsed?.birthDate.getMonth()).toBe(Number(example.slice(10, 12)) - 1);
+    expect(parsed?.birthDate.getDate()).toBe(Number(example.slice(12, 14)));
   });
 });
