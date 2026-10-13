@@ -7,9 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.0] - 2026-10-13
+
+A minor release of Python-parity fixes found by comparing this port with the Python library. No API
+additions or removals. Which IDs validate changes for Germany (DEU, more valid), Slovakia (SVK,
+future birth numbers rejected) and ESP, ITA, SGP and FIN (non-ASCII lookalike letters rejected).
+Some outputs change too: LKA old-NIC `parse()` no longer sets `citizenship`, ZAF and ECU
+`checksum()` return `null` for malformed input, validator exceptions are reported under the resolved
+country code, and the CYP and UKR metadata is corrected (see Changed and Fixed).
+
 ### Changed
 
 - Releases are published to npm through trusted publishing (OIDC) only: the publish workflow no longer reads an `NPM_TOKEN` secret, and the manual "Test npm Publish" workflow only does a dry run ([#193](https://github.com/identique/idnumbers-npm/issues/193))
+- CI's Python parity check now runs against the current `main` of the Python library (commit `28d33f3`, where it used `4def4c3`) and compares all 85 registered countries instead of 78. CRI, DOM, ECU, EGY, GTM, RUS and SAU have corpus entries now, so `tsOnlyCountries` in `parity/allowlist.json` is empty; the divergences that remain are allowlisted with their tracking issue ([docs/PARITY.md](docs/PARITY.md)). Dev tooling; no library behavior changes ([#302](https://github.com/identique/idnumbers-npm/issues/302))
 
 ### Fixed
 
@@ -323,7 +333,8 @@ change; the library keeps parity with the Python `idnumbers` source of truth.
 - Full TypeScript support with type definitions
 - Comprehensive documentation and examples
 
-[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v2.2.0...HEAD
+[Unreleased]: https://github.com/identique/idnumbers-npm/compare/v2.3.0...HEAD
+[2.3.0]: https://github.com/identique/idnumbers-npm/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/identique/idnumbers-npm/compare/v2.1.1...v2.2.0
 [2.1.1]: https://github.com/identique/idnumbers-npm/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/identique/idnumbers-npm/compare/v2.0.0...v2.1.0

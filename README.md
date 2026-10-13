@@ -19,6 +19,39 @@ A comprehensive TypeScript/JavaScript library for validating and parsing nationa
 - ✨ **Well-tested** - Comprehensive test coverage with 100% pass rate
 - 🌍 **Multiple formats** - Supports various ID number formats per country
 
+## What's new in v2.3.0
+
+v2.3.0 is a minor release of Python-parity fixes with no API additions or removals. See the
+[CHANGELOG](./CHANGELOG.md) for every change.
+
+- **Validity fixes**: Germany (DEU) tax IDs whose check digit completes a run of three identical
+  digits are valid ([#293](https://github.com/identique/idnumbers-npm/issues/293)), and Slovakia
+  (SVK) birth numbers dated in the future are rejected
+  ([#297](https://github.com/identique/idnumbers-npm/issues/297)). The India (IND) and Thailand
+  (THA) validators reject tab, newline and no-break space separators cleanly instead of throwing
+  ([#294](https://github.com/identique/idnumbers-npm/issues/294)).
+- **Normalization**: non-ASCII lookalike letters (the long s, the dotless i, the sharp s) no longer
+  become ASCII letters when input is uppercased, so they no longer resolve a country code or pass
+  the ESP, ITA, SGP and FIN validators ([#298](https://github.com/identique/idnumbers-npm/issues/298)).
+  `normalizeId()` and `formatId()` also remove U+001C-U+001F and U+0085, and uppercase only ASCII
+  letters ([#301](https://github.com/identique/idnumbers-npm/issues/301)).
+- **Country codes and errors**: a country code that isn't a string is treated as unsupported
+  instead of throwing a TypeError ([#295](https://github.com/identique/idnumbers-npm/issues/295)),
+  and results for a validator that throws report the resolved alpha-3 code
+  ([#301](https://github.com/identique/idnumbers-npm/issues/301)).
+- **Parsed and checksum output**: Sri Lanka (LKA) `parse()` no longer sets `citizenship` for old
+  NICs ([#296](https://github.com/identique/idnumbers-npm/issues/296)), and South Africa (ZAF) and
+  Ecuador (ECU) `checksum()` return `null` for malformed input
+  ([#299](https://github.com/identique/idnumbers-npm/issues/299)).
+- **Metadata**: CYP and UKR metadata is corrected, 17 secondary ID classes gain the extended
+  metadata the Python library has, and the Brazil (BRA) `RG` check character `X` counts as 10
+  ([#300](https://github.com/identique/idnumbers-npm/issues/300)).
+- **Parity check**: CI now compares all 85 countries with the current Python `main`
+  ([#302](https://github.com/identique/idnumbers-npm/issues/302)); see
+  [docs/PARITY.md](./docs/PARITY.md).
+- **Trusted publishing**: releases are published to npm through trusted publishing (OIDC) only
+  ([#193](https://github.com/identique/idnumbers-npm/issues/193)).
+
 ## What's new in v2.2.0
 
 v2.2.0 is a minor release with no API changes. See the [CHANGELOG](./CHANGELOG.md) for every change.
