@@ -92,29 +92,23 @@ Runs on every push and pull request to the main branch.
 Automatically publishes the package to npm when you create a new GitHub release.
 
 **Authentication.** The publish step uses npm
-[trusted publishing](https://docs.npmjs.com/trusted-publishers) and keeps the `NPM_TOKEN` secret as
-a fallback ([#193](https://github.com/identique/idnumbers-npm/issues/193)). Trusted publishing is
-configured for `identique/idnumbers-npm` and `npm-publish.yml`, and every release since v2.1.0 has
-been published through it:
+[trusted publishing](https://docs.npmjs.com/trusted-publishers) only, and there is no `NPM_TOKEN`
+secret ([#193](https://github.com/identique/idnumbers-npm/issues/193)). Trusted publishing is
+configured for `identique/idnumbers-npm` and `npm-publish.yml`, and v2.2.0 was published through it:
 
-1. **Trusted publishing (primary).** Nothing to rotate. It was set up once on npmjs.com: on the
-   `idnumbers` package, open **Settings** → **Trusted Publisher**, choose **GitHub Actions**, and
-   enter organization `identique`, repository `idnumbers-npm`, and workflow filename
-   `npm-publish.yml`; repeat these steps to re-create it. npm then exchanges the job's OIDC token
-   (`id-token: write`) for a short-lived publish token. The workflow upgrades npm to 11.x first,
-   because trusted publishing needs npm 11.5.1 or later and Node.js 22 ships npm 10.
-2. **Token fallback.** The `NPM_TOKEN` repository secret is only a fallback, used if trusted
-   publishing fails. Create a granular access token on npmjs.com (**Access Tokens** → **Generate
-   New Token**) with read and write access to `idnumbers`, and store it under **Settings** →
-   **Secrets and variables** → **Actions** as `NPM_TOKEN`. Write tokens expire after at most 90
-   days, and an expired token makes the publish step fail with a misleading `E404 Not Found - PUT`.
-   Re-run the failed job after replacing the secret; the tag and release stay valid. The
-   `NODE_AUTH_TOKEN` entry will be removed from `npm-publish.yml` in a later change, and whether to
-   delete the `NPM_TOKEN` secret is the maintainer's decision.
+1. **Setup.** Nothing to rotate. It was set up once on npmjs.com: on the `idnumbers` package, open
+   **Settings** → **Trusted Publisher**, choose **GitHub Actions**, and enter organization
+   `identique`, repository `idnumbers-npm`, and workflow filename `npm-publish.yml`; repeat these
+   steps to re-create it. npm then exchanges the job's OIDC token (`id-token: write`) for a
+   short-lived publish token. The workflow upgrades npm to 11.x first, because trusted publishing
+   needs npm 11.5.1 or later and Node.js 22 ships npm 10.
+2. **Troubleshooting.** If the publish step fails to authenticate, for example because the trusted
+   publisher entry was removed or `npm-publish.yml` was renamed (the entry is bound to the
+   filename), fix the trusted publisher on npmjs.com and re-run the failed job. The tag and
+   release stay valid.
 
-**Provenance** doesn't depend on the path: `npm publish --provenance` and the job's
-`id-token: write` permission sign the provenance statement whether npm authenticated through
-trusted publishing or the token.
+**Provenance**: `npm publish --provenance` and the job's `id-token: write` permission sign the
+provenance statement.
 
 **Creating a release:**
 
@@ -137,6 +131,9 @@ trusted publishing or the token.
 - Check tag version matches package.json
 - Upgrade npm to 11.x and publish with public access and provenance
 - Show success message with package URL
+
+The manual **Test npm Publish (Dry Run)** workflow (`test-npm-publish.yml`) never publishes: it
+builds and tests the package, then runs `npm pack --dry-run` and `npm publish --dry-run`.
 
 `src/__tests__/issue-193-publish-workflow.test.ts` fails if the publish job stops running one of
 CI's package checks, lets a step fail without stopping the publish, or uses an action older than
