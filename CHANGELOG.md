@@ -12,9 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 A minor release of Python-parity fixes found by comparing this port with the Python library. No API
 additions or removals. Which IDs validate changes for Germany (DEU, more valid), Slovakia (SVK,
 future birth numbers rejected), ESP, ITA, SGP and FIN (non-ASCII lookalike letters rejected) and the
-Brazil (BRA) `RG` secondary type (check character `X` counts as 10). Some outputs change too: LKA old-NIC `parse()` no longer sets `citizenship`, ZAF and ECU
-`checksum()` return `null` for malformed input, validator exceptions are reported under the resolved
-country code, and the CYP and UKR metadata is corrected (see Changed and Fixed).
+Brazil (BRA) `RG` secondary type (check character `X` counts as 10). Some outputs change too: LKA
+old-NIC `parse()` no longer sets `citizenship`, ZAF and ECU `checksum()` return `null` for malformed
+input, validator exceptions are reported under the resolved country code, and the CYP and UKR
+metadata is corrected (see Changed and Fixed).
 
 ### Changed
 
