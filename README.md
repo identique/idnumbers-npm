@@ -29,7 +29,10 @@ v2.3.0 is a minor release of Python-parity fixes with no API additions or remova
   (SVK) birth numbers dated in the future are rejected
   ([#297](https://github.com/identique/idnumbers-npm/issues/297)). The India (IND) and Thailand
   (THA) validators reject tab, newline and no-break space separators cleanly instead of throwing
-  ([#294](https://github.com/identique/idnumbers-npm/issues/294)).
+  ([#294](https://github.com/identique/idnumbers-npm/issues/294)). The Brazil (BRA) `RG` check
+  character `X` counts as 10, which changes which `RG` numbers validate; `RG` is a secondary ID type
+  exported from the BRA module, so `validateNationalId('BRA', …)` is unaffected
+  ([#300](https://github.com/identique/idnumbers-npm/issues/300)).
 - **Normalization**: non-ASCII lookalike letters (the long s, the dotless i, the sharp s) no longer
   become ASCII letters when input is uppercased, so they no longer resolve a country code or pass
   the ESP, ITA, SGP and FIN validators ([#298](https://github.com/identique/idnumbers-npm/issues/298)).
@@ -43,9 +46,8 @@ v2.3.0 is a minor release of Python-parity fixes with no API additions or remova
   NICs ([#296](https://github.com/identique/idnumbers-npm/issues/296)), and South Africa (ZAF) and
   Ecuador (ECU) `checksum()` return `null` for malformed input
   ([#299](https://github.com/identique/idnumbers-npm/issues/299)).
-- **Metadata**: CYP and UKR metadata is corrected, 17 secondary ID classes gain the extended
-  metadata the Python library has, and the Brazil (BRA) `RG` check character `X` counts as 10
-  ([#300](https://github.com/identique/idnumbers-npm/issues/300)).
+- **Metadata**: CYP and UKR metadata is corrected, and 17 secondary ID classes gain the extended
+  metadata the Python library has ([#300](https://github.com/identique/idnumbers-npm/issues/300)).
 - **Parity check**: CI now compares all 85 countries with the current Python `main`
   ([#302](https://github.com/identique/idnumbers-npm/issues/302)); see
   [docs/PARITY.md](./docs/PARITY.md).
@@ -59,7 +61,7 @@ v2.2.0 is a minor release with no API changes. See the [CHANGELOG](./CHANGELOG.m
 - **API reference site**: the [API reference](https://identique.github.io/idnumbers-npm/) has a
   typed example for every public function and a page per country
   ([#136](https://github.com/identique/idnumbers-npm/issues/136)).
-- **Parity check**: CI checks validity against the Python library for all 85 countries, and
+- **Parity check**: CI checks validity against the Python library for the 78 shared countries, and
   documented divergences live in `parity/allowlist.json`
   ([#133](https://github.com/identique/idnumbers-npm/issues/133)); see
   [docs/PARITY.md](./docs/PARITY.md).
