@@ -92,15 +92,12 @@ jobs:
       - name: Upgrade npm for trusted publishing
         run: npm install -g npm@11
 
-      # npm first tries trusted publishing: it exchanges this job's OIDC token
-      # (id-token: write) for a short-lived publish token, which works once
-      # npmjs.com lists this repository and workflow as a trusted publisher.
-      # Otherwise it falls back to NODE_AUTH_TOKEN. Delete the NPM_TOKEN
-      # secret, and this env entry, once trusted publishing is configured.
+      # npm authenticates only through trusted publishing (#193): it exchanges
+      # this job's OIDC token (id-token: write) for a short-lived publish
+      # token, which works because npmjs.com lists this repository and
+      # npm-publish.yml as the package's trusted publisher. No token to rotate.
       - name: Publish to npm
         run: npm publish --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish Success
         run: |

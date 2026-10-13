@@ -95,3 +95,27 @@ describe('issue #193: workflows use actions that run on Node.js 24', () => {
     expect(major).toBeGreaterThanOrEqual(MIN_MAJOR[action]);
   });
 });
+
+describe('issue #193: no npm token in workflows', () => {
+  const workflowFiles = fs.readdirSync(WORKFLOWS).filter(file => file.endsWith('.yml'));
+
+  it('finds the workflows', () => {
+    expect(workflowFiles).toEqual(expect.arrayContaining(['ci.yml', 'npm-publish.yml']));
+  });
+
+  it.each(workflowFiles)('%s reads neither NPM_TOKEN nor NODE_AUTH_TOKEN', file => {
+    expect(read(file)).not.toMatch(/NPM_TOKEN|NODE_AUTH_TOKEN/);
+  });
+
+  it.each(workflowFiles.filter(file => file !== 'npm-publish.yml'))(
+    '%s runs no real `npm publish` (only npm-publish.yml publishes)',
+    file => {
+      const publishLines = read(file)
+        .split('\n')
+        .filter(line => !line.trim().startsWith('#') && /\bnpm publish\b/.test(line));
+      for (const line of publishLines) {
+        expect(line).toContain('--dry-run');
+      }
+    }
+  );
+});

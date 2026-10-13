@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Releases are published to npm through trusted publishing (OIDC) only: the publish workflow no longer reads an `NPM_TOKEN` secret, and the manual "Test npm Publish" workflow only does a dry run ([#193](https://github.com/identique/idnumbers-npm/issues/193))
+
 ### Fixed
 
 - Germany (DEU) tax IDs whose check digit completes a run of three identical digits, such as `12347658999`, are now valid. The rule that no digit fills three consecutive positions covers only the first ten digits (ELSTER, section 2.2), as in the Python library ([#293](https://github.com/identique/idnumbers-npm/issues/293))
