@@ -108,10 +108,63 @@ function fail(message) {
   throw new SmokeFailure(message);
 }
 
+// #339: exercise actual packed root namespaces and country subpaths, not source aliases.
+const ISSUE_339_PARSE_CHECK = `
+for (const [code, namespace, subpath, valid, invalid, info] of [
+  ['FRA', FRA.SocialSecurityNumber, SocialSecurityNumber, '255081416802538', '255081416802539', {
+    sex: 'female',
+    gender: 'female',
+    birthDate: new Date(1955, 7, 1),
+    yy: '55',
+    mm: '08',
+    birth_department: { department: '14', city: '168', country: '' },
+    placeOfBirthCode: '14168',
+    checksum: '38',
+  }],
+  ['NOR', NOR.NationalID, NationalID, '17054026641', '17054026640', {
+    gender: 'female',
+    yyyymmdd: new Date(1940, 4, 17),
+    checksum: '41',
+    idType: 'fodselsnummer',
+  }],
+]) {
+  for (const parser of [namespace, subpath, new subpath()]) {
+    assert.strictEqual(parser.validate(valid), true, code + ': valid control rejected');
+    assert.strictEqual(parser.checksum(valid), true);
+    assert.deepStrictEqual(parser.parse(valid), info, code + ': incomplete valid parse');
+    assert.strictEqual(parser.validate(invalid), false);
+    assert.strictEqual(parser.parse(invalid), null, code + ': invalid control digits parsed');
+    for (const index of [valid.length - 2, valid.length - 1]) {
+      for (let digit = 0; digit < 10; digit++) {
+        if (String(digit) === valid[index]) continue;
+        const mutated = valid.slice(0, index) + digit + valid.slice(index + 1);
+        assert.strictEqual(parser.checksum(mutated), false);
+        assert.strictEqual(parser.validate(mutated), false);
+        assert.strictEqual(parser.parse(mutated), null, code + ': mutated control digit parsed');
+      }
+    }
+    for (const malformed of ['', 'not-an-id', valid.slice(1), valid + '0']) {
+      assert.strictEqual(parser.validate(malformed), false);
+      assert.strictEqual(parser.parse(malformed), null);
+    }
+  }
+  assert.deepStrictEqual(parseIdInfo(code, valid), {
+    ok: true, countryCode: code, idNumber: valid, info,
+  });
+  assert.deepStrictEqual(parseIdInfo(code, invalid), {
+    ok: false, countryCode: code, idNumber: invalid, reason: 'checksum_mismatch',
+  });
+}
+`;
+
 /** A plain-CommonJS check, run with `node check.cjs` against the installed tarball. */
 const CJS_CHECK = `"use strict";
 const assert = require('node:assert/strict');
-const { listSupportedCountries, getCountryIdFormat, validateNationalId } = require('idnumbers');
+const { listSupportedCountries, getCountryIdFormat, validateNationalId, parseIdInfo, FRA, NOR } = require('idnumbers');
+const { SocialSecurityNumber } = require('idnumbers/countries/fra');
+const { NationalID } = require('idnumbers/countries/nor');
+
+${ISSUE_339_PARSE_CHECK}
 
 const countries = listSupportedCountries();
 assert.strictEqual(countries.length, 85, 'expected 85 supported countries, got ' + countries.length);
@@ -160,8 +213,12 @@ console.log(
 /** A native-ESM check, run with `node check.mjs` against the installed tarball. */
 function buildEsmCheck(expectedVersion) {
   return `import assert from 'node:assert/strict';
-import { listSupportedCountries, getCountryIdFormat, validateNationalId } from 'idnumbers';
+import { listSupportedCountries, getCountryIdFormat, validateNationalId, parseIdInfo, FRA, NOR } from 'idnumbers';
+import { SocialSecurityNumber } from 'idnumbers/countries/fra';
+import { NationalID } from 'idnumbers/countries/nor';
 import pkg from 'idnumbers/package.json' with { type: 'json' };
+
+${ISSUE_339_PARSE_CHECK}
 
 const countries = listSupportedCountries();
 assert.strictEqual(countries.length, 85, 'expected 85 supported countries, got ' + countries.length);
