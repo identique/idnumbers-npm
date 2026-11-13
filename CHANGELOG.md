@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Refresh compatible development-toolchain dependencies and remove Husky's deprecated hook bootstrap while preserving lint-staged, build and full-test checks. Audit findings decrease from 23 to 14 affected package entries (runtime dependencies remain zero); unresolved minimatch and deepmerge advisories remain tracked in [the audit report](docs/TOOLCHAIN_AUDIT_341.md). Partial remediation, not a release-readiness waiver ([#341](https://github.com/identique/idnumbers-npm/issues/341)).
+
 ## [2.3.0] - 2026-10-13
 
 A minor release of Python-parity fixes found by comparing this port with the Python library. No API
