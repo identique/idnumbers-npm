@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `npm run parity` now builds fresh CJS/ESM output before comparing with Python, so stale `dist/` files cannot silently hide source changes. Build failures exit with prerequisite code `2`; callers that already built can explicitly use `-- --no-build` ([#335](https://github.com/identique/idnumbers-npm/issues/335)).
+
 ## [2.3.0] - 2026-10-13
 
 A minor release of Python-parity fixes found by comparing this port with the Python library. No API
