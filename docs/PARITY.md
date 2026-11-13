@@ -57,7 +57,7 @@ files). A passing run prints the
 Python commit and a summary such as:
 
 ```text
-85 countries, 20672 vectors: 19715 match, 457 TS-only input formats (allowed), 500 allowlisted divergences, 0 unexpected, 0 stale
+85 countries, 20672 vectors: 19713 match, 457 TS-only input formats (allowed), 502 allowlisted divergences, 0 unexpected, 0 stale
 ```
 
 When `GITHUB_STEP_SUMMARY` is set (as in CI), the summary line and the first 50 failure lines are also
@@ -195,6 +195,11 @@ the existing comparison rule counts as a match.
 Remove only this CAN allowlist group when [#340](https://github.com/identique/idnumbers-npm/issues/340)
 repins parity to Python 1.24.0; no corpus refresh or pin change is included here.
 
+FIN's two `python-only` vectors are a transitional mismatch with the old CI pin, not with Python
+1.24.0: [#337](https://github.com/identique/idnumbers-npm/issues/337) restricts issued personal
+identity code serials to 002–899. Remove only this FIN group when
+[#340](https://github.com/identique/idnumbers-npm/issues/340) repins Python and refreshes the corpus.
+
 | Country | Direction   | Issue                                                         | Ids | Reason                                                                                                                                                   |
 | ------- | ----------- | ------------------------------------------------------------- | --- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | AUT     | ts-only     | [#236](https://github.com/identique/idnumbers-npm/issues/236) | 13  | TS accepts a 10-digit form with no real checksum; Python's TaxIDNumber accepts only the 9-digit form                                                     |
@@ -206,6 +211,7 @@ repins parity to Python 1.24.0; no corpus refresh or pin change is included here
 | DOM     | ts-only     | [#323](https://github.com/identique/idnumbers-npm/issues/323) | 2   | TS also accepts python-stdnum's list of cédulas that fail the Luhn check; Python leaves the list out                                                     |
 | ECU     | python-only | [#323](https://github.com/identique/idnumbers-npm/issues/323) | 2   | Python accepts 6 as the third digit; TS allows only 0-5                                                                                                  |
 | EGY     | python-only | [#323](https://github.com/identique/idnumbers-npm/issues/323) | 42  | TS requires one of 28 known governorate codes; Python accepts any two digits                                                                             |
+| FIN     | python-only | [#337](https://github.com/identique/idnumbers-npm/issues/337) | 2   | TS requires issued serials 002–899; the old CI pin accepts 900–999. Transitional group expires with #340                                                 |
 | GEO     | ts-only     | [#269](https://github.com/identique/idnumbers-npm/issues/269) | 129 | TS accepts 9-digit numbers; Python now requires 11 digits                                                                                                |
 | GTM     | python-only | [#323](https://github.com/identique/idnumbers-npm/issues/323) | 54  | Python checks only the layout, department 01-22 and municipality 01-99; TS also verifies the mod-11 check digit and each department's municipality count |
 | IRN     | ts-only     | [#272](https://github.com/identique/idnumbers-npm/issues/272) | 1   | TS accepts the repeated-digit code 1111111111; Python rejects repeated-digit codes                                                                       |
