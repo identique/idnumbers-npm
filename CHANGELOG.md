@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Finland (FIN) personal identity code validation and parsing now require [DVV-issued individual numbers 002–899](https://dvv.fi/en/personal-identity-code), matching Python 1.24.0. Checksum-correct codes with serials 000, 001 or 900–999 are rejected; temporary identifiers are outside this issued-population policy. Date, century-marker, input-format and Mod-31 checksum behavior are unchanged ([#337](https://github.com/identique/idnumbers-npm/issues/337)).
+
 ## [2.3.0] - 2026-10-13
 
 A minor release of Python-parity fixes found by comparing this port with the Python library. No API

@@ -1,6 +1,8 @@
 /**
  * Finland Personal Identity Code (HETU)
  * Henkilötunnus
+ * DVV issues individual numbers 002–899; temporary identifiers are outside this policy.
+ * https://dvv.fi/en/personal-identity-code
  */
 
 import { IdMetadata, ParsedInfo } from '../../types.js';
@@ -159,10 +161,14 @@ export function parse(idNumber: string): FinlandParseResult | null {
       return null;
     }
 
+    const serialNumber = parseInt(sn, 10);
+    if (serialNumber < 2 || serialNumber > 899) {
+      return null;
+    }
+
     const birthDate = new Date(year, monthValue - 1, dayValue);
 
     // Determine gender from serial number (odd = male, even = female)
-    const serialNumber = parseInt(sn, 10);
     const gender: 'male' | 'female' = serialNumber % 2 === 1 ? 'male' : 'female';
 
     return {

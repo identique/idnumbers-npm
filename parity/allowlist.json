@@ -126,6 +126,13 @@
       ]
     },
     {
+      "country": "FIN",
+      "direction": "python-only",
+      "issue": 337,
+      "reason": "TS requires DVV-issued serials 002–899, matching Python 1.24 (#639); the old CI pin still accepts 900–999. Remove this transitional group when #340 repins Python.",
+      "ids": ["131052-990T", "280378-999U"]
+    },
+    {
       "country": "GEO",
       "direction": "ts-only",
       "issue": 269,
