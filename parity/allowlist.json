@@ -30,6 +30,13 @@
       "ids": ["7501120260", "7542111030"]
     },
     {
+      "country": "CAN",
+      "direction": "python-only",
+      "issue": 336,
+      "reason": "TS follows Python #635's standard SIN prefixes (1-7 or 9); the old CI pin accepts zero-prefix SINs. Transitional #336 mismatch; remove this group when #340 repins to Python 1.24.0.",
+      "ids": ["003456712"]
+    },
+    {
       "country": "CZE",
       "direction": "python-only",
       "issue": 265,
@@ -124,6 +131,13 @@
         "39001019901238",
         "39912319901239"
       ]
+    },
+    {
+      "country": "FIN",
+      "direction": "python-only",
+      "issue": 337,
+      "reason": "TS requires DVV-issued serials 002–899, matching Python 1.24 (#639); the old CI pin still accepts 900–999. Remove this transitional group when #340 repins Python.",
+      "ids": ["131052-990T", "280378-999U"]
     },
     {
       "country": "GEO",
