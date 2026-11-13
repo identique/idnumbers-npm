@@ -43,6 +43,11 @@ also for a year before 0100. Sri Lanka rejects year 0000, as Python does, and al
 before 0001-01-01 or after 9999-12-31, where the Python library raises an error instead of returning
 a result.
 
+Latvia (LVA) reports `invalid_birthdate` for checksum-correct legacy codes with an impossible
+DDMMYY date or a century outside 0/1/2. Wrong legacy check digits report `validation_failed`
+(the primary has no public checksum method). Modern prefixes 32–39 do not encode a birth date
+or check digit; only the supported ASCII compact/optional-hyphen layout is checked ([#276](https://github.com/identique/idnumbers-npm/issues/276)).
+
 The table below is re-derived by a test
 ([`issue-130-failure-reasons.test.ts`](../src/__tests__/issue-130-failure-reasons.test.ts)), so it
 cannot drift from the validators; when a validator changes, the test prints the updated rows.
@@ -103,7 +108,7 @@ cannot drift from the validators; when a validator changes, the test prints the 
 | LKA  | yes                 | yes                 |
 | LTU  | no                  | yes                 |
 | LUX  | yes                 | yes                 |
-| LVA  | no                  | no                  |
+| LVA  | no                  | yes                 |
 | MAC  | no                  | no                  |
 | MDA  | no                  | no                  |
 | MEX  | no                  | yes                 |

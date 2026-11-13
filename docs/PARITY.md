@@ -57,7 +57,7 @@ files). A passing run prints the
 Python commit and a summary such as:
 
 ```text
-85 countries, 20672 vectors: 19599 match, 457 TS-only input formats (allowed), 616 allowlisted divergences, 0 unexpected, 0 stale
+85 countries, 20672 vectors: 19597 match, 457 TS-only input formats (allowed), 618 allowlisted divergences, 0 unexpected, 0 stale
 ```
 
 When `GITHUB_STEP_SUMMARY` is set (as in CI), the summary line and the first 50 failure lines are also
@@ -208,6 +208,15 @@ vectors that the old CI pin rejects are allowlisted separately; no unrelated vec
 Python and refreshes the global corpus. The six official witnesses and century-8 cases are covered
 directly in `issue-338-isl-kennitala.test.ts` now; their global corpus additions belong to #340.
 
+LVA now enforces legacy date/century/checksum rules, resolving all 10 previous LVA allowances.
+Its modern prefixes 32–39 accept random remaining digits, including the final digit, as in
+[Python #440](https://github.com/identique/idnumbers/issues/440) and Python 1.24.0
+([#276](https://github.com/identique/idnumbers-npm/issues/276)). The raw harness against the unchanged
+`28d33f3` CI pin reports exactly 12 modern LVA `ts-only` divergences in the existing expanded corpus.
+Only those exact vectors are allowlisted; compact counterparts are not added by assumption.
+Remove only this transitional LVA group when [#340](https://github.com/identique/idnumbers-npm/issues/340)
+repins to Python 1.24.0. The corpus and pin remain unchanged here.
+
 | Country | Direction   | Issue                                                         | Ids | Reason                                                                                                                                                   |
 | ------- | ----------- | ------------------------------------------------------------- | --- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | AUT     | ts-only     | [#236](https://github.com/identique/idnumbers-npm/issues/236) | 13  | TS accepts a 10-digit form with no real checksum; Python's TaxIDNumber accepts only the 9-digit form                                                     |
@@ -225,7 +234,7 @@ directly in `issue-338-isl-kennitala.test.ts` now; their global corpus additions
 | IRN     | ts-only     | [#272](https://github.com/identique/idnumbers-npm/issues/272) | 1   | TS accepts the repeated-digit code 1111111111; Python rejects repeated-digit codes                                                                       |
 | ISL     | ts-only     | [#338](https://github.com/identique/idnumbers-npm/issues/338) | 114 | Temporary old-pin mismatch: TS follows Python 1.24.0 (unverified ninth digit; centuries 8/9/0); remove on #340 repin                                     |
 | ISR     | ts-only     | [#290](https://github.com/identique/idnumbers-npm/issues/290) | 1   | TS accepts the all-zero number 000000000, which Python rejects                                                                                           |
-| LVA     | ts-only     | [#276](https://github.com/identique/idnumbers-npm/issues/276) | 10  | TS checks only the check digit; Python also needs the first two digits to be 32-39 or a real birth date                                                  |
+| LVA     | ts-only     | [#276](https://github.com/identique/idnumbers-npm/issues/276) | 12  | Modern prefixes 32-39 have no checksum; the old pin still enforces it (expires with the #340 repin)                                                      |
 | NZL     | ts-only     | [#237](https://github.com/identique/idnumbers-npm/issues/237) | 27  | TS accepts any 7 or 8 letters or digits; Python requires two ASCII letters followed by six digits                                                        |
 | SAU     | python-only | [#323](https://github.com/identique/idnumbers-npm/issues/323) | 97  | TS enforces the Luhn check digit; Python checks only the layout                                                                                          |
 | SRB     | ts-only     | [#219](https://github.com/identique/idnumbers-npm/issues/219) | 1   | TS region-code allow-list differs from Python's block list                                                                                               |
