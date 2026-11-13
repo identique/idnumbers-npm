@@ -852,6 +852,28 @@ Accepted letter case, surrounding whitespace, and separators for every country a
 - Format: 15 digits (Social Security Number)
 - Contains: Gender, year/month of birth, department code
 - Example: `255081416802538`
+- Historical department `96` (Tunisia) is accepted, as is `95` (Morocco); `00` remains invalid
+  ([NIR department codes](https://fr.wikipedia.org/wiki/Num%C3%A9ro_de_s%C3%A9curit%C3%A9_sociale_en_France#Signification_des_chiffres_du_NIR)).
+- Codes `1`/`7` report male and `2`/`8` female. Valid codes `3`/`4` still return the other parsed
+  fields, but **omit both `gender` and the compatibility `sex` own properties** (not `null` or own
+  keys set to `undefined`). Both TypeScript fields are optional; callers must handle their absence
+  rather than assuming a successful parse implies a known gender. This also applies to unified API
+  `info`/`extractedInfo` ([INSEE RNIPP](https://www.insee.fr/fr/information/6665188),
+  [Assurance Maladie temporary numbers](https://forum-assures.ameli.fr/questions/1764572-nia-numero-immatriculation-attente),
+  [maintainer API decision](https://github.com/identique/idnumbers-npm/issues/268#issuecomment-6853754900)).
+- `birthDate` remains a heuristic: years `00`–`25` use the 2000s, other years the 1900s; coded
+  months above `12` use January, and the day is always `1`. Use `yy`/`mm` for the encoded values.
+  This policy is unchanged; the birthDate concern remains open in [#268](https://github.com/identique/idnumbers-npm/issues/268).
+
+```typescript
+import { FRA } from 'idnumbers';
+
+const parsed = FRA.SocialSecurityNumber.parse('385087512304544');
+if (parsed) {
+  const genderLabel = parsed.gender ?? 'unknown'; // The compatibility sex field is optional too.
+  console.log(genderLabel, parsed.yy, parsed.mm);
+}
+```
 
 ### Germany (DEU)
 

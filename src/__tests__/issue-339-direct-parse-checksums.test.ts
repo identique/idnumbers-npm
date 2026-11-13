@@ -6,7 +6,7 @@ import { FranceParseResult, SocialSecurityNumber } from '../countries/fra/social
 import { NationalID, NationalIdParseResult } from '../countries/nor/nationalId';
 
 // Shared fields match Python release 1.24.0, SHA 1ab0237943a88d1f9e7e8643f08188d183f416bf,
-// except the existing FRA gender-code policy (#268). Node-only fields stay intact.
+// with unknown FRA gender fields omitted per #268. Node-only fields stay intact.
 const franceFixtures = [
   {
     idNumber: '255081416802538',
@@ -37,8 +37,6 @@ const franceFixtures = [
   {
     idNumber: '325204200100111',
     info: {
-      sex: Gender.MALE,
-      gender: Gender.MALE,
       birthDate: new Date(2025, 0, 1),
       yy: '25',
       mm: '20',

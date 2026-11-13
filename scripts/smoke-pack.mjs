@@ -157,6 +157,80 @@ for (const [code, namespace, subpath, valid, invalid, info] of [
 }
 `;
 
+// #268: verify the optional-field contract against the installed CJS and ESM package.
+const ISSUE_268_FRA_CHECK = `
+const franceParsers = [FRA.SocialSecurityNumber, SocialSecurityNumber, new SocialSecurityNumber()];
+for (const [idNumber, checksum] of [
+  ['385087512304544', '44'],
+  ['485087512304591', '91'],
+]) {
+  const info = {
+    birthDate: new Date(1985, 7, 1),
+    yy: '85', mm: '08',
+    birth_department: { department: '75', city: '123', country: '' },
+    placeOfBirthCode: '75123', checksum,
+  };
+  const outputs = [];
+  for (const parser of franceParsers) {
+    assert.strictEqual(parser.checksum(idNumber), true);
+    assert.strictEqual(parser.validate(idNumber), true);
+    outputs.push(parser.parse(idNumber));
+  }
+  for (const code of ['FRA', 'FR', 'fr']) {
+    const validation = validateNationalId(code, idNumber);
+    assert.deepStrictEqual(validation, {
+      isValid: true, countryCode: 'FRA', idNumber, extractedInfo: info,
+    });
+    const parsed = parseIdInfo(code, idNumber);
+    assert.deepStrictEqual(parsed, { ok: true, countryCode: 'FRA', idNumber, info });
+    outputs.push(validation.extractedInfo, parsed.info);
+  }
+  for (const output of outputs) {
+    assert.deepStrictEqual(output, info, 'FRA: incomplete unknown-gender parse');
+    assert.strictEqual(Object.hasOwn(output, 'gender'), false, 'FRA: unknown gender key must be absent');
+    assert.strictEqual(Object.hasOwn(output, 'sex'), false, 'FRA: unknown sex key must be absent');
+  }
+}
+for (const [idNumber, department, checksum] of [
+  ['145089612304582', '96', '82'],
+  ['145089512304512', '95', '12'],
+]) {
+  const info = {
+    sex: 'male', gender: 'male', birthDate: new Date(1945, 7, 1),
+    yy: '45', mm: '08',
+    birth_department: { department, city: '123', country: '' },
+    placeOfBirthCode: department + '123', checksum,
+  };
+  for (const parser of franceParsers) {
+    assert.strictEqual(parser.checksum(idNumber), true);
+    assert.strictEqual(parser.validate(idNumber), true);
+    assert.deepStrictEqual(parser.parse(idNumber), info);
+  }
+  assert.deepStrictEqual(validateNationalId('FRA', idNumber).extractedInfo, info);
+  assert.deepStrictEqual(parseIdInfo('FRA', idNumber), { ok: true, countryCode: 'FRA', idNumber, info });
+}
+for (const [idNumber, gender] of [
+  ['145089512304512', 'male'], ['285087512304594', 'female'],
+  ['785087512304538', 'male'], ['885087512304585', 'female'],
+]) {
+  for (const parser of franceParsers) {
+    const info = parser.parse(idNumber);
+    assert.ok(info, 'FRA: known gender code must parse');
+    assert.strictEqual(info.gender, gender);
+    assert.strictEqual(info.sex, gender);
+  }
+}
+assert.strictEqual(SocialSecurityNumber.checksum('145080012304555'), true);
+for (const invalid of ['145080012304555', '145089612304583', '385087512304545', '485087512304592']) {
+  for (const parser of franceParsers) {
+    assert.strictEqual(parser.validate(invalid), false);
+    assert.strictEqual(parser.parse(invalid), null, 'FRA: invalid department/control digits parsed');
+  }
+  assert.strictEqual(validateNationalId('FRA', invalid).isValid, false);
+  assert.strictEqual(parseIdInfo('FRA', invalid).ok, false);
+}
+`;
+
 /** A plain-CommonJS check, run with `node check.cjs` against the installed tarball. */
 const CJS_CHECK = `"use strict";
 const assert = require('node:assert/strict');
@@ -165,6 +239,7 @@ const { SocialSecurityNumber } = require('idnumbers/countries/fra');
 const { NationalID } = require('idnumbers/countries/nor');
 
 ${ISSUE_339_PARSE_CHECK}
+${ISSUE_268_FRA_CHECK}
 
 const countries = listSupportedCountries();
 assert.strictEqual(countries.length, 85, 'expected 85 supported countries, got ' + countries.length);
@@ -219,6 +294,7 @@ import { NationalID } from 'idnumbers/countries/nor';
 import pkg from 'idnumbers/package.json' with { type: 'json' };
 
 ${ISSUE_339_PARSE_CHECK}
+${ISSUE_268_FRA_CHECK}
 
 const countries = listSupportedCountries();
 assert.strictEqual(countries.length, 85, 'expected 85 supported countries, got ' + countries.length);
