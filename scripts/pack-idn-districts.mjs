@@ -2,9 +2,10 @@
 /**
  * Issue #215: pack the Indonesian district list for src/countries/idn/districts.ts.
  *
- * Reads a JSON array of six-digit district codes (default: the fixture
- * src/__tests__/fixtures/idn-districts.json, a dump of the Python library's
- * `NIK.DISTRICT`) and prints the packed string that districts.ts embeds.
+ * By default, combines the original #215 fixture with the approved #270 Papua
+ * subset. An explicit path instead packs that JSON array of six-digit codes.
+ * Prints the packed string that districts.ts embeds; neither fixture is used
+ * at runtime. Provenance and bounded scope: docs/IDN_DISTRICTS.md.
  *
  * Format: provinces (first 2 digits) are `;`-separated. A province is its
  * 2-digit code followed by its regencies, space-separated. A regency is its
@@ -13,10 +14,8 @@
  * for a single number. Example: `1101-18 021-16` is province 11 with regency
  * 01 (districts 1-18) and regency 02 (districts 1-16).
  *
- * To refresh the list:
- *   1. Regenerate the fixture from Python's `NIK.DISTRICT` (a sorted JSON array).
- *   2. Run `node scripts/pack-idn-districts.mjs`.
- *   3. Paste the output into the `PACKED` constant in districts.ts.
+ * To regenerate the approved union (not a whole-table refresh): run this script
+ * without arguments, then paste the output into `PACKED` in districts.ts.
  *
  * Usage: node scripts/pack-idn-districts.mjs [path/to/districts.json]
  */
@@ -26,19 +25,24 @@ import { fileURLToPath } from 'node:url';
 const DEFAULT_INPUT = fileURLToPath(
   new URL('../src/__tests__/fixtures/idn-districts.json', import.meta.url)
 );
+const PAPUA_INPUT = fileURLToPath(
+  new URL('../src/__tests__/fixtures/idn-papua-districts.json', import.meta.url)
+);
 
 function fail(message) {
   console.error(`pack-idn-districts: ${message}`);
   process.exit(1);
 }
 
-function loadCodes(path) {
-  let codes;
+function loadJson(path) {
   try {
-    codes = JSON.parse(readFileSync(path, 'utf8'));
+    return JSON.parse(readFileSync(path, 'utf8'));
   } catch (error) {
     fail(`cannot read ${path}: ${error.message}`);
   }
+}
+
+function validateCodes(codes) {
   if (!Array.isArray(codes) || codes.length === 0) {
     fail('input must be a non-empty JSON array of codes');
   }
@@ -90,4 +94,7 @@ function pack(codes) {
     .join(';');
 }
 
-console.log(pack(loadCodes(process.argv[2] ?? DEFAULT_INPUT)));
+const codes = process.argv[2]
+  ? loadJson(process.argv[2])
+  : [...loadJson(DEFAULT_INPUT), ...loadJson(PAPUA_INPUT).districts.map(({ code }) => code)];
+console.log(pack(validateCodes(codes)));
