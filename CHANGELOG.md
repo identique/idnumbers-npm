@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Refresh compatible development-toolchain dependencies and remove Husky's deprecated hook bootstrap while preserving lint-staged, build and full-test checks. Audit findings decrease from 23 to 14 affected package entries (runtime dependencies remain zero); unresolved minimatch and deepmerge advisories remain tracked in [the audit report](docs/TOOLCHAIN_AUDIT_341.md). Partial remediation, not a release-readiness waiver ([#341](https://github.com/identique/idnumbers-npm/issues/341)).
+
 ### Fixed
 
 - LVA primary `PersonalCode` now requires a valid legacy birth date, century 0/1/2 and checksum. Modern prefixes 32–39 are date-free and accept any final digit in the existing ASCII compact/optional-hyphen layouts, matching Python 1.24.0. Mixed metadata retains the legacy checksum and explains the modern exception; `OldPersonalCode` outputs and the primary public API are unchanged ([#276](https://github.com/identique/idnumbers-npm/issues/276)).
