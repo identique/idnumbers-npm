@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - `npm run parity` now builds fresh CJS/ESM output before comparing with Python, so stale `dist/` files cannot silently hide source changes. Build failures exit with prerequisite code `2`; callers that already built can explicitly use `-- --no-build` ([#335](https://github.com/identique/idnumbers-npm/issues/335)).
+- Indonesia NIK validation now accepts the exact 504-code Papua subset approved in the Python handoff (93=24, 94=101, 95=247, 96=132), retaining all 7,030 existing district codes. This is not a whole-table refresh: disputed/untranscribed rows, including `930101`, remain excluded; date, gender, serial, and parser behavior are unchanged ([#270](https://github.com/identique/idnumbers-npm/issues/270)).
 
 ## [2.3.0] - 2026-10-13
 
