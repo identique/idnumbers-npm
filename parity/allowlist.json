@@ -30,6 +30,13 @@
       "ids": ["7501120260", "7542111030"]
     },
     {
+      "country": "CAN",
+      "direction": "python-only",
+      "issue": 336,
+      "reason": "TS follows Python #635's standard SIN prefixes (1-7 or 9); the old CI pin accepts zero-prefix SINs. Transitional #336 mismatch; remove this group when #340 repins to Python 1.24.0.",
+      "ids": ["003456712"]
+    },
+    {
       "country": "CZE",
       "direction": "python-only",
       "issue": 265,

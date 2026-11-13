@@ -25,25 +25,39 @@ valid, so a validation change here can't silently drift from Python
 ```bash
 git clone https://github.com/identique/idnumbers.git ../idnumbers
 git -C ../idnumbers checkout 28d33f3db83f6dcb657100d0ed19fa7c9e1bd90c
-npm run build
 IDNUMBERS_PYTHON_PATH=../idnumbers npm run parity
 ```
 
 `IDNUMBERS_PYTHON_PATH` is resolved against the current directory. The check needs Python 3.9 or
 newer (`python3`, or the interpreter named by `PYTHON`) and uses only its standard library. It loads
-the built library from `dist/cjs`, so run `npm run build` after any source change. It takes a few
-seconds.
+a fresh library from `dist/cjs`: `npm run parity` first runs the normal clean, dual CJS/ESM build
+and aborts if it fails. This rebuild uses the current source and build configuration rather than
+trusting file modification times ([#335](https://github.com/identique/idnumbers-npm/issues/335)).
+The build and comparison take a few seconds.
+
+For callers that have **already built the current source/configuration**, the explicit no-build
+entry point is:
+
+```bash
+IDNUMBERS_PYTHON_PATH=../idnumbers npm run parity -- --no-build
+```
+
+`--no-build` loads existing `dist/cjs` output without checking its freshness; the caller owns that
+prerequisite. It still exits `2` if the entry point is missing. CI's existing build-before-parity
+workflow is unchanged; its ordinary parity command now also rebuilds. Python pin/corpus
+synchronization remains separate ([#340](https://github.com/identique/idnumbers-npm/issues/340)).
 
 The Python helper (`scripts/parity/python_validity.py`) imports the library from the given checkout
 and refuses to run if `idnumbers` resolves anywhere else, so a `pip install idnumbers` on the same
 machine can't be compared by accident.
 
 Exit codes: `0` parity holds, `1` unexpected or stale divergences, `2` the check could not run (no
-checkout, no build, or missing, malformed or inconsistent data files). A passing run prints the
+checkout, failed build, missing build with `--no-build`, or missing, malformed or inconsistent data
+files). A passing run prints the
 Python commit and a summary such as:
 
 ```text
-85 countries, 20672 vectors: 19713 match, 458 TS-only input formats (allowed), 501 allowlisted divergences, 0 unexpected, 0 stale
+85 countries, 20672 vectors: 19713 match, 457 TS-only input formats (allowed), 502 allowlisted divergences, 0 unexpected, 0 stale
 ```
 
 When `GITHUB_STEP_SUMMARY` is set (as in CI), the summary line and the first 50 failure lines are also
@@ -172,6 +186,15 @@ paste-ready allowlist snippet with `"issue": 0` and `"reason": "TODO"`. Then eit
 
 ## Current divergences
 
+CAN's compact `003456712` is a transitional mismatch with the old CI pin: TypeScript ports the
+standard SIN prefix rule from [Python #635](https://github.com/identique/idnumbers/issues/635), released in
+Python 1.21.0 and retained in 1.24.0 ([#336](https://github.com/identique/idnumbers-npm/issues/336)).
+The formatted seed `003-456-712` and its compact form both now match Python 1.24.0. Only the compact
+form needs allowlisting against the old pin: both libraries reject the raw formatted seed, which
+the existing comparison rule counts as a match.
+Remove only this CAN allowlist group when [#340](https://github.com/identique/idnumbers-npm/issues/340)
+repins parity to Python 1.24.0; no corpus refresh or pin change is included here.
+
 FIN's two `python-only` vectors are a transitional mismatch with the old CI pin, not with Python
 1.24.0: [#337](https://github.com/identique/idnumbers-npm/issues/337) restricts issued personal
 identity code serials to 002–899. Remove only this FIN group when
@@ -181,6 +204,7 @@ identity code serials to 002–899. Remove only this FIN group when
 | ------- | ----------- | ------------------------------------------------------------- | --- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | AUT     | ts-only     | [#236](https://github.com/identique/idnumbers-npm/issues/236) | 13  | TS accepts a 10-digit form with no real checksum; Python's TaxIDNumber accepts only the 9-digit form                                                     |
 | BGR     | python-only | [#260](https://github.com/identique/idnumbers-npm/issues/260) | 2   | Python treats a mod-11 remainder of 10 as check digit 0; TS rejects it                                                                                   |
+| CAN     | python-only | [#336](https://github.com/identique/idnumbers-npm/issues/336) | 1   | TS rejects prefixes 0/8 per Python #635; the old pin accepts them (expires with the #340 repin)                                                          |
 | CZE     | python-only | [#265](https://github.com/identique/idnumbers-npm/issues/265) | 10  | Python accepts 9-digit birth numbers up to 1953; TS requires 10 digits                                                                                   |
 | CZE     | ts-only     | [#313](https://github.com/identique/idnumbers-npm/issues/313) | 1   | TS accepts a birth number dated in the future; Python rejects it                                                                                         |
 | DEU     | ts-only     | [#266](https://github.com/identique/idnumbers-npm/issues/266) | 1   | TS accepts a number with a leading 0; Python rejects it                                                                                                  |
