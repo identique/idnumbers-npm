@@ -180,9 +180,17 @@ describe('Python idnumbers test cases validation', () => {
   });
 
   describe('CAN - Social Insurance Number', () => {
-    const validCanadianSINs = ['123-456-782', '123456782', '130692544', '046454286', '812345676'];
+    const validCanadianSINs = ['123-456-782', '123456782', '130692544', '923456784'];
 
-    const invalidCanadianSINs = ['123-456-789', '130692545', '800-000-000'];
+    const invalidCanadianSINs = [
+      '123-456-789',
+      '130692545',
+      '800-000-000',
+      '046454286',
+      '812345676',
+      '823456785',
+      '000000000',
+    ];
 
     test.each(validCanadianSINs)('should validate valid SIN: %s', sin => {
       const result = validateNationalId('CAN', sin);

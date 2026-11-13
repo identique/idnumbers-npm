@@ -57,7 +57,7 @@ files). A passing run prints the
 Python commit and a summary such as:
 
 ```text
-85 countries, 20672 vectors: 19715 match, 458 TS-only input formats (allowed), 499 allowlisted divergences, 0 unexpected, 0 stale
+85 countries, 20672 vectors: 19715 match, 457 TS-only input formats (allowed), 500 allowlisted divergences, 0 unexpected, 0 stale
 ```
 
 When `GITHUB_STEP_SUMMARY` is set (as in CI), the summary line and the first 50 failure lines are also
@@ -186,10 +186,20 @@ paste-ready allowlist snippet with `"issue": 0` and `"reason": "TODO"`. Then eit
 
 ## Current divergences
 
+CAN's compact `003456712` is a transitional mismatch with the old CI pin: TypeScript ports the
+standard SIN prefix rule from [Python #635](https://github.com/identique/idnumbers/issues/635), released in
+Python 1.21.0 and retained in 1.24.0 ([#336](https://github.com/identique/idnumbers-npm/issues/336)).
+The formatted seed `003-456-712` and its compact form both now match Python 1.24.0. Only the compact
+form needs allowlisting against the old pin: both libraries reject the raw formatted seed, which
+the existing comparison rule counts as a match.
+Remove only this CAN allowlist group when [#340](https://github.com/identique/idnumbers-npm/issues/340)
+repins parity to Python 1.24.0; no corpus refresh or pin change is included here.
+
 | Country | Direction   | Issue                                                         | Ids | Reason                                                                                                                                                   |
 | ------- | ----------- | ------------------------------------------------------------- | --- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | AUT     | ts-only     | [#236](https://github.com/identique/idnumbers-npm/issues/236) | 13  | TS accepts a 10-digit form with no real checksum; Python's TaxIDNumber accepts only the 9-digit form                                                     |
 | BGR     | python-only | [#260](https://github.com/identique/idnumbers-npm/issues/260) | 2   | Python treats a mod-11 remainder of 10 as check digit 0; TS rejects it                                                                                   |
+| CAN     | python-only | [#336](https://github.com/identique/idnumbers-npm/issues/336) | 1   | TS rejects prefixes 0/8 per Python #635; the old pin accepts them (expires with the #340 repin)                                                          |
 | CZE     | python-only | [#265](https://github.com/identique/idnumbers-npm/issues/265) | 10  | Python accepts 9-digit birth numbers up to 1953; TS requires 10 digits                                                                                   |
 | CZE     | ts-only     | [#313](https://github.com/identique/idnumbers-npm/issues/313) | 1   | TS accepts a birth number dated in the future; Python rejects it                                                                                         |
 | DEU     | ts-only     | [#266](https://github.com/identique/idnumbers-npm/issues/266) | 1   | TS accepts a number with a leading 0; Python rejects it                                                                                                  |

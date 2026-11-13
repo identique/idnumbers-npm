@@ -4,8 +4,12 @@ import { validateRegexp } from '../../utils.js';
 
 /**
  * Canada Social Insurance Number (SIN) format
+ * Standard SIN prefixes are 1–7 or 9, following identique/idnumbers#635.
+ * The CESP-specific zero-prefix exception for primary-caregiver SINs is not accepted.
+ * checksum() calculates only the Luhn digit; it does not establish that a SIN was issued.
  * https://en.wikipedia.org/wiki/Social_Insurance_Number
  * https://www.canada.ca/en/employment-social-development/services/sin.html
+ * https://www.canada.ca/en/employment-social-development/services/student-financial-aid/education-savings/resp/resp-promoters/bulletin/2008-282.html
  */
 export class SocialInsuranceNumber implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
@@ -13,10 +17,10 @@ export class SocialInsuranceNumber implements IdNumberClass {
     countryName: 'Canada',
     idType: 'Social Insurance Number',
     minLength: 9,
-    maxLength: 11,
+    maxLength: 9,
     parsable: false,
     checksum: true,
-    regexp: /^\d{3}[\s-]?\d{3}[\s-]?\d{3}$/,
+    regexp: /^[1-79]\d{2}[\s-]?\d{3}[\s-]?\d{3}$/,
     displayFormat: '###-###-###',
     masks: ['###-###-###'],
     example: '123-456-782',
@@ -27,6 +31,7 @@ export class SocialInsuranceNumber implements IdNumberClass {
     links: [
       'https://en.wikipedia.org/wiki/Social_Insurance_Number',
       'https://www.canada.ca/en/employment-social-development/services/sin.html',
+      'https://www.canada.ca/en/employment-social-development/services/student-financial-aid/education-savings/resp/resp-promoters/bulletin/2008-282.html',
       'http://www.straightlineinternational.com/docs/vaildating_canadian_sin.pdf',
     ],
     deprecated: false,
