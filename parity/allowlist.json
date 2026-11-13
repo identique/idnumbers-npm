@@ -349,18 +349,20 @@
       "country": "LVA",
       "direction": "ts-only",
       "issue": 276,
-      "reason": "TS checks only the check digit; Python also needs the first two digits to be 32-39 or a real birth date.",
+      "reason": "TS follows Python #440's modern prefixes 32-39 with random remaining digits, including the final digit; the old CI pin still enforces the legacy checksum. Transitional #276 mismatch; remove this group when #340 repins to Python 1.24.0.",
       "ids": [
-        "000075-19957",
-        "00007519957",
-        "102305-19967",
-        "10230519967",
-        "132175-19907",
-        "13217519907",
-        "161305-19991",
-        "16130519991",
-        "163075-19998",
-        "16307519998"
+        "323601-93794",
+        "323691-03794",
+        "323691-93704",
+        "323691-93795",
+        "323691-93894",
+        "323691-94794",
+        "323692-93794",
+        "323791-93794",
+        "324691-93794",
+        "333691-93794",
+        "390156-11605",
+        "390156-11607"
       ]
     },
     {

@@ -162,7 +162,8 @@ const EUROPEAN_EXPECTED: Record<string, ExpectedFormat> = {
   LVA: {
     format: 'DDMMYY-SSSSS',
     example: '161175-19997',
-    checksumAlgorithm: 'Weighted sum mod 11, then mod 10',
+    checksumAlgorithm:
+      '(1101 - weighted sum) mod 11 mod 10 for legacy only; weights 1, 6, 3, 7, 9, 10, 5, 8, 4, 2; modern codes have no check digit',
     officialName: 'personas kods',
   },
   MDA: {

@@ -140,6 +140,7 @@ describe('Format display strings', () => {
     { code: 'KOR', format: 'YYMMDD-GSSSSSS' },
     { code: 'MEX', format: 'AAAANNNNNNAAAAAANN' },
     { code: 'LKA', format: 'YYYYDDDSSSSC' },
+    { code: 'LVA', format: 'DDMMYY-SSSSS' },
     { code: 'NGA', format: 'XXXXXXXXXXX' },
     { code: 'NZL', format: 'XXXXXXX(X)' },
     { code: 'PNG', format: '##########' },
