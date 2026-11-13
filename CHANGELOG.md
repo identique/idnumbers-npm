@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Iceland (ISL) kennitalas no longer require a calculated ninth digit and now support century digit `8` (1800–1899), matching Registers Iceland and Python 1.24.0. Checksum metadata is `false`; parsing retains the ninth digit as unverified data. Existing compact/optional-hyphen layouts and calendar-date checks remain unchanged ([#338](https://github.com/identique/idnumbers-npm/issues/338)).
+
 ## [2.3.0] - 2026-10-13
 
 A minor release of Python-parity fixes found by comparing this port with the Python library. No API

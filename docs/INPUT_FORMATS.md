@@ -45,6 +45,23 @@ separator in another position, is not covered. `src/__tests__/issue-124-input-fo
 re-runs every probe, so the table cannot drift from the validators; when a validator changes, the
 test prints the updated rows.
 
+## Icelandic kennitala
+
+ISL accepts ten ASCII digits, optionally with a hyphen after the first six digits; spaces and
+other separators are not accepted. The final digit selects the birth century: `8` for 1800–1899,
+`9` for 1900–1999, or `0` for 2000–2099. The date must be a real calendar date; legal-entity day
+offsets are not supported.
+
+[Registers Iceland](https://www.skra.is/um-okkur/frettir/frett/2025/05/14/Kennitolur-an-vartolu/)
+stopped issuing calculated ninth-digit checks on 18 February 2026 and asks consumers to remove
+the check. Because the number has no issue-date field, no ninth digit is verified, including for
+older numbers. `parse()` retains the printed ninth digit in `checksum` as **unverified data**;
+`METADATA.checksum` is `false`, and there is no public checksum method
+([#338](https://github.com/identique/idnumbers-npm/issues/338)). The
+[layout/century reference](https://www.skra.is/folk/eg-i-thjodskra/um-kennitolur/) and
+[six official synthetic examples](https://www.skra.is/gogn/gervigogn-thjodskrar/) also underpin the
+regression tests. This changes validity, not the supported input layouts.
+
 ## By country
 
 <!-- input-formats:start -->

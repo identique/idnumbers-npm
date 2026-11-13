@@ -67,8 +67,6 @@ export const CHECK_CHARACTER_INDEX: Readonly<Record<string, number>> = {
   AUS: 8,
   // The department and municipality digits follow the check digit.
   GTM: 8,
-  // The century digit follows the check digit.
-  ISL: 8,
   // District digits follow the check letter.
   ZWE: 8,
 };
@@ -81,7 +79,6 @@ export const SINGLE_DIGIT_CHANGE_UNDETECTED: Readonly<Record<string, string>> = 
   // Digits the check character doesn't cover.
   AUS: 'the issue number after the check digit is not covered by it',
   GTM: 'the department and municipality digits after the check digit are not covered by it',
-  ISL: 'the century digit after the check digit is not covered by it',
   ZWE: 'the district digits after the check letter are not covered by it',
 
   // A two-pass mod-11 check: the retry adds single-digit changes the first pass alone wouldn't allow.
