@@ -78,10 +78,7 @@ export class SocialSecurityNumber implements IdNumberClass {
     if (!validateRegexp(idNumber, SocialSecurityNumber.METADATA.regexp)) {
       return false;
     }
-    if (!SocialSecurityNumber.parse(idNumber)) {
-      return false;
-    }
-    return SocialSecurityNumber.checksum(idNumber);
+    return SocialSecurityNumber.parse(idNumber) !== null;
   }
 
   validate(idNumber: string): boolean {
@@ -89,7 +86,7 @@ export class SocialSecurityNumber implements IdNumberClass {
   }
 
   /**
-   * Parse French Social Security Number
+   * Parse French Social Security Number, or return null for invalid structure or control key.
    */
   static parse(idNumber: string): FranceParseResult | null {
     const match = SocialSecurityNumber.METADATA.regexp.exec(idNumber);
@@ -105,6 +102,9 @@ export class SocialSecurityNumber implements IdNumberClass {
 
     const birthDepartmentData = SocialSecurityNumber.validateBirthDepartment(birthDepartment);
     if (!birthDepartmentData) {
+      return null;
+    }
+    if (!SocialSecurityNumber.checksum(match[0])) {
       return null;
     }
 

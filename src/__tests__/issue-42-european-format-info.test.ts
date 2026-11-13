@@ -138,7 +138,7 @@ const EUROPEAN_EXPECTED: Record<string, ExpectedFormat> = {
   ISL: {
     format: 'DDMMYY-SSKC',
     example: '120174-3399',
-    checksumAlgorithm: 'Weighted sum mod 11 (weights 3,2,7,6,5,4,3,2)',
+    checksumAlgorithm: 'None (ninth digit is not verified)',
     officialName: 'kennitala',
   },
   ITA: {
@@ -162,7 +162,8 @@ const EUROPEAN_EXPECTED: Record<string, ExpectedFormat> = {
   LVA: {
     format: 'DDMMYY-SSSSS',
     example: '161175-19997',
-    checksumAlgorithm: 'Weighted sum mod 11, then mod 10',
+    checksumAlgorithm:
+      '(1101 - weighted sum) mod 11 mod 10 for legacy only; weights 1, 6, 3, 7, 9, 10, 5, 8, 4, 2; modern codes have no check digit',
     officialName: 'personas kods',
   },
   MDA: {

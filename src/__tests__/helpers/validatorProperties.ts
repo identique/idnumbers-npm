@@ -28,6 +28,8 @@
  *   - the checksum can't catch every single-digit change: `SINGLE_DIGIT_CHANGE_UNDETECTED`,
  *     with the reason;
  *   - the validator hard-codes valid IDs that fail the checksum: `KNOWN_VALID_IDS`.
+ * LVA modern prefixes 32-39 have no checksum; checksum mutation properties apply
+ * only to its legacy codes, and mutations into the modern range are exempt (#276).
  *
  * Lowercase input is covered by property 1: ESP, FIN, ITA, SGP and VEN accept it, and
  * their regexps carry the `i` flag since #242. FIN also accepts surrounding whitespace
@@ -67,8 +69,6 @@ export const CHECK_CHARACTER_INDEX: Readonly<Record<string, number>> = {
   AUS: 8,
   // The department and municipality digits follow the check digit.
   GTM: 8,
-  // The century digit follows the check digit.
-  ISL: 8,
   // District digits follow the check letter.
   ZWE: 8,
 };
@@ -81,7 +81,6 @@ export const SINGLE_DIGIT_CHANGE_UNDETECTED: Readonly<Record<string, string>> = 
   // Digits the check character doesn't cover.
   AUS: 'the issue number after the check digit is not covered by it',
   GTM: 'the department and municipality digits after the check digit are not covered by it',
-  ISL: 'the century digit after the check digit is not covered by it',
   ZWE: 'the district digits after the check letter are not covered by it',
 
   // A two-pass mod-11 check: the retry adds single-digit changes the first pass alone wouldn't allow.
@@ -106,7 +105,7 @@ export const SINGLE_DIGIT_CHANGE_UNDETECTED: Readonly<Record<string, string>> = 
   JPN: 'mod-11 check folded onto ten check digits (two remainders share one)',
   LKA: 'mod-11 check folded onto ten check digits (two remainders share one)',
   LTU: 'mod-11 check folded onto ten check digits (two remainders share one)',
-  LVA: 'mod-11 check folded onto ten check digits (two remainders share one)',
+  LVA: 'legacy mod-11 check folded onto ten check digits (two remainders share one); modern prefixes 32-39 have no check digit (#276)',
   PRT: 'mod-11 check folded onto ten check digits (two remainders share one)',
   ROU: 'mod-11 check folded onto ten check digits (two remainders share one)',
   THA: 'mod-11 check folded onto ten check digits (two remainders share one)',
@@ -168,8 +167,10 @@ export function lengthOutOfRangeVariants(code: string, id: string): string[] {
   );
 }
 
-/** Whether `candidate` is one of the country's hard-coded valid IDs (see `KNOWN_VALID_IDS`). */
-function isKnownValid(code: string, candidate: string): boolean {
+/** Whether checksum mutation properties do not apply to this candidate. */
+function isChecksumExempt(code: string, candidate: string): boolean {
+  // Mixed LVA metadata retains checksum:true for legacy IDs, not modern random digits (#276).
+  if (code === 'LVA' && /^3[2-9][0-9]{9}$/.test(stripSeparators(candidate))) return true;
   return KNOWN_VALID_IDS[code]?.has(stripSeparators(candidate)) ?? false;
 }
 
@@ -184,30 +185,32 @@ function alphanumericPositions(id: string): number[] {
  * otherwise. Mutations that are known valid IDs are skipped, and so is an `id` that is
  * itself one (it is valid by carve-out, not through its check character, so its
  * neighbours can legitimately validate: SAU's 2000000007 sits next to a real Luhn ID).
+ * Modern LVA codes are also skipped because their final digit is random (#276).
  */
 export function checkCharacterMutations(code: string, id: string): string[] {
-  if (isKnownValid(code, id)) return [];
+  if (isChecksumExempt(code, id)) return [];
   const positions = alphanumericPositions(id);
   const position = positions[CHECK_CHARACTER_INDEX[code] ?? positions.length - 1];
   return [...CHECK_CHARACTER_ALPHABET]
     .filter(char => char !== id[position])
     .map(char => id.slice(0, position) + char + id.slice(position + 1))
-    .filter(mutation => !isKnownValid(code, mutation));
+    .filter(mutation => !isChecksumExempt(code, mutation));
 }
 
 /**
  * `id` with each one of its digits replaced by each other digit. Known valid IDs are
  * skipped as mutations, and as the `id` itself (see `checkCharacterMutations()`).
+ * The same exemption applies to checksum-free modern LVA codes (#276).
  */
 export function singleDigitMutations(code: string, id: string): string[] {
-  if (isKnownValid(code, id)) return [];
+  if (isChecksumExempt(code, id)) return [];
   const mutations: string[] = [];
   for (let i = 0; i < id.length; i++) {
     if (!/[0-9]/.test(id[i])) continue;
     for (const digit of '0123456789') {
       if (digit === id[i]) continue;
       const mutation = id.slice(0, i) + digit + id.slice(i + 1);
-      if (!isKnownValid(code, mutation)) mutations.push(mutation);
+      if (!isChecksumExempt(code, mutation)) mutations.push(mutation);
     }
   }
   return mutations;

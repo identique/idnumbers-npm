@@ -9,10 +9,11 @@ describe('Low Coverage Countries - Comprehensive Tests', () => {
       '120174-3399', // Valid with dash
       '1201743399', // Valid without dash
       '010130-2989', // Another valid ID
+      '120174-3398', // Century digit 8 means 1874; ninth digit is not verified.
     ];
 
     const invalidIDs = [
-      '120174-3398', // Wrong checksum
+      '120174-3397', // Unsupported century digit
       '320174-3399', // Invalid day
       '121374-3399', // Invalid month
       '12017-3399', // Too short
