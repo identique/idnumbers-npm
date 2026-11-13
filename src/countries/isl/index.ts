@@ -1,9 +1,20 @@
 /**
  * Iceland Icelandic Identification Number (kennitala)
+ *
+ * Registers Iceland stopped issuing calculated ninth-digit checks on 18 February
+ * 2026 and asks consumers to remove that test. There is no issue-date field to
+ * distinguish old and new numbers, so the ninth digit is retained but never
+ * verified. The last digit gives the birth century: 8 = 1800s, 9 = 1900s, 0 = 2000s.
+ * Legal-entity day offsets are not supported.
+ *
+ * Sources:
+ * https://www.skra.is/folk/eg-i-thjodskra/um-kennitolur/
+ * https://www.skra.is/um-okkur/frettir/frett/2025/05/14/Kennitolur-an-vartolu/
+ * https://www.skra.is/gogn/gervigogn-thjodskrar/
  */
 
 import { IdMetadata, ParsedInfo } from '../../types.js';
-import { validateRegexp, weightedModulusDigit, isValidDate, calculateAge } from '../../utils.js';
+import { isValidDate, calculateAge } from '../../utils.js';
 import { CheckDigit } from '../../constants.js';
 import { defineCountry } from '../../registry/country.js';
 import { invalidBirthDate } from '../../birthDateCheck.js';
@@ -12,6 +23,7 @@ export interface IcelandParseResult extends ParsedInfo {
   isValid: boolean;
   birthDate: Date;
   serialNumber: string;
+  /** The ninth digit as printed; retained for compatibility, not verified. */
   checksum: CheckDigit;
   age?: number;
 }
@@ -24,47 +36,22 @@ export const METADATA = {
   minLength: 10,
   maxLength: 10,
   regexp: /^(?<dd>\d{2})(?<mm>\d{2})(?<yy>\d{2})-?(?<sn>\d{2})(?<checksum>\d)(?<century>\d)$/,
-  checksum: true,
+  checksum: false,
   parsable: true,
   displayFormat: 'DDMMYY-SSKC',
   masks: ['######-####'],
   example: '120174-3399',
-  checksumAlgorithm: 'Weighted sum mod 11 (weights 3,2,7,6,5,4,3,2)',
+  checksumAlgorithm: 'None (ninth digit is not verified)',
   officialName: 'kennitala',
   aliasOf: null,
   deprecated: false,
-  links: ['https://en.wikipedia.org/wiki/Icelandic_identification_number'],
+  links: [
+    'https://en.wikipedia.org/wiki/Icelandic_identification_number',
+    'https://www.skra.is/folk/eg-i-thjodskra/um-kennitolur/',
+    'https://www.skra.is/um-okkur/frettir/frett/2025/05/14/Kennitolur-an-vartolu/',
+    'https://www.skra.is/gogn/gervigogn-thjodskrar/',
+  ],
 } satisfies IdMetadata;
-
-const WEIGHTS = [3, 2, 7, 6, 5, 4, 3, 2];
-
-/**
- * Normalize by removing spaces and dashes
- */
-function normalize(idNumber: string): string {
-  return idNumber.replace(/[ -]/g, '');
-}
-
-/**
- * Validate checksum for Iceland ID
- */
-function validateChecksum(idNumber: string): boolean {
-  if (!validateRegexp(idNumber, METADATA.regexp)) {
-    return false;
-  }
-
-  const normalized = normalize(idNumber);
-  const numbers = normalized.split('').map(Number);
-  const modulus = weightedModulusDigit(numbers.slice(0, -2), WEIGHTS, 11, true);
-
-  if (modulus === 10) {
-    // Special case: if modulus is 10, the ID is invalid
-    return false;
-  }
-
-  const expectedChecksum = modulus === 0 ? 0 : 11 - modulus;
-  return numbers[numbers.length - 2] === expectedChecksum;
-}
 
 /**
  * Validate Iceland Icelandic Identification Number
@@ -78,25 +65,28 @@ export function validate(idNumber: string): boolean {
 }
 
 /**
- * Parse Iceland Icelandic Identification Number
+ * Parse a kennitala's birth date, serial number and unverified ninth digit.
+ * Returns null for malformed input, an unsupported century or an impossible date.
  */
 export function parse(idNumber: string): IcelandParseResult | null {
-  const match = METADATA.regexp.exec(idNumber.trim());
-  if (!match || !match.groups) {
+  if (typeof idNumber !== 'string') {
+    return null;
+  }
+
+  const match = METADATA.regexp.exec(idNumber);
+  // JavaScript's `$` also matches before a final newline; consume the whole input.
+  if (!match || !match.groups || match[0] !== idNumber) {
     return null;
   }
 
   try {
     const { dd, mm, yy, sn, checksum, century } = match.groups;
 
-    // Validate checksum
-    if (!validateChecksum(idNumber)) {
-      return null;
-    }
-
     // Determine year base from century digit
     let yearBase: number;
-    if (century === '9') {
+    if (century === '8') {
+      yearBase = 1800;
+    } else if (century === '9') {
       yearBase = 1900;
     } else if (century === '0') {
       yearBase = 2000;
