@@ -138,7 +138,7 @@ const EUROPEAN_EXPECTED: Record<string, ExpectedFormat> = {
   ISL: {
     format: 'DDMMYY-SSKC',
     example: '120174-3399',
-    checksumAlgorithm: 'Weighted sum mod 11 (weights 3,2,7,6,5,4,3,2)',
+    checksumAlgorithm: 'None (ninth digit is not verified)',
     officialName: 'kennitala',
   },
   ITA: {

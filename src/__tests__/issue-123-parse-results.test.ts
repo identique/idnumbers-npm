@@ -228,8 +228,7 @@ describe('issue #123: parseIdInfo() runtime', () => {
     });
   });
 
-  it('fails an ID its parser accepts but validation rejects', () => {
-    // The NOR parser skips the check digits; validation does not.
+  it('rejects a correctly shaped NOR ID with wrong check digits', () => {
     const badCheckDigits = '01017012345';
     expect(validateNationalId('NOR', badCheckDigits).reason).toBe(
       ValidationFailureReason.CHECKSUM_MISMATCH

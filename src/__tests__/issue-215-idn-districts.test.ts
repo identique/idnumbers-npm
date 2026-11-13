@@ -4,7 +4,8 @@
  *
  * The fixture src/__tests__/fixtures/idn-districts.json is the Python
  * `idnumbers` library's `NIK.DISTRICT` (local checkout ~/codes/idnumbers).
- * These tests pin the packed list in src/countries/idn/districts.ts to it.
+ * The original fixture is unchanged. After #270, the runtime table is its exact
+ * union with the approved Papua subset, not a whole-table refresh.
  */
 
 import { readFileSync } from 'fs';
@@ -13,9 +14,13 @@ import { validateNationalId } from '../index';
 import { METADATA } from '../countries/idn';
 import { isDistrictCode } from '../countries/idn/districts';
 
-const fixture = new Set<string>(
-  JSON.parse(readFileSync(join(__dirname, 'fixtures', 'idn-districts.json'), 'utf8'))
+const originalCodes: string[] = JSON.parse(
+  readFileSync(join(__dirname, 'fixtures', 'idn-districts.json'), 'utf8')
 );
+const papua: { districts: { code: string }[] } = JSON.parse(
+  readFileSync(join(__dirname, 'fixtures', 'idn-papua-districts.json'), 'utf8')
+);
+const fixture = new Set([...originalCodes, ...papua.districts.map(({ code }) => code)]);
 
 /**
  * `[id, pythonValid]` rows from Python's `NIK.validate(id)`, built as
@@ -109,7 +114,9 @@ const PYTHON_ROWS: ReadonlyArray<readonly [string, boolean]> = [
 
 describe('issue #215: IDN district list matches the Python library', () => {
   test("the fixture holds Python's 7,030 district codes", () => {
-    expect(fixture.size).toBe(7030);
+    expect(originalCodes).toHaveLength(7030);
+    expect(new Set(originalCodes).size).toBe(7030);
+    expect(fixture.size).toBe(7534);
   });
 
   test('isDistrictCode agrees with the fixture for every six-digit string', () => {

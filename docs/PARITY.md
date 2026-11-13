@@ -57,7 +57,7 @@ files). A passing run prints the
 Python commit and a summary such as:
 
 ```text
-85 countries, 20672 vectors: 19715 match, 457 TS-only input formats (allowed), 500 allowlisted divergences, 0 unexpected, 0 stale
+85 countries, 20672 vectors: 19597 match, 457 TS-only input formats (allowed), 618 allowlisted divergences, 0 unexpected, 0 stale
 ```
 
 When `GITHUB_STEP_SUMMARY` is set (as in CI), the summary line and the first 50 failure lines are also
@@ -195,6 +195,19 @@ the existing comparison rule counts as a match.
 Remove only this CAN allowlist group when [#340](https://github.com/identique/idnumbers-npm/issues/340)
 repins parity to Python 1.24.0; no corpus refresh or pin change is included here.
 
+FIN's two `python-only` vectors are a transitional mismatch with the old CI pin, not with Python
+1.24.0: [#337](https://github.com/identique/idnumbers-npm/issues/337) restricts issued personal
+identity code serials to 002–899. Remove only this FIN group when
+[#340](https://github.com/identique/idnumbers-npm/issues/340) repins Python and refreshes the corpus.
+
+ISL has a transitional **old-pin mismatch**, not an unresolved country-policy difference:
+[#338](https://github.com/identique/idnumbers-npm/issues/338) follows Registers Iceland and Python
+1.24.0 by not verifying the ninth digit and supporting centuries `8`/`9`/`0`. The exact 114 ISL
+vectors that the old CI pin rejects are allowlisted separately; no unrelated vectors are added.
+[#340](https://github.com/identique/idnumbers-npm/issues/340) must remove this group when it repins
+Python and refreshes the global corpus. The six official witnesses and century-8 cases are covered
+directly in `issue-338-isl-kennitala.test.ts` now; their global corpus additions belong to #340.
+
 LVA now enforces legacy date/century/checksum rules, resolving all 10 previous LVA allowances.
 Its modern prefixes 32–39 accept random remaining digits, including the final digit, as in
 [Python #440](https://github.com/identique/idnumbers/issues/440) and Python 1.24.0
@@ -215,9 +228,11 @@ repins to Python 1.24.0. The corpus and pin remain unchanged here.
 | DOM     | ts-only     | [#323](https://github.com/identique/idnumbers-npm/issues/323) | 2   | TS also accepts python-stdnum's list of cédulas that fail the Luhn check; Python leaves the list out                                                     |
 | ECU     | python-only | [#323](https://github.com/identique/idnumbers-npm/issues/323) | 2   | Python accepts 6 as the third digit; TS allows only 0-5                                                                                                  |
 | EGY     | python-only | [#323](https://github.com/identique/idnumbers-npm/issues/323) | 42  | TS requires one of 28 known governorate codes; Python accepts any two digits                                                                             |
+| FIN     | python-only | [#337](https://github.com/identique/idnumbers-npm/issues/337) | 2   | TS requires issued serials 002–899; the old CI pin accepts 900–999. Transitional group expires with #340                                                 |
 | GEO     | ts-only     | [#269](https://github.com/identique/idnumbers-npm/issues/269) | 129 | TS accepts 9-digit numbers; Python now requires 11 digits                                                                                                |
 | GTM     | python-only | [#323](https://github.com/identique/idnumbers-npm/issues/323) | 54  | Python checks only the layout, department 01-22 and municipality 01-99; TS also verifies the mod-11 check digit and each department's municipality count |
 | IRN     | ts-only     | [#272](https://github.com/identique/idnumbers-npm/issues/272) | 1   | TS accepts the repeated-digit code 1111111111; Python rejects repeated-digit codes                                                                       |
+| ISL     | ts-only     | [#338](https://github.com/identique/idnumbers-npm/issues/338) | 114 | Temporary old-pin mismatch: TS follows Python 1.24.0 (unverified ninth digit; centuries 8/9/0); remove on #340 repin                                     |
 | ISR     | ts-only     | [#290](https://github.com/identique/idnumbers-npm/issues/290) | 1   | TS accepts the all-zero number 000000000, which Python rejects                                                                                           |
 | LVA     | ts-only     | [#276](https://github.com/identique/idnumbers-npm/issues/276) | 12  | Modern prefixes 32-39 have no checksum; the old pin still enforces it (expires with the #340 repin)                                                      |
 | NZL     | ts-only     | [#237](https://github.com/identique/idnumbers-npm/issues/237) | 27  | TS accepts any 7 or 8 letters or digits; Python requires two ASCII letters followed by six digits                                                        |

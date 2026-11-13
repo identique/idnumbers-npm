@@ -7,6 +7,15 @@
  */
 import { getCountryIdFormat, listSupportedCountries } from '../index';
 
+it('describes the unverified Icelandic ninth digit (#338)', () => {
+  expect(getCountryIdFormat('ISL')).toMatchObject({
+    hasChecksum: false,
+    checksumAlgorithm: 'None (ninth digit is not verified)',
+    format: 'DDMMYY-SSKC',
+    metadata: { checksum: false, masks: ['######-####'] },
+  });
+});
+
 // ---------------------------------------------------------------------------
 // All 81 registered countries should return non-null IdFormat
 // ---------------------------------------------------------------------------
