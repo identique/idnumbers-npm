@@ -16,9 +16,10 @@ export interface BirthDepartment {
  * Information parsed from a French Social Security Number
  */
 export interface FranceParseResult extends ParsedInfo {
-  sex: Gender;
-  /** Same value as `sex`, kept for compatibility */
-  gender: Gender;
+  /** Compatibility alias of `gender`; omitted for codes 3/4. */
+  sex?: Gender;
+  /** Codes 1/7 are male and 2/8 female; omitted for unknown codes 3/4. */
+  gender?: Gender;
   /** First day of the birth month (the day is not encoded) */
   birthDate: Date;
   yy: string;
@@ -33,6 +34,12 @@ export interface FranceParseResult extends ParsedInfo {
  * France Social Security Number (Numéro de Sécurité Sociale) format
  * https://en.wikipedia.org/wiki/Social_security_number#France
  * https://www.service-public.fr/particuliers/vosdroits/F33078
+ * INSEE documents codes 1/2; Assurance Maladie documents temporary codes 7/8.
+ * Codes 3/4 remain accepted but have no sourced gender mapping (#268).
+ * https://www.insee.fr/fr/information/6665188
+ * https://forum-assures.ameli.fr/questions/1764572-nia-numero-immatriculation-attente
+ * Historical departments 91-96 cover Algeria, Morocco and Tunisia before 1964:
+ * https://fr.wikipedia.org/wiki/Num%C3%A9ro_de_s%C3%A9curit%C3%A9_sociale_en_France#Signification_des_chiffres_du_NIR
  */
 export class SocialSecurityNumber implements IdNumberClass {
   static readonly METADATA: IdMetadata = {
@@ -66,7 +73,7 @@ export class SocialSecurityNumber implements IdNumberClass {
   /**
    * Validate French Social Security Number
    * Format: SYYMMDDCCCOOKKK
-   * S = sex (1=male, 2=female, 3=male temporary, 4=female temporary, 7=male foreign, 8=female foreign)
+   * S = gender code (1/7=male, 2/8=female, 3/4=unknown)
    * YY = year of birth (last 2 digits)
    * MM = month of birth (01-12 for known, 20-99 for unknown)
    * DD = department of birth (01-99, 2A, 2B for Corsica)
@@ -108,11 +115,13 @@ export class SocialSecurityNumber implements IdNumberClass {
       return null;
     }
 
-    // Determine gender
+    // Keep codes 3/4 unknown instead of inferring gender from their parity.
     const genderValue =
-      genderDigit === '1' || genderDigit === '3' || genderDigit === '7'
+      genderDigit === '1' || genderDigit === '7'
         ? Gender.MALE
-        : Gender.FEMALE;
+        : genderDigit === '2' || genderDigit === '8'
+          ? Gender.FEMALE
+          : undefined;
 
     // Determine century and create birth date
     // For years 00-25, assume 2000s, otherwise 1900s
@@ -124,8 +133,7 @@ export class SocialSecurityNumber implements IdNumberClass {
     const birthDate = new Date(year, month - 1, 1);
 
     return {
-      sex: genderValue,
-      gender: genderValue, // Include both for compatibility
+      ...(genderValue === undefined ? {} : { sex: genderValue, gender: genderValue }),
       birthDate,
       yy: match.groups.yy,
       mm: match.groups.mm,
@@ -144,7 +152,7 @@ export class SocialSecurityNumber implements IdNumberClass {
     if (
       (departmentCode.match(/^\d{2}$/) &&
         parseInt(departmentCode) >= 1 &&
-        parseInt(departmentCode) <= 95) ||
+        parseInt(departmentCode) <= 96) ||
       departmentCode === '2A' ||
       departmentCode === '2B'
     ) {
