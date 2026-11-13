@@ -25,21 +25,35 @@ valid, so a validation change here can't silently drift from Python
 ```bash
 git clone https://github.com/identique/idnumbers.git ../idnumbers
 git -C ../idnumbers checkout 28d33f3db83f6dcb657100d0ed19fa7c9e1bd90c
-npm run build
 IDNUMBERS_PYTHON_PATH=../idnumbers npm run parity
 ```
 
 `IDNUMBERS_PYTHON_PATH` is resolved against the current directory. The check needs Python 3.9 or
 newer (`python3`, or the interpreter named by `PYTHON`) and uses only its standard library. It loads
-the built library from `dist/cjs`, so run `npm run build` after any source change. It takes a few
-seconds.
+a fresh library from `dist/cjs`: `npm run parity` first runs the normal clean, dual CJS/ESM build
+and aborts if it fails. This rebuild uses the current source and build configuration rather than
+trusting file modification times ([#335](https://github.com/identique/idnumbers-npm/issues/335)).
+The build and comparison take a few seconds.
+
+For callers that have **already built the current source/configuration**, the explicit no-build
+entry point is:
+
+```bash
+IDNUMBERS_PYTHON_PATH=../idnumbers npm run parity -- --no-build
+```
+
+`--no-build` loads existing `dist/cjs` output without checking its freshness; the caller owns that
+prerequisite. It still exits `2` if the entry point is missing. CI's existing build-before-parity
+workflow is unchanged; its ordinary parity command now also rebuilds. Python pin/corpus
+synchronization remains separate ([#340](https://github.com/identique/idnumbers-npm/issues/340)).
 
 The Python helper (`scripts/parity/python_validity.py`) imports the library from the given checkout
 and refuses to run if `idnumbers` resolves anywhere else, so a `pip install idnumbers` on the same
 machine can't be compared by accident.
 
 Exit codes: `0` parity holds, `1` unexpected or stale divergences, `2` the check could not run (no
-checkout, no build, or missing, malformed or inconsistent data files). A passing run prints the
+checkout, failed build, missing build with `--no-build`, or missing, malformed or inconsistent data
+files). A passing run prints the
 Python commit and a summary such as:
 
 ```text

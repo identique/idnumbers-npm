@@ -16,11 +16,11 @@
  * that input that `scripts/parity/python_validity.py` tries.
  *
  * Usage:
- *   npm run build
  *   IDNUMBERS_PYTHON_PATH=../idnumbers npm run parity
+ *   IDNUMBERS_PYTHON_PATH=../idnumbers npm run parity -- --no-build (caller built first)
  *
  * Exit codes: 0 = parity holds, 1 = unexpected or stale divergences,
- * 2 = the check could not run (missing checkout, build, or bad data files).
+ * 2 = the check could not run (missing checkout, failed/missing build, or bad data files).
  * Details, formats and the update workflow: docs/PARITY.md.
  */
 import { spawnSync } from 'node:child_process';
@@ -77,6 +77,31 @@ function resolvePythonPath() {
     );
   }
   return pythonPath;
+}
+
+/** Build from current source/configuration unless the caller explicitly owns freshness. */
+function buildLibrary() {
+  const args = process.argv.slice(2);
+  if (args.length > 1 || (args.length === 1 && args[0] !== '--no-build')) {
+    abort('usage: npm run parity [-- --no-build]');
+  }
+  if (args[0] === '--no-build') return;
+
+  // Use npm's own CLI when available, including on Windows where npm is a .cmd shim.
+  const npmCli = process.env.npm_execpath;
+  const run = spawnSync(
+    npmCli ? process.execPath : 'npm',
+    npmCli ? [npmCli, 'run', 'build'] : ['run', 'build'],
+    {
+      cwd: REPO_ROOT,
+      stdio: 'inherit',
+    }
+  );
+  if (run.error || run.status !== 0) {
+    abort(
+      `build failed (${run.error?.message ?? `exit ${run.status}, signal ${run.signal}`}). No parity comparison was run.`
+    );
+  }
 }
 
 function loadLibrary() {
@@ -296,6 +321,7 @@ function snippet(unexpected) {
 
 function main() {
   const pythonPath = resolvePythonPath();
+  buildLibrary();
   const library = loadLibrary();
   const { corpus, allowlist } = loadData(library.listSupportedCountries().map(c => c.code));
 
