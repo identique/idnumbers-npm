@@ -74,11 +74,7 @@ export class NationalID implements IdNumberClass {
       return false;
     }
 
-    if (!NationalID.parse(idNumber)) {
-      return false;
-    }
-
-    return NationalID.checksumValidate(idNumber);
+    return NationalID.parse(idNumber) !== null;
   }
 
   validate(idNumber: string): boolean {
@@ -86,7 +82,7 @@ export class NationalID implements IdNumberClass {
   }
 
   /**
-   * Parse Norway national ID number
+   * Parse Norway national ID number, or return null for invalid dates or check digits.
    */
   static parse(idNumber: string): NationalIdParseResult | null {
     if (typeof idNumber !== 'string') {
@@ -136,6 +132,9 @@ export class NationalID implements IdNumberClass {
           date.getDate() !== dayNum
       )
     ) {
+      return null;
+    }
+    if (!NationalID.checksumValidate(idNumber)) {
       return null;
     }
 
