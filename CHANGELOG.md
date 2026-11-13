@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- CAN Social Insurance Numbers now reject first digit 0 or 8, including all-zero values, following Python #635's standard SIN rule. Existing separator layouts and arithmetic-only `checksum()` are preserved; metadata lengths describe the nine normalized digits. The CESP primary-caregiver exception remains excluded ([#336](https://github.com/identique/idnumbers-npm/issues/336)).
+
 ## [2.3.0] - 2026-10-13
 
 A minor release of Python-parity fixes found by comparing this port with the Python library. No API
